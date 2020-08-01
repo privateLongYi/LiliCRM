@@ -50,6 +50,14 @@ public class CustomerTransferController {
     @ApiOperation(value = "编辑转诊记录")
     @ResponseBody
     public DataResult editTransferByCtid(@RequestBody @ApiParam(value = "转诊记录对象", required = true) Customertransfer ct){
+        //创建空对象并给预约门诊赋值
+        Customertransaction c = new Customertransaction();
+        c.setChospital(ct.getCtnewhospital());
+        c.setCid(ct.getCtcid());
+        System.out.println(c.getCid()+"====="+c.getChospital());
+        //修改预约客户对象的预约门诊
+        iCustomerTransactionService.editCustomerByCid(c);
+        //修改客户转诊表
         iCustomertransferService.editTransferByCtid(ct);
         return new DataResult(0, "编辑成功", 0, null);
     }

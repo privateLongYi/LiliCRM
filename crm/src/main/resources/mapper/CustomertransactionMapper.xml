@@ -61,7 +61,7 @@
        <if test="cearnest != null and cearnest != ''">
          cEarnest = #{cearnest},
        </if>
-       <if test="cappointmenttime != null and cappointmenttime != ''">
+       <if test="cappointmenttime != null">
          cAppointmentTime = #{cappointmenttime},
        </if>
        <if test="chospital != null and chospital != ''">
