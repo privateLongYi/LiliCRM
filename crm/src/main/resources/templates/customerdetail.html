@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+<div class="layui-container" style="width: 600px;">
+
+    <div>
+        <h3 style="font-weight: bold">
+            <a th:href="@{/customerlist}">
+                <span class="glyphicon glyphicon-home"></span>首页
+            </a>
+            &nbsp;&gt;&nbsp;
+            <a disabled="disabled">预约客户管理</a>
+            &nbsp;&gt;&nbsp;
+            <a disabled="disabled">查看预约客户</a>
+        </h3>
+    </div>
+    <br><br>
+
+    <div style="float: left">
+        <button class="layui-btn" onclick="javascript:location.href = document.referrer;">
+            返回
+        </button>
+    </div>
+    <br>
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">编号</label>
+            <div class="layui-input-block">
+                <input class="layui-input"name="cid"
+                       th:value="${ct.cname}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="cname"
+                       th:value="${ct.cname}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="ctel"
+                       th:value="${ct.ctel}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">报名项目</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="cproject"
+                       th:value="${ct.cproject}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">报名时间</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="cregistrationtime"
+                       th:value="${ct.cproject}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">定金</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="cearnest"
+                       th:value="${ct.cearnest}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">负责人</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="cusp"
+                       th:value="${ct.cusp}" autocomplete="off"
+                       readonly/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">预约时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input"
+                       name="cappointmenttime" th:value="${ct.cappointmenttime}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">预约门诊</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="chospital"
+                       th:value="${ct.chospital}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否到店</label>
+            <div class="layui-input-block">
+                <input type="radio" name="carrive" value="0" title="否"
+                       th:checked="${ct.carrive == 0}" disabled>
+                <input type="radio" name="carrive" value="1" title="是"
+                       th:checked="${ct.carrive == 1}" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否成交</label>
+            <div class="layui-input-block">
+                <input type="radio" name="ctransaction" value="0" title="否"
+                       th:checked="${ct.ctransaction == 0}" disabled>
+                <input type="radio" name="ctransaction" value="1" title="是"
+                       th:checked="${ct.ctransaction == 1}" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">到店状态</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="cstatus"
+                       th:value="${ct.cstatus}" autocomplete="off" readonly />
+            </div>
+        </div>
+    </form>
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form;
+    });
+</script>
+</body>
+</html>

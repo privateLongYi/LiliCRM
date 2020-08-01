@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linxi.mapper.CustomersuccessMapper">
+
+  <resultMap id="BaseResultMap" type="com.linxi.entity.Customersuccess">
+    <id column="csuId" jdbcType="INTEGER" property="csuid" />
+    <result column="csuCid" jdbcType="INTEGER" property="csucid" />
+    <result column="csuUsp" jdbcType="VARCHAR" property="csuusp" />
+    <result column="csuUspId" jdbcType="INTEGER" property="csuuspid" />
+    <result column="csuHospital" jdbcType="VARCHAR" property="csuhospital" />
+    <result column="csuMajor" jdbcType="VARCHAR" property="csumajor" />
+    <result column="csuMajorSum" jdbcType="VARCHAR" property="csumajorsum" />
+    <result column="csuElse" jdbcType="VARCHAR" property="csuelse" />
+    <result column="csuElseSum" jdbcType="VARCHAR" property="csuelsesum" />
+    <result column="csuSum" jdbcType="VARCHAR" property="csusum" />
+    <result column="csuPayment" jdbcType="VARCHAR" property="csupayment" />
+    <result column="csuFeedback" jdbcType="VARCHAR" property="csufeedback" />
+  </resultMap>
+
+  <insert id="saveSuccess">
+    INSERT INTO customersuccess(csuCid, csuUsp, csuUspId, csuHospital, csuMajor,
+    csuMajorSum, csuElse, csuElseSum, csuPayment, csuFeedback)
+    VALUES (#{csucid}, #{csuusp}, #{csuuspid}, #{csuhospital}, #{csumajor},
+    #{csumajorsum}, #{csuelse}, #{csuelsesum}, #{csupayment}, #{csufeedback})
+  </insert>
+
+</mapper>

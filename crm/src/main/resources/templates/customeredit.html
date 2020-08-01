@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+<div class="layui-container" style="width:600px;">
+
+    <div>
+        <h3 style="font-weight: bold">
+            <a th:href="@{/customerlist}">
+                <span class="glyphicon glyphicon-home"></span>首页
+            </a>
+            &nbsp;&gt;&nbsp;
+            <a disabled="disabled">预约客户管理</a>
+            &nbsp;&gt;&nbsp;
+            <a disabled="disabled">编辑预约客户</a>
+        </h3>
+    </div>
+    <br><br>
+
+    <div style="float: left">
+        <button class="layui-btn" onclick="javascript:location.href = document.referrer;">
+            返回
+        </button>
+    </div>
+    <br>
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input type="hidden" name="cid" th:value="${ct.cid}">
+                <input class="layui-input" id="cname" name="cname"
+                       th:value="${ct.cname}" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="ctel" name="ctel"
+                       th:value="${ct.ctel}" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">报名项目</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="cproject" name="cproject"
+                       th:value="${ct.cproject}" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">定金</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="cearnest" name="cearnest"
+                       th:value="${ct.cearnest}" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">负责人</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="cusp" name="cusp"
+                       th:value="${ct.cusp}" autocomplete="off"
+                       readonly/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">预约时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="cappointmenttime"
+                       name="cappointmenttime" th:value="${ct.cappointmenttime}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">预约门诊</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="chospital" name="chospital"
+                       th:value="${ct.chospital}" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否到店</label>
+            <div class="layui-input-block">
+                <input type="radio" name="carrive" value="0" title="否"
+                       th:checked="${ct.carrive == 0}">
+                <input type="radio" name="carrive" value="1" title="是"
+                       th:checked="${ct.carrive == 1}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="submit">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#cappointmenttime' //指定元素
+            ,trigger: 'click' //采用click自动弹出
+        });
+
+        //保存
+        form.on('submit(submit)', function (data) {
+            data = data.field;
+            if (data.cname == '') {
+                layer.msg('请输入姓名');
+                return false;
+            }
+            if (data.ctel == '') {
+                layer.msg('电话不能为空');
+                return false;
+            }
+            if (data.cproject == '') {
+                layer.msg('报名项目不能为空');
+                return false;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: 'editCustomerByCid',
+                dataType: "JSON",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function (obj) {
+                    if (obj.code == 0) {
+                        layer.msg(obj.msg, function () {
+                            window.location = '../customerlist';
+                        });
+                    } else {
+                        layer.msg(obj.msg)
+                    }
+                }
+            })
+
+            return false;
+        });
+
+    });
+
+</script>
+</body>
+</html>
