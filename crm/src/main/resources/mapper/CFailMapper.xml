@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linxi.mapper.CFailMapper">
+
+  <resultMap id="BaseResultMap" type="com.linxi.entity.CFail">
+    <id column="cf_id" jdbcType="INTEGER" property="cfId" />
+    <result column="cf_c_id" jdbcType="INTEGER" property="cfCId" />
+    <result column="cf_hospital" jdbcType="VARCHAR" property="cfHospital" />
+    <result column="cf_cause" jdbcType="LONGVARCHAR" property="cfCause" />
+  </resultMap>
+
+  <select id="queryCF" resultMap="BaseResultMap">
+    SELECT * FROM c_fail limit #{page}, #{limit}
+  </select>
+
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM c_fail
+  </select>
+
+  <insert id="saveCFail">
+    INSERT INTO c_fail(cf_c_id, cf_hospital, cf_cause)
+    VALUES (#{cfCId}, #{cfHospital}, #{cfCause})
+  </insert>
+
+  <delete id="delCFByCfId">
+    DELETE FROM c_fail WHERE cf_id = #{cfId}
+  </delete>
+
+  <select id="queryCFByCfId" resultMap="BaseResultMap">
+    SELECT * FROM c_fail WHERE cf_id = #{cfId}
+  </select>
+  
+  <update id="editCFByCfId">
+    UPDATE c_fail SET cf_c_id = #{cfCId}, cf_hospital = #{cfHospital},
+    cf_cause = #{cfCause} WHERE cf_id = #{cfId}
+  </update>
+  
+</mapper>

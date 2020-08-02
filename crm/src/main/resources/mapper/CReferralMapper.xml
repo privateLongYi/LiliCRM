@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linxi.mapper.CReferralMapper">
+
+  <resultMap id="BaseResultMap" type="com.linxi.entity.CReferral">
+    <id column="cr_id" jdbcType="INTEGER" property="crId" />
+    <result column="cr_c_id" jdbcType="INTEGER" property="crCId" />
+    <result column="cr_old_hospital" jdbcType="VARCHAR" property="crOldHospital" />
+    <result column="cr_hospital" jdbcType="VARCHAR" property="crHospital" />
+    <result column="cr_cause" jdbcType="LONGVARCHAR" property="crCause" />
+  </resultMap>
+
+  <select id="queryCR" resultMap="BaseResultMap">
+    SELECT * FROM c_referral limit #{page}, #{limit}
+  </select>
+
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM c_referral
+  </select>
+
+  <insert id="saveCReferral">
+    INSERT INTO c_referral(cr_c_id, cr_old_hospital, cr_hospital, cr_cause)
+    VALUES (#{crCId}, #{crOldHospital}, #{crHospital}, #{crCause})
+  </insert>
+
+  <delete id="delCRByCrId">
+    DELETE FROM c_referral WHERE cr_id = #{crId}
+  </delete>
+
+  <select id="queryCRByCrId" resultMap="BaseResultMap">
+    SELECT * FROM c_referral WHERE cr_id = #{crId}
+  </select>
+
+  <update id="editCRByCrId">
+    UPDATE c_referral SET cr_c_id = #{crCId}, cr_old_hospital = #{crOldHospital},
+    cr_hospital = #{crHospital}, cr_cause = #{crCause} WHERE cr_id = #{crId}
+  </update>
+
+  <select id="queryCRByCrCId" resultMap="BaseResultMap">
+    SELECT * FROM c_referral WHERE cr_c_id = #{crCId} limit #{page}, #{limit}
+  </select>
+
+  <select id="getTotalByCrCId" resultType="Integer">
+    SELECT COUNT(*) FROM c_referral WHERE cr_c_id = #{crCId}
+  </select>
+
+</mapper>

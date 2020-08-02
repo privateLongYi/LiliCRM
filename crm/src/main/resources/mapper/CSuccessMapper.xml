@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linxi.mapper.CSuccessMapper">
+
+  <resultMap id="BaseResultMap" type="com.linxi.entity.CSuccess">
+    <id column="cs_id" jdbcType="INTEGER" property="csId" />
+    <result column="cs_c_id" jdbcType="INTEGER" property="csCId" />
+    <result column="cs_hospital" jdbcType="VARCHAR" property="csHospital" />
+    <result column="cs_major" jdbcType="VARCHAR" property="csMajor" />
+    <result column="cs_majorsum" jdbcType="INTEGER" property="csMajorsum" />
+    <result column="cs_else" jdbcType="VARCHAR" property="csElse" />
+    <result column="cs_elsesum" jdbcType="INTEGER" property="csElsesum" />
+    <result column="cs_sum" jdbcType="INTEGER" property="csSum" />
+    <result column="cs_paysum" jdbcType="INTEGER" property="csPaysum" />
+    <result column="cs_feedback" jdbcType="LONGVARCHAR" property="csFeedback" />
+  </resultMap>
+
+  <select id="queryCS" resultMap="BaseResultMap">
+    SELECT * FROM c_success limit #{page}, #{limit}
+  </select>
+
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM c_success
+  </select>
+
+  <insert id="saveCSuccess">
+    INSERT INTO c_success(cs_c_id, cs_hospital, cs_major, cs_majorsum, cs_else,
+    cs_elsesum, cs_sum, cs_paysum, cs_feedback)
+    VALUES (#{csCId}, #{csHospital}, #{csMajor}, #{csMajorsum}, #{csElse},
+    #{csElsesum}, #{csSum}, #{csPaysum}, #{csFeedback})
+  </insert>
+  
+  <delete id="delCSByCsId">
+    DELETE FROM c_success WHERE cs_id = #{csId}
+  </delete>
+
+  <select id="queryCSByCsId" resultMap="BaseResultMap">
+    SELECT * FROM c_success WHERE cs_id = #{csId}
+  </select>
+
+  <update id="editCSByCsId">
+    UPDATE c_success SET cs_c_id = #{csCId}, cs_hospital = #{csHospital},
+    cs_major = #{csMajor}, cs_majorsum = #{csMajorsum}, cs_else = #{csElse},
+    cs_elsesum = #{csElsesum}, cs_sum = #{csSum}, cs_paysum = #{csPaysum},
+    cs_feedback = #{csFeedback} WHERE cs_id = #{csId}
+  </update>
+
+  <select id="queryCSByCsCId" resultMap="BaseResultMap">
+    SELECT * FROM c_success WHERE cs_c_id = #{csCId} limit #{page}, #{limit}
+  </select>
+
+  <select id="getTotalByCsCId" resultType="Integer">
+    SELECT COUNT(*) FROM c_success WHERE cs_c_id = #{csCId}
+  </select>
+
+</mapper>

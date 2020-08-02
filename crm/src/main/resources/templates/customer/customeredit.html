@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+<div class="layui-container" style="width:600px;">
+
+    <div style="float: left">
+        <h3 style="font-weight: bold">
+            <a th:href="@{/customerlist}">
+                <span class="glyphicon glyphicon-home"></span>客户信息列表
+            </a>
+            &nbsp;&gt;&nbsp;
+            <a disabled="disabled">编辑客户信息</a>
+        </h3>
+    </div>
+
+    <div style="float: right">
+        <button class="layui-btn" onclick="javascript:location.href = document.referrer;">
+            返回
+        </button>
+    </div>
+    <br><br><br>
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="cName" name="cName"
+                       th:value="${c.cName}" autocomplete="off" />
+                <input type="hidden" name="cId" th:value="${c.cId}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="cSex" value="男" title="男"
+                    th:checked="${c.cSex == '男'}">
+                <input type="radio" name="cSex" value="女" title="女"
+                       th:checked="${c.cSex == '女'}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">年龄</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="cAge" name="cAge"
+                       th:value="${c.cAge}" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="cTel" name="cTel"
+                       th:value="${c.cTel}" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">报名项目</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="cProject" name="cProject"
+                       th:value="${c.cProject}" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea class="layui-input" id="cRemark" name="cRemark"
+                          th:text="${c.cRemark}" autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">定金</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="cEarnest" name="cEarnest"
+                       th:value="${c.cEarnest}" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">负责人</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="cUName" name="cUName"
+                       th:value="${c.cUName}" autocomplete="off" readonly/>
+                <input type="hidden" name="cUId" th:value="${c.cUId}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">来源</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="cSource" name="cSource"
+                       th:value="${c.cSource}" autocomplete="off"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">症状信息</label>
+            <div class="layui-input-block">
+                <textarea class="layui-input" id="cMessage" name="cMessage"
+                          th:text="${c.cMessage}" autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">回访</label>
+            <div class="layui-input-block">
+                <textarea class="layui-input" id="cCallback" name="cCallback"
+                          th:text="${c.cCallback}" autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="submit">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+        // 保存
+        form.on('submit(submit)', function (data) {
+            data = data.field;
+            if (data.cname == '') {
+                layer.msg('请输入姓名');
+                return false;
+            }
+            if (data.ctel == '') {
+                layer.msg('电话不能为空');
+                return false;
+            }
+            if (data.cproject == '') {
+                layer.msg('报名项目不能为空');
+                return false;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: 'editCByCId',
+                dataType: "JSON",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function (obj) {
+                    if (obj.code == 0) {
+                        layer.msg(obj.msg, function () {
+                            window.location = '../customerlist';
+                        });
+                    } else {
+                        layer.msg(obj.msg)
+                    }
+                }
+            })
+
+            return false;
+        });
+
+    });
+
+</script>
+</body>
+</html>

@@ -3,13 +3,14 @@
 <mapper namespace="com.linxi.mapper.UserMapper">
 
   <resultMap id="BaseResultMap" type="com.linxi.entity.User">
-    <id column="userId" jdbcType="INTEGER" property="userid" />
-    <result column="userName" jdbcType="VARCHAR" property="username" />
+    <id column="u_id" jdbcType="INTEGER" property="uId" />
+    <result column="u_name" jdbcType="VARCHAR" property="uName" />
     <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="u_role_id" jdbcType="INTEGER" property="uRoleId" />
   </resultMap>
 
   <select id="login" resultMap="BaseResultMap">
-    SELECT * FROM user WHERE username = #{username} AND password = #{password}
+    SELECT * FROM user WHERE u_name = #{uName} AND password = #{password}
   </select>
 
 </mapper>

@@ -25,6 +25,11 @@ public class DataResult<T> {
         this.data = data;
     }
 
+    public DataResult(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
     public DataResult() {
     }
 

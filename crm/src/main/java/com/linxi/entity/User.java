@@ -1,26 +1,28 @@
 package com.linxi.entity;
 
 public class User {
-    private Integer userid;
+    private Integer uId;
 
-    private String username;
+    private String uName;
 
     private String password;
 
-    public Integer getUserid() {
-        return userid;
+    private Integer uRoleId;
+
+    public Integer getuId() {
+        return uId;
     }
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
+    public void setuId(Integer uId) {
+        this.uId = uId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getuName() {
+        return uName;
     }
 
-    public void setUsername(String username) {
-        this.username = username == null ? null : username.trim();
+    public void setuName(String uName) {
+        this.uName = uName == null ? null : uName.trim();
     }
 
     public String getPassword() {
@@ -29,5 +31,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
+    }
+
+    public Integer getuRoleId() {
+        return uRoleId;
+    }
+
+    public void setuRoleId(Integer uRoleId) {
+        this.uRoleId = uRoleId;
     }
 }

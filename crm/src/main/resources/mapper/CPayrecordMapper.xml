@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linxi.mapper.CPayrecordMapper">
+
+  <resultMap id="BaseResultMap" type="com.linxi.entity.CPayrecord">
+    <id column="cp_id" jdbcType="INTEGER" property="cpId" />
+    <result column="cp_cs_id" jdbcType="INTEGER" property="cpCsId" />
+    <result column="cp_sum" jdbcType="INTEGER" property="cpSum" />
+    <result column="cp_time" jdbcType="TIMESTAMP" property="cpTime" />
+    <result column="cp_project" jdbcType="VARCHAR" property="cpProject" />
+    <result column="cp_remark" jdbcType="LONGVARCHAR" property="cpRemark" />
+  </resultMap>
+
+  <select id="queryCP" resultMap="BaseResultMap">
+    SELECT * FROM c_payrecord limit #{page}, #{limit}
+  </select>
+
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM c_payrecord
+  </select>
+
+  <insert id="saveCPayrecord">
+    INSERT INTO c_payrecord(cp_cs_id, cp_sum, cp_time, cp_project, cp_remark)
+    VALUES (#{cpCsId}, #{cpSum}, #{cpTime}, #{cpProject}, #{cpRemark})
+  </insert>
+
+  <delete id="delCPByCpId">
+    DELETE FROM c_payrecord WHERE cp_id = #{cpId}
+  </delete>
+
+  <select id="queryCPByCpId" resultMap="BaseResultMap">
+    SELECT * FROM c_payrecord WHERE cp_id = #{cpId}
+  </select>
+
+  <update id="editCPByCpId">
+    UPDATE c_payrecord SET cp_cs_id = #{cpCsId}, cp_sum = #{cpSum}, cp_time = #{cpTime},
+    cp_project = #{cpProject}, cp_remark = #{cpRemark} WHERE cp_id = #{cpId}
+  </update>
+  
+</mapper>

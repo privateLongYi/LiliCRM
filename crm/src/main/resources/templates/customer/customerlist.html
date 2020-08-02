@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="layui/css/layui.css">
+	</head>
+	<body>
+
+		<br>
+
+		<div class="demoTable">
+			根据姓名：
+			<div class="layui-inline">
+				<input class="layui-input" name="cName" id="cName" autocomplete="off">
+			</div>
+			<button class="layui-btn" data-type="reload">搜索</button>
+		</div>
+
+		<table class="layui-hide" id="tab" lay-filter="test"></table>
+ 
+		<script type="text/html" id="barDemo">
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+		  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+		  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+		</script>
+
+		<script src="layui/layui.js"></script>
+
+		<script>
+
+            layui.use(['laydate', 'laypage', 'layer', 'table', 'upload', 'element'], function(){
+                var laydate = layui.laydate //日期
+                    ,laypage = layui.laypage //分页
+                    ,layer = layui.layer //弹层
+                    ,table = layui.table //表格
+                    ,upload = layui.upload //上传
+                    ,element = layui.element //元素操作
+
+                //执行一个 table 实例
+                table.render({
+                    elem: '#tab'
+                    ,height: 350
+                    ,url: 'customer/queryCByCNameAndCUId' //数据接口
+                    ,title: '客户信息表' //表格名称
+                    ,id: 'tab' //表格id
+                    ,page: true //开启分页
+                    ,limit: 5 //每页显示条数
+                    ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
+                    ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+                    ,cols: [ //表头
+                        [
+                            {type: 'checkbox', fixed: 'left'}
+                            ,{field: 'cId', width: 120, title: 'ID', sort: true, align:'center'}
+                            ,{field: 'cName', width: 120, title: '姓名', align:'center'}
+                            ,{field: 'cSex', width: 120, title: '性别', sort: true, align:'center'}
+                            ,{field: 'cAge', width: 120, title: '年龄', align:'center'}
+                            ,{field: 'cTel', width: 120, title: '电话', align:'center'}
+                            ,{field: 'cProject', width: 120, title: '报名项目', align:'center'}
+                            ,{field: 'cPlaceTime', width: 200, title: '报名时间', align:'center'}
+                            ,{field: 'cRemark', width: 120, title: '备注', align:'center'}
+                            ,{field: 'cEarnest', width: 120, title: '定金', align:'center'}
+                            ,{field: 'cUName', width: 120, title: '负责人', align:'center'}
+                            ,{field: 'cSource', width: 120, title: '来源', align:'center'}
+                            ,{field: 'cMessage', width: 120, title: '症状信息', align:'center'}
+                            ,{field: 'cCallback', width: 120, title: '回访', align:'center'}
+                            ,{fixed: 'right', width: 180, align:'center', toolbar: '#barDemo'}
+                        ]
+                    ]
+                });
+
+                //监听头工具栏事件
+                table.on('toolbar(test)', function(obj){
+                    var checkStatus = table.checkStatus(obj.config.id)
+                        ,data = checkStatus.data; //获取选中的数据
+                    switch(obj.event){
+                        case 'add':
+                            location.href = "customersave";
+                            break;
+                        case 'update':
+                            if(data.length === 0){
+                                layer.msg('请选择一行');
+                            } else if(data.length > 1){
+                                layer.msg('只能同时编辑一个');
+                            } else {
+                                location.href = "customer/queryCByCId?cId=" + checkStatus.data[0].cId;
+                            }
+                            break;
+                        case 'delete':
+                            if(data.length === 0){
+                                layer.msg('请选择一行');
+                            } else {
+                                layer.confirm('真的删除行么', function(){
+                                    $.get("customer/delCByCId?cId=" + checkStatus.data[0].cId, function(obj){
+                                        if (obj.code == 0) {
+                                            layer.msg(obj.msg, function () {
+                                                window.location = 'customerlist';
+                                            });
+                                        } else {
+                                            layer.msg(obj.msg)
+                                        }
+                                    });
+                                });
+                            }
+                            break;
+                    }
+                });
+
+                //监听行工具事件
+                table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                    var data = obj.data //获得当前行数据
+                        ,layEvent = obj.event; //获得 lay-event 对应的值
+                    if(layEvent === 'del'){
+                        layer.confirm('真的删除行么', function(index){
+                            $.get("customer/delCByCId?cId=" + data.cId, function(obj){
+                                if (obj.code == 0) {
+                                    layer.msg(obj.msg, function () {
+                                        window.location = 'customerlist';
+                                    });
+                                } else {
+                                    layer.msg(obj.msg)
+                                }
+                            });
+                        });
+                    } else if(layEvent === 'edit'){
+
+                        location.href = "customer/queryCByCId?cId=" + data.cId;
+
+                    } else if(layEvent === 'detail'){
+
+						location.href = "customer/goDetail?cId=" + data.cId;
+
+                    }
+
+                });
+
+                var $ = layui.$, active = {
+                    reload: function(){
+                        var cName = $('#cName');
+
+                        //执行重载
+                        table.reload('tab', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            ,where: {
+                                cName: cName.val()
+                            }
+                        }, 'data');
+                    }
+                };
+
+                $('.demoTable .layui-btn').on('click', function(){
+                    var type = $(this).data('type');
+                    active[type] ? active[type].call(this) : '';
+                });
+
+            });
+
+		</script>
+
+	</body>
+</html>

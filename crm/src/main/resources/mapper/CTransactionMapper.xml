@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linxi.mapper.CTransactionMapper">
+
+  <resultMap id="BaseResultMap" type="com.linxi.entity.CTransaction">
+    <id column="ct_id" jdbcType="INTEGER" property="ctId" />
+    <result column="ct_c_id" jdbcType="INTEGER" property="ctCId" />
+    <result column="ct_time" jdbcType="TIMESTAMP" property="ctTime" />
+    <result column="ct_hospital" jdbcType="VARCHAR" property="ctHospital" />
+    <result column="ct_arrive" jdbcType="INTEGER" property="ctArrive" />
+  </resultMap>
+
+  <select id="queryCT" resultMap="BaseResultMap">
+    SELECT * FROM c_transaction limit #{page}, #{limit}
+  </select>
+
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM c_transaction
+  </select>
+
+  <insert id="saveCTransaction">
+    INSERT INTO c_transaction(ct_c_id, ct_time, ct_hospital, ct_arrive)
+    VALUES (#{ctCId}, #{ctTime}, #{ctHospital}, #{ctArrive})
+  </insert>
+
+  <delete id="delCTByCtId">
+    DELETE FROM c_transaction WHERE ct_id = #{ctId}
+  </delete>
+
+  <select id="queryCTByCtId" resultMap="BaseResultMap">
+    SELECT * FROM c_transaction WHERE ct_id = #{ctId}
+  </select>
+
+  <update id="editCTByCtId">
+    UPDATE c_transaction SET ct_c_id = #{ctCId}, ct_time = #{ctTime},
+    ct_hospital = #{ctHospital}, ct_arrive = #{ctArrive} WHERE ct_id = #{ctId}
+  </update>
+
+  <select id="queryCTByCtCId" resultMap="BaseResultMap">
+    SELECT * FROM c_transaction WHERE ct_c_id = #{ctCId} limit #{page}, #{limit}
+  </select>
+
+  <select id="getTotalByCtCId" resultType="Integer">
+    SELECT COUNT(*) FROM c_transaction WHERE ct_c_id = #{ctCId}
+  </select>
+
+</mapper>

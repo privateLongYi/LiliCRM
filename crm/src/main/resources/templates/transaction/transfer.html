@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+<div class="layui-container" style="width:600px;">
+
+    <div style="float: left">
+        <h3 style="font-weight: bold">
+            <a th:href="@{/successlist}">
+                <span class="glyphicon glyphicon-home"></span>客户预约列表
+            </a>
+            &nbsp;&gt;&nbsp;
+            <a disabled="disabled">新增转诊记录</a>
+        </h3>
+    </div>
+    <br><br>
+
+    <div style="float: right">
+        <button class="layui-btn" onclick="javascript:location.href = document.referrer;">
+            返回
+        </button>
+    </div>
+    <br><br><br>
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户编号</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="csCId" name="csCId"
+                       th:value="${ctCId}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">成交门诊</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="csHospital" name="csHospital"
+                       th:value="${ctHospital}" autocomplete="off" readonly />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">主诉</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="csMajor" name="csMajor" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">主诉金额</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="csMajorsum" name="csMajorsum" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">成交其他</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="csElse" name="csElse" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">其他金额</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="csElsesum" name="csElsesum" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">总成交金额</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="csSum" name="csSum" autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户支付金额</label>
+            <div class="layui-input-block">
+                <input class="layui-input" id="csPaysum" name="csPaysum"
+                       autocomplete="off" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户反馈</label>
+            <div class="layui-input-block">
+                <textarea class="layui-input" id="csFeedback" name="csFeedback"
+                          autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="submit">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+        // 保存
+        form.on('submit(submit)', function (data) {
+            data = data.field;
+            if (data.cname == '') {
+                layer.msg('请输入姓名');
+                return false;
+            }
+            if (data.ctel == '') {
+                layer.msg('电话不能为空');
+                return false;
+            }
+            if (data.cproject == '') {
+                layer.msg('报名项目不能为空');
+                return false;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '../success/saveCSuccess',
+                dataType: "JSON",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function (obj) {
+                    if (obj.code == 0) {
+                        layer.msg(obj.msg, function () {
+                            window.location = '../transactionlist';
+                        });
+                    } else {
+                        layer.msg(obj.msg)
+                    }
+                }
+            })
+
+            return false;
+        });
+
+    });
+
+</script>
+</body>
+</html>

@@ -12,7 +12,7 @@
         </commentGenerator>
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://127.0.0.1:3306/crm"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/lili_crm"
                         userId="root"
                         password="">
         </jdbcConnection>
@@ -46,10 +46,13 @@
 
         <!-- 指定数据库表 -->
         <table tableName="user"></table>
-        <table tableName="customerTransfer"></table>
-        <table tableName="customerTransaction"></table>
-        <table tableName="customerSuccess"></table>
-        <table tableName="customerStatus"></table>
+        <table tableName="role"></table>
+        <table tableName="customer"></table>
+        <table tableName="c_transaction"></table>
+        <table tableName="c_success"></table>
+        <table tableName="c_fail"></table>
+        <table tableName="c_referral"></table>
+        <table tableName="c_payrecord"></table>
         <!-- 有些表的字段需要指定java类型
          <table schema="" tableName="">
            <columnOverride column="" javaType="" />

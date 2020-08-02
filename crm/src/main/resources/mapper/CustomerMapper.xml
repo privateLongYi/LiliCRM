@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linxi.mapper.CustomerMapper">
+
+  <resultMap id="BaseResultMap" type="com.linxi.entity.Customer">
+    <id column="c_id" jdbcType="INTEGER" property="cId" />
+    <result column="c_name" jdbcType="VARCHAR" property="cName" />
+    <result column="c_sex" jdbcType="VARCHAR" property="cSex" />
+    <result column="c_age" jdbcType="INTEGER" property="cAge" />
+    <result column="c_tel" jdbcType="VARCHAR" property="cTel" />
+    <result column="c_project" jdbcType="VARCHAR" property="cProject" />
+    <result column="c_place_time" jdbcType="TIMESTAMP" property="cPlaceTime" />
+    <result column="c_earnest" jdbcType="INTEGER" property="cEarnest" />
+    <result column="c_u_id" jdbcType="INTEGER" property="cUId" />
+    <result column="c_source" jdbcType="VARCHAR" property="cSource" />
+    <result column="c_remark" jdbcType="LONGVARCHAR" property="cRemark" />
+    <result column="c_message" jdbcType="LONGVARCHAR" property="cMessage" />
+    <result column="c_callback" jdbcType="LONGVARCHAR" property="cCallback" />
+  </resultMap>
+
+  <select id="queryCByCNameAndCUId" resultMap="BaseResultMap">
+    SELECT c.*, u.u_name AS cUName FROM customer c INNER JOIN user u ON c.c_u_id = u.u_id
+    <where>
+      <if test="cName != null and cName != ''">
+        c.c_name LIKE '%${cName}%' AND
+      </if>
+      <if test="cUId != null and cUId != 0">
+        c.c_u_id = #{cUId} AND
+      </if>
+    </where>
+    limit #{page}, #{limit}
+  </select>
+
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM customer
+  </select>
+
+  <insert id="saveCustomer">
+    INSERT INTO customer(c_name, c_sex, c_age, c_tel, c_project, c_place_time,
+    c_earnest, c_u_id, c_source, c_remark, c_message, c_callback)
+    VALUES (#{cName}, #{cSex}, #{cAge}, #{cTel}, #{cProject}, NOW(),
+    #{cEarnest}, #{cUId}, #{cSource}, #{cRemark}, #{cMessage}, #{cCallback})
+  </insert>
+
+  <delete id="delCByCId">
+    DELETE FROM customer WHERE c_id = #{cId}
+  </delete>
+
+  <select id="queryCByCId" resultMap="BaseResultMap">
+    SELECT c.*, u.u_name AS cUName FROM customer c INNER JOIN user u ON c.c_u_id = u.u_id
+     WHERE c.c_id = #{cId}
+  </select>
+
+  <update id="editCByCId">
+    UPDATE customer SET c_name = #{cName}, c_sex = #{cSex}, c_age = #{cAge},
+    c_tel = #{cTel}, c_project = #{cProject},
+    c_earnest = #{cEarnest}, c_u_id = #{cUId}, c_source = #{cSource},
+    c_remark = #{cRemark}, c_message = #{cMessage}, c_callback = #{cCallback}
+    WHERE c_id = #{cId}
+  </update>
+  
+</mapper>
