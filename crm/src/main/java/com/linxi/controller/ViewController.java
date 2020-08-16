@@ -17,13 +17,13 @@ public class ViewController {
     @ApiOperation(value = "客户信息列表")
     public String customerlist(){return "customer/customerlist";}
 
+    @GetMapping("screen")
+    @ApiOperation(value = "高级筛选")
+    public String screen(){return "screen/screen";}
+
     @GetMapping("customersave")
     @ApiOperation(value = "新增客户信息")
     public String customersave(){return "customer/customersave";}
-
-    @GetMapping("customeredit")
-    @ApiOperation(value = "编辑客户信息")
-    public String customeredit(){return "customer/customeredit";}
 
     @GetMapping("transactionlist")
     @ApiOperation(value = "客户预约列表")

@@ -22,9 +22,8 @@ public class CustomerService implements ICustomerService{
     private CustomerMapper customerMapper;
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryCByCNameAndCUId(Integer page, Integer limit, String cName, Integer cUId) {
-        return customerMapper.queryCByCNameAndCUId(page, limit, cName, cUId);
+    public List<Customer> queryCScreen(Integer page, Integer limit, String cName, String cTel, String cProject, String ctHospital, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, String cStatu) {
+        return customerMapper.queryCScreen(page, limit, cName, cTel, cProject, ctHospital, cEarnest, beginTime, endTime, cUId, cSource, cStatu);
     }
 
     @Override
@@ -52,5 +51,10 @@ public class CustomerService implements ICustomerService{
     @Override
     public void editCByCId(Customer c) {
         customerMapper.editCByCId(c);
+    }
+
+    @Override
+    public void editCStatuByCId(Integer ctCId, Integer cStatu) {
+        customerMapper.editCStatuByCId(ctCId, cStatu);
     }
 }

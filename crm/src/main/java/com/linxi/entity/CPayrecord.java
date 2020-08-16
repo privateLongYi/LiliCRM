@@ -1,6 +1,6 @@
 package com.linxi.entity;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class CPayrecord {
     private Integer cpId;

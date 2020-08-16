@@ -1,11 +1,13 @@
 package com.linxi.entity;
 
+import java.sql.Timestamp;
+
 public class CSuccess {
     private Integer csId;
 
-    private Integer csCId;
+    private Integer csCtId;
 
-    private String csHospital;
+    private Timestamp csTime;
 
     private String csMajor;
 
@@ -21,6 +23,48 @@ public class CSuccess {
 
     private String csFeedback;
 
+    private String csCallback;
+
+    /**
+     *客户姓名
+     */
+    private String cName;
+
+    /**
+     *客户电话
+     */
+    private String cTel;
+
+    /**
+     *成交门诊（预约门诊）
+     */
+    private String ctHospital;
+
+    /**
+     *成交项目（客户报名项目）
+     */
+    private String cProject;
+
+    /**
+     *成交定金（客户定金）
+     */
+    private String cEarnest;
+
+    /**
+     *负责人
+     */
+    private String uName;
+
+    /**
+     *客户来源
+     */
+    private String cSource;
+
+    /**
+     *客户状态
+     */
+    private String cStatu;
+
     public Integer getCsId() {
         return csId;
     }
@@ -29,20 +73,20 @@ public class CSuccess {
         this.csId = csId;
     }
 
-    public Integer getCsCId() {
-        return csCId;
+    public Integer getCsCtId() {
+        return csCtId;
     }
 
-    public void setCsCId(Integer csCId) {
-        this.csCId = csCId;
+    public void setCsCtId(Integer csCtId) {
+        this.csCtId = csCtId;
     }
 
-    public String getCsHospital() {
-        return csHospital;
+    public Timestamp getCsTime() {
+        return csTime;
     }
 
-    public void setCsHospital(String csHospital) {
-        this.csHospital = csHospital == null ? null : csHospital.trim();
+    public void setCsTime(Timestamp csTime) {
+        this.csTime = csTime;
     }
 
     public String getCsMajor() {
@@ -99,5 +143,77 @@ public class CSuccess {
 
     public void setCsFeedback(String csFeedback) {
         this.csFeedback = csFeedback == null ? null : csFeedback.trim();
+    }
+
+    public String getCsCallback() {
+        return csCallback;
+    }
+
+    public void setCsCallback(String csCallback) {
+        this.csCallback = csCallback;
+    }
+
+    public String getcName() {
+        return cName;
+    }
+
+    public void setcName(String cName) {
+        this.cName = cName;
+    }
+
+    public String getcTel() {
+        return cTel;
+    }
+
+    public void setcTel(String cTel) {
+        this.cTel = cTel;
+    }
+
+    public String getCtHospital() {
+        return ctHospital;
+    }
+
+    public void setCtHospital(String ctHospital) {
+        this.ctHospital = ctHospital;
+    }
+
+    public String getcProject() {
+        return cProject;
+    }
+
+    public void setcProject(String cProject) {
+        this.cProject = cProject;
+    }
+
+    public String getcEarnest() {
+        return cEarnest;
+    }
+
+    public void setcEarnest(String cEarnest) {
+        this.cEarnest = cEarnest;
+    }
+
+    public String getuName() {
+        return uName;
+    }
+
+    public void setuName(String uName) {
+        this.uName = uName;
+    }
+
+    public String getcSource() {
+        return cSource;
+    }
+
+    public void setcSource(String cSource) {
+        this.cSource = cSource;
+    }
+
+    public String getcStatu() {
+        return cStatu;
+    }
+
+    public void setcStatu(String cStatu) {
+        this.cStatu = cStatu;
     }
 }

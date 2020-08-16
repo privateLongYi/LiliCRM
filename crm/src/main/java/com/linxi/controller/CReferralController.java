@@ -71,11 +71,11 @@ public class CReferralController {
     @GetMapping("queryCRByCrCId")
     @ApiOperation(value = "查询客户成交")
     @ResponseBody
-    public DataResult queryCRByCrCId(@ApiParam(value = "客户编号", required = true) Integer crCId,
+    public DataResult queryCRByCrCtId(@ApiParam(value = "客户编号", required = true) Integer crCtId,
                                      @ApiParam(value = "页码", required = true) Integer page,
                                      @ApiParam(value = "显示条数", required = true) Integer limit){
-        List<CReferral> cReferrals = iCReferralService.queryCRByCrCId(crCId, (page - 1) * limit, limit);
-        Integer total = iCReferralService.getTotalByCrCId(crCId);
+        List<CReferral> cReferrals = iCReferralService.queryCRByCrCtId(crCtId, (page - 1) * limit, limit);
+        Integer total = iCReferralService.getTotalByCrCtId(crCtId);
         return new DataResult(0, "操作成功", total, cReferrals);
     }
 

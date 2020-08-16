@@ -25,12 +25,22 @@ public class CTransactionController {
     @Autowired
     private ICTransactionService iCTransactionService;
 
-    @GetMapping("queryCT")
+    @GetMapping("queryCTScreen")
     @ApiOperation(value = "查询客户预约")
     @ResponseBody
-    public DataResult queryCT(@ApiParam(name = "page", value = "页码", required = true) Integer page,
-                                   @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
-        List<CTransaction> CTransactiones = iCTransactionService.queryCT((page-1)*limit, limit);
+    public DataResult queryCTScreen(@ApiParam(name = "page", value = "页码", required = true) Integer page,
+                                  @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit,
+                                  @ApiParam(name = "cName", value = "客户姓名", required = true) String cName,
+                                  @ApiParam(name = "cTel", value = "客户电话", required = true) String cTel,
+                                  @ApiParam(name = "cProject", value = "报名项目", required = true) String cProject,
+                                  @ApiParam(name = "ctHospital", value = "预约门诊", required = true) String ctHospital,
+                                  @ApiParam(name = "cEarnest", value = "是否交定金", required = true) Integer cEarnest,
+                                  @ApiParam(name = "beginTime", value = "开始时间", required = true) String beginTime,
+                                  @ApiParam(name = "endTime", value = "结束时间", required = true) String endTime,
+                                  @ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
+                                  @ApiParam(name = "cSource", value = "客户来源", required = true) String cSource,
+                                  @ApiParam(name = "cStatu", value = "客户状态", required = true) String cStatu){
+        List<CTransaction> CTransactiones = iCTransactionService.queryCTScreen((page-1)*limit, limit, cName, cTel, cProject, ctHospital, cEarnest, beginTime, endTime, uId, cSource, cStatu);
         //获取总条数
         Integer total = iCTransactionService.getTotal();
         return new DataResult(0, "操作成功", total, CTransactiones);

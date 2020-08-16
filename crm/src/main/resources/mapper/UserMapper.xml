@@ -13,4 +13,8 @@
     SELECT * FROM user WHERE u_name = #{uName} AND password = #{password}
   </select>
 
+  <select id="queyrUserByURoleId" resultMap="BaseResultMap">
+    SELECT * FROM user WHERE u_role_id = #{uRoleId}
+  </select>
+
 </mapper>

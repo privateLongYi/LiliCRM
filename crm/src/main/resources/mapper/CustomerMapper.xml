@@ -16,47 +16,86 @@
     <result column="c_remark" jdbcType="LONGVARCHAR" property="cRemark" />
     <result column="c_message" jdbcType="LONGVARCHAR" property="cMessage" />
     <result column="c_callback" jdbcType="LONGVARCHAR" property="cCallback" />
+    <result column="c_statu" jdbcType="VARCHAR" property="cStatu" />
   </resultMap>
 
-  <select id="queryCByCNameAndCUId" resultMap="BaseResultMap">
-    SELECT c.*, u.u_name AS cUName FROM customer c INNER JOIN user u ON c.c_u_id = u.u_id
+  <!-- 高级筛选加分页查询客户 -->
+  <select id="queryCScreen" resultMap="BaseResultMap">
+    SELECT c.*, u.u_name AS cUName, ct.ct_hospital AS ctHospital
+    FROM customer c LEFT JOIN user u ON c.c_u_id = u.u_id
+    LEFT JOIN c_transaction ct ON c.c_id = ct.ct_c_id
     <where>
       <if test="cName != null and cName != ''">
-        c.c_name LIKE '%${cName}%' AND
+        AND c.c_name LIKE '%${cName}%'
       </if>
-      <if test="cUId != null and cUId != 0">
-        c.c_u_id = #{cUId} AND
+      <if test="cTel != null and cTel != ''">
+        AND c.c_tel = #{cTel}
+      </if>
+      <if test="cProject != null and cProject != ''">
+        AND c.c_project = #{cProject}
+      </if>
+      <if test="ctHospital != null and ctHospital != ''">
+        AND ct.ct_hospital = #{ctHospital}
+      </if>
+      <if test="cEarnest != null and cEarnest == 0">
+        AND c.c_earnest = 0
+      </if>
+      <if test="cEarnest != null and cEarnest == 1">
+        AND c.c_earnest != 0
+      </if>
+      <if test="beginTime != null or endTime != null">
+        AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+      </if>
+      <if test="cUId != null and cUId != ''">
+        AND c.c_u_id = #{cUId}
+      </if>
+      <if test="cSource != null and cSource != ''">
+        AND c.c_source = #{cSource}
+      </if>
+      <if test="cStatu != null and cStatu != ''">
+        AND c.c_statu = #{cStatu}
       </if>
     </where>
     limit #{page}, #{limit}
   </select>
 
+  <!-- 查询客户总数 -->
   <select id="getTotal" resultType="Integer">
     SELECT COUNT(*) FROM customer
   </select>
 
+  <!-- 新增客户 -->
   <insert id="saveCustomer">
     INSERT INTO customer(c_name, c_sex, c_age, c_tel, c_project, c_place_time,
-    c_earnest, c_u_id, c_source, c_remark, c_message, c_callback)
-    VALUES (#{cName}, #{cSex}, #{cAge}, #{cTel}, #{cProject}, NOW(),
-    #{cEarnest}, #{cUId}, #{cSource}, #{cRemark}, #{cMessage}, #{cCallback})
+    c_earnest, c_u_id, c_source, c_remark, c_message, c_callback, c_statu)
+    VALUES (#{cName}, #{cSex}, #{cAge}, #{cTel}, #{cProject}, NOW(), #{cEarnest},
+    #{cUId}, #{cSource}, #{cRemark}, #{cMessage}, #{cCallback}, #{cStatu})
   </insert>
 
+  <!-- 根据编号删除客户 -->
   <delete id="delCByCId">
     DELETE FROM customer WHERE c_id = #{cId}
   </delete>
 
+  <!-- 根据编号查看客户 -->
   <select id="queryCByCId" resultMap="BaseResultMap">
-    SELECT c.*, u.u_name AS cUName FROM customer c INNER JOIN user u ON c.c_u_id = u.u_id
+    SELECT c.*, u.u_name AS cUName FROM customer c LEFT JOIN user u ON c.c_u_id = u.u_id
      WHERE c.c_id = #{cId}
   </select>
 
+  <!-- 根据编号编辑客户 -->
   <update id="editCByCId">
     UPDATE customer SET c_name = #{cName}, c_sex = #{cSex}, c_age = #{cAge},
-    c_tel = #{cTel}, c_project = #{cProject},
-    c_earnest = #{cEarnest}, c_u_id = #{cUId}, c_source = #{cSource},
-    c_remark = #{cRemark}, c_message = #{cMessage}, c_callback = #{cCallback}
+    c_tel = #{cTel}, c_project = #{cProject}, c_earnest = #{cEarnest},
+    c_u_id = #{cUId}, c_source = #{cSource}, c_remark = #{cRemark},
+    c_message = #{cMessage}, c_callback = #{cCallback}, c_statu = #{cStatu}
     WHERE c_id = #{cId}
   </update>
-  
+
+  <!-- 根据编号编辑客户状态（已成交/未成交/未到店） -->
+  <update id="editCStatuByCId">
+    UPDATE customer SET c_statu = #{cStatu} WHERE c_id = #{ct_c_id}
+  </update>
+
 </mapper>

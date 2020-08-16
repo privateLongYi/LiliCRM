@@ -4,10 +4,12 @@
 
   <resultMap id="BaseResultMap" type="com.linxi.entity.CReferral">
     <id column="cr_id" jdbcType="INTEGER" property="crId" />
-    <result column="cr_c_id" jdbcType="INTEGER" property="crCId" />
+    <result column="cr_ct_id" jdbcType="INTEGER" property="crCtId" />
     <result column="cr_old_hospital" jdbcType="VARCHAR" property="crOldHospital" />
     <result column="cr_hospital" jdbcType="VARCHAR" property="crHospital" />
     <result column="cr_cause" jdbcType="LONGVARCHAR" property="crCause" />
+    <result column="cr_feedback" jdbcType="LONGVARCHAR" property="crFeedback" />
+    <result column="crCallback" jdbcType="LONGVARCHAR" property="crCallback" />
   </resultMap>
 
   <select id="queryCR" resultMap="BaseResultMap">
@@ -19,8 +21,9 @@
   </select>
 
   <insert id="saveCReferral">
-    INSERT INTO c_referral(cr_c_id, cr_old_hospital, cr_hospital, cr_cause)
-    VALUES (#{crCId}, #{crOldHospital}, #{crHospital}, #{crCause})
+    INSERT INTO c_referral(cr_ct_id, cr_old_hospital, cr_hospital, cr_cause,
+    cr_feedback, cr_callback) VALUES (#{crCId}, #{crOldHospital}, #{crHospital},
+    #{crCause}, #{crFeedback}, #{crCallback})
   </insert>
 
   <delete id="delCRByCrId">
@@ -32,16 +35,17 @@
   </select>
 
   <update id="editCRByCrId">
-    UPDATE c_referral SET cr_c_id = #{crCId}, cr_old_hospital = #{crOldHospital},
-    cr_hospital = #{crHospital}, cr_cause = #{crCause} WHERE cr_id = #{crId}
+    UPDATE c_referral SET cr_ct_id = #{crCtId}, cr_old_hospital = #{crOldHospital},
+    cr_hospital = #{crHospital}, cr_cause = #{crCause}, cr_feedback = #{crFeedback},
+    cr_callback = #{crCallback} WHERE cr_id = #{crId}
   </update>
 
   <select id="queryCRByCrCId" resultMap="BaseResultMap">
-    SELECT * FROM c_referral WHERE cr_c_id = #{crCId} limit #{page}, #{limit}
+    SELECT * FROM c_referral WHERE cr_ct_id = #{crCtId} limit #{page}, #{limit}
   </select>
 
-  <select id="getTotalByCrCId" resultType="Integer">
-    SELECT COUNT(*) FROM c_referral WHERE cr_c_id = #{crCId}
+  <select id="getTotalByCrCtId" resultType="Integer">
+    SELECT COUNT(*) FROM c_referral WHERE cr_ct_id = #{crCtId}
   </select>
 
 </mapper>

@@ -4,8 +4,8 @@
 
   <resultMap id="BaseResultMap" type="com.linxi.entity.CSuccess">
     <id column="cs_id" jdbcType="INTEGER" property="csId" />
-    <result column="cs_c_id" jdbcType="INTEGER" property="csCId" />
-    <result column="cs_hospital" jdbcType="VARCHAR" property="csHospital" />
+    <result column="cs_ct_id" jdbcType="INTEGER" property="csCtId" />
+    <result column="cs_time" jdbcType="TIMESTAMP" property="csTime" />
     <result column="cs_major" jdbcType="VARCHAR" property="csMajor" />
     <result column="cs_majorsum" jdbcType="INTEGER" property="csMajorsum" />
     <result column="cs_else" jdbcType="VARCHAR" property="csElse" />
@@ -13,10 +13,53 @@
     <result column="cs_sum" jdbcType="INTEGER" property="csSum" />
     <result column="cs_paysum" jdbcType="INTEGER" property="csPaysum" />
     <result column="cs_feedback" jdbcType="LONGVARCHAR" property="csFeedback" />
+    <result column="cs_callback" jdbcType="LONGVARCHAR" property="csCallback" />
   </resultMap>
 
-  <select id="queryCS" resultMap="BaseResultMap">
-    SELECT * FROM c_success limit #{page}, #{limit}
+  <select id="queryCSScreen" resultMap="BaseResultMap">
+    SELECT cs.*, c.c_name AS cName, c.c_tel AS cTel, c.c_project AS cProject,
+    ct.ct_hospital AS ctHospital, c.c_earnest AS cEarnest, u.u_name AS uName,
+    c.c_source AS cSource, c.c_statu AS cStatu
+    FROM c_success cs
+    LEFT JOIN c_transaction ct ON cs.cs_ct_id = ct.ct_id
+    LEFT JOIN customer c ON ct.ct_c_id = c.c_id
+    LEFT JOIN user u ON c.c_u_id = u.u_id
+    <where>
+      <if test="cName != null and cName != ''">
+        c.c_name LIKE '%${cName}%' AND
+      </if>
+      <if test="cTel != null and cTel != ''">
+        c.c_tel = #{cTel} AND
+      </if>
+      <if test="cProject != null and cProject != ''">
+        c.c_project = #{cProject} AND
+      </if>
+      <if test="ctHospital != null and ctHospital != ''">
+        ct.ct_hospital = #{ctHospital} AND
+      </if>
+      <if test="cEarnest != null and cEarnest != '' and cEarnest == 0">
+        c.c_earnest = 0 AND
+      </if>
+      <if test="cEarnest != null and cEarnest != '' and cEarnest == 1">
+        c.c_earnest != 0 AND
+      </if>
+      <if test="beginTime!=null and beginTime!=''">
+        <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') AND   ]]>
+      </if>
+      <if test="endTime!=null and endTime!=''">
+        <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d') AND    ]]>
+      </if>
+      <if test="uId != null">
+        c.c_u_id = #{uId} AND
+      </if>
+      <if test="cSource != null and cSource != ''">
+        c.c_source = #{cSource} AND
+      </if>
+      <if test="cStatu != null and cStatu != ''">
+        c.c_statu = #{cStatu} AND
+      </if>
+    </where>
+    limit #{page}, #{limit}
   </select>
 
   <select id="getTotal" resultType="Integer">
@@ -24,10 +67,10 @@
   </select>
 
   <insert id="saveCSuccess">
-    INSERT INTO c_success(cs_c_id, cs_hospital, cs_major, cs_majorsum, cs_else,
-    cs_elsesum, cs_sum, cs_paysum, cs_feedback)
-    VALUES (#{csCId}, #{csHospital}, #{csMajor}, #{csMajorsum}, #{csElse},
-    #{csElsesum}, #{csSum}, #{csPaysum}, #{csFeedback})
+    INSERT INTO c_success(cs_ct_id, cs_time, cs_major, cs_majorsum, cs_else,
+    cs_elsesum, cs_sum, cs_paysum, cs_feedback, cs_callback)
+    VALUES (#{csCtId}, NOW(), #{csMajor}, #{csMajorsum}, #{csElse},
+    #{csElsesum}, #{csSum}, #{csPaysum}, #{csFeedback}, #{csCallback})
   </insert>
   
   <delete id="delCSByCsId">
@@ -39,18 +82,18 @@
   </select>
 
   <update id="editCSByCsId">
-    UPDATE c_success SET cs_c_id = #{csCId}, cs_hospital = #{csHospital},
-    cs_major = #{csMajor}, cs_majorsum = #{csMajorsum}, cs_else = #{csElse},
-    cs_elsesum = #{csElsesum}, cs_sum = #{csSum}, cs_paysum = #{csPaysum},
-    cs_feedback = #{csFeedback} WHERE cs_id = #{csId}
+    UPDATE c_success SET cs_ct_id = #{csCtId}, cs_major = #{csMajor},
+    cs_majorsum = #{csMajorsum}, cs_else = #{csElse}, cs_elsesum = #{csElsesum},
+    cs_sum = #{csSum}, cs_paysum = #{csPaysum}, cs_feedback = #{csFeedback},
+    cs_callback = #{csCallback} WHERE cs_id = #{csId}
   </update>
 
   <select id="queryCSByCsCId" resultMap="BaseResultMap">
-    SELECT * FROM c_success WHERE cs_c_id = #{csCId} limit #{page}, #{limit}
+    SELECT * FROM c_success WHERE cs_ct_id = #{csCtId} limit #{page}, #{limit}
   </select>
 
-  <select id="getTotalByCsCId" resultType="Integer">
-    SELECT COUNT(*) FROM c_success WHERE cs_c_id = #{csCId}
+  <select id="getTotalByCsCtId" resultType="Integer">
+    SELECT COUNT(*) FROM c_success WHERE cs_ct_id = #{csCtId}
   </select>
 
 </mapper>

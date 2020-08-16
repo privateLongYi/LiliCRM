@@ -22,9 +22,8 @@ public class CTransactionService implements ICTransactionService {
     private CTransactionMapper cTransactionMapper;
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public List<CTransaction> queryCT(Integer page, Integer limit) {
-        return cTransactionMapper.queryCT(page, limit);
+    public List<CTransaction> queryCTScreen(Integer page, Integer limit, String cName, String cTel, String cProject, String ctHospital, Integer cEarnest, String beginTime, String endTime, Integer uId, String cSource, String cStatu) {
+        return cTransactionMapper.queryCTScreen(page, limit, cName, cTel, cProject, ctHospital, cEarnest, beginTime, endTime, uId, cSource, cStatu);
     }
 
     @Override

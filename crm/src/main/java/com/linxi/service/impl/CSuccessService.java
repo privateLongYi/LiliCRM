@@ -23,8 +23,8 @@ public class CSuccessService implements ICSuccessService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<CSuccess> queryCS(Integer page, Integer limit) {
-        return CSuccessMapper.queryCS(page, limit);
+    public List<CSuccess> queryCSScreen(Integer page, Integer limit, String cName, String cTel, String cProject, String ctHospital, Integer cEarnest, String beginTime, String endTime, Integer uId, String cSource, String cStatu) {
+        return CSuccessMapper.queryCSScreen(page, limit, cName, cTel, cProject, ctHospital, cEarnest, beginTime, endTime, uId, cSource, cStatu);
     }
 
     @Override
@@ -56,13 +56,13 @@ public class CSuccessService implements ICSuccessService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<CSuccess> queryCSByCsCId(Integer csCId, Integer page, Integer limit) {
-        return CSuccessMapper.queryCSByCsCId(csCId, page, limit);
+    public List<CSuccess> queryCSByCsCtId(Integer csCtId, Integer page, Integer limit) {
+        return CSuccessMapper.queryCSByCsCtId(csCtId, page, limit);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getTotalByCsCId(Integer csCId) {
-        return CSuccessMapper.getTotalByCsCId(csCId);
+    public Integer getTotalByCsCtId(Integer csCtId) {
+        return CSuccessMapper.getTotalByCsCtId(csCtId);
     }
 }

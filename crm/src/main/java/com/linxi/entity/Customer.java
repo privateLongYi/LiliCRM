@@ -1,6 +1,6 @@
 package com.linxi.entity;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Customer {
     private Integer cId;
@@ -15,7 +15,7 @@ public class Customer {
 
     private String cProject;
 
-    private Date cPlaceTime;
+    private String cPlaceTime;
 
     private String cRemark;
 
@@ -29,8 +29,17 @@ public class Customer {
 
     private String cCallback;
 
-    //负责人姓名
+    private String cStatu;
+
+    /**
+     *负责人姓名
+     */
     private String cUName;
+
+    /**
+     *预约门诊
+     */
+    private String ctHospital;
 
     public Integer getcId() {
         return cId;
@@ -80,11 +89,11 @@ public class Customer {
         this.cProject = cProject;
     }
 
-    public Date getcPlaceTime() {
+    public String getcPlaceTime() {
         return cPlaceTime;
     }
 
-    public void setcPlaceTime(Date cPlaceTime) {
+    public void setcPlaceTime(String cPlaceTime) {
         this.cPlaceTime = cPlaceTime;
     }
 
@@ -136,11 +145,69 @@ public class Customer {
         this.cCallback = cCallback;
     }
 
+    public String getcStatu() {
+        return cStatu;
+    }
+
+    public void setcStatu(String cStatu) {
+        this.cStatu = cStatu;
+    }
+
     public String getcUName() {
         return cUName;
     }
 
     public void setcUName(String cUName) {
         this.cUName = cUName;
+    }
+
+    public String getCtHospital() {
+        return ctHospital;
+    }
+
+    public void setCtHospital(String ctHospital) {
+        this.ctHospital = ctHospital;
+    }
+
+    public Customer() {
+    }
+
+    public Customer(Integer cId, String cName, String cSex, Integer cAge, String cTel, String cProject, String cPlaceTime, String cRemark, Integer cEarnest, Integer cUId, String cSource, String cMessage, String cCallback, String cStatu) {
+        this.cId = cId;
+        this.cName = cName;
+        this.cSex = cSex;
+        this.cAge = cAge;
+        this.cTel = cTel;
+        this.cProject = cProject;
+        this.cPlaceTime = cPlaceTime;
+        this.cRemark = cRemark;
+        this.cEarnest = cEarnest;
+        this.cUId = cUId;
+        this.cSource = cSource;
+        this.cMessage = cMessage;
+        this.cCallback = cCallback;
+        this.cStatu = cStatu;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "cId=" + cId +
+                ", cName='" + cName + '\'' +
+                ", cSex='" + cSex + '\'' +
+                ", cAge=" + cAge +
+                ", cTel='" + cTel + '\'' +
+                ", cProject='" + cProject + '\'' +
+                ", cPlaceTime='" + cPlaceTime + '\'' +
+                ", cRemark='" + cRemark + '\'' +
+                ", cEarnest=" + cEarnest +
+                ", cUId=" + cUId +
+                ", cSource='" + cSource + '\'' +
+                ", cMessage='" + cMessage + '\'' +
+                ", cCallback='" + cCallback + '\'' +
+                ", cStatu='" + cStatu + '\'' +
+                ", cUName='" + cUName + '\'' +
+                ", ctHospital='" + ctHospital + '\'' +
+                '}';
     }
 }

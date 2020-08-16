@@ -33,7 +33,7 @@ public class UserController {
             //把对象存储到session中
             session.setAttribute("user", u);
             //设置session存活时间
-            session.setMaxInactiveInterval(30 * 60);
+            //session.setMaxInactiveInterval(30 * 60);
             return new DataResult(0, "登录成功", 0, null);
         } else {
             return new DataResult(1, "账号或密码错误",0 , null);
