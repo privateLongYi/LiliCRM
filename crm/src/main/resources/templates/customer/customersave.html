@@ -17,8 +17,11 @@
                 <span style="color: red;">*&nbsp;</span>姓名
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="cName"  placeholder="请输入姓名"
+                <input type="text" id="cName" placeholder="请输入姓名"
                        autocomplete="off" class="layui-input">
+                <!--<span class="layui-hidden" id="spanCName" style="color: red; font-size: small; margin-top: 5px;">-->
+                    <!--&nbsp;&nbsp;姓名长度不超过5-->
+                <!--</span>-->
             </div>
             <label class="layui-form-label" style="width: auto;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -32,7 +35,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;年龄
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="cAge" placeholder="请输入年龄"
+                <input type="number" id="cAge" placeholder="请输入年龄"
                        autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -44,7 +47,7 @@
                 <span style="color: red;">*&nbsp;</span>电话
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="cTel"  placeholder="请输入电话"
+                <input type="tel" id="cTel"  placeholder="请输入电话"
                        autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label" style="width: auto;">
@@ -63,7 +66,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;定金
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="cEarnest" placeholder="请输入定金"
+                <input type="number" id="cEarnest" placeholder="请输入定金"
                        autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -72,14 +75,18 @@
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
+                <input type="hidden" id="cUId" value="">
             </label>
-            <div class="layui-input-inline layui-form">
-                <select id="cUId" lay-filter="change">
+            <div class="layui-input-inline layui-form" id="admin">
+                <select lay-filter="change">
                     <option value=""></option>
                     <option value="2">龙意</option>
                     <option value="3">伍和煦</option>
                     <option value="4">徐成坤</option>
                 </select>
+            </div>
+            <div class="layui-input-inline layui-form" id="sale">
+                <input type="text" id="saleman" readonly class="layui-input">
             </div>
             <label class="layui-form-label" style="width: auto;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -128,14 +135,13 @@
                 $("#admin").addClass("layui-show");
                 $("#sale").addClass("layui-hide");
                 //赋值
-                $("#cUId").val("");
                 $("#cStatu").val("待分配");
             } else {
                 //销售员登录，显示负责人文本框，隐藏负责人下拉框
                 $("#admin").addClass("layui-hide");
                 $("#sale").addClass("layui-show");
                 //赋值
-                $("#salesman").val(res.uName);
+                $("#saleman").val(res.uName);
                 $("#cUId").val(res.uId);
                 $("#cStatu").val("待联系");
             }
@@ -151,7 +157,7 @@
             }else{
                 $("#cStatu").val("待分配");
             }
-        });
+        })
 
     });
 

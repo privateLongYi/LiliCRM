@@ -57,6 +57,7 @@
         AND c.c_statu = #{cStatu}
       </if>
     </where>
+    ORDER BY c_place_time DESC
     limit #{page}, #{limit}
   </select>
 

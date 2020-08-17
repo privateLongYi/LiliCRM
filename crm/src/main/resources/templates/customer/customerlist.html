@@ -21,11 +21,16 @@
 
 	<!-- 数据表格 -->
 	<table class="layui-hide" id="tab" lay-filter="test" lay-data="{id: 'tab'}"></table>
- 
+
+		<script type="text/html" id="toolbarDemo">
+			<div class="layui-inline" lay-event="refresh"><i class="layui-icon layui-icon-refresh-3"></i></div>
+			<div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
+		</script>
+
 		<script type="text/html" id="barDemo">
 			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-		  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-		  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 		</script>
 
 		<script src="layui/layui.js"></script>
@@ -141,7 +146,7 @@
                 function popup(index, url) {
                     var body = layer.getChildFrame('body', index);
                     //获取值
-                    var cName = $(body).find("#cName").val();
+                    var cName = $(body).find("#cName").val().trim();
                     var cSex = null;
                     if($(body).find("[name=cSex]")[0].checked){
                         cSex = $(body).find("[name=cSex]")[0].value;
@@ -149,23 +154,51 @@
                         cSex = $(body).find("[name=cSex]")[1].value;
                     }
                     var cAge = $(body).find("#cAge").val();
-                    var cTel = $(body).find("#cTel").val();
+                    var cTel = $(body).find("#cTel").val().trim();
                     var cProject = $(body).find("#cProject").val();
-                    var cRemark = $(body).find("#cName").val();
+                    var cRemark = $(body).find("#cRemark").val().trim();
                     var cEarnest = $(body).find("#cEarnest").val();
                     var cUId = $(body).find("#cUId").val();
-                    var cSource = $(body).find("#cSource").val();
+                    var cSource = $(body).find("#cSource").val().trim();
                     var cStatu = $(body).find("#cStatu").val();
                     if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
-                        $.post(url, {cName:cName, cSex:cSex, cAge:cAge, cTel:cTel, cProject:cProject,
-                                cRemark:cRemark, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cStatu:cStatu},
-                            function (obj) {
-                                layer.msg(obj.msg, {time: 500}, function () {
-                                    layer.closeAll();
-                                    tableReload();
-                                });
+						//声明格式是否正确
+						var verify = true;
+                        //验证姓名格式
+						if(cName.length > 6){
+							layer.msg("姓名长度不能大于6位");
+							verify = false;
+						}
+                        //验证年龄格式
+                        if(cAge != ''){
+                            if(cAge <= 0 || cAge >= 150){
+                                layer.msg("年龄必须大于0小于150");
+                                verify = false;
                             }
-                        );
+						}
+                        //验证电话格式
+                        if(!(/^1[3456789]\d{9}$/.test(cTel))){
+                            layer.msg("手机号码格式错误");
+                            verify = false;
+                        }
+                        //验证定金格式
+						if(cEarnest != ''){
+                            if(cEarnest < 0){
+                                layer.msg("定金不能为负数");
+                                verify = false;
+                            }
+						}
+                        if(verify){
+							$.post(url, {cName:cName, cSex:cSex, cAge:cAge, cTel:cTel, cProject:cProject,
+									cRemark:cRemark, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cStatu:cStatu},
+								function (obj) {
+									layer.msg(obj.msg, {time: 500}, function () {
+										layer.closeAll();
+										tableReload();
+									});
+								}
+							);
+                        }
                     } else {
                         layer.msg('请输入带星号的必填项');
                     }
@@ -181,11 +214,11 @@
                     ,page: true //开启分页
                     ,limit: 5 //每页显示条数
                     ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
-                    ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
+                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
                     ,cols: [ //表头
                         [
-                            {type: 'checkbox', fixed: 'left'}
-                            ,{field: 'cId', width: 120, title: 'ID', sort: true, align:'center'}
+                            {field: 'cId', width: 120, title: 'ID', sort: true, align:'center'}
                             ,{field: 'cName', width: 120, title: '姓名', align:'center'}
                             ,{field: 'cSex', width: 120, title: '性别', sort: true, align:'center'}
                             ,{field: 'cAge', width: 120, title: '年龄', align:'center'}
@@ -227,45 +260,8 @@
                                 }
                             });
                             break;
-                        case 'update':
-                            if(data.length === 0){
-                                layer.msg('请选择一行');
-                            } else if(data.length > 1){
-                                layer.msg('只能同时编辑一个');
-                            } else {
-                                //弹出编辑页面
-                                layer.open({
-                                    type: 2, //层类型，iframe
-                                    title: '编辑客户',
-                                    content: ['customer/queryCByCId?cId=' + checkStatus.data[0].cId],
-                                    area: ['1000px', '420px'],
-                                    resize: false,
-                                    btn: '确定',
-                                    btn1: function (index, layero) {
-                                        popup(index, "customer/editCByCId?cId=" + checkStatus.data[0].cId);
-                                    },
-                                    cancel: function(layero,index){
-                                        layer.closeAll();
-                                    }
-                                });
-                            }
-                            break;
-                        case 'delete':
-                            if(data.length === 0){
-                                layer.msg('请选择一行');
-                            } else {
-                                layer.confirm('真的删除行么', function(){
-                                    $.get("customer/delCByCId?cId=" + checkStatus.data[0].cId, function(obj){
-                                        if (obj.code == 0) {
-                                            layer.msg(obj.msg, {time: 500}, function () {
-                                                tableReload();
-                                            });
-                                        } else {
-                                            layer.msg(obj.msg)
-                                        }
-                                    });
-                                });
-                            }
+                        case 'refresh':
+                            tableReload();
                             break;
                     }
                 });
