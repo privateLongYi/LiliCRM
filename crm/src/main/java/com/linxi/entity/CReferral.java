@@ -3,13 +3,17 @@ package com.linxi.entity;
 public class CReferral {
     private Integer crId;
 
-    private Integer crCId;
+    private Integer crCtId;
 
     private String crOldHospital;
 
     private String crHospital;
 
     private String crCause;
+
+    private String cfFeedback;
+
+    private String cfCallback;
 
     public Integer getCrId() {
         return crId;
@@ -19,12 +23,12 @@ public class CReferral {
         this.crId = crId;
     }
 
-    public Integer getCrCId() {
-        return crCId;
+    public Integer getCrCtId() {
+        return crCtId;
     }
 
-    public void setCrCId(Integer crCId) {
-        this.crCId = crCId;
+    public void setCrCtId(Integer crCtId) {
+        this.crCtId = crCtId;
     }
 
     public String getCrOldHospital() {
@@ -49,5 +53,21 @@ public class CReferral {
 
     public void setCrCause(String crCause) {
         this.crCause = crCause == null ? null : crCause.trim();
+    }
+
+    public String getCfFeedback() {
+        return cfFeedback;
+    }
+
+    public void setCfFeedback(String cfFeedback) {
+        this.cfFeedback = cfFeedback;
+    }
+
+    public String getCfCallback() {
+        return cfCallback;
+    }
+
+    public void setCfCallback(String cfCallback) {
+        this.cfCallback = cfCallback;
     }
 }

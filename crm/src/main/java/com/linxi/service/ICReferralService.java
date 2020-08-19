@@ -24,10 +24,10 @@ public interface ICReferralService {
 
     void editCRByCrId(CReferral cr);
 
-    List<CReferral> queryCRByCrCId(@Param("crCId") Integer crCId,
+    List<CReferral> queryCRByCrCtId(@Param("crCtId") Integer crCtId,
                                   @Param("page") Integer page,
                                   @Param("limit") Integer limit);
 
-    Integer getTotalByCrCId(Integer crCId);
+    Integer getTotalByCrCtId(Integer crCtId);
 
 }

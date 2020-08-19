@@ -25,12 +25,22 @@ public class CSuccessController {
     @Autowired
     private ICSuccessService iCSuccessService;
 
-    @GetMapping("queryCS")
+    @GetMapping("queryCSScreen")
     @ApiOperation(value = "查询客户成交")
     @ResponseBody
-    public DataResult queryCS(@ApiParam(name = "page", value = "页码", required = true) Integer page,
-                                   @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
-        List<CSuccess> CSuccesses = iCSuccessService.queryCS((page-1)*limit, limit);
+    public DataResult queryCSScreen(@ApiParam(name = "page", value = "页码", required = true) Integer page,
+                              @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit,
+                              @ApiParam(name = "cName", value = "客户姓名", required = true) String cName,
+                              @ApiParam(name = "cTel", value = "客户电话", required = true) String cTel,
+                              @ApiParam(name = "cProject", value = "报名项目", required = true) String cProject,
+                              @ApiParam(name = "ctHospital", value = "预约门诊", required = true) String ctHospital,
+                              @ApiParam(name = "cEarnest", value = "是否交定金", required = true) Integer cEarnest,
+                              @ApiParam(name = "beginTime", value = "开始时间", required = true) String beginTime,
+                              @ApiParam(name = "endTime", value = "结束时间", required = true) String endTime,
+                              @ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
+                              @ApiParam(name = "cSource", value = "客户来源", required = true) String cSource,
+                              @ApiParam(name = "cStatu", value = "客户状态", required = true) String cStatu){
+        List<CSuccess> CSuccesses = iCSuccessService.queryCSScreen((page-1)*limit, limit, cName, cTel, cProject, ctHospital, cEarnest, beginTime, endTime, uId, cSource, cStatu);
         //获取总条数
         Integer total = iCSuccessService.getTotal();
         return new DataResult(0, "操作成功", total, CSuccesses);
@@ -68,14 +78,14 @@ public class CSuccessController {
         return new DataResult(0, "编辑成功");
     }
 
-    @GetMapping("queryCSByCsCId")
+    @GetMapping("queryCSByCsCtId")
     @ApiOperation(value = "查询客户成交")
     @ResponseBody
-    public DataResult queryCSByCsCId(@ApiParam(value = "客户编号", required = true) Integer csCId,
+    public DataResult queryCSByCsCtId(@ApiParam(value = "预约编号", required = true) Integer csCtId,
                                      @ApiParam(value = "页码", required = true) Integer page,
                                      @ApiParam(value = "显示条数", required = true) Integer limit){
-        List<CSuccess> cSuccesses = iCSuccessService.queryCSByCsCId(csCId, (page - 1) * limit, limit);
-        Integer total = iCSuccessService.getTotalByCsCId(csCId);
+        List<CSuccess> cSuccesses = iCSuccessService.queryCSByCsCtId(csCtId, (page - 1) * limit, limit);
+        Integer total = iCSuccessService.getTotalByCsCtId(csCtId);
         return new DataResult(0, "操作成功", total, cSuccesses);
     }
 

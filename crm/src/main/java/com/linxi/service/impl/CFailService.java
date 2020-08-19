@@ -23,8 +23,8 @@ public class CFailService implements ICFailService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<CFail> queryCF(Integer page, Integer limit) {
-        return CFailMapper.queryCF(page, limit);
+    public List<CFail> queryCFScreen(Integer page, Integer limit, String cName, String cTel, String cProject, String ctHospital, Integer cEarnest, String beginTime, String endTime, Integer uId, String cSource, String cStatu) {
+        return CFailMapper.queryCFScreen(page, limit, cName, cTel, cProject, ctHospital, cEarnest, beginTime, endTime, uId, cSource, cStatu);
     }
 
     @Override

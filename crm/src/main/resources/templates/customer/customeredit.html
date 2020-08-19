@@ -6,112 +6,116 @@
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
 </head>
 <body>
-<div class="layui-container" style="width:600px;">
 
-    <div style="float: left">
-        <h3 style="font-weight: bold">
-            <a th:href="@{/customerlist}">
-                <span class="glyphicon glyphicon-home"></span>客户信息列表
-            </a>
-            &nbsp;&gt;&nbsp;
-            <a disabled="disabled">编辑客户信息</a>
-        </h3>
-    </div>
+<div class="layui-fluid">
 
-    <div style="float: right">
-        <button class="layui-btn" onclick="javascript:location.href = document.referrer;">
-            返回
-        </button>
-    </div>
-    <br><br><br>
-    <form class="layui-form" action="">
+    <br />
+    <form class="layui-form" lay-filter="form">
         <div class="layui-form-item">
-            <label class="layui-form-label">姓名</label>
-            <div class="layui-input-block">
-                <input class="layui-input" id="cName" name="cName"
-                       th:value="${c.cName}" autocomplete="off" />
-                <input type="hidden" name="cId" th:value="${c.cId}">
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="color: red;">*&nbsp;</span>姓名
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cName"  placeholder="请输入姓名"
+                       autocomplete="off" class="layui-input" th:value="${c.cName}">
+                <input type="hidden" id="cId" th:value="${c.cId}">
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;性别
+            </label>
+            <div class="layui-input-inline layui-form">
+                <input type="radio" name="cSex" value="男" title="男" th:checked="${c.cSex == '男'} ? true : false">
+                <input type="radio" name="cSex" value="女" title="女" th:checked="${c.cSex == '女'} ? true : false">
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;年龄
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cAge" placeholder="请输入年龄"
+                       autocomplete="off" class="layui-input" th:value="${c.cAge}">
             </div>
         </div>
+
+        <br />
         <div class="layui-form-item">
-            <label class="layui-form-label">性别</label>
-            <div class="layui-input-block">
-                <input type="radio" name="cSex" value="男" title="男"
-                    th:checked="${c.cSex == '男'}">
-                <input type="radio" name="cSex" value="女" title="女"
-                       th:checked="${c.cSex == '女'}">
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="color: red;">*&nbsp;</span>电话
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cTel"  placeholder="请输入电话"
+                       autocomplete="off" class="layui-input" th:value="${c.cTel}">
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;报名项目
+            </label>
+            <div class="layui-input-inline layui-form">
+                <select id="cProject">
+                    <option value="种植" th:selected="${c.cProject == '种植'} ? true : false">种植</option>
+                    <option value="矫正" th:selected="${c.cProject == '矫正'} ? true : false">矫正</option>
+                    <option value="牙贴面" th:selected="${c.cProject == '牙贴面'} ? true : false">牙贴面</option>
+                    <option value="牙齿治疗" th:selected="${c.cProject == '牙齿治疗'} ? true : false">牙齿治疗</option>
+                </select>
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;定金
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cEarnest" placeholder="请输入定金"
+                       autocomplete="off" class="layui-input" th:value="${c.cEarnest}">
             </div>
         </div>
+
+        <br />
         <div class="layui-form-item">
-            <label class="layui-form-label">年龄</label>
-            <div class="layui-input-block">
-                <input class="layui-input" id="cAge" name="cAge"
-                       th:value="${c.cAge}" autocomplete="off" />
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
+                <input type="hidden" id="cUId" value="">
+            </label>
+            <div class="layui-input-inline layui-form" id="admin">
+                <select lay-filter="change">
+                    <option value="" th:selected="${c.cUId == ''} ? true : false"></option>
+                    <option value="2" th:selected="${c.cUId == 2} ? true : false">龙意</option>
+                    <option value="3" th:selected="${c.cUId == 3} ? true : false">伍和煦</option>
+                    <option value="4" th:selected="${c.cUId == 4} ? true : false">徐成坤</option>
+                </select>
+            </div>
+            <div class="layui-input-inline layui-form" id="sale">
+                <input type="text" id="saleman" readonly class="layui-input">
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;来源
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cSource" placeholder="请输入来源"
+                       autocomplete="off" class="layui-input" th:value="${c.cSource}">
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
+            </label>
+            <div class="layui-input-inline layui-form">
+                <input type="text" id="cStatu" readonly th:value="${c.cStatu}"
+                       autocomplete="off" class="layui-input">
             </div>
         </div>
+
+        <br />
         <div class="layui-form-item">
-            <label class="layui-form-label">电话</label>
-            <div class="layui-input-block">
-                <input class="layui-input" id="cTel" name="cTel"
-                       th:value="${c.cTel}" autocomplete="off" />
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注
+            </label>
+            <div class="layui-input-inline">
+                <textarea class="layui-textarea" id="cRemark"
+                          autocomplete="off" th:text="${c.cRemark}"></textarea>
             </div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">报名项目</label>
-            <div class="layui-input-block">
-                <input class="layui-input" id="cProject" name="cProject"
-                       th:value="${c.cProject}" autocomplete="off" />
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">备注</label>
-            <div class="layui-input-block">
-                <textarea class="layui-input" id="cRemark" name="cRemark"
-                          th:text="${c.cRemark}" autocomplete="off"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">定金</label>
-            <div class="layui-input-block">
-                <input class="layui-input" id="cEarnest" name="cEarnest"
-                       th:value="${c.cEarnest}" autocomplete="off" />
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">负责人</label>
-            <div class="layui-input-block">
-                <input class="layui-input" id="cUName" name="cUName"
-                       th:value="${c.cUName}" autocomplete="off" readonly/>
-                <input type="hidden" name="cUId" th:value="${c.cUId}">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">来源</label>
-            <div class="layui-input-block">
-                <input class="layui-input" id="cSource" name="cSource"
-                       th:value="${c.cSource}" autocomplete="off"/>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">症状信息</label>
-            <div class="layui-input-block">
-                <textarea class="layui-input" id="cMessage" name="cMessage"
-                          th:text="${c.cMessage}" autocomplete="off"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">回访</label>
-            <div class="layui-input-block">
-                <textarea class="layui-input" id="cCallback" name="cCallback"
-                          th:text="${c.cCallback}" autocomplete="off"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="submit">保存</button>
-            </div>
-        </div>
+
     </form>
+
 </div>
 <script th:src="@{/layui/layui.js}"></script>
 <script>
@@ -122,40 +126,35 @@
             ,$ = layui.jquery
             ,layer = layui.layer;
 
-        // 保存
-        form.on('submit(submit)', function (data) {
-            data = data.field;
-            if (data.cname == '') {
-                layer.msg('请输入姓名');
-                return false;
+        //获取用户对象
+        $.get("../user/getUser", function (res) {
+            if(res.uRoleId == 1){
+                //管理员登录，隐藏负责人文本框，显示负责人下拉框
+                $("#admin").addClass("layui-show");
+                $("#sale").addClass("layui-hide");
+                //赋值
+                $("#cStatu").val("待分配");
+            } else {
+                //销售员登录，显示负责人文本框，隐藏负责人下拉框
+                $("#admin").addClass("layui-hide");
+                $("#sale").addClass("layui-show");
+                //赋值
+                $("#saleman").val(res.uName);
+                $("#cUId").val(res.uId);
+                $("#cStatu").val("待联系");
             }
-            if (data.ctel == '') {
-                layer.msg('电话不能为空');
-                return false;
-            }
-            if (data.cproject == '') {
-                layer.msg('报名项目不能为空');
-                return false;
-            }
+        });
 
-            $.ajax({
-                type: 'POST',
-                url: 'editCByCId',
-                dataType: "JSON",
-                data: JSON.stringify(data),
-                contentType: "application/json",
-                success: function (obj) {
-                    if (obj.code == 0) {
-                        layer.msg(obj.msg, function () {
-                            window.location = '../customerlist';
-                        });
-                    } else {
-                        layer.msg(obj.msg)
-                    }
-                }
-            })
-
-            return false;
+        //下拉框改变事件
+        form.on('select(change)', function(data){
+            //改变负责人编号
+            $("#cUId").val(data.value+"");
+            //改变客户状态
+            if($("#cUId").val() != ""){
+                $("#cStatu").val("待联系");
+            }else{
+                $("#cStatu").val("待分配");
+            }
         });
 
     });

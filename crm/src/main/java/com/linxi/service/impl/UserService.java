@@ -19,8 +19,15 @@ public class UserService implements IUserService{
     @Autowired
     private UserMapper userMapper;
 
+    @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public User login(User user) {
         return userMapper.login(user);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public User queyrUserByURoleId(Integer uRoleId) {
+        return userMapper.queyrUserByURoleId(uRoleId);
     }
 }

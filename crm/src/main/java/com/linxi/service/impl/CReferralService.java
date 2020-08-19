@@ -56,13 +56,13 @@ public class CReferralService implements ICReferralService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<CReferral> queryCRByCrCId(Integer crCId, Integer page, Integer limit) {
-        return CReferralMapper.queryCRByCrCId(crCId, page, limit);
+    public List<CReferral> queryCRByCrCtId(Integer crCtId, Integer page, Integer limit) {
+        return CReferralMapper.queryCRByCrCtId(crCtId, page, limit);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getTotalByCrCId(Integer crCId) {
-        return CReferralMapper.getTotalByCrCId(crCId);
+    public Integer getTotalByCrCtId(Integer crCtId) {
+        return CReferralMapper.getTotalByCrCtId(crCtId);
     }
 }

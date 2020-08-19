@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -14,8 +14,8 @@
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item">
         <a href="javascript:;">
-          <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-          	<span id="username"></span>
+          <img th:src="@{/images/head.jpg}" class="layui-nav-img">
+          	欢迎你！<span id="uName"></span>
         </a>
         <dl class="layui-nav-child">
           <dd><a href="">基本资料</a></dd>
@@ -41,29 +41,27 @@
       </ul>
     </div>
   </div>
-  
-  <div class="layui-body">
-    <!-- 内容主体区域 -->
-    <div style="padding: 15px;">
-    	
-    	<!--可删除选项卡-->
-    	<div class="layui-tab layui-tab-brief" lay-allowClose="true" lay-filter="demo">
-          <ul class="layui-tab-title">
-            <li lay-id="0" class="layui-this">
-              首页<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
-            </li>
-          </ul>
-		  <div class="layui-tab-content">
-            <div class="layui-tab-item layui-show">
-              <iframe data-frameid="0" scrolling="auto" frameborder="0"
-                      src="main.html" style="width:100%;height:438px;"></iframe>
-            </div>
+
+  <!-- 内容主体区域 -->
+  <div class="layui-body" style="background-color: #f5f5f5">
+
+    <!--可删除选项卡-->
+    <div class="layui-tab layui-tab-brief" lay-allowClose="true" lay-filter="demo">
+        <ul class="layui-tab-title">
+          <li lay-id="0" class="layui-this">
+            首页<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+          </li>
+        </ul>
+        <div class="layui-tab-content">
+          <div class="layui-tab-item layui-show">
+            <iframe data-frameid="0" scrolling="auto" frameborder="0"
+                    src="main.html" style="width:100%;height:438px;"></iframe>
           </div>
         </div>
+      </div>
     	
-    </div>
   </div>
-  
+
   <div class="layui-footer">
     <!-- 底部固定区域 -->
     © layui.com - 底部固定区域
@@ -79,7 +77,7 @@
         //获取用户名
         $.get("user/getUser", function (res) {
             //赋值
-            $("#username").text(res.username);
+            $("#uName").text(res.uName);
         });
 
         //触发事件

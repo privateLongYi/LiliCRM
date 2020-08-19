@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.linxi.mapper.CFailMapper">
+<mapper namespace="com.linxi.mapper.CArriveMapper">
 
-  <resultMap id="BaseResultMap" type="com.linxi.entity.CFail">
-    <id column="cf_id" jdbcType="INTEGER" property="cfId" />
-    <result column="cf_ct_id" jdbcType="INTEGER" property="cfCtId" />
-    <result column="cf_time" jdbcType="TIMESTAMP" property="cfTime" />
-    <result column="cf_feedback" jdbcType="LONGVARCHAR" property="cfFeedback" />
-    <result column="cf_callback" jdbcType="LONGVARCHAR" property="cfCallback" />
+  <resultMap id="BaseResultMap" type="com.linxi.entity.CArrive">
+    <id column="ca_id" jdbcType="INTEGER" property="caId" />
+    <result column="ca_ct_id" jdbcType="INTEGER" property="caCtId" />
+    <result column="ca_callback" jdbcType="LONGVARCHAR" property="caCallback" />
   </resultMap>
 
-  <select id="queryCFScreen" resultMap="BaseResultMap">
-    SELECT cf.*, c.c_name AS cName, c.c_tel AS cTel, c.c_project AS cProject,
+  <select id="queryCAScreen" resultMap="BaseResultMap">
+    SELECT ca.*, c.c_name AS cName, c.c_tel AS cTel, c.c_project AS cProject,
     ct.ct_hospital AS ctHospital, c.c_earnest AS cEarnest, u.u_name AS uName,
     c.c_source AS cSource, c.c_statu AS cStatu
-    FROM c_fail cf
+    FROM c_arrive ca
     LEFT JOIN c_transaction ct ON cf.cf_ct_id = ct.ct_id
     LEFT JOIN customer c ON ct.ct_c_id = c.c_id
     LEFT JOIN user u ON c.c_u_id = u.u_id
@@ -57,25 +55,25 @@
   </select>
 
   <select id="getTotal" resultType="Integer">
-    SELECT COUNT(*) FROM c_fail
+    SELECT COUNT(*) FROM c_arrive
   </select>
 
-  <insert id="saveCFail">
-    INSERT INTO c_fail(cf_ct_id, cf_time, cf_feedback, cf_callback)
-    VALUES (#{cfCtId}, NOW(), #{cfFeedback}, #{cfCallback})
+  <insert id="saveCArrive">
+    INSERT INTO c_arrive(ca_ct_id, ca_callback)
+    VALUES (#{caCtId}, #{caCallback})
   </insert>
 
-  <delete id="delCFByCfId">
-    DELETE FROM c_fail WHERE cf_id = #{cfId}
+  <delete id="delCAByCAId">
+    DELETE FROM c_arrive WHERE ca_id = #{caId}
   </delete>
 
-  <select id="queryCFByCfId" resultMap="BaseResultMap">
-    SELECT * FROM c_fail WHERE cf_id = #{cfId}
+  <select id="queryCAByCaId" resultMap="BaseResultMap">
+    SELECT * FROM c_arrive WHERE ca_id = #{caId}
   </select>
-  
-  <update id="editCFByCfId">
-    UPDATE c_fail SET cf_ct_id = #{cfCtId}, cf_feedback = #{cfFeedback},
-    cf_callback = #{cfCallback} WHERE cf_id = #{cfId}
+
+  <update id="editCAByCaId">
+    UPDATE c_arrive SET ca_ct_id = #{caCtId}, ca_callback = #{caCallback}
+    WHERE ca_id = #{caId}
   </update>
-  
+
 </mapper>
