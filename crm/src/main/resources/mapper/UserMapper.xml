@@ -5,12 +5,12 @@
   <resultMap id="BaseResultMap" type="com.linxi.entity.User">
     <id column="u_id" jdbcType="INTEGER" property="uId" />
     <result column="u_name" jdbcType="VARCHAR" property="uName" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="u_password" jdbcType="VARCHAR" property="password" />
     <result column="u_role_id" jdbcType="INTEGER" property="uRoleId" />
   </resultMap>
 
   <select id="login" resultMap="BaseResultMap">
-    SELECT * FROM user WHERE u_name = #{uName} AND password = #{password}
+    SELECT * FROM user WHERE u_name = #{uName} AND u_password = #{password}
   </select>
 
   <select id="queyrUserByURoleId" resultMap="BaseResultMap">
