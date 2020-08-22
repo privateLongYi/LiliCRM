@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @Author LongYi
  * @create 2020/7/31 19:57
@@ -25,4 +27,8 @@ public class UserService implements IUserService {
         return userMapper.login(uName, uPassword);
     }
 
+    @Override
+    public List<User> queryUserByRName() {
+        return userMapper.queryUserByRName();
+    }
 }

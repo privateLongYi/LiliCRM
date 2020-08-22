@@ -14,12 +14,15 @@
     <result column="u_role_id" jdbcType="INTEGER" property="uRoleId" />
   </resultMap>
 
+  <!--登录-->
   <select id="login" resultMap="BaseResultMap">
     SELECT * FROM user WHERE u_name = #{uName} AND u_password = #{uPassword}
   </select>
 
-  <select id="queyrUserByURoleId" resultMap="BaseResultMap">
-    SELECT * FROM user WHERE u_role_id = #{uRoleId}
+  <!--查询角色为销售员的所有用户-->
+  <select id="queryUserByRName" resultMap="BaseResultMap">
+    SELECT u.* FROM user u LEFT JOIN role r ON u.u_role_id = r.r_id
+    WHERE r.r_name = '销售员'
   </select>
 
 </mapper>

@@ -49,11 +49,7 @@
 			</label>
 			<div class="layui-input-inline layui-form">
 				<select id="hId" lay-verify="required">
-					<option value="0"></option>
-					<option value="种植">种植</option>
-					<option value="矫正">矫正</option>
-					<option value="牙贴面">牙贴面</option>
-					<option value="牙齿治疗">牙齿治疗</option>
+					<option value=""></option>
 				</select>
 			</div>
 			<label class="layui-form-label" style="width: auto;">是否交定金</label>
@@ -67,9 +63,6 @@
 			<div class="layui-input-inline layui-form">
 			  <select id="cUId" lay-verify="required">
 				<option value=""></option>
-				<option value="2">龙意</option>
-				<option value="3">伍和煦</option>
-				<option value="4">徐成坤</option>
 			  </select>
 			</div>
 		</div>
@@ -87,15 +80,8 @@
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
 			</label>
 			<div class="layui-input-inline layui-form">
-			  <select id="ctId" lay-verify="required">
+			  <select id="cTypeId" lay-verify="required">
 				<option value=""></option>
-				<option value="1">待分配</option>
-				<option value="2">待联系</option>
-				<option value="3">待预约</option>
-				<option value="4">待到店</option>
-				<option value="5">未到店</option>
-				<option value="6">未成交</option>
-				<option value="7">已成交</option>
 			  </select>
 			</div>
 		</div>
@@ -122,7 +108,8 @@
 				,element = layui.element //元素操作
 				,$ = layui.jquery //jQuery
 				,laydate = layui.laydate //时间控件
-		
+				,form = layui.form //表单
+
 		//时间控件
 		laydate.render({
 			elem: '#cPlaceTime' //指定元素
@@ -130,8 +117,44 @@
 			,trigger: 'click' //采用click弹出
 			,range: true //开启左右面板范围选择
 		});
-		
-	});
+
+        //获取所有门诊
+        $.get("hospital/queryHospital", function (res){
+            //定义负责人下拉框内容
+            var html = "";
+            $.each(res.data, function (index, item) {
+                html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
+            });
+            $("#hId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        })
+
+        //获取角色为销售员的用户对象
+        $.get("user/queryUserByRName", function (res){
+            //定义负责人下拉框内容
+            var html = "";
+            $.each(res.data, function (index, item) {
+                html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
+            });
+            $("#cUId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        })
+
+        //获取所有客户状态
+        $.get("ctype/queryCtype", function (res){
+            //定义负责人下拉框内容
+            var html = "";
+            $.each(res.data, function (index, item) {
+                html += "<option value='" + item.ctId + "'>" + item.ctType + "</option>";
+            });
+            $("#cTypeId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        })
+
+    });
 
 </script>
 

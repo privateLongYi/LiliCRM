@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * @Author LongYi
@@ -53,6 +54,14 @@ public class UserController {
     @ResponseBody
     public User getUser(HttpSession session){
         return (User) session.getAttribute("user");
+    }
+
+    @GetMapping("queryUserByRName")
+    @ApiOperation(value = "获取角色为销售员的用户对象")
+    @ResponseBody
+    public DataResult queryUserByRName(){
+        List<User> users = iUserService.queryUserByRName();
+        return new DataResult(0, "操作成功",0 , users);
     }
 
 }

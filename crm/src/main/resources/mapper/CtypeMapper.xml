@@ -12,4 +12,9 @@
     <result column="ct_type" jdbcType="VARCHAR" property="ctType" />
   </resultMap>
 
+  <!--查询所有客户状态-->
+  <select id="queryCtype" resultMap="BaseResultMap">
+    SELECT * FROM ctype
+  </select>
+
 </mapper>

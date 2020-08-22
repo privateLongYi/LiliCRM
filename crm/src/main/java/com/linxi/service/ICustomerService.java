@@ -23,7 +23,7 @@ public interface ICustomerService {
                                 @Param("endTime") String endTime,
                                 @Param("cUId") Integer cUId,
                                 @Param("cSource") String cSource,
-                                @Param("ctId") Integer ctId);
+                                @Param("cTypeId") Integer cTypeId);
 
     //获得客户总数量
     Integer getTotal();

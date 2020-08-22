@@ -60,8 +60,8 @@
       <if test="cSource != null and cSource != ''">
         AND c.c_source = #{cSource}
       </if>
-      <if test="ctId != null">
-        AND ct.ct_id = #{ctId}
+      <if test="cTypeId != null">
+        AND ct.ct_id = #{cTypeId}
       </if>
     </where>
     ORDER BY c_place_time DESC
@@ -76,9 +76,9 @@
   <!-- 新增客户 -->
   <insert id="saveCustomer">
     INSERT INTO customer(c_name, c_sex, c_age, c_tel, c_project, c_place_time,
-    c_earnest, c_u_id, c_source, c_remark, c_message, c_callback, c_statu)
+    c_earnest, c_u_id, c_source, c_remark, c_message, c_type_id)
     VALUES (#{cName}, #{cSex}, #{cAge}, #{cTel}, #{cProject}, NOW(), #{cEarnest},
-    #{cUId}, #{cSource}, #{cRemark}, #{cMessage}, #{cCallback}, #{cStatu})
+    #{cUId}, #{cSource}, #{cRemark}, #{cMessage}, #{cTypeId})
   </insert>
 
   <!-- 根据编号删除客户 -->
@@ -88,8 +88,8 @@
 
   <!-- 根据编号查看客户 -->
   <select id="queryCByCId" resultMap="BaseResultMap">
-    SELECT c.*, u.u_name AS cUName FROM customer c LEFT JOIN user u ON c.c_u_id = u.u_id
-     WHERE c.c_id = #{cId}
+    SELECT c.*, ct.ct_type AS cType FROM customer c
+    LEFT JOIN ctype ct ON c.c_type_id = ct_id WHERE c.c_id = #{cId}
   </select>
 
   <!-- 根据编号编辑客户 -->
@@ -97,13 +97,13 @@
     UPDATE customer SET c_name = #{cName}, c_sex = #{cSex}, c_age = #{cAge},
     c_tel = #{cTel}, c_project = #{cProject}, c_earnest = #{cEarnest},
     c_u_id = #{cUId}, c_source = #{cSource}, c_remark = #{cRemark},
-    c_message = #{cMessage}, c_callback = #{cCallback}, c_statu = #{cStatu}
+    c_message = #{cMessage}, c_type_id = #{cTypeId}
     WHERE c_id = #{cId}
   </update>
 
   <!-- 根据编号编辑客户状态（已成交/未成交/未到店） -->
   <update id="editCStatuByCId">
-    UPDATE customer SET c_statu = #{cStatu} WHERE c_id = #{ct_c_id}
+    UPDATE customer SET c_type_id = #{cTypeId} WHERE c_id = #{ct_c_id}
   </update>
 
 </mapper>

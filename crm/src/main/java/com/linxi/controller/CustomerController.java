@@ -49,7 +49,7 @@ public class CustomerController {
         //来源
         String cSource = null;
         //状态
-        Integer ctId = null;
+        Integer cTypeId = null;
         //开始时间
         String beginTime = null;
         //结束时间
@@ -75,8 +75,8 @@ public class CustomerController {
                     cUId = Integer.parseInt(screen[1].trim());
                 } else if (screen[0].trim().equals("cSource")) {
                     cSource = screen[1].trim();
-                } else if (screen[0].trim().equals("ctId")) {
-                    ctId = Integer.parseInt(screen[1].trim());
+                } else if (screen[0].trim().equals("cTypeId")) {
+                    cTypeId = Integer.parseInt(screen[1].trim());
                 } else if (screen[0].trim().equals("beginTime")) {
                     beginTime = screen[1].trim();
                 } else if (screen[0].trim().equals("endTime")) {
@@ -85,7 +85,7 @@ public class CustomerController {
             }
         }
         //根据筛选条件查询客户
-        List<Customer> customeres = iCustomerService.queryCScreen((page-1)*limit, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, ctId);
+        List<Customer> customeres = iCustomerService.queryCScreen((page-1)*limit, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
         //获取总条数
         Integer total = iCustomerService.getTotal();
         return new DataResult(0, "操作成功", total, customeres);
@@ -102,10 +102,10 @@ public class CustomerController {
                                    @ApiParam(name = "cEarnest", value = "定金", required = false) Integer cEarnest,
                                    @ApiParam(name = "cUId", value = "用户编号", required = true) Integer cUId,
                                    @ApiParam(name = "cSource", value = "来源", required = false) String cSource,
-                                   @ApiParam(name = "cStatu", value = "状态", required = true) String cStatu,
+                                   @ApiParam(name = "cTypeId", value = "状态编号", required = true) Integer cTypeId,
                                    @ApiParam(name = "cRemark", value = "备注", required = false) String cRemark){
-//        Customer c = new Customer(null, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, null, null, cStatu);
-//        iCustomerService.saveCustomer(c);
+        Customer c = new Customer(null, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, null, cTypeId);
+        iCustomerService.saveCustomer(c);
         return new DataResult(0, "新增成功");
     }
 
@@ -137,12 +137,11 @@ public class CustomerController {
                                  @ApiParam(name = "cEarnest", value = "定金", required = false) Integer cEarnest,
                                  @ApiParam(name = "cUId", value = "用户编号", required = false) Integer cUId,
                                  @ApiParam(name = "cSource", value = "来源", required = false) String cSource,
-                                 @ApiParam(name = "cStatu", value = "状态", required = true) String cStatu,
+                                 @ApiParam(name = "cTypeId", value = "状态", required = true) Integer cTypeId,
                                  @ApiParam(name = "cRemark", value = "备注", required = false) String cRemark,
-                                 @ApiParam(name = "cMessage", value = "症状信息", required = false) String cMessage,
-                                 @ApiParam(name = "cCallback", value = "回访", required = false) String cCallback){
-//        Customer c = new Customer(cId, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, cMessage, cCallback, cStatu);
-//        iCustomerService.editCByCId(c);
+                                 @ApiParam(name = "cMessage", value = "症状信息", required = false) String cMessage){
+        Customer c = new Customer(cId, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, cMessage, cTypeId);
+        iCustomerService.editCByCId(c);
         return new DataResult(0, "编辑成功");
     }
 

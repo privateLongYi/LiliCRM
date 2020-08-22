@@ -161,7 +161,7 @@
                     var cEarnest = $(body).find("#cEarnest").val();
                     var cUId = $(body).find("#cUId").val();
                     var cSource = $(body).find("#cSource").val().trim();
-                    var ctId = $(body).find("#ctId").val();
+                    var cTypeId = $(body).find("#cTypeId").val();
                     if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
 						//声明格式是否正确
 						var verify = true;
@@ -191,7 +191,7 @@
 						}
                         if(verify){
 							$.post(url, {cName:cName, cSex:cSex, cAge:cAge, cTel:cTel, cProject:cProject,
-									cRemark:cRemark, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cStatu:cStatu},
+									cRemark:cRemark, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cTypeId:cTypeId},
 								function (obj) {
 									layer.msg(obj.msg, {time: 500}, function () {
 										layer.closeAll();
@@ -321,7 +321,7 @@
                             var cName = $(body).find("#cName").val().trim();
                             var cTel = $(body).find("#cTel").val().trim();
                             var cProject = $(body).find("#cProject").val();
-                            var ctHospital = $(body).find("#ctHospital").val().trim();
+                            var hId = $(body).find("#hId").val().trim();
                             //给是否交定金赋值
                             var cEarnest;
                             var cEarnestText;
@@ -335,7 +335,7 @@
                             }
                             var cUId = $(body).find("#cUId").val();
                             var cSource = $(body).find("#cSource").val().trim();
-                            var cStatu = $(body).find("#cStatu").val();
+                            var cTypeId = $(body).find("#cTypeId").val();
                             var cPlaceTime = $(body).find("#cPlaceTime").val();
                             //新增筛选条件或者修改
                             if(cName != ''){
@@ -348,8 +348,9 @@
                                 var cProjectText = $(body).find("#cProject [value="+cProject+"]").text();
                                 screen("cProject", cProject, cProjectText);
                             }
-                            if(ctHospital != ''){
-                                screen("ctHospital", ctHospital, ctHospital);
+                            if(hId != ''){
+                                var hIdText = $(body).find("#hId [value="+hId+"]").text();
+                                screen("hId", hId, hIdText);
                             }
                             if(cEarnest != undefined){
                                 screen("cEarnest", cEarnest, cEarnestText);
@@ -361,9 +362,9 @@
                             if(cSource != ''){
                                 screen("cSource", cSource, cSource);
                             }
-                            if(cStatu != ''){
-                                var cStatuText = $(body).find("#cStatu [value="+cStatu+"]").text();
-                                screen("cStatu", cStatu, cStatuText);
+                            if(cTypeId != ''){
+                                var cTypeIdText = $(body).find("#cTypeId [value="+cTypeId+"]").text();
+                                screen("cTypeId", cTypeId, cTypeIdText);
                             }
                             if(cPlaceTime != ''){
                                 screen("cPlaceTime", cPlaceTime, cPlaceTime);

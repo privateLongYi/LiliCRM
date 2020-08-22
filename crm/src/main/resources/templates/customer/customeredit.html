@@ -73,14 +73,11 @@
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
-                <input type="hidden" id="cUId" value="">
+                <input type="hidden" id="cUId" th:value="${c.cUId}">
             </label>
             <div class="layui-input-inline layui-form" id="admin">
-                <select lay-filter="change">
-                    <option value="" th:selected="${c.cUId == ''} ? true : false"></option>
-                    <option value="2" th:selected="${c.cUId == 2} ? true : false">龙意</option>
-                    <option value="3" th:selected="${c.cUId == 3} ? true : false">伍和煦</option>
-                    <option value="4" th:selected="${c.cUId == 4} ? true : false">徐成坤</option>
+                <select id="salelist" lay-filter="change">
+                    <option value=""></option>
                 </select>
             </div>
             <div class="layui-input-inline layui-form" id="sale">
@@ -98,6 +95,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
             </label>
             <div class="layui-input-inline layui-form">
+                <input type="hidden" id="cTypeId">
                 <input type="text" id="cType" readonly th:value="${c.cType}"
                        autocomplete="off" class="layui-input">
             </div>
@@ -129,11 +127,32 @@
         //获取用户对象
         $.get("../user/getUser", function (res) {
             if(res.uRoleId == 1){
+
                 //管理员登录，隐藏负责人文本框，显示负责人下拉框
                 $("#admin").addClass("layui-show");
                 $("#sale").addClass("layui-hide");
-                //赋值
-                $("#cStatu").val("待分配");
+                //状态赋值
+                $("#cType").val("待分配");
+                $("#cTypeId").val("1");
+
+                //获取角色为销售员的用户对象
+                $.get("../user/queryUserByRName", function (res){
+                    //定义负责人下拉框内容
+                    var html = "";
+                    //获取负责人编号
+                    var cUId = $("#cUId").val();
+                    $.each(res.data, function (index, item) {
+                        if(cUId == item.uId){
+                            html += "<option value='" + item.uId + "' selected>" + item.uName + "</option>";
+                        }else{
+                            html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
+                        }
+                    });
+                    $("#salelist").append(html);
+                    //append后必须重新渲染
+                    form.render('select');
+                })
+
             } else {
                 //销售员登录，显示负责人文本框，隐藏负责人下拉框
                 $("#admin").addClass("layui-hide");
@@ -141,7 +160,9 @@
                 //赋值
                 $("#saleman").val(res.uName);
                 $("#cUId").val(res.uId);
-                $("#cStatu").val("待联系");
+                //状态赋值
+                $("#cType").val("待联系");
+                $("#cTypeId").val("2");
             }
         });
 
@@ -151,9 +172,13 @@
             $("#cUId").val(data.value+"");
             //改变客户状态
             if($("#cUId").val() != ""){
-                $("#cStatu").val("待联系");
+                //状态赋值
+                $("#cType").val("待联系");
+                $("#cTypeId").val("2");
             }else{
-                $("#cStatu").val("待分配");
+                //状态赋值
+                $("#cType").val("待分配");
+                $("#cTypeId").val("1");
             }
         });
 

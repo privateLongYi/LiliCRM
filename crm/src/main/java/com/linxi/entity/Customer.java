@@ -447,4 +447,23 @@ public class Customer implements Serializable {
     public void setcMessage(String cMessage) {
         this.cMessage = cMessage;
     }
+
+    public Customer() {
+    }
+
+    public Customer(Integer cId, String cName, String cSex, Integer cAge, String cTel, String cProject, Timestamp cPlaceTime, String cRemark, Integer cEarnest, Integer cUId, String cSource, String cMessage, Integer cTypeId) {
+        this.cId = cId;
+        this.cName = cName;
+        this.cSex = cSex;
+        this.cAge = cAge;
+        this.cTel = cTel;
+        this.cProject = cProject;
+        this.cPlaceTime = cPlaceTime;
+        this.cRemark = cRemark;
+        this.cEarnest = cEarnest;
+        this.cUId = cUId;
+        this.cSource = cSource;
+        this.cMessage = cMessage;
+        this.cTypeId = cTypeId;
+    }
 }

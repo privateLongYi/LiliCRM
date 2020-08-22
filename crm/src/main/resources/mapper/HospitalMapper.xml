@@ -12,4 +12,9 @@
     <result column="h_name" jdbcType="VARCHAR" property="hName" />
   </resultMap>
 
+  <!--获取所有门诊-->
+  <select id="queryHospital" resultMap="BaseResultMap">
+    SELECT * FROM hospital
+  </select>
+
 </mapper>
