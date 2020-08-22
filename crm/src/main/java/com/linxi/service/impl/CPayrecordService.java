@@ -1,7 +1,6 @@
 package com.linxi.service.impl;
 
 import com.linxi.entity.CPayrecord;
-import com.linxi.mapper.CPayrecordMapper;
 import com.linxi.service.ICPayrecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

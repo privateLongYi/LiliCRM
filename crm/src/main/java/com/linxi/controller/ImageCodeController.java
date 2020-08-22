@@ -19,8 +19,8 @@ import javax.servlet.http.HttpSession;
  */
 @RestController
 @RequestMapping("imageCode")
-@Slf4j
 @Api(value = "验证码控制类", tags = "验证码控制类")
+@Slf4j
 public class ImageCodeController {
 
     @GetMapping("getVerify")

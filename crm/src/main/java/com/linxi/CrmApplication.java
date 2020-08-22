@@ -10,9 +10,9 @@ import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
 
-@SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)
 @MapperScan("com.linxi.mapper")
 @Slf4j
+@SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)
 public class CrmApplication {
 
 	public static void main(String[] args) throws Exception{
@@ -21,8 +21,8 @@ public class CrmApplication {
 		Environment env = application.getEnvironment();
 		log.info("\n----------------------------------------------------------\n\t" +
 						"Application '{}' is running! Access URLs:\n\t" +
-						"Login: \thttp://{}:{}/crm/login.html\n\t" +
-						"Doc: \thttp://{}:{}/crm/doc.html\n" +
+						"Login: \thttp://{}:{}/LiLiCRM/login.html\n\t" +
+						"Doc: \thttp://{}:{}/LiLiCRM/doc.html\n" +
 						"----------------------------------------------------------",
 				env.getProperty("spring.application.name"),
 				InetAddress.getLocalHost().getHostAddress(),

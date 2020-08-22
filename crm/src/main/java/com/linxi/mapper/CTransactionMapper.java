@@ -9,17 +9,17 @@ public interface CTransactionMapper {
 
     //高级筛选加分页查询预约
     List<CTransaction> queryCTScreen(@Param("page") Integer page,
-                               @Param("limit") Integer limit,
-                               @Param("cName") String cName,
-                               @Param("cTel") String cTel,
-                               @Param("cProject") String cProject,
-                               @Param("ctHospital") String ctHospital,
-                               @Param("cEarnest") Integer cEarnest,
-                               @Param("beginTime") String beginTime,
-                               @Param("endTime") String endTime,
-                               @Param("uId") Integer uId,
-                               @Param("cSource") String cSource,
-                               @Param("cStatu") String cStatu);
+                                     @Param("limit") Integer limit,
+                                     @Param("cName") String cName,
+                                     @Param("cTel") String cTel,
+                                     @Param("cProject") String cProject,
+                                     @Param("ctHospital") String ctHospital,
+                                     @Param("cEarnest") Integer cEarnest,
+                                     @Param("beginTime") String beginTime,
+                                     @Param("endTime") String endTime,
+                                     @Param("uId") Integer uId,
+                                     @Param("cSource") String cSource,
+                                     @Param("cStatu") String cStatu);
 
     Integer getTotal();
 

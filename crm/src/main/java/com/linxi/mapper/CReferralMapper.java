@@ -8,7 +8,7 @@ import java.util.List;
 public interface CReferralMapper {
 
     List<CReferral> queryCR(@Param("page") Integer page,
-                           @Param("limit") Integer limit);
+                            @Param("limit") Integer limit);
 
     Integer getTotal();
 
@@ -21,8 +21,8 @@ public interface CReferralMapper {
     void editCRByCrId(CReferral cr);
 
     List<CReferral> queryCRByCrCtId(@Param("crCtId") Integer crCtId,
-                                      @Param("page") Integer page,
-                                      @Param("limit") Integer limit);
+                                    @Param("page") Integer page,
+                                    @Param("limit") Integer limit);
 
     Integer getTotalByCrCtId(Integer crCtId);
 

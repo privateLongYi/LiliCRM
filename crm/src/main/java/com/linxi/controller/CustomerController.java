@@ -104,8 +104,8 @@ public class CustomerController {
                                    @ApiParam(name = "cSource", value = "来源", required = false) String cSource,
                                    @ApiParam(name = "cStatu", value = "状态", required = true) String cStatu,
                                    @ApiParam(name = "cRemark", value = "备注", required = false) String cRemark){
-        Customer c = new Customer(null, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, null, null, cStatu);
-        iCustomerService.saveCustomer(c);
+//        Customer c = new Customer(null, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, null, null, cStatu);
+//        iCustomerService.saveCustomer(c);
         return new DataResult(0, "新增成功");
     }
 
@@ -141,8 +141,8 @@ public class CustomerController {
                                  @ApiParam(name = "cRemark", value = "备注", required = false) String cRemark,
                                  @ApiParam(name = "cMessage", value = "症状信息", required = false) String cMessage,
                                  @ApiParam(name = "cCallback", value = "回访", required = false) String cCallback){
-        Customer c = new Customer(cId, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, cMessage, cCallback, cStatu);
-        iCustomerService.editCByCId(c);
+//        Customer c = new Customer(cId, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, cMessage, cCallback, cStatu);
+//        iCustomerService.editCByCId(c);
         return new DataResult(0, "编辑成功");
     }
 

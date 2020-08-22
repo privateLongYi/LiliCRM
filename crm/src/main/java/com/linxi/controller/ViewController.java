@@ -13,6 +13,10 @@ public class ViewController {
     @ApiOperation(value = "首页")
     public String index(){return "index";}
 
+    @GetMapping("workbench")
+    @ApiOperation(value = "工作台")
+    public String workbench(){return "workbench";}
+
     @GetMapping("customerlist")
     @ApiOperation(value = "客户信息列表")
     public String customerlist(){return "customer/customerlist";}

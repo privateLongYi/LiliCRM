@@ -3,6 +3,7 @@ package com.linxi.controller;
 import com.linxi.entity.User;
 import com.linxi.service.IUserService;
 import com.linxi.util.DataResult;
+import com.linxi.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,15 +29,15 @@ public class UserController {
     @ApiOperation(value = "登录")
     @ResponseBody
     public DataResult login(@RequestBody @ApiParam(value = "用户对象", required = true) User user, HttpSession session){
-        User u = iUserService.login(user);
+        User u = iUserService.login(user.getuName(), user.getuPassword());
         if (u != null) {
             //把对象存储到session中
             session.setAttribute("user", u);
             //设置session存活时间
             //session.setMaxInactiveInterval(30 * 60);
-            return new DataResult(0, "登录成功", 0, null);
+            return new DataResult(0, "登录成功", 0, u);
         } else {
-            return new DataResult(1, "账号或密码错误",0 , null);
+            return new DataResult(1, "账号或密码错误",0 , u);
         }
     }
 

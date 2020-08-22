@@ -8,7 +8,7 @@ import java.util.List;
 public interface CPayrecordMapper {
 
     List<CPayrecord> queryCP(@Param("page") Integer page,
-                            @Param("limit") Integer limit);
+                             @Param("limit") Integer limit);
 
     Integer getTotal();
 

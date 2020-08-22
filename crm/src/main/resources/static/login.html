@@ -129,7 +129,7 @@
             </div>
             <div>
                 <i class="layui-icon layui-icon-userPwd admin-icon"></i>
-                <input type="password" name="password" placeholder="请输入密码" autocomplete="off"
+                <input type="password" name="uPassword" placeholder="请输入密码" autocomplete="off"
                        class="layui-input admin-input">
             </div>
             <div>
@@ -162,7 +162,7 @@
                 layer.msg('用户名不能为空');
                 return false;
             }
-            if (data.password == '') {
+            if (data.uPassword == '') {
                 layer.msg('密码不能为空');
                 return false;
             }
