@@ -41,7 +41,7 @@ public class CustomerController {
         //报名项目
         String cProject = null;
         //预约门诊
-        String ctHospital = null;
+        Integer hId = null;
         //是否交定金
         Integer cEarnest = null;
         //负责人编号
@@ -49,7 +49,7 @@ public class CustomerController {
         //来源
         String cSource = null;
         //状态
-        String cStatu = null;
+        Integer ctId = null;
         //开始时间
         String beginTime = null;
         //结束时间
@@ -67,16 +67,16 @@ public class CustomerController {
                     cTel = screen[1].trim();
                 } else if (screen[0].trim().equals("cProject")) {
                     cProject = screen[1].trim();
-                } else if (screen[0].trim().equals("ctHospital")) {
-                    ctHospital = screen[1].trim();
+                } else if (screen[0].trim().equals("hId")) {
+                    hId = Integer.parseInt(screen[1].trim());
                 } else if (screen[0].trim().equals("cEarnest")) {
                     cEarnest = Integer.parseInt(screen[1].trim());
                 } else if (screen[0].trim().equals("cUId")) {
                     cUId = Integer.parseInt(screen[1].trim());
                 } else if (screen[0].trim().equals("cSource")) {
                     cSource = screen[1].trim();
-                } else if (screen[0].trim().equals("cStatu")) {
-                    cStatu = screen[1].trim();
+                } else if (screen[0].trim().equals("ctId")) {
+                    ctId = Integer.parseInt(screen[1].trim());
                 } else if (screen[0].trim().equals("beginTime")) {
                     beginTime = screen[1].trim();
                 } else if (screen[0].trim().equals("endTime")) {
@@ -85,7 +85,7 @@ public class CustomerController {
             }
         }
         //根据筛选条件查询客户
-        List<Customer> customeres = iCustomerService.queryCScreen((page-1)*limit, limit, cName, cTel, cProject, ctHospital, cEarnest, beginTime, endTime, cUId, cSource, cStatu);
+        List<Customer> customeres = iCustomerService.queryCScreen((page-1)*limit, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, ctId);
         //获取总条数
         Integer total = iCustomerService.getTotal();
         return new DataResult(0, "操作成功", total, customeres);

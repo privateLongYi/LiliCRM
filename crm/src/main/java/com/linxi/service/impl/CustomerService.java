@@ -22,8 +22,8 @@ public class CustomerService implements ICustomerService{
     private CustomerMapper customerMapper;
 
     @Override
-    public List<Customer> queryCScreen(Integer page, Integer limit, String cName, String cTel, String cProject, String ctHospital, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, String cStatu) {
-        return customerMapper.queryCScreen(page, limit, cName, cTel, cProject, ctHospital, cEarnest, beginTime, endTime, cUId, cSource, cStatu);
+    public List<Customer> queryCScreen(Integer page, Integer limit, String cName, String cTel, String cProject, Integer hId, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer ctId) {
+        return customerMapper.queryCScreen(page, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, ctId);
     }
 
     @Override

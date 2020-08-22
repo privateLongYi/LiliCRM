@@ -47,9 +47,14 @@
 			<label class="layui-form-label" style="width: auto;">
 				&nbsp;&nbsp;预约门诊
 			</label>
-			<div class="layui-input-inline">
-				<input type="text" id="ctHospital" required  lay-verify="required" 
-					placeholder="请输入预约门诊" autocomplete="off" class="layui-input">
+			<div class="layui-input-inline layui-form">
+				<select id="hId" lay-verify="required">
+					<option value="0"></option>
+					<option value="种植">种植</option>
+					<option value="矫正">矫正</option>
+					<option value="牙贴面">牙贴面</option>
+					<option value="牙齿治疗">牙齿治疗</option>
+				</select>
 			</div>
 			<label class="layui-form-label" style="width: auto;">是否交定金</label>
 			<div class="layui-input-inline layui-form">
@@ -82,14 +87,15 @@
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
 			</label>
 			<div class="layui-input-inline layui-form">
-			  <select id="cStatu" lay-verify="required">
+			  <select id="ctId" lay-verify="required">
 				<option value=""></option>
-				<option value="待分配">待分配</option>
-				<option value="待联系">待联系</option>
-				<option value="待预约">待预约</option>
-				<option value="待到店">待到店</option>
-				<option value="未成交">未成交</option>
-				<option value="已成交">已成交</option>
+				<option value="1">待分配</option>
+				<option value="2">待联系</option>
+				<option value="3">待预约</option>
+				<option value="4">待到店</option>
+				<option value="5">未到店</option>
+				<option value="6">未成交</option>
+				<option value="7">已成交</option>
 			  </select>
 			</div>
 		</div>

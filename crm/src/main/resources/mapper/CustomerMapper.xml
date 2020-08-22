@@ -25,9 +25,12 @@
 
   <!-- 高级筛选加分页查询客户 -->
   <select id="queryCScreen" resultMap="BaseResultMap">
-    SELECT c.*, u.u_name AS cUName, ct.ct_hospital AS ctHospital
-    FROM customer c LEFT JOIN user u ON c.c_u_id = u.u_id
-    LEFT JOIN c_transaction ct ON c.c_id = ct.ct_c_id
+    SELECT c.*, u.u_name AS uName, ct.ct_type AS cType, h.h_name AS hospital
+    FROM customer c
+    LEFT JOIN `user` u ON c.c_u_id=u.u_id
+    LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
+    LEFT JOIN appointment a ON c.c_id=a.a_c_id
+    LEFT JOIN hospital h ON a.a_h_id=h.h_id
     <where>
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
@@ -38,8 +41,8 @@
       <if test="cProject != null and cProject != ''">
         AND c.c_project = #{cProject}
       </if>
-      <if test="ctHospital != null and ctHospital != ''">
-        AND ct.ct_hospital = #{ctHospital}
+      <if test="hId != null">
+        AND h.h_id = #{hId}
       </if>
       <if test="cEarnest != null and cEarnest == 0">
         AND c.c_earnest = 0
@@ -51,14 +54,14 @@
         AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
         AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>
-      <if test="cUId != null and cUId != ''">
+      <if test="cUId != null">
         AND c.c_u_id = #{cUId}
       </if>
       <if test="cSource != null and cSource != ''">
         AND c.c_source = #{cSource}
       </if>
-      <if test="cStatu != null and cStatu != ''">
-        AND c.c_statu = #{cStatu}
+      <if test="ctId != null">
+        AND ct.ct_id = #{ctId}
       </if>
     </where>
     ORDER BY c_place_time DESC

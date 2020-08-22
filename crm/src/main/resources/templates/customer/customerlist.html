@@ -69,7 +69,7 @@
                             innerHTML += "电话：";
                         }else if(name == "cProject"){
                             innerHTML += "报名项目：";
-                        }else if(name == "ctHospital"){
+                        }else if(name == "hospital"){
                             innerHTML += "预约门诊：";
                         }else if(name == "cEarnest"){
                             innerHTML += "是否交定金：";
@@ -77,7 +77,7 @@
                             innerHTML += "来源：";
                         }else if(name == "cUId"){
                             innerHTML += "负责人：";
-                        }else if(name == "cStatu"){
+                        }else if(name == "cType"){
                             innerHTML += "状态：";
                         }else if(name == "cPlaceTime"){
                             innerHTML += "报名时间：";
@@ -156,11 +156,12 @@
                     var cAge = $(body).find("#cAge").val();
                     var cTel = $(body).find("#cTel").val().trim();
                     var cProject = $(body).find("#cProject").val();
+                    var hId = $(body).find("#hId").val();
                     var cRemark = $(body).find("#cRemark").val().trim();
                     var cEarnest = $(body).find("#cEarnest").val();
                     var cUId = $(body).find("#cUId").val();
                     var cSource = $(body).find("#cSource").val().trim();
-                    var cStatu = $(body).find("#cStatu").val();
+                    var ctId = $(body).find("#ctId").val();
                     if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
 						//声明格式是否正确
 						var verify = true;
@@ -225,14 +226,13 @@
                             ,{field: 'cTel', width: 120, title: '电话', align:'center'}
                             ,{field: 'cProject', width: 120, title: '报名项目', align:'center'}
                             ,{field: 'cPlaceTime', width: 200, title: '报名时间', align:'center'}
-                            ,{field: 'ctHospital', width: 120, title: '预约门诊', align:'center'}
+                            ,{field: 'hospital', width: 120, title: '预约门诊', align:'center'}
                             ,{field: 'cRemark', width: 120, title: '备注', align:'center'}
                             ,{field: 'cEarnest', width: 120, title: '定金', align:'center'}
-                            ,{field: 'cUName', width: 120, title: '负责人', align:'center'}
+                            ,{field: 'uName', width: 120, title: '负责人', align:'center'}
                             ,{field: 'cSource', width: 120, title: '来源', align:'center'}
                             ,{field: 'cMessage', width: 120, title: '症状信息', align:'center'}
-                            ,{field: 'cCallback', width: 120, title: '回访', align:'center'}
-                            ,{field: 'cStatu', width: 120, title: '状态', align:'center'}
+                            ,{field: 'cType', width: 120, title: '状态', align:'center'}
                             ,{fixed: 'right', width: 180, align:'center', toolbar: '#barDemo'}
                         ]
                     ]

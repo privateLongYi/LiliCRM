@@ -13,13 +13,13 @@ public interface CustomerMapper {
                                 @Param("cName") String cName,
                                 @Param("cTel") String cTel,
                                 @Param("cProject") String cProject,
-                                @Param("ctHospital") String ctHospital,
+                                @Param("hId") Integer hId,
                                 @Param("cEarnest") Integer cEarnest,
                                 @Param("beginTime") String beginTime,
                                 @Param("endTime") String endTime,
                                 @Param("cUId") Integer cUId,
                                 @Param("cSource") String cSource,
-                                @Param("cStatu") String cStatu);
+                                @Param("ctId") Integer ctId);
 
     //获得客户总数量
     Integer getTotal();
