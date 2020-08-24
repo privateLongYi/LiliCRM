@@ -24,6 +24,13 @@ public interface CustomerMapper {
     //获得客户总数量
     Integer getTotal();
 
+    /**
+     * 根据客户类型 获得客户总数量
+     * @param cTypeId
+     * @return
+     */
+    Integer getTotalByType(@Param("cTypeId")Integer cTypeId);
+
     //新增客户
     void saveCustomer(Customer c);
 
@@ -36,7 +43,7 @@ public interface CustomerMapper {
     //根据编号修改客户
     void editCByCId(Customer c);
 
-    //根据编号修改客户状态
-    void editCStatuByCId(Integer ctCId, Integer cStatu);
+    //根据编号修改客户状态 ct_c_id  cTypeId
+    void editCStatuByCId(@Param("ct_c_id") Integer ctCId, @Param("cTypeId")Integer cStatu);
 
 }

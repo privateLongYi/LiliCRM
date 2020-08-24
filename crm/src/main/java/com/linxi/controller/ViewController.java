@@ -53,4 +53,8 @@ public class ViewController {
     @ApiOperation(value = "编辑客户信息")
     public String successedit(){return "success/successedit";}
 
+    @GetMapping("contact")
+    @ApiOperation(value = "待联系客户管理")
+    public String contact(){return "customer/contact";}
+
 }
