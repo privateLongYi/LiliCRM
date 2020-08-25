@@ -1,9 +1,11 @@
 package com.linxi.controller;
 
 
+import com.linxi.entity.Appointment;
 import com.linxi.entity.Customer;
 import com.linxi.entity.Operating;
 import com.linxi.entity.User;
+import com.linxi.service.IAppointmentService;
 import com.linxi.service.ICustomerService;
 import com.linxi.service.IOperatingService;
 import com.linxi.util.DataResult;
@@ -12,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,9 +38,67 @@ public class ContactController {
     @Autowired
     private IOperatingService iOperatingService;
 
+    @Autowired
+    private IAppointmentService iAppointmentService;
+
     //获取HttpServletRequest对象
     @Autowired HttpServletRequest request;
 
+
+
+    @GetMapping("goAppointment")
+    @ApiOperation(value = "去往预约页面")
+    public String goAppointment(String message){
+
+
+        request.setAttribute("message",message);
+
+       return "customer/contactappoint";
+    }
+    /**
+     * 新增预约用户
+     * @param appoin
+     * @param cmessage
+     * @return
+     */
+    @GetMapping("addContactAppoint")
+    @ApiOperation(value = "新增预约用户")
+    @ResponseBody
+    public  DataResult  addContactAppoint(@ApiParam(name = "appoin", value = "客户预约类", required = true) Appointment appoin,
+                                        @ApiParam(name = "cmessage", value = "症状信息", required = true) String cmessage){
+
+
+        try {
+            appoin.getaCId();
+            appoin.getaHId();
+            appoin.getaTime();
+            appoin.getaTypeId();
+        } catch (Exception e) {
+            return new DataResult(400, "参数错误");
+        }
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        try {
+            user.getuId();
+        } catch (Exception e) {
+            return new DataResult(400, "请重新登陆");
+        }
+            //操作记录表
+            Operating operating = new Operating();
+            operating.setOpUId(user.getuId());
+            operating.setPoCId(appoin.getaCId());
+
+            operating.setOpName("待联系更改为已预约");
+            //新增预约客户
+            iAppointmentService.addAppoint(appoin);
+            //根据编号修改客户状态
+            iCustomerService.editCStatuByCId(appoin.getaCId(),4);
+            //添加操作记录
+            Integer integer = iOperatingService.addOperatingRecord(operating);
+
+            return new DataResult(integer, "操作成功");
+
+    }
 
 
     @GetMapping("dateContactStatu")
@@ -47,7 +108,7 @@ public class ContactController {
                                         @ApiParam(name = "cstatu", value = "客户状态Id", required = true) Integer cstatu){
         HttpSession session = request.getSession();
 
-        if (session==null) return new DataResult(400, "请重新登陆");;
+        if (session==null) return new DataResult(400, "请重新登陆");
         User user = (User) session.getAttribute("user");
         if (user!=null){
             //操作记录表
@@ -149,6 +210,8 @@ public class ContactController {
         Integer total = iCustomerService.getTotal();
         return new DataResult(0, "操作成功", total, customeres);
     }
+
+
 
 
 }

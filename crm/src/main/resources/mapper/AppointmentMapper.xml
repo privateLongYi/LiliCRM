@@ -15,4 +15,13 @@
     <result column="a_type_id" jdbcType="INTEGER" property="aTypeId" />
   </resultMap>
 
+  <insert id="addAppoint">
+
+   INSERT INTO `lili_crm`.`appointment`(`a_c_id`, `a_time`, `a_h_id`, `a_type_id`) VALUES
+   ( #{appointment.aCId}, #{appointment.aTime}, #{appointment.aHId}, #{appointment.aTypeId});
+
+
+  </insert>
+
+
 </mapper>
