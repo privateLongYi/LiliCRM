@@ -23,12 +23,37 @@ public class UserService implements IUserService {
     private UserMapper userMapper;
 
     @Override
-    public User login(String uName, String uPassword) {
-        return userMapper.login(uName, uPassword);
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public User findByLoginName(String username) {
+        return userMapper.findByLoginName(username);
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public List<User> queryUserByRName() {
         return userMapper.queryUserByRName();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public String queryRNameByRId(Integer uRoleId) {
+        return userMapper.queryRNameByRId(uRoleId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<User> queryUserByUNameAndRId(Integer page, Integer limit, String uName, Integer uRoleId) {
+        return userMapper.queryUserByUNameAndRId(page, limit, uName, uRoleId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalByUNameAndRId(String uName, Integer uRoleId) {
+        return userMapper.getTotalByUNameAndRId(uName, uRoleId);
+    }
+
+    @Override
+    public void saveUser(User user) {
+        userMapper.saveUser(user);
     }
 }

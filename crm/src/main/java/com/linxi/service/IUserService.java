@@ -12,11 +12,26 @@ import java.util.List;
  */
 public interface IUserService {
 
-    //登录
-    User login(@Param("uName") String uName,
-                       @Param("uPassword") String uPassword);
+    //根据用户名查询用户
+    User findByLoginName(String userame);
 
     //查询角色为销售员的所有用户
     List<User> queryUserByRName();
+
+    //根据角色编号查询角色名称
+    String queryRNameByRId(Integer uRoleId);
+
+    //根据用户名和角色编号查询用户
+    List<User> queryUserByUNameAndRId(@Param("page") Integer page,
+                                      @Param("limit") Integer limit,
+                                      @Param("uName") String uName,
+                                      @Param("uRoleId") Integer uRoleId);
+
+    //根据用户名和角色查询总条数
+    Integer getTotalByUNameAndRId(@Param("uName") String uName,
+                                  @Param("uRoleId") Integer uRoleId);
+
+    //新增用户
+    void saveUser(User user);
 
 }

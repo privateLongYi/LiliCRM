@@ -1,6 +1,9 @@
 package com.linxi.controller;
 
+import com.linxi.config.security.PasswordConfig;
+import com.linxi.entity.RoleMenu;
 import com.linxi.entity.User;
+import com.linxi.service.IRoleMenuService;
 import com.linxi.service.IUserService;
 import com.linxi.util.DataResult;
 import com.linxi.util.Result;
@@ -26,35 +29,8 @@ public class UserController {
     @Autowired
     private IUserService iUserService;
 
-    @PostMapping("login")
-    @ApiOperation(value = "登录")
-    @ResponseBody
-    public DataResult login(@RequestBody @ApiParam(value = "用户对象", required = true) User user, HttpSession session){
-        User u = iUserService.login(user.getuName(), user.getuPassword());
-        if (u != null) {
-            //把对象存储到session中
-            session.setAttribute("user", u);
-            //设置session存活时间
-            //session.setMaxInactiveInterval(30 * 60);
-            return new DataResult(0, "登录成功", 0, u);
-        } else {
-            return new DataResult(1, "账号或密码错误",0 , u);
-        }
-    }
-
-    @GetMapping("logout")
-    @ApiOperation(value = "注销")
-    public String logout(HttpSession session){
-        session.invalidate();
-        return "redirect:../login.html";
-    }
-
-    @GetMapping("getUser")
-    @ApiOperation(value = "获取用户对象")
-    @ResponseBody
-    public User getUser(HttpSession session){
-        return (User) session.getAttribute("user");
-    }
+    @Autowired
+    private PasswordConfig passwordConfig;
 
     @GetMapping("queryUserByRName")
     @ApiOperation(value = "获取角色为销售员的用户对象")
@@ -62,6 +38,39 @@ public class UserController {
     public DataResult queryUserByRName(){
         List<User> users = iUserService.queryUserByRName();
         return new DataResult(0, "操作成功",0 , users);
+    }
+
+    @GetMapping("queryRNameByRId")
+    @ApiOperation(value = "根据角色编号查询角色名称")
+    @ResponseBody
+    public String queryRNameByRId(@ApiParam(name = "uRoleId", value = "角色编号", required = true) Integer uRoleId){
+        return iUserService.queryRNameByRId(uRoleId);
+    }
+
+    @GetMapping("queryUserByUNameAndRId")
+    @ApiOperation(value = "根据用户名和角色编号查询用户")
+    @ResponseBody
+    public DataResult queryUserByUNameAndRId(@ApiParam(name = "page", value = "页码", required = true) Integer page,
+                                             @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit,
+                                             @ApiParam(name = "uName", value = "用户名") String uName,
+                                             @ApiParam(name = "uRoleId", value = "角色编号") Integer uRoleId){
+        List<User> users = iUserService.queryUserByUNameAndRId((page-1)*limit, limit, uName, uRoleId);
+        //获取总条数
+        Integer total = iUserService.getTotalByUNameAndRId(uName, uRoleId);
+        return new DataResult(0, "操作成功", total, users);
+    }
+
+    @PostMapping("saveUser")
+    @ApiOperation(value = "新增用户")
+    @ResponseBody
+    public DataResult saveUser(@ApiParam(name = "uName", value = "用户名", required = true) String uName,
+                               @ApiParam(name = "uPassword", value = "密码", required = true) String uPassword,
+                               @ApiParam(name = "uRoleId", value = "角色编号", required = true) Integer uRoleId){
+        User user = new User(uName, uPassword, uRoleId);
+        //MD5加密
+        user.setuPassword(passwordConfig.encode(user.getuPassword()));
+        iUserService.saveUser(user);
+        return new DataResult(0, "新增成功");
     }
 
 }

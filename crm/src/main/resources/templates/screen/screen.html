@@ -110,6 +110,10 @@
 				,laydate = layui.laydate //时间控件
 				,form = layui.form //表单
 
+        //从sessionStorage中获取用户编号
+        var uId = sessionStorage.getItem('uId');
+        var rName = sessionStorage.getItem('rName');
+
 		//时间控件
 		laydate.render({
 			elem: '#cPlaceTime' //指定元素
@@ -130,17 +134,21 @@
             form.render('select');
         })
 
-        //获取角色为销售员的用户对象
-        $.get("user/queryUserByRName", function (res){
-            //定义负责人下拉框内容
-            var html = "";
-            $.each(res.data, function (index, item) {
-                html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
-            });
-            $("#cUId").append(html);
-            //append后必须重新渲染
-            form.render('select');
-        })
+		if (rName == "管理员"){
+			//获取角色为销售员的用户对象
+			$.get("user/queryUserByRName", function (res){
+				//定义负责人下拉框内容
+				var html = "";
+				$.each(res.data, function (index, item) {
+					html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
+				});
+				$("#cUId").append(html);
+				//append后必须重新渲染
+				form.render('select');
+			})
+		} else {
+			$("#cUId").attr("disabled", "disabled");
+		}
 
         //获取所有客户状态
         $.get("ctype/queryCtype", function (res){

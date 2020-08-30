@@ -33,6 +33,8 @@ public class CustomerController {
     @ResponseBody
     public DataResult queryCScreen(@ApiParam(name = "page", value = "页码", required = true) Integer page,
                                    @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit,
+                                   @ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
+                                   @ApiParam(name = "rName", value = "角色名称", required = true) String rName,
                                    @ApiParam(name = "param", value = "筛选条件", required = false) String param){
         //姓名
         String cName = null;
@@ -85,9 +87,9 @@ public class CustomerController {
             }
         }
         //根据筛选条件查询客户
-        List<Customer> customeres = iCustomerService.queryCScreen((page-1)*limit, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+        List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
         //获取总条数
-        Integer total = iCustomerService.getTotal();
+        Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
         return new DataResult(0, "操作成功", total, customeres);
     }
 

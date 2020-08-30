@@ -14,9 +14,10 @@
     <result column="u_role_id" jdbcType="INTEGER" property="uRoleId" />
   </resultMap>
 
-  <!--登录-->
-  <select id="login" resultMap="BaseResultMap">
-    SELECT * FROM user WHERE u_name = #{uName} AND u_password = #{uPassword}
+  <!--根据用户名查询用户-->
+  <select id="findByLoginName" resultMap="BaseResultMap">
+    SELECT u.*, r.r_name AS rName FROM user u LEFT JOIN role r ON u.u_role_id = r.r_id
+    WHERE u.u_name = #{username}
   </select>
 
   <!--查询角色为销售员的所有用户-->
@@ -24,5 +25,43 @@
     SELECT u.* FROM user u LEFT JOIN role r ON u.u_role_id = r.r_id
     WHERE r.r_name = '销售员'
   </select>
+
+  <!--根据角色编号查询角色名称-->
+  <select id="queryRNameByRId" resultMap="BaseResultMap">
+    SELECT r.r_name AS rName FROM user u LEFT JOIN role r ON u.u_role_id = r.r_id
+    WHERE r.r_id = #{uRoleId}
+  </select>
+
+  <!--根据用户名和角色编号查询用户-->
+  <select id="queryUserByUNameAndRId" resultMap="BaseResultMap">
+    SELECT u.*, r.r_name AS rName FROM user u LEFT JOIN role r ON u.u_role_id = r.r_id
+    <where>
+      <if test="uName != null and uName != ''">
+        AND u.u_name = #{uName}
+      </if>
+      <if test="uRoleId != null and uRoleId != 0">
+        AND u.u_role_id = #{uRoleId}
+      </if>
+    </where>
+    limit #{page}, #{limit}
+  </select>
+
+  <!--根据用户名和角色查询总条数-->
+  <select id="getTotalByUNameAndRId" resultType="Integer">
+    SELECT COUNT(*) FROM user
+    <where>
+      <if test="uName != null and uName != ''">
+        AND u_name = #{uName}
+      </if>
+      <if test="uRoleId != null and uRoleId != 0">
+        AND u_role_id = #{uRoleId}
+      </if>
+    </where>
+  </select>
+
+  <!--新增用户-->
+  <insert id="saveUser">
+    INSERT INTO user(u_name, u_password, u_role_id) VALUES (#{uName}, #{uPassword}, #{uRoleId})
+  </insert>
 
 </mapper>

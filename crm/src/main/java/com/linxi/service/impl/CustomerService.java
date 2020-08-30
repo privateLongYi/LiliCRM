@@ -22,14 +22,15 @@ public class CustomerService implements ICustomerService{
     private CustomerMapper customerMapper;
 
     @Override
-    public List<Customer> queryCScreen(Integer page, Integer limit, String cName, String cTel, String cProject, Integer hId, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
-        return customerMapper.queryCScreen(page, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryCScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String cProject, Integer hId, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
+        return customerMapper.queryCScreen(uId, rName, page, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getTotal() {
-        return customerMapper.getTotal();
+    public Integer getTotalByScreen(Integer uId, String rName, String cName, String cTel, String cProject, Integer hId, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
+        return customerMapper.getTotalByScreen(uId, rName, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
     }
 
     @Override

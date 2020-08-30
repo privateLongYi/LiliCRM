@@ -1,103 +1,71 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>LiliCRM</title>
-  <link rel="stylesheet" href="layui/css/layui.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>LiliCRM</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
-  <div class="layui-header">
-    <div class="layui-logo">LiliCRM</div>
-    <!-- 头部区域（可配合layui已有的水平导航） -->
-    <ul class="layui-nav layui-layout-right">
-      <li class="layui-nav-item">
-        <a href="javascript:;">
-          <img th:src="@{/images/head.jpg}" class="layui-nav-img">
-          	欢迎你！<span id="uName"></span>
-        </a>
-        <dl class="layui-nav-child">
-          <dd><a href="">基本资料</a></dd>
-          <dd><a href="">安全设置</a></dd>
-        </dl>
-      </li>
-      <li class="layui-nav-item"><a href="user/logout">注销</a></li>
-    </ul>
-  </div>
-  
-  <div class="layui-side layui-bg-black">
-    <div class="layui-side-scroll">
-      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="" data-title="工作台"
-             data-id="0" class="site-demo-active" data-type="tabAdd">工作台</a>
-        </li>
-        <li class="layui-nav-item layui-nav-itemed">
-            <a href="javascript:;" data-url="customerlist" data-title="客户信息管理"
-               data-id="1" class="site-demo-active" data-type="tabAdd">客户信息管理</a>
-        </li>
-        <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="" data-title="待联系客户管理"
-             data-id="2" class="site-demo-active" data-type="tabAdd">待联系客户管理</a>
-        </li>
-        <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="" data-title="待预约客户管理"
-             data-id="3" class="site-demo-active" data-type="tabAdd">待预约客户管理</a>
-        </li>
-        <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="" data-title="待到店客户管理"
-             data-id="4" class="site-demo-active" data-type="tabAdd">待到店客户管理</a>
-        </li>
-        <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="" data-title="成交客户管理"
-             data-id="5" class="site-demo-active" data-type="tabAdd">成交客户管理</a>
-        </li>
-        <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="" data-title="未成交客户管理"
-             data-id="6" class="site-demo-active" data-type="tabAdd">未成交客户管理</a>
-        </li>
-        <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="" data-title="未到店客户管理"
-             data-id="7" class="site-demo-active" data-type="tabAdd">未到店客户管理</a>
-        </li>
-        <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="" data-title="转诊客户管理"
-             data-id="8" class="site-demo-active" data-type="tabAdd">转诊客户管理</a>
-        </li>
-        <li class="layui-nav-item layui-nav-itemed">
-          <a href="javascript:;" data-url="" data-title="改约客户管理"
-             data-id="9" class="site-demo-active" data-type="tabAdd">改约客户管理</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- 内容主体区域 -->
-  <div class="layui-body" style="background-color: #f5f5f5">
-
-    <!--可删除选项卡-->
-    <div class="layui-tab layui-tab-brief" lay-allowClose="true" lay-filter="demo">
-        <ul class="layui-tab-title">
-          <li lay-id="0" class="layui-this">
-            工作台<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
-          </li>
+    <div class="layui-header">
+        <div class="layui-logo">LiliCRM</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <input type="hidden" id="uId" th:value="${user.getuId()}" >
+                <input type="hidden" id="uName" th:value="${user.getuName()}" >
+                <input type="hidden" id="uRoleId" th:value="${user.getuRoleId()}" >
+                <input type="hidden" id="rName" th:value="${user.getrName()}" >
+                <a href="javascript:;">
+                    <img th:src="@{/images/head.jpg}" class="layui-nav-img">
+                    <span id="username" th:text="${user.getuName()}"></span>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a th:href="@{/logout}">注销</a></li>
         </ul>
-        <div class="layui-tab-content">
-          <div class="layui-tab-item layui-show">
-            <iframe data-frameid="0" scrolling="auto" frameborder="0"
-                    src="workbench" style="width:100%;height:438px;"></iframe>
-          </div>
-        </div>
-      </div>
-    	
-  </div>
+    </div>
 
-  <div class="layui-footer">
-    <!-- 底部固定区域 -->
-    © layui.com - 底部固定区域
-  </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" id="nav">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a href="javascript:;" data-url="workbench" data-title="工作台"
+                       data-id="0" class="site-demo-active" data-type="tabAdd">工作台</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 内容主体区域 -->
+    <div class="layui-body" style="background-color: #f5f5f5">
+
+        <!--可删除选项卡-->
+        <div class="layui-tab layui-tab-brief" lay-allowClose="true" lay-filter="demo">
+            <ul class="layui-tab-title">
+                <li lay-id="0" class="layui-this">
+                    工作台<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+                </li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <iframe data-frameid="0" scrolling="auto" frameborder="0"
+                            src="workbench" style="width:100%;height:438px;"></iframe>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
 </div>
 <script src="layui/layui.js"></script>
 
@@ -106,11 +74,67 @@
         var $ = layui.jquery;
         var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
 
-        //获取用户名
-        $.get("user/getUser", function (res) {
-            //赋值
-            $("#uName").text(res.uName);
-        });
+        //获取用户编号和用户名
+        var uId = $("#uId").val();
+        var uName = $("#uName").val();
+        var uRoleId = $("#uRoleId").val();
+        var rName = $("#rName").val();
+
+        //把用户编号和用户名存到sessionStorage
+        sessionStorage.setItem('uId', uId);
+        sessionStorage.setItem('uName', uName);
+        sessionStorage.setItem('uRoleId', uRoleId);
+        sessionStorage.setItem('rName', rName);
+
+        //获取菜单列表
+        $.get("/menu/queryRoleMenuByRoleId?roleId="+uRoleId, function (obj) {
+                //定义内容
+                var html = "";
+                var parent = obj.data;
+                var child = obj.data;
+                for(index in parent){
+                    if(parent[index].mParentId == null){
+                        html += "<li class='layui-nav-item'>" +
+                            "       <a class='' href='javascript:;'>"+parent[index].mName+"</a>" +
+                            "       <dl class='layui-nav-child'>";
+                        for(i in child){
+                            if(child[i].mParentId == parent[index].rmMId){
+                                html += "<dd>" +
+                                    "   <a href='javascript:;' data-url='"+child[i].mUrl+"' data-title='"+child[i].mName+"' " +
+                                    "     data-id='"+child[i].rmMId+"' class='site-demo-active' data-type='tabAdd'>"+child[i].mName+"</a>" +
+                                    "</dd>"
+                            }
+                        }
+                        html += "   </dl>" +
+                            "</li>";
+                    }
+                }
+                //给导航条赋值
+                $("#nav").append(html);
+                //重新渲染元素
+                element.init();
+                //当点击有site-demo-active属性的标签时，即左侧菜单栏中内容 ，触发点击事件
+                $('.site-demo-active').on('click', function() {
+
+                    var dataid = $(this);
+
+                    //判断该tab项是否以及存在
+
+                    var isData = false; //初始化一个标志，为false说明未打开该tab项 为true则说明已有
+                    $.each($(".layui-tab-title li[lay-id]"), function () {
+                        //如果点击左侧菜单栏所传入的id 在右侧tab项中的lay-id属性可以找到，则说明该tab项已经打开
+                        if ($(this).attr("lay-id") == dataid.attr("data-id")) {
+                            isData = true;
+                        }
+                    })
+                    if (isData == false) {
+                        //标志为false 新增一个tab项
+                        active.tabAdd(dataid.attr("data-url"), dataid.attr("data-id"),dataid.attr("data-title"));
+                    }
+                    //最后不管是否新增tab，最后都转到要打开的选项页面上
+                    active.tabChange(dataid.attr("data-id"));
+                });
+            });
 
         //触发事件
         var active = {
@@ -120,7 +144,7 @@
                 //关于tabAdd的方法所传入的参数可看layui的开发文档中基础方法部分
                 element.tabAdd('demo', {
                     title: name,
-                    content: '<iframe data-frameid="'+id+'" scrolling="auto" frameborder="0" src="'+url+'" style="width:100%;height:438px;"></iframe>',
+                    content: '<iframe data-frameid="'+id+'" scrolling="auto" frameborder="0" src="' + url + '" style="width:100%;height:438px;"></iframe>',
                     id: id //规定好的id
                 })
             },
@@ -133,27 +157,6 @@
             }
         };
 
-
-        //当点击有site-demo-active属性的标签时，即左侧菜单栏中内容 ，触发点击事件
-        $('.site-demo-active').on('click', function() {
-            var dataid = $(this);
-
-            //判断该tab项是否以及存在
-
-            var isData = false; //初始化一个标志，为false说明未打开该tab项 为true则说明已有
-            $.each($(".layui-tab-title li[lay-id]"), function () {
-                //如果点击左侧菜单栏所传入的id 在右侧tab项中的lay-id属性可以找到，则说明该tab项已经打开
-                if ($(this).attr("lay-id") == dataid.attr("data-id")) {
-                    isData = true;
-                }
-            })
-            if (isData == false) {
-                //标志为false 新增一个tab项
-                active.tabAdd(dataid.attr("data-url"), dataid.attr("data-id"),dataid.attr("data-title"));
-            }
-            //最后不管是否新增tab，最后都转到要打开的选项页面上
-            active.tabChange(dataid.attr("data-id"));
-        });
     });
 </script>
 </body>

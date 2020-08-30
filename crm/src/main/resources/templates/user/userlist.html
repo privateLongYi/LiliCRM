@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+	</head>
+	<body>
+
+	<br>
+
+	<div id="screen">
+		根据用户名：
+		<div class="layui-inline">
+			<input class="layui-input" id="uName" autocomplete="off">
+		</div>
+		<button class="layui-btn search">搜索</button>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		根据角色：
+		<div class="layui-input-inline layui-form">
+			<select id="uRoleId">
+				<option value=""></option>
+			</select>
+		</div>
+		<button class="layui-btn search">搜索</button>
+	</div>
+
+	<!-- 数据表格 -->
+	<table class="layui-hide" id="tab" lay-filter="test" lay-data="{id: 'tab'}"></table>
+
+		<script type="text/html" id="toolbarDemo">
+			<div class="layui-inline" lay-event="refresh"><i class="layui-icon layui-icon-refresh-3"></i></div>
+			<div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
+		</script>
+
+		<script type="text/html" id="barDemo">
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+		</script>
+
+		<script th:src="@{/layui/layui.js}"></script>
+
+		<script>
+
+            layui.use(['laydate', 'laypage', 'layer', 'table', 'upload', 'element', 'form'], function(){
+                var laydate = layui.laydate //日期
+                    ,laypage = layui.laypage //分页
+                    ,layer = layui.layer //弹层
+                    ,table = layui.table //表格
+                    ,upload = layui.upload //上传
+                    ,element = layui.element //元素操作
+                    ,$ = layui.jquery //jQuery
+					,form = layui.form //表单
+
+                //获取所有角色
+                $.get("/role/queryRole", function (res){
+                    //定义角色下拉框内容
+                    var html = "";
+                    $.each(res.data, function (index, item) {
+                        html += "<option value='" + item.rId + "'>" + item.rName + "</option>";
+                    });
+                    $("#uRoleId").append(html);
+                    //append后必须重新渲染
+                    form.render('select');
+                })
+
+				//为条件搜索按钮增加点击事件
+				$(".search").on("click", function(data){
+					tableReload();
+				});
+
+                //表格重载
+				function tableReload(){
+                    //获取筛选条件
+                    var uName = $("#uName").val();
+                    var uRoleId = $("#uRoleId").val();
+					//根据筛选条件查询
+                    table.reload('tab', {
+                        url: '/user/queryUserByUNameAndRId'
+                        ,where: {
+                            uName: uName,
+                            uRoleId: uRoleId
+                        }
+                    });
+				}
+
+				//弹出新增或修改页面
+                function popup(index, url) {
+                    var body = layer.getChildFrame('body', index);
+                    //获取值
+                    var uName = $(body).find("#uName").val().trim();
+                    var uPassword = $(body).find("#uPassword").val().trim();
+                    var uPassword2 = $(body).find("#uPassword2").val().trim();
+                    var uRoleId = $(body).find("#uRoleId").val();
+                    //声明格式是否正确
+                    var verify = true;
+                    if (uName == '' || uName.trim() == ''){
+                        layer.msg("用户名不能为空");
+                        verify = false;
+					} else {
+                        //验证用户名格式
+                        if(uName.length > 6){
+                            layer.msg("用户名长度不能大于6位");
+                            verify = false;
+                        }
+					}
+                    if (uPassword == '' || uPassword.trim() == ''){
+                        layer.msg("密码不能为空");
+                        verify = false;
+                    }
+                    if (uPassword2 == '' || uPassword2.trim() == ''){
+                        layer.msg("确认密码不能为空");
+                        verify = false;
+                    }
+					//验证两次密码是否一致
+					if(uPassword != uPassword2){
+						layer.msg("两次密码不一致");
+                        verify = false;
+					}
+					if(verify){
+						$.post(url, {uName:uName, uPassword:uPassword, uRoleId:uRoleId},
+							function (obj) {
+								layer.msg(obj.msg, {time: 500}, function () {
+									layer.closeAll();
+									tableReload();
+								});
+							}
+						);
+					}
+                }
+
+                //执行一个 table 实例
+                table.render({
+                    elem: '#tab'
+                    ,height: 360
+                    ,url: '/user/queryUserByUNameAndRId' //数据接口
+                    ,title: '用户表' //表格名称
+                    ,id: 'tab' //表格id
+                    ,page: true //开启分页
+                    ,limit: 5 //每页显示条数
+                    ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
+                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
+                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,cols: [ //表头
+                        [
+                            {field: 'uId', width: 120, title: 'ID', sort: true, align:'center'}
+                            ,{field: 'uName', title: '用户名', align:'center'}
+                            ,{field: 'rName', title: '角色', align:'center'}
+                            ,{fixed: 'right', align:'center', toolbar: '#barDemo'}
+                        ]
+                    ]
+                });
+
+                //监听头工具栏事件
+                table.on('toolbar(test)', function(obj){
+                    var checkStatus = table.checkStatus(obj.config.id)
+                        ,data = checkStatus.data; //获取选中的数据
+                    switch(obj.event){
+                        case 'add':
+                            //弹出新增页面
+                            layer.open({
+                                type: 2, //层类型，iframe
+                                title: '新增用户',
+                                content: ['/user/usersave'],
+                                area: ['400px', '330px'],
+                                resize: false,
+                                btn: '确定',
+                                btn1: function (index, layero) {
+                                    popup(index, "/user/saveUser");
+                                },
+                                cancel: function(layero,index){
+                                    layer.closeAll();
+                                }
+                            });
+                            break;
+                        case 'refresh':
+                            tableReload();
+                            break;
+                    }
+                });
+
+                //监听行工具事件
+                table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                    var data = obj.data //获得当前行数据
+                        ,layEvent = obj.event; //获得 lay-event 对应的值
+                    if(layEvent === 'del'){
+                        layer.confirm('真的删除行么', function(index){
+                            $.get("/user/delUByUId?uId=" + data.uId, function(obj){
+                                if (obj.code == 0) {
+                                    layer.msg(obj.msg, {time: 500}, function () {
+                                        tableReload();
+                                    });
+                                } else {
+                                    layer.msg(obj.msg)
+                                }
+                            });
+                        });
+                    } else if(layEvent === 'edit'){
+						//弹出编辑页面
+                        layer.open({
+                            type: 2, //层类型，iframe
+                            title: '编辑客户',
+                            content: ['/user/queryuByUId?uId=' + data.uId],
+                            area: ['1000px', '420px'],
+                            resize: false,
+                            btn: '确定',
+                            btn1: function (index, layero) {
+                                popup(index, "/user/editUByUId?uId=" + data.uId);
+                            },
+                            cancel: function(layero,index){
+                                layer.closeAll();
+                            }
+                        });
+                    } else if(layEvent === 'detail'){
+
+						location.href = "/user/goDetail?uId=" + data.uId;
+
+                    }
+
+                });
+
+            });
+
+		</script>
+
+	</body>
+</html>

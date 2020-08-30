@@ -12,4 +12,9 @@
     <result column="r_name" jdbcType="VARCHAR" property="rName" />
   </resultMap>
 
+  <!--查询所有角色-->
+  <select id="queryRole" resultMap="BaseResultMap">
+    SELECT * FROM role
+  </select>
+
 </mapper>

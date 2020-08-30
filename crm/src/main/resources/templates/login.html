@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>LiLiCRM-登录</title>
+    <link href="layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <style>
+        /*上下左右居中*/
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 150px;
+        }
+    </style>
+</head>
+<body>
+<div class="main">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <h1 style="text-align: center">LiLiCRM</h1>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号<i class="layui-icon layui-icon-uName"></i></label>
+            <div class="layui-input-block">
+                <input type="hidden" id="publicKey" th:value="${publicKey}" >
+                <input type="text" id="username" name="username" placeholder="请输入账号"
+                       class="layui-input" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码<i class="layui-icon layui-icon-uPassword"></i></label>
+            <div class="layui-input-block">
+                <input type="password" id="password" name="password" placeholder="请输入密码"
+                       class="layui-input" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">验证码</label>
+            <div class="layui-input-inline">
+                <input type="text" id="captcha" name="captcha" placeholder="请输入验证码"
+                       class="layui-input" style="float: left;width: 52%;" autocomplete="off">
+                <img id="captchaImg" th:src="@{/getVerifyCodeImage}" onclick="changeCode()"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn admin-button" lay-submit="" lay-filter="login">登录</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+
+<script src="layui/layui.js"></script>
+
+<script>
+
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function() {
+        var form = layui.form
+            , laydate = layui.laydate
+            , $ = layui.jquery
+            , layer = layui.layer;
+
+        //获取后端RSA公钥并存到sessionStorage
+        var publicKey = $("#publicKey").val();
+        sessionStorage.setItem('javaPublicKey', publicKey);
+
+        // 进行登录操作
+        form.on('submit(login)', function (data) {
+            data = data.field;
+            if (data.captcha == '') {
+                layer.msg('请输入验证码');
+                return false;
+            }
+            if (data.username == '') {
+                layer.msg('用户名不能为空');
+                return false;
+            }
+            if (data.password == '') {
+                layer.msg('密码不能为空');
+                return false;
+            }
+            $.post("login", {
+                "username": data.username,
+                "password": data.password,
+                "captcha": data.captcha
+            }, function (data) {
+                layui.use('layer', function () {
+                    var layer = layui.layer;
+                    if (data.code == 300) {
+                        layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                            window.location.href = data.url;
+                        });
+                    } else {
+                        layer.msg(data.msg, {icon: 2, time: 2000}, function () {
+                        });
+                    }
+                });
+            })
+            return false;
+        });
+
+    });
+
+    function changeCode() {
+        var img = document.getElementById("captchaImg");
+        img.src = "/getVerifyCodeImage?time=" + new Date().getTime();
+    }
+
+</script>
+</html>

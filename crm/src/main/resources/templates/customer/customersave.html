@@ -19,9 +19,6 @@
             <div class="layui-input-inline">
                 <input type="text" id="cName" placeholder="请输入姓名"
                        autocomplete="off" class="layui-input">
-                <!--<span class="layui-hidden" id="spanCName" style="color: red; font-size: small; margin-top: 5px;">-->
-                    <!--&nbsp;&nbsp;姓名长度不超过5-->
-                <!--</span>-->
             </div>
             <label class="layui-form-label" style="width: auto;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -126,41 +123,42 @@
             ,$ = layui.jquery
             ,layer = layui.layer;
 
-        //获取用户对象
-        $.get("user/getUser", function (res) {
-            if(res.uRoleId == 1){
+        //从sessionStorage中获取用户编号和用户名
+        var uId = sessionStorage.getItem('uId');
+        var uName = sessionStorage.getItem('uName');
 
-                //管理员登录，隐藏负责人文本框，显示负责人下拉框
-                $("#admin").addClass("layui-show");
-                $("#sale").addClass("layui-hide");
-                //状态赋值
-                $("#cType").val("待分配");
-                $("#cTypeId").val("1");
+        if(uId == 1){
 
-                //获取角色为销售员的用户对象
-                $.get("user/queryUserByRName", function (res){
-                    //定义负责人下拉框内容
-                    var html = "";
-                    $.each(res.data, function (index, item) {
-                        html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
-                    });
-                    $("#salelist").append(html);
-                    //append后必须重新渲染
-                    form.render('select');
-                })
+            //管理员登录，隐藏负责人文本框，显示负责人下拉框
+            $("#admin").addClass("layui-show");
+            $("#sale").addClass("layui-hide");
+            //状态赋值
+            $("#cType").val("待分配");
+            $("#cTypeId").val("1");
 
-            } else {
-                //销售员登录，显示负责人文本框，隐藏负责人下拉框
-                $("#admin").addClass("layui-hide");
-                $("#sale").addClass("layui-show");
-                //赋值
-                $("#saleman").val(res.uName);
-                $("#cUId").val(res.uId);
-                //状态赋值
-                $("#cType").val("待联系");
-                $("#cTypeId").val("2");
-            }
-        });
+            //获取角色为销售员的用户对象
+            $.get("/user/queryUserByRName", function (res){
+                //定义负责人下拉框内容
+                var html = "";
+                $.each(res.data, function (index, item) {
+                    html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
+                });
+                $("#salelist").append(html);
+                //append后必须重新渲染
+                form.render('select');
+            })
+
+        } else {
+            //销售员登录，显示负责人文本框，隐藏负责人下拉框
+            $("#admin").addClass("layui-hide");
+            $("#sale").addClass("layui-show");
+            //赋值
+            $("#saleman").val(uName);
+            $("#cUId").val(uId);
+            //状态赋值
+            $("#cType").val("待联系");
+            $("#cTypeId").val("2");
+        }
 
         //下拉框改变事件
         form.on('select(change)', function(data){

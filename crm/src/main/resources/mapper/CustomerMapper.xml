@@ -32,6 +32,9 @@
     LEFT JOIN appointment a ON c.c_id=a.a_c_id
     LEFT JOIN hospital h ON a.a_h_id=h.h_id
     <where>
+      <if test="rName != '管理员'">
+        AND c.c_u_id = #{uId}
+      </if>
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
@@ -68,9 +71,49 @@
     limit #{page}, #{limit}
   </select>
 
-  <!-- 查询客户总数 -->
-  <select id="getTotal" resultType="Integer">
-    SELECT COUNT(*) FROM customer
+  <!-- 根据筛选条件查询客户总数 -->
+  <select id="getTotalByScreen" resultType="Integer">
+    SELECT COUNT(*) FROM customer c
+    LEFT JOIN `user` u ON c.c_u_id=u.u_id
+    LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
+    LEFT JOIN appointment a ON c.c_id=a.a_c_id
+    LEFT JOIN hospital h ON a.a_h_id=h.h_id
+    <where>
+      <if test="rName != '管理员'">
+        AND c.c_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name LIKE '%${cName}%'
+      </if>
+      <if test="cTel != null and cTel != ''">
+        AND c.c_tel = #{cTel}
+      </if>
+      <if test="cProject != null and cProject != ''">
+        AND c.c_project = #{cProject}
+      </if>
+      <if test="hId != null">
+        AND h.h_id = #{hId}
+      </if>
+      <if test="cEarnest != null and cEarnest == 0">
+        AND c.c_earnest = 0
+      </if>
+      <if test="cEarnest != null and cEarnest == 1">
+        AND c.c_earnest != 0
+      </if>
+      <if test="beginTime != null or endTime != null">
+        AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+      </if>
+      <if test="cUId != null">
+        AND c.c_u_id = #{cUId}
+      </if>
+      <if test="cSource != null and cSource != ''">
+        AND c.c_source = #{cSource}
+      </if>
+      <if test="cTypeId != null">
+        AND ct.ct_id = #{cTypeId}
+      </if>
+    </where>
   </select>
 
   <!-- 新增客户 -->

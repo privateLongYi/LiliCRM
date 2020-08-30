@@ -13,4 +13,17 @@
     <result column="rm_m_id" jdbcType="INTEGER" property="rmMId" />
   </resultMap>
 
+  <!--根据角色编号查询权限-->
+  <select id="queryRoleMenuByRoleId" resultMap="BaseResultMap">
+    SELECT rm.*, m.m_name AS mName, m.m_url AS mUrl, m.m_parent_id AS mParentId
+    FROM role_menu rm INNER JOIN menu m ON rm.rm_m_id=m.m_id
+    WHERE rm.rm_r_id = #{roleId}
+  </select>
+
+  <!--查询所有权限-->
+  <select id="queryRoleMenu" resultMap="BaseResultMap">
+    SELECT rm.*, m.m_name AS mName, m.m_url AS mUrl, m.m_parent_id AS mParentId
+    FROM role_menu rm INNER JOIN menu m ON rm.rm_m_id=m.m_id
+  </select>
+
 </mapper>

@@ -33,19 +33,4 @@ public class DataResult<T> {
     public DataResult() {
     }
 
-    public DataResult fail() {
-        return new DataResult(1, "操作失败", 0, null);
-    }
-
-    public DataResult fail(String msg) {
-        return new DataResult(1, msg, 0, null);
-    }
-
-    public DataResult ok() {
-        return new DataResult(0, "操作成功", 0, null);
-    }
-
-    public DataResult ok(Integer count, T data) {
-        return new DataResult(0, "操作成功", count, data);
-    }
 }
