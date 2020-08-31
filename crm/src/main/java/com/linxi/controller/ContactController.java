@@ -138,7 +138,7 @@ public class ContactController {
     public  DataResult queryContactAll(@ApiParam(name = "page", value = "页码", required = true) Integer page,
                        @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
 //
-         List<Customer> customers = iCustomerService.queryCScreen((page - 1) * limit, limit, null, null, null, null, null, null, null, null, null, 2);
+         List<Customer> customers = iCustomerService.queryCScreen(0, "", (page - 1) * limit, limit, null, null, null, null, null, null, null, null, null, 2);
 
         //获取总条数
         Integer total = iCustomerService.getTotalByType(2);
@@ -204,10 +204,10 @@ public class ContactController {
         }
 
         //根据筛选条件查询客户
-        List<Customer> customeres = iCustomerService.queryCScreen((page-1)*limit, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, 2);
+        List<Customer> customeres = iCustomerService.queryCScreen(0, "", (page-1)*limit, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, 2);
         //获取总条数
 
-        Integer total = iCustomerService.getTotal();
+        Integer total = iCustomerService.getTotalByScreen(0, "", cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, 2);
         return new DataResult(0, "操作成功", total, customeres);
     }
 
