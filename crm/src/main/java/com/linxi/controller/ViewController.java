@@ -39,4 +39,8 @@ public class ViewController {
     @ApiOperation(value = "新增用户")
     public String usersave(){return "user/usersave";}
 
+    @GetMapping("contact")
+    @ApiOperation(value = "待联系客户管理")
+    public String contact(){return "customer/contact";}
+
 }

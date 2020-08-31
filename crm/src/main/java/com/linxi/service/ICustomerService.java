@@ -5,11 +5,14 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+
 /**
  * @Author LongYi
  * @create 2020/8/2 13:55
  */
 public interface ICustomerService {
+
+
 
     //高级筛选加分页查询客户
     List<Customer> queryCScreen(@Param("uId") Integer uId,
@@ -55,5 +58,12 @@ public interface ICustomerService {
 
     //根据编号修改客户状态
     void editCStatuByCId(Integer ctCId, Integer cStatu);
+
+    /**
+     * 根据客户类型 获得客户总数量
+     * @param cTypeId
+     * @return
+     */
+    Integer getTotalByType(Integer cTypeId);
 
 }

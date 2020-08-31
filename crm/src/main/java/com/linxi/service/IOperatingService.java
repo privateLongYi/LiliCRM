@@ -1,8 +1,12 @@
-package com.linxi.mapper;
+package com.linxi.service;
 
 import com.linxi.entity.Operating;
 
-public interface OperatingMapper {
+/**
+ * @author Arthas
+ * @date 2020/8/23 20:46
+ */
+public interface IOperatingService {
 
     /***
      * 添加操作记录
@@ -10,5 +14,4 @@ public interface OperatingMapper {
      * @return
      */
     Integer addOperatingRecord(Operating op);
-
 }

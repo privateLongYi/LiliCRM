@@ -58,4 +58,14 @@ public class CustomerService implements ICustomerService{
     public void editCStatuByCId(Integer ctCId, Integer cStatu) {
         customerMapper.editCStatuByCId(ctCId, cStatu);
     }
+
+    /**
+     * 根据客户类型 获得客户总数量
+     * @param cTypeId
+     * @return
+     */
+    @Override
+    public Integer getTotalByType(Integer cTypeId) {
+        return customerMapper.getTotalByType(cTypeId);
+    }
 }

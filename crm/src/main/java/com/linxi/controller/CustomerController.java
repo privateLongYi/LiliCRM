@@ -1,7 +1,10 @@
 package com.linxi.controller;
 
 import com.linxi.entity.Customer;
+import com.linxi.entity.Operating;
+import com.linxi.entity.User;
 import com.linxi.service.ICustomerService;
+import com.linxi.service.IOperatingService;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.standard.expression.Each;
 
 import javax.jws.WebParam;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
+
+
+
 
 /**
  * @Author LongYi
@@ -25,8 +33,16 @@ import java.util.List;
 @Api(value = "客户信息控制类", tags = "客户信息控制类")
 public class CustomerController {
 
+
+    //获取HttpServletRequest对象 主要用于设置或获取session
+    @Autowired
+    HttpServletRequest request;
+
     @Autowired
     private ICustomerService iCustomerService;
+
+    @Autowired
+    private IOperatingService iOperatingService;
 
     @GetMapping("queryCScreen")
     @ApiOperation(value = "查询客户信息")
@@ -115,8 +131,33 @@ public class CustomerController {
     @ApiOperation(value = "删除客户信息")
     @ResponseBody
     public DataResult delCByCId(@ApiParam(value = "客户编号", required = true) Integer cId){
-        iCustomerService.delCByCId(cId);
-        return new DataResult(0, "删除成功");
+        HttpSession session = request.getSession();
+
+        User user = (User) session.getAttribute("user");
+        try {
+            user.getuId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new DataResult(400, "请重新登陆");
+        }
+            //new操作记录表
+            Operating operating = new Operating();
+            operating.setOpUId(user.getuId());
+            operating.setPoCId(cId);
+            operating.setOpName("删除了ID为"+cId+"的客户信息客户");
+
+            //删除
+            iCustomerService.delCByCId(cId);
+
+
+            //添加操作记录
+            Integer integer = iOperatingService.addOperatingRecord(operating);
+
+            return new DataResult(0, "删除成功");
+
+
+
+
     }
 
     @GetMapping("queryCByCId")
@@ -142,8 +183,31 @@ public class CustomerController {
                                  @ApiParam(name = "cTypeId", value = "状态", required = true) Integer cTypeId,
                                  @ApiParam(name = "cRemark", value = "备注", required = false) String cRemark,
                                  @ApiParam(name = "cMessage", value = "症状信息", required = false) String cMessage){
+
+        HttpSession session = request.getSession();
+
+        User user = (User) session.getAttribute("user");
+        try {
+            user.getuId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new DataResult(400, "请重新登陆");
+        }
+        //new操作记录表
+        Operating operating = new Operating();
+        operating.setOpUId(user.getuId());
+        operating.setPoCId(cId);
+        operating.setOpName("编辑了ID为"+cId+"的客户信息客户");
+
+
+
+
+
         Customer c = new Customer(cId, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, cMessage, cTypeId);
         iCustomerService.editCByCId(c);
+        //添加操作记录
+        Integer integer = iOperatingService.addOperatingRecord(operating);
+
         return new DataResult(0, "编辑成功");
     }
 

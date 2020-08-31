@@ -1,5 +1,7 @@
 package com.linxi.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -29,6 +31,7 @@ public class Appointment implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
+    @DateTimeFormat(pattern ="yyyy-MM-dd HH:mm:ss")
     private Date aTime;
 
     /**
@@ -175,5 +178,16 @@ public class Appointment implements Serializable {
      */
     public void setaTypeId(Integer aTypeId) {
         this.aTypeId = aTypeId;
+    }
+
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "aId=" + aId +
+                ", aCId=" + aCId +
+                ", aTime=" + aTime +
+                ", aHId=" + aHId +
+                ", aTypeId=" + aTypeId +
+                '}';
     }
 }

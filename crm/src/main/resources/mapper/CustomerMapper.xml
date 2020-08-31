@@ -116,6 +116,11 @@
     </where>
   </select>
 
+  <!-- 根据客户类型 获得客户总数量 -->
+  <select id="getTotalByType" resultType="Integer">
+    SELECT COUNT(*) FROM customer  where c_type_id=#{cTypeId}
+  </select>
+
   <!-- 新增客户 -->
   <insert id="saveCustomer">
     INSERT INTO customer(c_name, c_sex, c_age, c_tel, c_project, c_place_time,

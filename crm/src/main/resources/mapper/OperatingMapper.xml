@@ -15,4 +15,10 @@
     <result column="op_time" jdbcType="TIMESTAMP" property="opTime" />
   </resultMap>
 
+  <insert id="addOperatingRecord" >
+
+ INSERT INTO `operating`( `po_c_id`, `op_u_id`, `op_name`, `op_time`) VALUES ( #{poCId} , #{opUId}, #{opName}, now());
+
+  </insert>
+
 </mapper>
