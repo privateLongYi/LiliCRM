@@ -150,8 +150,8 @@ public class CustomerController {
     @GetMapping("goDetail")
     @ApiOperation(value = "去客户信息详情页面")
     public String editCByCId(@ApiParam(value = "客户编号", required = true) Integer cId, ModelMap map){
-        Customer c = iCustomerService.queryCByCId(cId);
-        map.addAttribute("c", c);
+        Customer customer = iCustomerService.queryCByCId(cId);
+        map.addAttribute("customer", customer);
         return "customer/customerdetail";
     }
 

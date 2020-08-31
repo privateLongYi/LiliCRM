@@ -6,100 +6,267 @@
 	<link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
 </head>
 <body>
-<div class="layui-container">
 
-	<div style="float: left">
-		<h3 style="font-weight: bold">
-			<a th:href="@{/customerlist}">
-				<span class="glyphicon glyphicon-home"></span>客户信息列表
-			</a>
-			&nbsp;&gt;&nbsp;
-			<a disabled="disabled">编辑客户信息</a>
-		</h3>
-	</div>
+	<!--保存客户信息-->
+	<input type="hidden" id="cId" th:value="${customer.cId}">
+	<input type="hidden" id="cName" th:value="${customer.cName}">
+	<input type="hidden" id="cSex" th:value="${customer.cSex}">
+	<input type="hidden" id="cAge" th:value="${customer.cAge}">
+	<input type="hidden" id="cTel" th:value="${customer.cTel}">
+    <input type="hidden" id="cSource" th:value="${customer.cSource}">
+	<input type="hidden" id="cPlaceTime" th:value="${customer.cPlaceTime}">
+	<input type="hidden" id="cType" th:value="${customer.cType}">
+	<input type="hidden" id="cProject" th:value="${customer.cProject}">
+	<input type="hidden" id="cEarnest" th:value="${customer.cEarnest}">
+	<input type="hidden" id="cRemark" th:value="${customer.cRemark}">
 
-	<div style="float: right">
-		<button class="layui-btn" onclick="javascript:location.href = document.referrer;">
-			返回
-		</button>
-	</div>
-	<br><br><br>
-
-
+	<!--头部信息-->
 	<div>
-		<div class="layui-card-body">
-			<label th:text="${c.cName}"></label><br>
-			<label th:text="${c.cTel}"></label><br>
-		</div>
+		<ul>
+			<li style="font-size: 22px;">
+				<i class="layui-icon" style="font-size: 40px; color: #1E9FFF; float: left;">&#xe66f;</i>
+				<span name="cName" style="margin-top: 15px;"></span>
+			</li>
+		</ul>
+	</div>
+	<br />
+
+	<!--客户信息缩略-->
+	<div>
+		<table class="layui-table" lay-skin="nob">
+			<thead>
+				<tr>
+					<th>姓名</th>
+					<th>电话</th>
+					<th>来源</th>
+					<th>下单时间</th>
+					<th>状态</th>
+				</tr>
+				<tr>
+					<td><span name="cName"></span></td>
+					<td><span name="cTel"></span></td>
+					<td><span name="cSource"></span></td>
+					<td><span name="cPlaceTime"></span></td>
+					<td><span name="cType"></span></td>
+				</tr>
+			</thead>
+		</table>
 	</div>
 
+	<!--选项卡div-->
 	<div class="layui-tab">
 
+		<!--选项卡-->
 		<ul class="layui-tab-title">
-			<li class="layui-this">客户信息</li>
+			<li class="layui-this">基本信息</li>
 			<li>预约记录</li>
-			<li>转诊记录</li>
 			<li>成交记录</li>
+			<li>回访跟进</li>
+			<li>操作记录</li>
 		</ul>
 
-		<div class="layui-tab-content">
+		<div class="layui-tab-content" style="height: 100px;">
 
-			<!-- 客户信息 -->
+			<!--客户信息-->
 			<div class="layui-tab-item layui-show">
-				<input type="hidden" id="cId" th:value="${c.cId}">
-				客户姓名：<label th:text="${c.cName}"></label>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				客户性别：<label th:text="${c.cSex}"></label><br /><br />
-				客户电话：<label th:text="${c.cTel}"></label><br /><br />
-				客户年龄：<label th:text="${c.cAge}"></label><br /><br />
-				客户备注：<label th:text="${c.cRemark}"></label><br /><br />
-				<div class="layui-row  layui-col-space10">
 
-					<div class="anim-box layui-col-md5">
-						<div class="layui-row">
-							<div class="layui-card-header layui-col-md4" style="background-color: #F0F0F0;">患者信息收集</div>
-						</div>
-						<div class="layui-card-body" style="background-color: #F0F0F0;">
-							<label th:text="${c.cMessage}"></label>
-							<br /><br /><br />
-						</div>
+				<!--row.0-->
+				<div class="layui-show layui-row">
+					<div class="layui-col-sm6">
+						姓名：<span name="cName"></span>
 					</div>
-
-					<div class="anim-box layui-col-md5">
-						<div class="layui-row">
-							<div class="layui-card-header layui-col-md4" style="background-color: #00FFFF;">患者回访信息</div>
-						</div>
-						<div class="layui-card-body" style="background-color: #00FFFF;">
-							<label th:text="${c.cMessage}"></label>
-							<br /><br /><br />
-						</div>
+					<div class="layui-col-sm6">
+						性别：<span name="cSex"></span>
 					</div>
-
 				</div>
+				<br />
+				<!--row.1-->
+				<div class="layui-show layui-row">
+					<div class="layui-col-sm6">
+						客户年龄：<span name="cAge"></span>
+					</div>
+					<div class="layui-col-sm6">
+						客户电话：<span name="cTel"></span>
+					</div>
+				</div><br />
+				<!--row.2-->
+				<div class="layui-show layui-row">
+					<div class="layui-col-sm6">
+						报名项目：<span name="cProject"></span>
+					</div>
+					<div class="layui-col-sm6">
+						报名时间：<span name="cPlaceTime"></span>
+					</div>
+				</div><br />
+				<!--row.3-->
+				<div class="layui-row">
+					<div class="layui-col-sm6">
+						客户来源：<span name="cSource"></span>
+					</div>
+					<div class="layui-col-sm6">
+						客户预交金额：<span name="cEarnest"></span>
+					</div>
+				</div><br />
+				<!--row.4-->
+				<div class="layui-row">
+					<div class="layui-col-sm12">
+						备注：<textarea name="cRemark" disabled="disabled" class="layui-textarea"
+								  th:text="${customer.cRemark}"></textarea>
+					</div>
+				</div>
+
 			</div>
 
-			<!-- 预约记录 -->
+			<!--预约记录-->
 			<div class="layui-tab-item">
-				<table class="layui-hide" id="transaction"></table>
+				<table class="layui-table" id="appointment">
+
+				</table>
 			</div>
 
-			<!-- 转诊记录 -->
+			<!--成交记录-->
 			<div class="layui-tab-item">
-				<table class="layui-hide" id="referral"></table>
+
 			</div>
 
-			<!-- 成交记录 -->
+			<!--回访跟进-->
 			<div class="layui-tab-item">
-				<table class="layui-hide" id="success"></table>
+				<ul class="layui-timeline">
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-8-31</span></h3>
+							<p>
+								客户感觉非常满意，觉得医生技术很好
+							</p>
+							<ul>
+								<li>成交回访</li>
+							</ul>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-7-31</span></h3>
+							<p>
+								客户 右下7左下6缺失 3700+3799 左下6需添加骨粉骨膜2500 总费用9999 已交全款
+							</p>
+							<ul>
+								<li>成交门诊反馈</li>
+							</ul>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-5-31</span></h3>
+							<p>
+								客户要求转诊 4月15号 雅美鑫 客户已经种植2颗 牙位22 34 拔牙300+骨粉1000+骨膜1000
+							</p>
+							<ul>
+								<li>未成交回访</li>
+							</ul>
+						</div>
+					</li>
+
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-4-6</span></h3>
+							<p>
+								客户尺度面诊口腔反馈：左上二松动二度，伸长，牙神经正常。<br />
+								拍片检查后，咬合问题严重，建议先做矫正，后期若有问题再行拔除。<br />
+								种植修复。今天拍片取模型约定下次确定具体矫正方案
+							</p>
+							<ul>
+								<li>未成交门诊反馈</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
 			</div>
 
+			<!--操作记录-->
+			<div class="layui-tab-item">
+				<ul class="layui-timeline">
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-3-31</span>&nbsp;||&nbsp;<span>Admin</span></h3>
+							<p>
+								<a>Admin</a>添加了客户
+							</p>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-4-1</span>&nbsp;||&nbsp;<span>罗洋</span></h3>
+							<p>
+								<a>罗洋</a>联系了客户
+							</p>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-4-1</span>&nbsp;||&nbsp;<span>罗洋</span></h3>
+							<p>
+								<a>罗洋</a>预约了客户
+							</p>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-4-1</span>&nbsp;||&nbsp;<span>罗洋</span></h3>
+							<p>
+								<a>罗洋</a>添加了未成交反馈，客户到店未成交
+							</p>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-4-1</span>&nbsp;||&nbsp;<span>罗洋</span></h3>
+							<p>
+								<a>罗洋</a>进行了未成交回访
+							</p>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-4-1</span>&nbsp;||&nbsp;<span>罗洋</span></h3>
+							<p>
+								<a>罗洋</a>转诊了客户
+							</p>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-4-1</span>&nbsp;||&nbsp;<span>罗洋</span></h3>
+							<p>
+								<a>罗洋</a>添加了成交反馈
+							</p>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title"><span>2020-4-1</span>&nbsp;||&nbsp;<span>罗洋</span></h3>
+							<p>
+								<a>罗洋</a>进行了成交回访
+							</p>
+						</div>
+					</li>
+				</ul>
+			</div>
 		</div>
-
+	</div>
 	</div>
 
-</div>
 <script th:src="@{/layui/layui.js}"></script>
 <script>
     //加载form、laydate
@@ -110,23 +277,60 @@
             ,layer = layui.layer
 			,table = layui.table;
 
+        //获得客户信息
         var cId = $("#cId").val();
+        var cName = $("#cName").val();
+        var cSex = $("#cSex").val();
+        var cAge = $("#cAge").val();
+        var cTel = $("#cTel").val();
+        var cProject = $("#cProject").val();
+        var cPlaceTime = $("#cPlaceTime").val();
+        var cSource = $("#cSource").val();
+        var cEarnest = $("#cEarnest").val();
+        var cRemark = $("#cRemark").val();
+        var cType = $("#cType").val();
+
+        //赋值
+		var cNameList = $("[name=cName]");
+		for(var i = 0; i < cNameList.length; i++){
+            cNameList[i].innerText = cName;
+		}
+        var cTelList = $("[name=cTel]");
+        for(var i = 0; i < cTelList.length; i++){
+            cTelList[i].innerText = cTel;
+        }
+        var cSourceList = $("[name=cSource]");
+        for(var i = 0; i < cSourceList.length; i++){
+            cSourceList[i].innerText = cSource;
+        }
+        var cPlaceTimeList = $("[name=cPlaceTime]");
+        for(var i = 0; i < cPlaceTimeList.length; i++){
+            cPlaceTimeList[i].innerText = cPlaceTime;
+        }
+        var cTypeList = $("[name=cType]");
+        for(var i = 0; i < cTypeList.length; i++){
+            cTypeList[i].innerText = cType;
+        }
+        $("[name=cSex]")[0].innerText = cSex;
+        $("[name=cAge]")[0].innerText = cAge;
+        $("[name=cProject]")[0].innerText = cProject;
+        $("[name=cEarnest]")[0].innerText = cEarnest;
+        $("[name=cRemark]")[0].innerText = cRemark;
 
         //预约记录
         table.render({
-            elem: '#transaction'
-            ,height: 350
-            ,url: '../transaction/queryCTByCtCId?ctCId='+cId
-            ,id: 'transaction' //表格id
+            elem: '#appointment'
+            ,url: '/appointment/queryAByACId?aCId='+cId
+            ,id: 'appointment' //表格id
             ,page: true //开启分页
             ,limit: 5 //每页显示条数
             ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
             ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
             ,cols: [
                 [
-                    {field:'ctHospital', title: '预约门诊'}
-                    ,{field:'ctTime', title: '预约时间', sort: true}
-                    ,{field:'ctArrive', title: '是否到店'}
+                    {field:'hospital', title: '预约门诊'}
+                    ,{field:'aTime', title: '预约时间', sort: true}
+                    ,{field:'aType', title: '预约类型'}
                 ]
             ]
         });

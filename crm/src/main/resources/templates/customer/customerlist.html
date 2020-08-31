@@ -303,9 +303,17 @@
                             }
                         });
                     } else if(layEvent === 'detail'){
-
-						location.href = "/customer/goDetail?cId=" + data.cId;
-
+						//弹出详情页面
+                        layer.open({
+                            type: 2, //层类型，iframe
+                            title: '查看详情', //标题
+                            content: ['/customer/goDetail?cId=' + data.cId], //页面内容
+                            area: ['800px', '420px'], //宽高
+                            resize: false, //不允许拉伸
+                            cancel: function(layero,index){
+                                layer.closeAll();
+                            }
+                        });
                     }
 
                 });
