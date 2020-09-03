@@ -20,8 +20,40 @@
    INSERT INTO `lili_crm`.`appointment`(`a_c_id`, `a_time`, `a_h_id`, `a_type_id`) VALUES
    ( #{appointment.aCId}, #{appointment.aTime}, #{appointment.aHId}, #{appointment.aTypeId});
 
-
   </insert>
 
+  <!--根据客户编号查询客户预约-->
+  <select id="queryAByACId" resultMap="BaseResultMap">
+    SELECT a.*, c.c_name AS cName, h.h_name AS hospital, aty.at_type AS aType FROM appointment a
+    LEFT JOIN customer c ON a.a_c_id = c.c_id
+    LEFT JOIN hospital h ON a.a_h_id = h.h_id
+    LEFT JOIN atype aty ON a.a_type_id = aty.at_id
+    WHERE a.a_c_id = #{aCId} ORDER BY a.a_time DESC
+  </select>
+
+  <!--根据客户编号查询客户预约总数-->
+  <select id="getTotalAByACId" resultType="Integer">
+    SELECT COUNT(*) FROM appointment WHERE a_c_id = #{aCId}
+  </select>
+
+  <!--根据编号查询客户预约-->
+  <select id="queryAByAId" resultMap="BaseResultMap">
+    SELECT a.*, c.c_name AS cName, h.h_name AS hospital, aty.at_type AS aType FROM appointment a
+    LEFT JOIN customer c ON a.a_c_id = c.c_id
+    LEFT JOIN hospital h ON a.a_h_id = h.h_id
+    LEFT JOIN atype aty ON a.a_type_id = aty.at_id
+    WHERE a.a_id = #{aId}
+  </select>
+
+  <!--根据编号编辑客户预约-->
+  <update id="editAByAId">
+    UPDATE appointment SET a_c_id = #{aCId}, a_time = #{aTime}, a_h_id = #{aHId},
+    a_type_id = #{aTypeId} WHERE a_id = #{aId}
+  </update>
+
+  <!--根据编号删除客户预约-->
+  <delete id="delAByAId">
+    DELETE FROM appointment WHERE a_id = #{aId}
+  </delete>
 
 </mapper>

@@ -12,4 +12,9 @@
     <result column="at_type" jdbcType="VARCHAR" property="atType" />
   </resultMap>
 
+  <!--查询所有预约类型-->
+  <select id="queryAtype" resultMap="BaseResultMap">
+    SELECT * FROM atype
+  </select>
+
 </mapper>

@@ -3,7 +3,7 @@ package com.linxi.entity;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Appointment implements Serializable {
     /**
@@ -31,8 +31,7 @@ public class Appointment implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    @DateTimeFormat(pattern ="yyyy-MM-dd HH:mm:ss")
-    private Date aTime;
+    private Timestamp aTime;
 
     /**
      *
@@ -58,6 +57,22 @@ public class Appointment implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
+
+    /**
+     * 客户名称
+     */
+    private String cName;
+
+    /**
+     * 预约门诊
+     */
+    private String hospital;
+
+    /**
+     * 预约类型
+     */
+    private String aType;
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -116,7 +131,7 @@ public class Appointment implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public Date getaTime() {
+    public Timestamp getaTime() {
         return aTime;
     }
 
@@ -128,7 +143,7 @@ public class Appointment implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public void setaTime(Date aTime) {
+    public void setaTime(Timestamp aTime) {
         this.aTime = aTime;
     }
 
@@ -180,6 +195,41 @@ public class Appointment implements Serializable {
         this.aTypeId = aTypeId;
     }
 
+    public String getcName() {
+        return cName;
+    }
+
+    public void setcName(String cName) {
+        this.cName = cName;
+    }
+
+    public String getHospital() {
+        return hospital;
+    }
+
+    public void setHospital(String hospital) {
+        this.hospital = hospital;
+    }
+
+    public String getaType() {
+        return aType;
+    }
+
+    public void setaType(String aType) {
+        this.aType = aType;
+    }
+
+    public Appointment() {
+    }
+
+    public Appointment(Integer aId, Integer aCId, Timestamp aTime, Integer aHId, Integer aTypeId) {
+        this.aId = aId;
+        this.aCId = aCId;
+        this.aTime = aTime;
+        this.aHId = aHId;
+        this.aTypeId = aTypeId;
+    }
+
     @Override
     public String toString() {
         return "Appointment{" +
@@ -188,6 +238,9 @@ public class Appointment implements Serializable {
                 ", aTime=" + aTime +
                 ", aHId=" + aHId +
                 ", aTypeId=" + aTypeId +
+                ", cName='" + cName + '\'' +
+                ", hospital='" + hospital + '\'' +
+                ", aType='" + aType + '\'' +
                 '}';
     }
 }

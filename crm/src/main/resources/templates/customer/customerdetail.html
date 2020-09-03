@@ -119,14 +119,24 @@
 
 			<!--预约记录-->
 			<div class="layui-tab-item">
-				<table class="layui-table" id="appointment">
 
-				</table>
+				<!--监听头工具栏-->
+				<script type="text/html" id="toolbarDemo">
+					<div class="layui-inline" lay-event="refresh"><i class="layui-icon layui-icon-refresh-1"></i></div>
+					<div class="layui-inline" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></div>
+					<div class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div>
+				</script>
+
+				<!--表格-->
+				<table class="layui-hide" id="appointment" lay-filter="appointment"></table>
+
 			</div>
 
 			<!--成交记录-->
 			<div class="layui-tab-item">
+				<table class="layui-hide" id="success" lay-filter="success">
 
+				</table>
 			</div>
 
 			<!--回访跟进-->
@@ -263,122 +273,297 @@
 					</li>
 				</ul>
 			</div>
+
 		</div>
+
 	</div>
-	</div>
 
-<script th:src="@{/layui/layui.js}"></script>
-<script>
-    //加载form、laydate
-    layui.use(['element', 'table'], function() {
+	<script th:src="@{/layui/layui.js}"></script>
 
-        var element = layui.element
-            ,$ = layui.jquery
-            ,layer = layui.layer
-			,table = layui.table;
+	<script>
+		//加载form、laydate
+		layui.use(['element', 'table'], function() {
 
-        //获得客户信息
-        var cId = $("#cId").val();
-        var cName = $("#cName").val();
-        var cSex = $("#cSex").val();
-        var cAge = $("#cAge").val();
-        var cTel = $("#cTel").val();
-        var cProject = $("#cProject").val();
-        var cPlaceTime = $("#cPlaceTime").val();
-        var cSource = $("#cSource").val();
-        var cEarnest = $("#cEarnest").val();
-        var cRemark = $("#cRemark").val();
-        var cType = $("#cType").val();
+			var element = layui.element
+				,$ = layui.jquery
+				,layer = layui.layer
+				,table = layui.table;
 
-        //赋值
-		var cNameList = $("[name=cName]");
-		for(var i = 0; i < cNameList.length; i++){
-            cNameList[i].innerText = cName;
-		}
-        var cTelList = $("[name=cTel]");
-        for(var i = 0; i < cTelList.length; i++){
-            cTelList[i].innerText = cTel;
-        }
-        var cSourceList = $("[name=cSource]");
-        for(var i = 0; i < cSourceList.length; i++){
-            cSourceList[i].innerText = cSource;
-        }
-        var cPlaceTimeList = $("[name=cPlaceTime]");
-        for(var i = 0; i < cPlaceTimeList.length; i++){
-            cPlaceTimeList[i].innerText = cPlaceTime;
-        }
-        var cTypeList = $("[name=cType]");
-        for(var i = 0; i < cTypeList.length; i++){
-            cTypeList[i].innerText = cType;
-        }
-        $("[name=cSex]")[0].innerText = cSex;
-        $("[name=cAge]")[0].innerText = cAge;
-        $("[name=cProject]")[0].innerText = cProject;
-        $("[name=cEarnest]")[0].innerText = cEarnest;
-        $("[name=cRemark]")[0].innerText = cRemark;
+			//获得客户信息
+			var cId = $("#cId").val();
+			var cName = $("#cName").val();
+			var cSex = $("#cSex").val();
+			var cAge = $("#cAge").val();
+			var cTel = $("#cTel").val();
+			var cProject = $("#cProject").val();
+			//改变时间格式 yyyy-MM-dd HH:mm:ss.0 改为 yyyy-MM-dd HH:mm:ss
+			var time = $("#cPlaceTime").val();
+			var cPlaceTime = time.substring(0, time.length - 2);
+			var cSource = $("#cSource").val();
+			var cEarnest = $("#cEarnest").val();
+			var cRemark = $("#cRemark").val();
+			var cType = $("#cType").val();
 
-        //预约记录
-        table.render({
-            elem: '#appointment'
-            ,url: '/appointment/queryAByACId?aCId='+cId
-            ,id: 'appointment' //表格id
-            ,page: true //开启分页
-            ,limit: 5 //每页显示条数
-            ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
-            ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-            ,cols: [
-                [
-                    {field:'hospital', title: '预约门诊'}
-                    ,{field:'aTime', title: '预约时间', sort: true}
-                    ,{field:'aType', title: '预约类型'}
-                ]
-            ]
-        });
+			//赋值
+			var cNameList = $("[name=cName]");
+			for(var i = 0; i < cNameList.length; i++){
+				cNameList[i].innerText = cName;
+			}
+			var cTelList = $("[name=cTel]");
+			for(var i = 0; i < cTelList.length; i++){
+				cTelList[i].innerText = cTel;
+			}
+			var cSourceList = $("[name=cSource]");
+			for(var i = 0; i < cSourceList.length; i++){
+				cSourceList[i].innerText = cSource;
+			}
+			var cPlaceTimeList = $("[name=cPlaceTime]");
+			for(var i = 0; i < cPlaceTimeList.length; i++){
+				cPlaceTimeList[i].innerText = cPlaceTime;
+			}
+			var cTypeList = $("[name=cType]");
+			for(var i = 0; i < cTypeList.length; i++){
+				cTypeList[i].innerText = cType;
+			}
+			$("[name=cSex]")[0].innerText = cSex;
+			$("[name=cAge]")[0].innerText = cAge;
+			$("[name=cProject]")[0].innerText = cProject;
+			$("[name=cEarnest]")[0].innerText = cEarnest;
+			$("[name=cRemark]")[0].innerText = cRemark;
 
-        //转诊记录
-        table.render({
-            elem: '#referral'
-            ,height: 350
-            ,url: '../referral/queryCRByCrCId?crCId='+cId
-            ,id: 'referral' //表格id
-            ,page: true //开启分页
-            ,limit: 5 //每页显示条数
-            ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
-            ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-            ,cols: [
-                [
-                    {field:'crOldHospital', title: '上次门诊'}
-                    ,{field:'crCause', title: '转诊原因'}
-                    ,{field:'crHospital', title: '本次门诊'}
-                ]
-            ]
-        });
+            //表格重载
+            function tableReload(){
+                table.reload('appointment', {
+                    url: '/appointment/queryAByACId?aCId='+cId
+                });
+            }
 
-        //成交记录
-        table.render({
-            elem: '#success'
-            ,height: 350
-            ,url: '../success/queryCSByCsCId?csCId='+cId
-            ,id: 'success' //表格id
-            ,page: true //开启分页
-            ,limit: 5 //每页显示条数
-            ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
-            ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-            ,cols: [
-                [
-                    {field:'csHospital', title: '成交门诊'}
-                    ,{field:'csMajor', title: '成交主诉'}
-                    ,{field:'csMajorsum', title: '主诉金额'}
-                    ,{field:'csElse', title: '成交其他'}
-                    ,{field:'csElsesum', title: '其他金额'}
-                    ,{field:'csSum', title: '成交总金额'}
-                    ,{field:'csPaysum', title: '客户支付金额'}
-                    ,{field:'csFeedback', title: '门诊反馈'}
-                ]
-            ]
-        });
+			//预约记录
+			table.render({
+				elem: '#appointment'
+				,url: '/appointment/queryAByACId?aCId='+cId
+				,id: 'appointment' //表格id
+				,page: true //开启分页
+				,limit: 5 //每页显示条数
+				,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
+                ,toolbar: '#toolbarDemo' //编辑、删除工具栏
+				,cols: [
+					[
+						{type: 'checkbox', fixed: 'left'}
+						,{field:'aId', title: '编号'}
+						,{field:'hospital', title: '预约门诊'}
+						,{field:'aTime', title: '预约时间', sort: true}
+						,{field:'aType', title: '预约类型'}
+					]
+				]
+			});
 
-    });
-</script>
+			//预约记录监听头工具栏事件
+			table.on('toolbar(appointment)', function(obj){
+				var checkStatus = table.checkStatus(obj.config.id)
+					,data = checkStatus.data; //获取选中的数据
+				switch(obj.event){
+					case 'refresh':
+					    tableReload();
+					    break;
+					case 'edit':
+						if(data.length === 0){
+							layer.msg('请选择一行');
+						} else if(data.length > 1){
+							layer.msg('只能同时编辑一个');
+						} else {
+                            //弹出编辑页面
+                            var edit = layer.open({
+                                type: 2, //层类型，iframe
+                                title: '编辑客户预约',
+                                content: ['/appointment/queryAByAId?aId=' + checkStatus.data[0].aId],
+                                area: ['500px', '450px'],
+                                resize: false,
+                                btn: '确定',
+                                btn1: function (index, layero) {
+                                    var body = layer.getChildFrame('body', index);
+                                    //获取值
+                                    var aCId = $(body).find("#aCId").val();
+                                    var aTime = $(body).find("#aTime").val();
+                                    var aHId = $(body).find("#aHId").val();
+                                    var aTypeId = $(body).find("#aTypeId").val();
+
+                                    if (aTime != '') {
+                                        $.post("/appointment/editAByAId?aId=" + checkStatus.data[0].aId,
+											{aCId:aCId, aTime: aTime, aHId:aHId, aTypeId:aTypeId},
+                                            function (obj) {
+                                                if (obj.code == 0) {
+                                                    layer.msg(obj.msg, {time: 500}, function () {
+                                                        layer.close(edit);
+                                                        tableReload();
+                                                    });
+                                                } else {
+                                                    layer.msg(obj.msg)
+                                                }
+                                            }
+                                        );
+                                    } else {
+                                        layer.msg('请输入预约时间');
+                                    }
+                                },
+                                cancel: function(index, layero){
+                                    layer.close(index);
+                                }
+                            });
+						}
+						break;
+					case 'delete':
+						if(data.length === 0){
+							layer.msg('请选择一行');
+						} else {
+							layer.confirm('真的删除行么', function(){
+                                $.get("/appointment/delAByAId?aId=" + checkStatus.data[0].aId, function(obj){
+                                    if (obj.code == 0) {
+                                        layer.msg(obj.msg, {time: 500}, function () {
+                                            tableReload();
+                                        });
+                                    } else {
+                                        layer.msg(obj.msg)
+                                    }
+                                });
+							});
+						}
+						break;
+				};
+			});
+
+			//成交记录
+			table.render({
+				elem: '#test',
+				url: 't.json', //json文件地址
+				toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
+				defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+					title: '提示',
+					layEvent: 'LAYTABLE_TIPS',
+					icon: 'layui-icon-tips'
+				}],
+				title: '成交信息表',
+				cols: [
+					[{
+						type: 'checkbox',
+						fixed: 'left'
+					} //头部工具栏
+						, {
+						field: 's_id',
+						title: 'ID',
+						event: 'collapse',
+						width: 80,
+						unresize: true,
+						sort: true,
+						templet: function(d) {
+							return '<div style="position: relative;\n' + '    padding: 0 10px 0 20px;">' + d.s_id +
+								'<i	style="left: 0px;" lay-tips="展开" class="layui-icon layui-colla-icon layui-icon-right"></i></div>'
+						}
+					} //客户id
+						, {
+						field: 's_c_name',
+						title: '用户名',
+						width: 90,
+						edit: 'text'
+					} //客户姓名
+						, {
+						field: 's_c_tel',
+						title: '电话',
+						width: 150,
+						edit: 'text',
+						sort: true
+					} //客户电话
+						, {
+						field: 's_message',
+						title: '成交信息',
+						width: 100
+					} //成交信息
+						, {
+						field: 's_sum',
+						title: '成交金额',
+						width: 100
+					} //成交金额
+						, {
+						field: 's_paysum',
+						title: '已交金额',
+						width: 100,
+						sort: true
+					} //已交金额
+						, {
+						field: 's_remake',
+						title: '成交备注',
+						width: 250
+					} //成交备注
+						, {
+						field: 's_time',
+						title: '成交时间',
+						width: 200
+					} //成交时间
+						, {
+						fixed: 'right',
+						title: '工具',
+						width: 150,
+						align: 'center',
+						toolbar: '#barDemo'
+					} //侧边功能栏
+					]
+				],
+				page: true
+			});
+
+			//头工具栏事件
+			table.on('toolbar(test)', function(obj) {
+				var checkStatus = table.checkStatus(obj.config.id);
+				switch (obj.event) {
+					case 'getCheckData':
+						var data = checkStatus.data;
+						layer.alert(JSON.stringify(data));
+						break;
+					case 'getCheckLength':
+						var data = checkStatus.data;
+						layer.msg('选中了：' + data.length + ' 个');
+						break;
+					case 'isAll':
+						layer.msg(checkStatus.isAll ? '全选' : '未全选');
+						break;
+
+					//自定义头工具栏右侧图标 - 提示
+					case 'LAYTABLE_TIPS':
+						layer.alert('这是工具栏右侧自定义的一个图标按钮');
+						break;
+				};
+			});
+
+			//监听行工具事件
+			table.on('tool(test)', function(obj) {
+				var data = obj.data;
+				//console.log(obj)
+				if (obj.event == 'collapse') {
+					var trObj = layui.$(this).parent('tr'); //当前行
+					var accordion = true //开启手风琴，那么在进行折叠操作时，始终只会展现当前展开的表格。
+					var content = '<table></table>' //内容
+				}
+				if (obj.event === 'del') {
+					layer.confirm('真的删除行么', function(index) {
+						obj.del();
+						layer.close(index);
+					});
+				} else if (obj.event === 'edit') {
+					layer.prompt({
+						formType: 2,
+						value: data.email
+					}, function(value, index) {
+						obj.update({
+							email: value
+						});
+						layer.close(index);
+					});
+				}
+
+			});
+
+		});
+	</script>
+
 </body>
 </html>

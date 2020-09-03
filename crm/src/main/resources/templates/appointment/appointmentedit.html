@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br /><br /><br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户姓名</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="aCId" th:value="${a.aCId}">
+                <input type="text" class="layui-input" id="cName"
+                       th:value="${a.cName}" readonly>
+            </div>
+        </div>
+        <br />
+        <div class="layui-form-item">
+            <label class="layui-form-label">预约时间</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="time" th:value="${a.aTime}">
+                <input type="text" id="aTime" placeholder="请输入预约时间"
+                       autocomplete="off" class="layui-input" readonly>
+            </div>
+        </div>
+        <br />
+        <div class="layui-form-item">
+            <label class="layui-form-label">预约门诊</label>
+            <input type="hidden" id="hId" th:value="${a.aHId}">
+            <div class="layui-input-block">
+                <select id="aHId" lay-verify="required">
+                </select>
+            </div>
+        </div>
+        <br />
+        <div class="layui-form-item">
+            <label class="layui-form-label">预约类型</label>
+            <input type="hidden" id="atId" th:value="${a.aTypeId}">
+            <div class="layui-input-block">
+                <select id="aTypeId" lay-verify="required">
+                </select>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+        //获得门诊编号和预约类型编号
+        var hId = $("#hId").val();
+        var atId = $("#atId").val();
+
+        ////改变时间格式 yyyy-MM-dd HH:mm:ss.0 改为 yyyy-MM-dd HH:mm:ss
+        var time = $("#time").val();
+        var aTime = time.substring(0, time.length - 2);
+        $("#aTime").val(aTime);
+
+        //获取所有门诊
+        $.get("/hospital/queryHospital", function (res){
+            //定义预约门诊下拉框内容
+            var html = "";
+            $.each(res.data, function (index, item) {
+                if(item.hId == hId){
+                    html += "<option value='" + item.hId + "' selected>" + item.hName + "</option>";
+                }else{
+                    html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
+                }
+            });
+            $("#aHId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        })
+
+        //获取所有预约类型
+        $.get("/atype/queryAtype", function (res){
+            //定义预约类型下拉框内容
+            var html = "";
+            $.each(res.data, function (index, item) {
+                if(item.atId == atId){
+                    html += "<option value='" + item.atId + "' selected>" + item.atType + "</option>";
+                }else{
+                    html += "<option value='" + item.atId + "'>" + item.atType + "</option>";
+                }
+            });
+            $("#aTypeId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        })
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#aTime' //指定元素
+            ,type: 'datetime' //时间格式
+            ,trigger: 'click' //采用click自动弹出
+        });
+
+    });
+
+</script>
+</body>
+</html>

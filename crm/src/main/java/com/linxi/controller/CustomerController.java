@@ -2,27 +2,19 @@ package com.linxi.controller;
 
 import com.linxi.entity.Customer;
 import com.linxi.entity.Operating;
-import com.linxi.entity.User;
 import com.linxi.service.ICustomerService;
 import com.linxi.service.IOperatingService;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.standard.expression.Each;
 
-import javax.jws.WebParam;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
 import java.util.List;
-
-
-
 
 /**
  * @Author LongYi
@@ -32,11 +24,6 @@ import java.util.List;
 @RequestMapping("customer")
 @Api(value = "客户信息控制类", tags = "客户信息控制类")
 public class CustomerController {
-
-
-    //获取HttpServletRequest对象 主要用于设置或获取session
-    @Autowired
-    HttpServletRequest request;
 
     @Autowired
     private ICustomerService iCustomerService;
@@ -112,7 +99,8 @@ public class CustomerController {
     @PostMapping("saveCustomer")
     @ApiOperation(value = "新增客户信息")
     @ResponseBody
-    public DataResult saveCustomer(@ApiParam(name = "cName", value = "姓名", required = true) String cName,
+    public DataResult saveCustomer(@ApiParam(name = "uId", value = "操作用户编号", required = true) Integer uId,
+                                   @ApiParam(name = "cName", value = "姓名", required = true) String cName,
                                    @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
                                    @ApiParam(name = "cAge", value = "年龄", required = false) Integer cAge,
                                    @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
@@ -130,34 +118,18 @@ public class CustomerController {
     @GetMapping("delCByCId")
     @ApiOperation(value = "删除客户信息")
     @ResponseBody
-    public DataResult delCByCId(@ApiParam(value = "客户编号", required = true) Integer cId){
-        HttpSession session = request.getSession();
-
-        User user = (User) session.getAttribute("user");
-        try {
-            user.getuId();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new DataResult(400, "请重新登陆");
-        }
-            //new操作记录表
-            Operating operating = new Operating();
-            operating.setOpUId(user.getuId());
-            operating.setPoCId(cId);
-            operating.setOpName("删除了ID为"+cId+"的客户信息客户");
-
-            //删除
-            iCustomerService.delCByCId(cId);
-
-
-            //添加操作记录
-            Integer integer = iOperatingService.addOperatingRecord(operating);
-
-            return new DataResult(0, "删除成功");
-
-
-
-
+    public DataResult delCByCId(@ApiParam(value = "客户编号", required = true) Integer cId,
+                                @ApiParam(value = "用户编号", required = true) Integer uId){
+        //删除
+        iCustomerService.delCByCId(cId);
+        //new操作记录表
+        Operating operating = new Operating();
+        operating.setOpUId(uId);
+        operating.setPoCId(cId);
+        operating.setOpName("删除了ID为"+cId+"的客户");
+        //添加操作记录
+        Integer integer = iOperatingService.addOperatingRecord(operating);
+        return new DataResult(0, "删除成功");
     }
 
     @GetMapping("queryCByCId")
@@ -171,7 +143,8 @@ public class CustomerController {
     @PostMapping("editCByCId")
     @ApiOperation(value = "编辑客户信息")
     @ResponseBody
-    public DataResult editCByCId(@ApiParam(name = "cId", value = "编号", required = true) Integer cId,
+    public DataResult editCByCId(@ApiParam(name = "uId", value = "操作用户编号", required = true) Integer uId,
+                                 @ApiParam(name = "cId", value = "编号", required = true) Integer cId,
                                  @ApiParam(name = "cName", value = "姓名", required = true) String cName,
                                  @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
                                  @ApiParam(name = "cAge", value = "年龄", required = false) Integer cAge,
@@ -183,39 +156,25 @@ public class CustomerController {
                                  @ApiParam(name = "cTypeId", value = "状态", required = true) Integer cTypeId,
                                  @ApiParam(name = "cRemark", value = "备注", required = false) String cRemark,
                                  @ApiParam(name = "cMessage", value = "症状信息", required = false) String cMessage){
-
-        HttpSession session = request.getSession();
-
-        User user = (User) session.getAttribute("user");
-        try {
-            user.getuId();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new DataResult(400, "请重新登陆");
-        }
+        //创建客户
+        Customer c = new Customer(cId, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, cMessage, cTypeId);
+        //编辑客户
+        iCustomerService.editCByCId(c);
         //new操作记录表
         Operating operating = new Operating();
-        operating.setOpUId(user.getuId());
+        operating.setOpUId(uId);
         operating.setPoCId(cId);
-        operating.setOpName("编辑了ID为"+cId+"的客户信息客户");
-
-
-
-
-
-        Customer c = new Customer(cId, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, cMessage, cTypeId);
-        iCustomerService.editCByCId(c);
+        operating.setOpName("编辑了ID为"+cId+"的客户");
         //添加操作记录
         Integer integer = iOperatingService.addOperatingRecord(operating);
-
         return new DataResult(0, "编辑成功");
     }
 
     @GetMapping("goDetail")
     @ApiOperation(value = "去客户信息详情页面")
     public String editCByCId(@ApiParam(value = "客户编号", required = true) Integer cId, ModelMap map){
-        Customer customer = iCustomerService.queryCByCId(cId);
-        map.addAttribute("customer", customer);
+        Customer c = iCustomerService.queryCByCId(cId);
+        map.addAttribute("customer", c);
         return "customer/customerdetail";
     }
 

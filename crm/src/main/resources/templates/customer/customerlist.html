@@ -23,7 +23,7 @@
 	<table class="layui-hide" id="tab" lay-filter="test" lay-data="{id: 'tab'}"></table>
 
 		<script type="text/html" id="toolbarDemo">
-			<div class="layui-inline" lay-event="refresh"><i class="layui-icon layui-icon-refresh-3"></i></div>
+			<div class="layui-inline" lay-event="refresh"><i class="layui-icon layui-icon-refresh-1"></i></div>
 			<div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
 		</script>
 
@@ -146,8 +146,8 @@
 
 				}
 
-				//弹出新增或修改页面
-                function popup(index, url) {
+				//处理弹出的新增或修改页面
+                function popup(ix, index, url) {
                     var body = layer.getChildFrame('body', index);
                     //获取值
                     var cName = $(body).find("#cName").val().trim();
@@ -194,11 +194,11 @@
                             }
 						}
                         if(verify){
-							$.post(url, {cName:cName, cSex:cSex, cAge:cAge, cTel:cTel, cProject:cProject,
+							$.post(url, {uId: uId, cName:cName, cSex:cSex, cAge:cAge, cTel:cTel, cProject:cProject,
 									cRemark:cRemark, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cTypeId:cTypeId},
 								function (obj) {
 									layer.msg(obj.msg, {time: 500}, function () {
-										layer.closeAll();
+										layer.close(ix);
 										tableReload();
 									});
 								}
@@ -212,7 +212,7 @@
                 //执行一个 table 实例
                 table.render({
                     elem: '#tab'
-                    ,height: 360
+                    ,height: 420
                     ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName //数据接口
                     ,title: '客户信息表' //表格名称
                     ,id: 'tab' //表格id
@@ -249,18 +249,18 @@
                     switch(obj.event){
                         case 'add':
                             //弹出新增页面
-                            layer.open({
+                            var ix = layer.open({
                                 type: 2, //层类型，iframe
                                 title: '新增客户',
                                 content: ['/customer/customersave'],
-                                area: ['1000px', '420px'],
+                                area: ['1000px', '450px'],
                                 resize: false,
                                 btn: '确定',
                                 btn1: function (index, layero) {
-                                    popup(index, "/customer/saveCustomer");
+                                    popup(ix, index, "/customer/saveCustomer");
                                 },
-                                cancel: function(layero,index){
-                                    layer.closeAll();
+                                cancel: function(index, layero){
+                                    layer.close(index);
                                 }
                             });
                             break;
@@ -276,7 +276,7 @@
                         ,layEvent = obj.event; //获得 lay-event 对应的值
                     if(layEvent === 'del'){
                         layer.confirm('真的删除行么', function(index){
-                            $.get("/customer/delCByCId?cId=" + data.cId, function(obj){
+                            $.get("/customer/delCByCId?cId=" + data.cId + "&uId=" + uId, function(obj){
                                 if (obj.code == 0) {
                                     layer.msg(obj.msg, {time: 500}, function () {
                                         tableReload();
@@ -288,18 +288,18 @@
                         });
                     } else if(layEvent === 'edit'){
 						//弹出编辑页面
-                        layer.open({
+                        var ix = layer.open({
                             type: 2, //层类型，iframe
                             title: '编辑客户',
                             content: ['/customer/queryCByCId?cId=' + data.cId],
-                            area: ['1000px', '420px'],
+                            area: ['1000px', '450px'],
                             resize: false,
                             btn: '确定',
                             btn1: function (index, layero) {
-                                popup(index, "/customer/editCByCId?cId=" + data.cId);
+                                popup(ix, index, "/customer/editCByCId?cId=" + data.cId + "&uId=" + uId);
                             },
-                            cancel: function(layero,index){
-                                layer.closeAll();
+                            cancel: function(index, layero){
+                                layer.close(index);
                             }
                         });
                     } else if(layEvent === 'detail'){
@@ -308,10 +308,10 @@
                             type: 2, //层类型，iframe
                             title: '查看详情', //标题
                             content: ['/customer/goDetail?cId=' + data.cId], //页面内容
-                            area: ['800px', '420px'], //宽高
+                            area: ['800px', '500px'], //宽高
                             resize: false, //不允许拉伸
-                            cancel: function(layero,index){
-                                layer.closeAll();
+                            cancel: function(index, layero){
+                                layer.close(index);
                             }
                         });
                     }
@@ -382,12 +382,12 @@
                                 screen("cPlaceTime", cPlaceTime, cPlaceTime);
                             }
                             //关闭弹出框
-                            layer.closeAll();
+                            layer.close(layer.index);
                             //根据筛选条件查询客户
                             tableReload();
                         },
                         cancel: function(layero,index){
-                            layer.closeAll();
+                            layer.close(layer.index);
                         }
                     });
                 });
