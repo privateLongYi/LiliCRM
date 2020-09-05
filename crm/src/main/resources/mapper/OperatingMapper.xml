@@ -21,4 +21,12 @@
 
   </insert>
 
+  <!--根据客户编号查询操作记录-->
+  <select id="queryOpByOpCId" resultMap="BaseResultMap">
+    SELECT op.*, u.u_name AS uName FROM operating op
+    LEFT JOIN user u ON op.op_u_id = u.u_id
+    WHERE op.op_c_id = #{opCId}
+    ORDER BY op.op_time DESC
+  </select>
+
 </mapper>

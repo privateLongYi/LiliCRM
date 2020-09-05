@@ -15,4 +15,18 @@
     <result column="pay_type_id" jdbcType="INTEGER" property="payTypeId" />
   </resultMap>
 
+  <!--根据成交客户编号查询支付记录-->
+  <select id="queryPByPaySId" resultMap="BaseResultMap">
+    SELECT p.*, c.c_name AS cName, pa.pay_type AS payType FROM payrecord p
+    LEFT JOIN success s ON p.pay_s_id = s.s_id
+    LEFT JOIN customer c ON s.s_c_id = c.c_id
+    LEFT JOIN paytype pa ON p.pay_type_id = pa.pay_id
+    WHERE p.pay_s_id = #{paySId}
+  </select>
+
+  <!--根据成交客户编号查询支付记录-->
+  <select id="getTotalByPaySId" resultType="Integer">
+    SELECT COUNT(*) FROM payrecord WHERE pay_s_id = #{paySId}
+  </select>
+
 </mapper>

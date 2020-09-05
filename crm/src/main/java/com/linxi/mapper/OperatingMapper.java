@@ -2,6 +2,8 @@ package com.linxi.mapper;
 
 import com.linxi.entity.Operating;
 
+import java.util.List;
+
 public interface OperatingMapper {
 
     /***
@@ -10,5 +12,8 @@ public interface OperatingMapper {
      * @return
      */
     Integer addOperatingRecord(Operating op);
+
+    //根据客户编号查询操作记录
+    List<Operating> queryOpByOpCId(Integer opCId);
 
 }

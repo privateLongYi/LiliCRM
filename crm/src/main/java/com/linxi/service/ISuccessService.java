@@ -1,10 +1,14 @@
-package com.linxi.mapper;
+package com.linxi.service;
 
 import com.linxi.entity.Success;
 
 import java.util.List;
 
-public interface SuccessMapper {
+/**
+ * @Author LongYi
+ * @create 2020/9/3 20:08
+ */
+public interface ISuccessService {
 
     //根据客户编号查询成交客户
     List<Success> querySBySCId(Integer sCId);

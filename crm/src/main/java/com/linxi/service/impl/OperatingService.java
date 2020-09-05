@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @author Arthas
  * @date 2020/8/23 20:45
@@ -22,5 +24,11 @@ public class OperatingService implements IOperatingService {
     @Override
     public Integer addOperatingRecord(Operating op) {
         return operatingMapper.addOperatingRecord(op);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Operating> queryOpByOpCId(Integer opCId) {
+        return operatingMapper.queryOpByOpCId(opCId);
     }
 }

@@ -13,8 +13,42 @@
     <result column="s_h_id" jdbcType="INTEGER" property="sHId" />
     <result column="s_sum" jdbcType="INTEGER" property="sSum" />
     <result column="s_paysum" jdbcType="INTEGER" property="sPaysum" />
+    <result column="s_time" jdbcType="TIMESTAMP" property="sTime" />
     <result column="s_message" jdbcType="LONGVARCHAR" property="sMessage" />
     <result column="s_remark" jdbcType="LONGVARCHAR" property="sRemark" />
   </resultMap>
+
+  <!--根据客户编号查询成交客户-->
+  <select id="querySBySCId" resultMap="BaseResultMap">
+    SELECT s.*, c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hospital FROM success s
+    LEFT JOIN customer c ON s.s_c_id = c.c_id
+    LEFT JOIN hospital h ON s.s_h_id = h.h_id
+    WHERE s.s_c_id = #{sCId}
+    ORDER BY s_time DESC
+  </select>
+
+  <!--根据客户编号查询成交客户总条数-->
+  <select id="getTotalBySCId" resultType="Integer">
+    SELECT COUNT(*) FROM success s WHERE s.s_c_id = #{sCId}
+  </select>
+
+  <!--根据成交客户编号删除成交客户-->
+  <delete id="delSBySId">
+    DELETE FROM success WHERE s_id = #{sId}
+  </delete>
+
+  <!--根据成交客户编号查询成交客户-->
+  <select id="querySBySId" resultMap="BaseResultMap">
+    SELECT s.*, c.c_name AS cName, h.h_name AS hospital FROM success s
+    LEFT JOIN customer c ON s.s_c_id = c.c_id
+    LEFT JOIN hospital h ON s.s_h_id = h.h_id
+    WHERE s.s_id = #{sId}
+  </select>
+
+  <!--根据成交客户编号编辑成交客户-->
+  <update id="editSBySId">
+    UPDATE success SET s_h_id = #{sHId}, s_message = #{sMessage}, s_sum = #{sSum},
+    s_paysum = #{sPaysum}, s_remark = #{sRemark} WHERE s_id = #{sId}
+  </update>
 
 </mapper>

@@ -15,4 +15,12 @@
     <result column="f_content" jdbcType="LONGVARCHAR" property="fContent" />
   </resultMap>
 
+  <!--根据客户编号查询客户跟进-->
+  <select id="queryFByFCId" resultMap="BaseResultMap">
+    SELECT f.*, ft.ft_type AS fType FROM follow f
+    LEFT JOIN ftype ft ON f.f_type_id = ft.ft_id
+    WHERE f.f_c_id = #{fCId}
+    ORDER BY f.f_time DESC
+  </select>
+
 </mapper>
