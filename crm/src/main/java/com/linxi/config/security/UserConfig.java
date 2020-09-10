@@ -31,7 +31,7 @@ public class UserConfig implements UserDetailsService {
         //查询用户
         com.linxi.entity.User user = iUserService.findByLoginName(username);
         //查询权限
-        List<RoleMenu> roleMenus = iRoleMenuService.queryRoleMenuByRoleId(user.getuRoleId());
+        List<RoleMenu> roleMenus = iRoleMenuService.queryRMByRId(user.getuRoleId());
         //查无此用户
         if(user == null){
             user.setuName("查无此用户");

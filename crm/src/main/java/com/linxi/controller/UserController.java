@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -71,6 +72,44 @@ public class UserController {
         user.setuPassword(passwordConfig.encode(user.getuPassword()));
         iUserService.saveUser(user);
         return new DataResult(0, "新增成功");
+    }
+
+    @GetMapping("goDetail")
+    @ApiOperation(value = "去查看用户详情界面")
+    public String goDetail(@ApiParam(name = "uId", value = "编号", required = true) Integer uId, ModelMap map){
+        User user = iUserService.queryUByUId(uId);
+        map.addAttribute("u", user);
+        return "user/userdetail";
+    }
+
+    @GetMapping("delUByUId")
+    @ApiOperation(value = "根据编号删除用户")
+    @ResponseBody
+    public DataResult delUByUId(@ApiParam(name = "uId", value = "编号", required = true) Integer uId){
+        iUserService.delUByUId(uId);
+        return new DataResult(0, "删除成功");
+    }
+
+    @GetMapping("queryUByUId")
+    @ApiOperation(value = "根据编号查询用户")
+    public String delUByUId(@ApiParam(name = "uId", value = "编号", required = true) Integer uId, ModelMap map){
+        User user = iUserService.queryUByUId(uId);
+        map.addAttribute("u", user);
+        return "user/useredit";
+    }
+
+    @PostMapping("editUByUId")
+    @ApiOperation(value = "根据编号编辑用户")
+    @ResponseBody
+    public DataResult editUByUId(@ApiParam(name = "uId", value = "编号", required = true) Integer uId,
+                                 @ApiParam(name = "uName", value = "用户名", required = true) String uName,
+                                 @ApiParam(name = "uPassword", value = "密码", required = true) String uPassword,
+                                 @ApiParam(name = "uRoleId", value = "角色编号", required = true) Integer uRoleId){
+        User user = new User(uId, uName, uPassword, uRoleId);
+        //MD5加密
+        user.setuPassword(passwordConfig.encode(user.getuPassword()));
+        iUserService.editUByUId(user);
+        return new DataResult(0, "编辑成功");
     }
 
 }

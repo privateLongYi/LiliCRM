@@ -1,5 +1,6 @@
 package com.linxi.config.security;
 
+import com.linxi.entity.Menu;
 import com.linxi.entity.RoleMenu;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -56,18 +57,18 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
     /**
      * 更新权限集合
      */
-    public void setRequestMap(List<RoleMenu> roleMenus){
+    public void setRequestMap(List<Menu> menus){
         Map<RequestMatcher, Collection<ConfigAttribute>> map = new ConcurrentHashMap<>();
-        for (RoleMenu roleMenu : roleMenus) {
-            String mName = roleMenu.getmName();
-            if (roleMenu.getmUrl() == null){ continue; }
-            for (RoleMenu rm : roleMenus){
-                if (rm.getmUrl() == null){ continue; }
-                Collection<ConfigAttribute> value = map.get(new AntPathRequestMatcher(rm.getmUrl()));
+        for (Menu menu : menus) {
+            String mName = menu.getmName();
+            if (menu.getmUrl() == null){ continue; }
+            for (Menu m : menus){
+                if (m.getmUrl() == null){ continue; }
+                Collection<ConfigAttribute> value = map.get(new AntPathRequestMatcher(m.getmUrl()));
                 if (StringUtils.isEmpty(value)){
                     ArrayList<ConfigAttribute> configs = new ArrayList<>();
                     configs.add(new SecurityConfig(mName));
-                    map.put(new AntPathRequestMatcher(rm.getmUrl()), configs);
+                    map.put(new AntPathRequestMatcher(m.getmUrl()), configs);
                 } else {
                     value.add(new SecurityConfig(mName));
                 }

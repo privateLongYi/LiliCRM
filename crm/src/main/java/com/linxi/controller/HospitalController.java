@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -34,6 +35,50 @@ public class HospitalController {
     public DataResult queryCByCId(){
         List<Hospital> hospitals = iHospitalService.queryHospital();
         return new DataResult(0, "操作成功", 0, hospitals);
+    }
+
+    @GetMapping("queryHPage")
+    @ApiOperation(value = "查询门诊")
+    @ResponseBody
+    public DataResult queryHPage(@ApiParam(name = "page", value = "页码", required = true) Integer page,
+                                     @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
+        List<Hospital> hospitals = iHospitalService.queryHPage((page - 1) * limit, limit);
+        Integer total = iHospitalService.getTotal();
+        return new DataResult(0, "操作成功", total, hospitals);
+    }
+
+    @PostMapping("saveHospital")
+    @ApiOperation(value = "新增门诊")
+    @ResponseBody
+    public DataResult saveHospital(@ApiParam(value = "门诊名称", required = true) String hName){
+        iHospitalService.saveHospital(hName);
+        return new DataResult(0, "新增成功");
+    }
+
+    @GetMapping("delHByHId")
+    @ApiOperation(value = "根据编号删除门诊")
+    @ResponseBody
+    public DataResult delHByHId(@ApiParam(value = "编号", required = true) Integer hId){
+        iHospitalService.delHByHId(hId);
+        return new DataResult(0, "删除成功");
+    }
+
+    @GetMapping("queryHByHId")
+    @ApiOperation(value = "根据编号查询门诊")
+    public String queryHByHId(@ApiParam(value = "编号", required = true) Integer hId, ModelMap map){
+        Hospital hospital = iHospitalService.queryHByHId(hId);
+        map.addAttribute("hospital", hospital);
+        return "hospital/hospitaledit";
+    }
+
+    @PostMapping("editHByHId")
+    @ApiOperation(value = "根据编号编辑门诊")
+    @ResponseBody
+    public DataResult editHByHId(@ApiParam(value = "编号", required = true) Integer hId,
+                                      @ApiParam(value = "门诊名称", required = true) String hName){
+        Hospital hospital = new Hospital(hId, hName);
+        iHospitalService.editHByHId(hospital);
+        return new DataResult(0, "编辑成功");
     }
 
 }

@@ -12,4 +12,34 @@
     <result column="st_type" jdbcType="VARCHAR" property="stType" />
   </resultMap>
 
+  <!--查询成交类型-->
+  <select id="queryStypePage" resultMap="BaseResultMap">
+    SELECT * FROM stype limit #{page}, #{limit}
+  </select>
+
+  <!--查询成交类型总条数-->
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM stype
+  </select>
+
+  <!--新增成交类型-->
+  <insert id="saveStype">
+    INSERT INTO stype(st_type) VALUES (#{stType})
+  </insert>
+
+  <!--根据编号删除成交类型-->
+  <delete id="delStypeByStId">
+    DELETE FROM stype WHERE st_id = #{stId}
+  </delete>
+
+  <!--根据编号查询成交类型-->
+  <select id="queryStypeByStId" resultMap="BaseResultMap">
+    SELECT * FROM stype WHERE st_id = #{stId}
+  </select>
+
+  <!--根据编号编辑成交类型-->
+  <update id="editStypeByStId">
+    UPDATE stype SET st_type = #{stType} WHERE st_id = #{stId}
+  </update>
+
 </mapper>

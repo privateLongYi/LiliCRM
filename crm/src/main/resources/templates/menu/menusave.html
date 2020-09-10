@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单名称</label>
+            <div class="layui-input-block">
+                <input type="text" id="mName" placeholder="请输入菜单名称"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单路径</label>
+            <div class="layui-input-block">
+                <input type="text" id="mUrl" placeholder="请输入菜单路径"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">父级菜单</label>
+            <div class="layui-input-block">
+                <select id="mParentId" lay-filter="change">
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单类型</label>
+            <div class="layui-input-block">
+                <input type="text" id="mType" class="layui-input" value="父级" readonly>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+        //查询父级菜单
+        $.get("/menu/queryMParent", function(obj){
+            //定义父级菜单下拉框内容
+            var html = "";
+            $.each(obj.data, function (index, item) {
+                html += "<option value='" + item.mId + "'>" + item.mName + "</option>";
+            });
+            $("#mParentId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        });
+
+        //下拉框改变事件
+        form.on('select(change)', function(data){
+            //改变客户状态
+            if($("#mParentId").val() != ""){
+                $("#mType").val("子级");
+            }else{
+                $("#mType").val("父级");
+            }
+        })
+
+    });
+
+</script>
+</body>
+</html>

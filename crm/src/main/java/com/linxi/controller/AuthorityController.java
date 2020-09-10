@@ -21,20 +21,32 @@ import java.util.List;
  * @create 2020/8/24 20:02
  */
 @Controller
-@RequestMapping("menu")
+@RequestMapping("authority")
 @Api(value = "权限控制类", tags = "权限控制类")
 public class AuthorityController {
 
     @Autowired
     private IRoleMenuService iRoleMenuService;
 
-    @GetMapping("queryRoleMenuByRoleId")
-    @ApiOperation(value = "查询权限")
+    @GetMapping("queryRMByRId")
+    @ApiOperation(value = "根据角色编号查询权限")
     @ResponseBody
-    public DataResult queryRoleMenuByRoleId(@ApiParam(value = "用户编号", required = true) Integer roleId){
-        //根据用户编号查询权限
-        List<RoleMenu> roleMenus = iRoleMenuService.queryRoleMenuByRoleId(roleId);
+    public DataResult queryRMByRId(@ApiParam(value = "角色编号", required = true) Integer rId){
+        List<RoleMenu> roleMenus = iRoleMenuService.queryRMByRId(rId);
         return new DataResult(0, "操作成功", 0, roleMenus);
+    }
+
+    @GetMapping("editRMByRId")
+    @ApiOperation(value = "根据角色编号编辑权限")
+    @ResponseBody
+    public DataResult editRMByRId(@ApiParam(value = "角色编号", required = true) Integer rId,
+                                  @ApiParam(value = "菜单编号列表", required = true) String menuList){
+        iRoleMenuService.delRMByRId(rId);
+        String[] list = menuList.split(",");
+        for (String s : list) {
+            iRoleMenuService.saveRoleMenu(rId, Integer.parseInt(s));
+        }
+        return new DataResult(0, "操作成功");
     }
 
 }

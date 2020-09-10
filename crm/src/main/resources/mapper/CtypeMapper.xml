@@ -17,4 +17,34 @@
     SELECT * FROM ctype
   </select>
 
+  <!--查询客户状态-->
+  <select id="queryCtypePage" resultMap="BaseResultMap">
+    SELECT * FROM ctype limit #{page}, #{limit}
+  </select>
+
+  <!--查询客户状态总条数-->
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM ctype
+  </select>
+
+  <!--新增客户状态-->
+  <insert id="saveCtype">
+    INSERT INTO ctype(ct_type) VALUES (#{ctType})
+  </insert>
+
+  <!--根据编号删除客户状态-->
+  <delete id="delCtypeByCtId">
+    DELETE FROM ctype WHERE ct_id = #{ctId}
+  </delete>
+
+  <!--根据编号查询客户状态-->
+  <select id="queryCtypeByCtId" resultMap="BaseResultMap">
+    SELECT * FROM ctype WHERE ct_id = #{ctId}
+  </select>
+
+  <!--根据编号编辑客户状态-->
+  <update id="editCtypeByCtId">
+    UPDATE ctype SET ct_type = #{ctType} WHERE ct_id = #{ctId}
+  </update>
+
 </mapper>

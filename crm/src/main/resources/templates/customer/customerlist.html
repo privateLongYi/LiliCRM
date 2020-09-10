@@ -142,6 +142,9 @@
                         ,where: {
                             param: param
                         }
+                        ,page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
                     });
 
 				}
@@ -173,24 +176,28 @@
 						if(cName.length > 6){
 							layer.msg("姓名长度不能大于6位");
 							verify = false;
+                            return;
 						}
                         //验证年龄格式
                         if(cAge != ''){
                             if(cAge <= 0 || cAge >= 150){
                                 layer.msg("年龄必须大于0小于150");
                                 verify = false;
+                                return;
                             }
 						}
                         //验证电话格式
                         if(!(/^1[3456789]\d{9}$/.test(cTel))){
                             layer.msg("手机号码格式错误");
                             verify = false;
+                            return;
                         }
                         //验证定金格式
 						if(cEarnest != ''){
                             if(cEarnest < 0){
                                 layer.msg("定金不能为负数");
                                 verify = false;
+                                return;
                             }
 						}
                         if(verify){

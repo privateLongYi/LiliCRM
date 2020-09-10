@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+	</head>
+	<body>
+
+	<br>
+
+	<div id="screen">
+		根据角色名：
+		<div class="layui-inline">
+			<input class="layui-input" id="rName" autocomplete="off">
+		</div>
+		<button class="layui-btn search">搜索</button>
+	</div>
+
+	<!-- 数据表格 -->
+	<table class="layui-hide" id="tab" lay-filter="test" lay-data="{id: 'tab'}"></table>
+
+		<script type="text/html" id="toolbarDemo">
+			<div class="layui-inline" lay-event="refresh"><i class="layui-icon layui-icon-refresh-3"></i></div>
+			<div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
+		</script>
+
+		<script type="text/html" id="barDemo">
+			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="setting">设定</a>
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+		</script>
+
+		<script th:src="@{/layui/layui.js}"></script>
+
+		<script>
+
+            layui.use(['laydate', 'laypage', 'layer', 'table', 'upload', 'element', 'form'], function(){
+                var laydate = layui.laydate //日期
+                    ,laypage = layui.laypage //分页
+                    ,layer = layui.layer //弹层
+                    ,table = layui.table //表格
+                    ,upload = layui.upload //上传
+                    ,element = layui.element //元素操作
+                    ,$ = layui.jquery //jQuery
+					,form = layui.form //表单
+
+				//为条件搜索按钮增加点击事件
+				$(".search").on("click", function(data){
+					tableReload();
+				});
+
+                //表格重载
+				function tableReload(){
+                    //获取筛选条件
+                    var rName = $("#rName").val();
+					//根据筛选条件查询
+                    table.reload('tab', {
+                        url: '/role/queryRByRName'
+                        ,where: {
+                            rName: rName
+                        }
+                        ,page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    });
+				}
+
+				//弹出新增或修改页面
+                function popup(index, url) {
+                    var body = layer.getChildFrame('body', index);
+                    //获取值
+                    var rName = $(body).find("#rName").val();
+                    //声明格式是否正确
+                    var verify = true;
+                    if (rName.trim() == '' || rName.trim() == ''){
+                        layer.msg("角色名不能为空");
+                        verify = false;
+                        return;
+					}
+					if(verify){
+						$.post(url, {rName:rName},
+							function (obj) {
+								layer.msg(obj.msg, {time: 500}, function () {
+									layer.closeAll();
+									tableReload();
+								});
+							}
+						);
+					}
+                }
+
+                //执行一个 table 实例
+                table.render({
+                    elem: '#tab'
+                    ,height: 420
+                    ,url: '/role/queryRByRName' //数据接口
+                    ,title: '角色表' //表格名称
+                    ,id: 'tab' //表格id
+                    ,page: true //开启分页
+                    ,limit: 5 //每页显示条数
+                    ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
+                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
+                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,cols: [ //表头
+                        [
+                            {field: 'rId', title: '编号', sort: true, align:'center'}
+                            ,{field: 'rName', title: '角色名', align:'center'}
+                            ,{fixed: 'right', align:'center', toolbar: '#barDemo'}
+                        ]
+                    ]
+                });
+
+                //监听头工具栏事件
+                table.on('toolbar(test)', function(obj){
+                    var checkStatus = table.checkStatus(obj.config.id)
+                        ,data = checkStatus.data; //获取选中的数据
+                    switch(obj.event){
+                        case 'add':
+                            //弹出新增页面
+                            layer.open({
+                                type: 2, //层类型，iframe
+                                title: '新增角色',
+                                content: ['/role/rolesave'],
+                                area: ['300px', '200px'],
+                                resize: false,
+                                btn: '确定',
+                                btn1: function (index, layero) {
+                                    popup(index, "/role/saveRole");
+                                },
+                                cancel: function(layero,index){
+                                    layer.closeAll();
+                                }
+                            });
+                            break;
+                        case 'refresh':
+                            tableReload();
+                            break;
+                    }
+                });
+
+                //监听行工具事件
+                table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                    var data = obj.data //获得当前行数据
+                        ,layEvent = obj.event; //获得 lay-event 对应的值
+                    if(layEvent === 'del'){
+                        layer.confirm('真的删除行么', function(index){
+                            $.get("/role/delRByRId?rId=" + data.rId, function(obj){
+                                if (obj.code == 0) {
+                                    layer.msg(obj.msg, {time: 500}, function () {
+                                        tableReload();
+                                    });
+                                } else {
+                                    layer.msg(obj.msg)
+                                }
+                            });
+                        });
+                    } else if(layEvent === 'edit'){
+						//弹出编辑页面
+                        layer.open({
+                            type: 2, //层类型，iframe
+                            title: '编辑角色',
+                            content: ['/role/queryRByRId?rId=' + data.rId],
+                            area: ['300px', '300px'],
+                            resize: false,
+                            btn: '确定',
+                            btn1: function (index, layero) {
+                                popup(index, "/role/editRByRId?rId=" + data.rId);
+                            },
+                            cancel: function(layero,index){
+                                layer.closeAll();
+                            }
+                        });
+                    } else if(layEvent === 'detail'){
+						//弹出详情页面
+                        layer.open({
+                            type: 2, //层类型，iframe
+                            title: '查看角色',
+                            content: ['/role/goDetail?rId=' + data.rId],
+                            area: ['300px', '300px'],
+                            resize: false,
+                            cancel: function(layero,index){
+                                layer.closeAll();
+                            }
+                        });
+                    } else if(layEvent === 'setting'){
+                        //弹出设定页面
+                        layer.open({
+                            type: 2, //层类型，iframe
+                            title: '设定角色',
+                            content: ['/role/rolesetting?rId=' + data.rId],
+                            area: ['700px', '500px'],
+                            resize: false,
+                            cancel: function(layero,index){
+                                layer.closeAll();
+                            }
+                        });
+                    }
+
+                });
+
+            });
+
+		</script>
+
+	</body>
+</html>

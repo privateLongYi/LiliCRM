@@ -91,13 +91,13 @@
         sessionStorage.setItem('rName', rName);
 
         //获取菜单列表
-        $.get("/menu/queryRoleMenuByRoleId?roleId="+uRoleId, function (obj) {
+        $.get("/authority/queryRMByRId?rId="+uRoleId, function (obj) {
                 //定义内容
                 var html = "";
                 var parent = obj.data;
                 var child = obj.data;
                 for(index in parent){
-                    if(parent[index].mParentId == null){
+                    if(parent[index].mParentId == 0){
                         html += "<li class='layui-nav-item'>" +
                             "       <a class='' href='javascript:;'>"+parent[index].mName+"</a>" +
                             "       <dl class='layui-nav-child'>";

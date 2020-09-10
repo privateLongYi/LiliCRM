@@ -17,4 +17,34 @@
     SELECT * FROM hospital
   </select>
 
+  <!--查询门诊-->
+  <select id="queryHPage" resultMap="BaseResultMap">
+    SELECT * FROM hospital limit #{page}, #{limit}
+  </select>
+
+  <!--查询门诊总条数-->
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM hospital
+  </select>
+
+  <!--新增门诊-->
+  <insert id="saveHospital">
+    INSERT INTO hospital(h_name) VALUES (#{hName})
+  </insert>
+
+  <!--根据编号删除门诊-->
+  <delete id="delHByHId">
+    DELETE FROM hospital WHERE h_id = #{hId}
+  </delete>
+
+  <!--根据编号查询门诊-->
+  <select id="queryHByHId" resultMap="BaseResultMap">
+    SELECT * FROM hospital WHERE h_id = #{hId}
+  </select>
+
+  <!--根据编号编辑门诊-->
+  <update id="editHByHId">
+    UPDATE hospital SET h_name = #{hName} WHERE h_id = #{hId}
+  </update>
+
 </mapper>

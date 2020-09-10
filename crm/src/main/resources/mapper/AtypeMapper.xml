@@ -17,4 +17,34 @@
     SELECT * FROM atype
   </select>
 
+  <!--查询预约类型-->
+  <select id="queryAtypePage" resultMap="BaseResultMap">
+    SELECT * FROM atype limit #{page}, #{limit}
+  </select>
+
+  <!--查询预约类型总条数-->
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM atype
+  </select>
+
+  <!--新增预约类型-->
+  <insert id="saveAtype">
+    INSERT INTO atype(at_type) VALUES (#{atType})
+  </insert>
+
+  <!--根据编号删除预约类型-->
+  <delete id="delAtypeByAtId">
+    DELETE FROM atype WHERE at_id = #{atId}
+  </delete>
+
+  <!--根据编号查询预约类型-->
+  <select id="queryAtypeByAtId" resultMap="BaseResultMap">
+    SELECT * FROM atype WHERE at_id = #{atId}
+  </select>
+
+  <!--根据编号编辑预约类型-->
+  <update id="editAtypeByAtId">
+    UPDATE atype SET at_type = #{atType} WHERE at_id = #{atId}
+  </update>
+
 </mapper>

@@ -12,4 +12,34 @@
     <result column="pay_type" jdbcType="VARCHAR" property="payType" />
   </resultMap>
 
+  <!--查询支付类型-->
+  <select id="queryPaytypePage" resultMap="BaseResultMap">
+    SELECT * FROM paytype limit #{page}, #{limit}
+  </select>
+
+  <!--查询支付类型总条数-->
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM paytype
+  </select>
+
+  <!--新增支付类型-->
+  <insert id="savePaytype">
+    INSERT INTO paytype(pay_type) VALUES (#{payType})
+  </insert>
+
+  <!--根据编号删除支付类型-->
+  <delete id="delPaytypeByPayId">
+    DELETE FROM paytype WHERE pay_id = #{payId}
+  </delete>
+
+  <!--根据编号查询支付类型-->
+  <select id="queryPaytypeByPayId" resultMap="BaseResultMap">
+    SELECT * FROM paytype WHERE pay_id = #{payId}
+  </select>
+
+  <!--根据编号编辑支付类型-->
+  <update id="editPaytypeByPayId">
+    UPDATE paytype SET pay_type = #{payType} WHERE pay_id = #{payId}
+  </update>
+
 </mapper>

@@ -132,7 +132,7 @@ class IndexController {
 		modelAndView.addObject( "user", user);
 
 		//登录用户菜单
-		List<RoleMenu> roleMenus = iRoleMenuService.queryRoleMenuByRoleId(user.getuRoleId());
+		List<RoleMenu> roleMenus = iRoleMenuService.queryRMByRId(user.getuRoleId());
 		modelAndView.addObject("roleMenus",roleMenus);
 
 		//后端公钥

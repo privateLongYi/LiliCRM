@@ -14,16 +14,21 @@
   </resultMap>
 
   <!--根据角色编号查询权限-->
-  <select id="queryRoleMenuByRoleId" resultMap="BaseResultMap">
-    SELECT rm.*, m.m_name AS mName, m.m_url AS mUrl, m.m_parent_id AS mParentId
+  <select id="queryRMByRId" resultMap="BaseResultMap">
+    SELECT rm.*, m.m_name AS mName, m.m_url AS mUrl, m.m_parent_id AS mParentId,
+    (SELECT COUNT(*) FROM menu me WHERE me.m_parent_id = rm.rm_m_id) AS childCount
     FROM role_menu rm INNER JOIN menu m ON rm.rm_m_id=m.m_id
-    WHERE rm.rm_r_id = #{roleId}
+    WHERE rm.rm_r_id = #{rId}
   </select>
 
-  <!--查询所有权限-->
-  <select id="queryRoleMenu" resultMap="BaseResultMap">
-    SELECT rm.*, m.m_name AS mName, m.m_url AS mUrl, m.m_parent_id AS mParentId
-    FROM role_menu rm INNER JOIN menu m ON rm.rm_m_id=m.m_id
-  </select>
+  <!--根据角色编号删除角色菜单-->
+  <delete id="delRMByRId">
+    DELETE FROM role_menu WHERE rm_r_id = #{rId}
+  </delete>
+
+  <!--新增角色菜单-->
+  <insert id="saveRoleMenu">
+    INSERT INTO role_menu(rm_r_id, rm_m_id) VALUES (#{rId}, #{mId})
+  </insert>
 
 </mapper>

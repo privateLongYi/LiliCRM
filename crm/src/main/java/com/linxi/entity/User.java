@@ -167,6 +167,13 @@ public class User implements Serializable {
         this.uRoleId = uRoleId;
     }
 
+    public User(Integer uId, String uName, String uPassword, Integer uRoleId) {
+        this.uId = uId;
+        this.uName = uName;
+        this.uPassword = uPassword;
+        this.uRoleId = uRoleId;
+    }
+
     @Override
     public String toString() {
         return "User{" +

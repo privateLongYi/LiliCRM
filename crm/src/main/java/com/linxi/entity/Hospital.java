@@ -76,4 +76,13 @@ public class Hospital implements Serializable {
     public void sethName(String hName) {
         this.hName = hName;
     }
+
+    public Hospital(Integer hId, String hName) {
+        this.hId = hId;
+        this.hName = hName;
+    }
+
+    public Hospital() {
+
+    }
 }

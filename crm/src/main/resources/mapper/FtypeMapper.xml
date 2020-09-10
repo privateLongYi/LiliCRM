@@ -12,4 +12,34 @@
     <result column="ft_type" jdbcType="VARCHAR" property="ftType" />
   </resultMap>
 
+  <!--查询回访类型-->
+  <select id="queryFtypePage" resultMap="BaseResultMap">
+    SELECT * FROM ftype limit #{page}, #{limit}
+  </select>
+
+  <!--查询回访类型总条数-->
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM ftype
+  </select>
+
+  <!--新增回访类型-->
+  <insert id="saveFtype">
+    INSERT INTO ftype(ft_type) VALUES (#{ftType})
+  </insert>
+
+  <!--根据编号删除回访类型-->
+  <delete id="delFtypeByFtId">
+    DELETE FROM ftype WHERE ft_id = #{ftId}
+  </delete>
+
+  <!--根据编号查询回访类型-->
+  <select id="queryFtypeByFtId" resultMap="BaseResultMap">
+    SELECT * FROM ftype WHERE ft_id = #{ftId}
+  </select>
+
+  <!--根据编号编辑回访类型-->
+  <update id="editFtypeByFtId">
+    UPDATE ftype SET ft_type = #{ftType} WHERE ft_id = #{ftId}
+  </update>
+
 </mapper>

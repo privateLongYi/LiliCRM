@@ -76,4 +76,13 @@ public class Paytype implements Serializable {
     public void setPayType(String payType) {
         this.payType = payType;
     }
+
+    public Paytype(Integer payId, String payType) {
+        this.payId = payId;
+        this.payType = payType;
+    }
+
+    public Paytype() {
+
+    }
 }

@@ -76,4 +76,12 @@ public class Atype implements Serializable {
     public void setAtType(String atType) {
         this.atType = atType;
     }
+
+    public Atype() {
+    }
+
+    public Atype(Integer atId, String atType) {
+        this.atId = atId;
+        this.atType = atType;
+    }
 }

@@ -76,4 +76,12 @@ public class Ctype implements Serializable {
     public void setCtType(String ctType) {
         this.ctType = ctType;
     }
+
+    public Ctype() {
+    }
+
+    public Ctype(Integer ctId, String ctType) {
+        this.ctId = ctId;
+        this.ctType = ctType;
+    }
 }

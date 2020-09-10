@@ -23,13 +23,17 @@ public class RoleMenuService implements IRoleMenuService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<RoleMenu> queryRoleMenuByRoleId(Integer roleId) {
-        return roleMenuMapper.queryRoleMenuByRoleId(roleId);
+    public List<RoleMenu> queryRMByRId(Integer rId) {
+        return roleMenuMapper.queryRMByRId(rId);
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public List<RoleMenu> queryRoleMenu() {
-        return roleMenuMapper.queryRoleMenu();
+    public void delRMByRId(Integer rId) {
+        roleMenuMapper.delRMByRId(rId);
+    }
+
+    @Override
+    public void saveRoleMenu(Integer rId, Integer mId) {
+        roleMenuMapper.saveRoleMenu(rId, mId);
     }
 }

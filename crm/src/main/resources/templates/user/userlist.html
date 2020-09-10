@@ -82,6 +82,9 @@
                             uName: uName,
                             uRoleId: uRoleId
                         }
+                        ,page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
                     });
 				}
 
@@ -98,25 +101,30 @@
                     if (uName == '' || uName.trim() == ''){
                         layer.msg("用户名不能为空");
                         verify = false;
+                        return;
 					} else {
                         //验证用户名格式
                         if(uName.length > 6){
                             layer.msg("用户名长度不能大于6位");
                             verify = false;
+                            return;
                         }
 					}
                     if (uPassword == '' || uPassword.trim() == ''){
                         layer.msg("密码不能为空");
                         verify = false;
+                        return;
                     }
                     if (uPassword2 == '' || uPassword2.trim() == ''){
                         layer.msg("确认密码不能为空");
                         verify = false;
+                        return;
                     }
 					//验证两次密码是否一致
 					if(uPassword != uPassword2){
 						layer.msg("两次密码不一致");
                         verify = false;
+                        return;
 					}
 					if(verify){
 						$.post(url, {uName:uName, uPassword:uPassword, uRoleId:uRoleId},
@@ -133,7 +141,7 @@
                 //执行一个 table 实例
                 table.render({
                     elem: '#tab'
-                    ,height: 360
+                    ,height: 420
                     ,url: '/user/queryUserByUNameAndRId' //数据接口
                     ,title: '用户表' //表格名称
                     ,id: 'tab' //表格id
@@ -201,8 +209,8 @@
                         layer.open({
                             type: 2, //层类型，iframe
                             title: '编辑客户',
-                            content: ['/user/queryuByUId?uId=' + data.uId],
-                            area: ['1000px', '420px'],
+                            content: ['/user/queryUByUId?uId=' + data.uId],
+                            area: ['400px', '330px'],
                             resize: false,
                             btn: '确定',
                             btn1: function (index, layero) {
@@ -213,9 +221,17 @@
                             }
                         });
                     } else if(layEvent === 'detail'){
-
-						location.href = "/user/goDetail?uId=" + data.uId;
-
+						//弹出详情页面
+                        layer.open({
+                            type: 2, //层类型，iframe
+                            title: '查看客户',
+                            content: ['/user/goDetail?uId=' + data.uId],
+                            area: ['350px', '250px'],
+                            resize: false,
+                            cancel: function(layero,index){
+                                layer.closeAll();
+                            }
+                        });
                     }
 
                 });

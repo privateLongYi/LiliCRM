@@ -34,4 +34,13 @@ public interface IUserService {
     //新增用户
     void saveUser(User user);
 
+    //根据编号删除用户
+    void delUByUId(Integer uId);
+
+    //根据编号查询用户
+    User queryUByUId(Integer uId);
+
+    //根据编号编辑用户
+    void editUByUId(User user);
+
 }

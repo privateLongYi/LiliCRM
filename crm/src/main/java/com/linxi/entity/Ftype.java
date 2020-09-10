@@ -76,4 +76,12 @@ public class Ftype implements Serializable {
     public void setFtType(String ftType) {
         this.ftType = ftType;
     }
+
+    public Ftype() {
+    }
+
+    public Ftype(Integer ftId, String ftType) {
+        this.ftId = ftId;
+        this.ftType = ftType;
+    }
 }

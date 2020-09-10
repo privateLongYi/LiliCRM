@@ -76,4 +76,13 @@ public class Stype implements Serializable {
     public void setStType(String stType) {
         this.stType = stType;
     }
+
+    public Stype(Integer stId, String stType) {
+        this.stId = stId;
+        this.stType = stType;
+    }
+
+    public Stype() {
+
+    }
 }

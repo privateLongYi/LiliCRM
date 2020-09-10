@@ -17,4 +17,45 @@
     SELECT * FROM role
   </select>
 
+  <!--根据角色名查询角色-->
+  <select id="queryRByRName" resultMap="BaseResultMap">
+    SELECT * FROM role
+    <where>
+      <if test="rName != null and rName != ''">
+        r_name = #{rName}
+      </if>
+    </where>
+    limit #{page}, #{limit}
+  </select>
+
+  <!--查询所有角色总条数-->
+  <select id="getTotalByRName" resultType="Integer">
+    SELECT COUNT(*) FROM role
+    <where>
+      <if test="rName != null and rName != ''">
+        r_name = #{rName}
+      </if>
+    </where>
+  </select>
+
+  <!--新增角色-->
+  <insert id="saveRole">
+    INSERT INTO role(r_name) VALUES (#{rName})
+  </insert>
+
+  <!--根据编号删除角色-->
+  <delete id="delRByRId">
+    DELETE FROM role WHERE r_id = #{rId}
+  </delete>
+
+  <!--根据编号查询角色-->
+  <select id="queryRByRId" resultMap="BaseResultMap">
+    SELECT * FROM role WHERE r_id = #{rId}
+  </select>
+
+  <!--根据编号编辑角色-->
+  <update id="editRByRId">
+    UPDATE role SET r_name = #{rName} WHERE r_id = #{rId}
+  </update>
+
 </mapper>

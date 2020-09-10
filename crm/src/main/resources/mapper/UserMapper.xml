@@ -64,4 +64,20 @@
     INSERT INTO user(u_name, u_password, u_role_id) VALUES (#{uName}, #{uPassword}, #{uRoleId})
   </insert>
 
+  <!--根据编号删除用户-->
+  <delete id="delUByUId">
+    DELETE FROM user WHERE u_id = #{uId}
+  </delete>
+
+  <!--根据编号查询用户-->
+  <select id="queryUByUId" resultMap="BaseResultMap">
+    SELECT * FROM user WHERE u_id = #{uId}
+  </select>
+
+  <!--根据编号编辑用户-->
+  <update id="editUByUId">
+    UPDATE user SET u_name = #{uName}, u_password = #{uPassword}, u_role_id = #{uRoleId}
+    WHERE u_id = #{uId}
+  </update>
+
 </mapper>

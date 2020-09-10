@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" id="uName" placeholder="请输入用户名"
+                       autocomplete="off" class="layui-input" th:value="${u.uName}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input type="text" id="uPassword" placeholder="请输入密码"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认密码</label>
+            <div class="layui-input-block">
+                <input type="text" id="uPassword2" placeholder="请输入密码"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="roleId" th:value="${u.uRoleId}">
+                <select id="uRoleId">
+                </select>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+        //获取角色编号
+        var roleId = $("#roleId").val();
+
+        //获取所有角色
+        $.get("/role/queryRole", function (res){
+            //定义角色下拉框内容
+            var html = "";
+            $.each(res.data, function (index, item) {
+                if(item.rId == roleId){
+                    html += "<option value='" + item.rId + "' selected>" + item.rName + "</option>";
+                }else{
+                    html += "<option value='" + item.rId + "'>" + item.rName + "</option>";
+                }
+            });
+            $("#uRoleId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        })
+
+    });
+
+</script>
+</body>
+</html>

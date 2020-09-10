@@ -1,6 +1,8 @@
 package com.linxi.config.security;
 
+import com.linxi.entity.Menu;
 import com.linxi.entity.RoleMenu;
+import com.linxi.service.IMenuService;
 import com.linxi.service.IRoleMenuService;
 import com.linxi.service.impl.RoleMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private LogoutHandlerConfig logoutHandlerConfig;
 
     @Autowired
-    private IRoleMenuService iRoleMenuService;
+    private IMenuService iMenuService;
 
     @Autowired
     private MyFilterInvocationSecurityMetadataSource myFilterInvocationSecurityMetadataSource;
@@ -127,8 +129,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DynamicallyUrlInterceptor dynamicallyUrlInterceptor(){
         //首次获取
-        List<RoleMenu> roleMenus = iRoleMenuService.queryRoleMenu();
-        myFilterInvocationSecurityMetadataSource.setRequestMap(roleMenus);
+        List<Menu> menus = iMenuService.queryMenuAll();
+        myFilterInvocationSecurityMetadataSource.setRequestMap(menus);
         //初始化拦截器并添加数据源
         DynamicallyUrlInterceptor interceptor = new DynamicallyUrlInterceptor();
         interceptor.setSecurityMetadataSource(myFilterInvocationSecurityMetadataSource);

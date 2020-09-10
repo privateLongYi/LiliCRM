@@ -56,4 +56,20 @@ public class UserService implements IUserService {
     public void saveUser(User user) {
         userMapper.saveUser(user);
     }
+
+    @Override
+    public void delUByUId(Integer uId) {
+        userMapper.delUByUId(uId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public User queryUByUId(Integer uId) {
+        return userMapper.queryUByUId(uId);
+    }
+
+    @Override
+    public void editUByUId(User user) {
+        userMapper.editUByUId(user);
+    }
 }

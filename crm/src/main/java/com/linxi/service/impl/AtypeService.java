@@ -26,4 +26,37 @@ public class AtypeService implements IAtypeService{
     public List<Atype> queryAtype() {
         return atypeMapper.queryAtype();
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Atype> queryAtypePage(Integer page, Integer limit) {
+        return atypeMapper.queryAtypePage(page, limit);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotal() {
+        return atypeMapper.getTotal();
+    }
+
+    @Override
+    public void saveAtype(String atType) {
+        atypeMapper.saveAtype(atType);
+    }
+
+    @Override
+    public void delAtypeByAtId(Integer atId) {
+        atypeMapper.delAtypeByAtId(atId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Atype queryAtypeByAtId(Integer atId) {
+        return atypeMapper.queryAtypeByAtId(atId);
+    }
+
+    @Override
+    public void editAtypeByAtId(Atype atype) {
+        atypeMapper.editAtypeByAtId(atype);
+    }
 }

@@ -27,4 +27,36 @@ public class HospitalService implements IHospitalService {
         return hospitalMapper.queryHospital();
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Hospital> queryHPage(Integer page, Integer limit) {
+        return hospitalMapper.queryHPage(page, limit);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotal() {
+        return hospitalMapper.getTotal();
+    }
+
+    @Override
+    public void saveHospital(String hName) {
+        hospitalMapper.saveHospital(hName);
+    }
+
+    @Override
+    public void delHByHId(Integer hId) {
+        hospitalMapper.delHByHId(hId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Hospital queryHByHId(Integer hId) {
+        return hospitalMapper.queryHByHId(hId);
+    }
+
+    @Override
+    public void editHByHId(Hospital hospital) {
+        hospitalMapper.editHByHId(hospital);
+    }
 }

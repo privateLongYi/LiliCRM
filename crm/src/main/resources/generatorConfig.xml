@@ -44,8 +44,9 @@
         </javaClientGenerator>
 
         <!--指定数据库表-->
-        <table tableName="user" domainObjectName="User"/>
+        <!--<table tableName="user" domainObjectName="User"/>
         <table tableName="role" domainObjectName="Role"/>
+        <table tableName="menu" domainObjectName="Menu"/>
         <table tableName="role_menu" domainObjectName="RoleMenu"/>
         <table tableName="customer" domainObjectName="Customer"/>
         <table tableName="follow" domainObjectName="Follow"/>
@@ -62,7 +63,7 @@
         <table tableName="atype" domainObjectName="Atype"/>
         <table tableName="stype" domainObjectName="Stype"/>
         <table tableName="ctype" domainObjectName="Ctype"/>
-        <table tableName="ftype" domainObjectName="Ftype"/>
+        <table tableName="ftype" domainObjectName="Ftype"/>-->
 
     </context>
 </generatorConfiguration>
