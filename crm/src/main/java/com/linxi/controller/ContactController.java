@@ -1,6 +1,5 @@
 package com.linxi.controller;
 
-
 import com.linxi.entity.Appointment;
 import com.linxi.entity.Customer;
 import com.linxi.entity.Operating;
@@ -28,10 +27,6 @@ import java.util.List;
 @Api(value = "待联系人控制类", tags = "待联系人控制类")
 public class ContactController {
 
-
-    /**
-     * 客户信息表
-     */
     @Autowired
     private ICustomerService iCustomerService;
 
@@ -86,13 +81,13 @@ public class ContactController {
             //操作记录表
             Operating operating = new Operating();
             operating.setOpUId(user.getuId());
-            operating.setPoCId(appoin.getaCId());
+            operating.setOpCId(appoin.getaCId());
 
             operating.setOpName("待联系更改为已预约");
             //新增预约客户
             iAppointmentService.addAppoint(appoin);
             //根据编号修改客户状态
-            iCustomerService.editCStatuByCId(appoin.getaCId(),4);
+            iCustomerService.editCTypeIdByCId(appoin.getaCId(),4);
             //添加操作记录
             Integer integer = iOperatingService.addOperatingRecord(operating);
 
@@ -108,20 +103,20 @@ public class ContactController {
                                         @ApiParam(name = "cstatu", value = "客户状态Id", required = true) Integer cstatu){
         HttpSession session = request.getSession();
 
-        if (session==null) return new DataResult(400, "请重新登陆");
+        if (session==null){return new DataResult(400, "请重新登陆");}
         User user = (User) session.getAttribute("user");
         if (user!=null){
             //操作记录表
             Operating operating = new Operating();
             operating.setOpUId(user.getuId());
-            operating.setPoCId(cid);
+            operating.setOpCId(cid);
             if (cstatu==3){
                 operating.setOpName("待联系更改为待预约");
             }else if(cstatu==4){
                 operating.setOpName("待联系更改为已预约");
             }
             //根据编号修改客户状态
-            iCustomerService.editCStatuByCId(cid,cstatu);
+            iCustomerService.editCTypeIdByCId(cid,cstatu);
             //添加操作记录
             Integer integer = iOperatingService.addOperatingRecord(operating);
 

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>新增未成交</title>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
 </head>
 <body>
@@ -12,21 +12,23 @@
     <br />
     <form class="layui-form" lay-filter="form">
         <div class="layui-form-item">
-            <label class="layui-form-label">编号</label>
+            <label class="layui-form-label">客户名称</label>
             <div class="layui-input-block">
-                <input type="text" readonly  class="layui-input" th:value="${u.uId}">
+                <input type="hidden" id="flCId" th:value="${cId}">
+                <input type="text" class="layui-input" th:value="${cName}" readonly>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">用户名</label>
+            <label class="layui-form-label">门诊名称</label>
             <div class="layui-input-block">
-                <input type="text" readonly  class="layui-input" th:value="${u.uName}">
+                <input type="hidden" id="flHId" th:value="${hId}">
+                <input type="text" class="layui-input" th:value="${hName}" readonly>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">角色</label>
+            <label class="layui-form-label">未成交原因</label>
             <div class="layui-input-block">
-                <input type="text" readonly class="layui-input" th:value="${u.rName}">
+                <textarea class="layui-textarea" id="flCause" autocomplete="off"></textarea>
             </div>
         </div>
     </form>

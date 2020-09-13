@@ -25,8 +25,8 @@
 
   <!-- 高级筛选加分页查询客户 -->
   <select id="queryCScreen" resultMap="BaseResultMap">
-    SELECT c.*, u.u_name AS uName, ct.ct_type AS cType, h.h_name AS hospital
-    FROM customer c
+    SELECT c.*, u.u_name AS uName, ct.ct_type AS cType, h.h_id AS hId, h.h_name AS hName,
+    a.a_time AS aTime FROM customer c
     LEFT JOIN `user` u ON c.c_u_id=u.u_id
     LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
     LEFT JOIN appointment a ON c.c_id=a.a_c_id
@@ -66,6 +66,7 @@
       <if test="cTypeId != null">
         AND ct.ct_id = #{cTypeId}
       </if>
+      AND a.a_time = (SELECT MAX(a_time) FROM appointment WHERE a_c_id = c.c_id)
     </where>
     ORDER BY c_place_time DESC
     limit #{page}, #{limit}
@@ -149,9 +150,9 @@
     WHERE c_id = #{cId}
   </update>
 
-  <!-- 根据编号编辑客户状态（已成交/未成交/未到店） -->
-  <update id="editCStatuByCId">
-    UPDATE customer SET c_type_id = #{cTypeId} WHERE c_id = #{ct_c_id}
+  <!-- 根据编号编辑客户状态 -->
+  <update id="editCTypeIdByCId">
+    UPDATE customer SET c_type_id = #{cTypeId} WHERE c_id = #{cId}
   </update>
 
 </mapper>

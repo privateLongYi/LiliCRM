@@ -9,7 +9,7 @@
       This element was generated on Thu Aug 20 21:32:10 CST 2020.
     -->
     <id column="op_id" jdbcType="INTEGER" property="opId" />
-    <result column="po_c_id" jdbcType="INTEGER" property="poCId" />
+    <result column="op_c_id" jdbcType="INTEGER" property="opCId" />
     <result column="op_u_id" jdbcType="INTEGER" property="opUId" />
     <result column="op_name" jdbcType="VARCHAR" property="opName" />
     <result column="op_time" jdbcType="TIMESTAMP" property="opTime" />
@@ -17,7 +17,7 @@
 
   <insert id="addOperatingRecord" >
 
- INSERT INTO `operating`( `po_c_id`, `op_u_id`, `op_name`, `op_time`) VALUES ( #{poCId} , #{opUId}, #{opName}, now());
+ INSERT INTO `operating`( `op_c_id`, `op_u_id`, `op_name`, `op_time`) VALUES ( #{opCId} , #{opUId}, #{opName}, now());
 
   </insert>
 

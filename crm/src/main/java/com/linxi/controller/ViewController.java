@@ -1,8 +1,10 @@
 package com.linxi.controller;
 
+import com.linxi.service.ICtypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Api(tags = "视图", description = "负责返回视图")
 @Controller
 public class ViewController {
+
+    @Autowired
+    private ICtypeService iCtypeService;
 
     @GetMapping("workbench")
     @ApiOperation(value = "工作台")
@@ -25,7 +30,17 @@ public class ViewController {
 
     @GetMapping("screen")
     @ApiOperation(value = "高级筛选")
-    public String screen(){return "screen/screen";}
+    public String screen(@ApiParam(name = "cType", value = "客户状态", required = true) String cType, ModelMap map){
+        if (cType != null) {
+            //根据客户状态查询编号
+            Integer cTypeId = iCtypeService.queryCtypeByCtType(cType);
+            map.addAttribute("cTypeId", cTypeId);
+            map.addAttribute("cType", cType);
+        } else {
+            map.addAttribute("cTypeId", 0);
+        }
+        return "screen/screen";
+    }
 
     @GetMapping("customer/customersave")
     @ApiOperation(value = "新增客户信息")
@@ -131,5 +146,71 @@ public class ViewController {
     @GetMapping("contact")
     @ApiOperation(value = "待联系客户管理")
     public String contact(){return "customer/contact";}
+
+    @GetMapping("awaitarrive")
+    @ApiOperation(value = "待到店客户列表")
+    public String awaitarrive(){return "customer/awaitarrivelist";}
+
+    @GetMapping("arrivesave")
+    @ApiOperation(value = "新增未到店客户")
+    public String arrivesave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                             @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
+                             @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
+                             @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
+                             ModelMap map){
+        map.addAttribute("cId", cId);
+        map.addAttribute("cName", cName);
+        map.addAttribute("hId", hId);
+        map.addAttribute("hName", hName);
+        return "customer/arrivesave";
+    }
+
+    @GetMapping("reroutesave")
+    @ApiOperation(value = "新增改约记录")
+    public String reroutesave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                              @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
+                              @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
+                              @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
+                              @ApiParam(name = "aTime", value = "上次预约时间", required = true) String aTime,
+                              ModelMap map){
+        map.addAttribute("cId", cId);
+        map.addAttribute("cName", cName);
+        map.addAttribute("hId", hId);
+        map.addAttribute("hName", hName);
+        map.addAttribute("aTime", aTime);
+        return "customer/reroutesave";
+    }
+
+    @GetMapping("failsave")
+    @ApiOperation(value = "新增未成交客户")
+    public String failsave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                           @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
+                           @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
+                           @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
+                           ModelMap map){
+        map.addAttribute("cId", cId);
+        map.addAttribute("cName", cName);
+        map.addAttribute("hId", hId);
+        map.addAttribute("hName", hName);
+        return "customer/failsave";
+    }
+
+    @GetMapping("successsave")
+    @ApiOperation(value = "新增成交客户")
+    public String successsave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                              @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
+                              @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
+                              @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
+                              ModelMap map){
+        map.addAttribute("cId", cId);
+        map.addAttribute("cName", cName);
+        map.addAttribute("hId", hId);
+        map.addAttribute("hName", hName);
+        return "customer/successsave";
+    }
+
+    @GetMapping("arrive")
+    @ApiOperation(value = "未到店客户列表")
+    public String arrive(){return "customer/arrivelist";}
 
 }

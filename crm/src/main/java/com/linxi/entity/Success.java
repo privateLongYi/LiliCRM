@@ -270,8 +270,9 @@ public class Success implements Serializable {
     public Success() {
     }
 
-    public Success(Integer sId, Integer sHId, String sMessage, Integer sSum, Integer sPaysum, String sRemark) {
+    public Success(Integer sId, Integer sCId, Integer sHId, String sMessage, Integer sSum, Integer sPaysum, String sRemark) {
         this.sId = sId;
+        this.sCId = sCId;
         this.sHId = sHId;
         this.sMessage = sMessage;
         this.sSum = sSum;

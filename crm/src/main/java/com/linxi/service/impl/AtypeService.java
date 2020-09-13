@@ -59,4 +59,10 @@ public class AtypeService implements IAtypeService{
     public void editAtypeByAtId(Atype atype) {
         atypeMapper.editAtypeByAtId(atype);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryAByAType(String atType) {
+        return atypeMapper.queryAByAType(atType);
+    }
 }

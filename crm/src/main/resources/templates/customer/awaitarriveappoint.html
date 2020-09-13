@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>待到店改约</title>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
 </head>
 <body>
@@ -12,15 +12,23 @@
     <br />
     <form class="layui-form" lay-filter="form">
         <div class="layui-form-item">
-            <label class="layui-form-label">编号</label>
+            <label class="layui-form-label">客户名称</label>
             <div class="layui-input-block">
-                <input type="text" readonly class="layui-input" th:value="${r.rId}">
+                <input type="hidden" id="arCId" th:value="${cId}">
+                <input type="text" class="layui-input" th:value="${cName}" readonly>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">角色名</label>
+            <label class="layui-form-label">门诊名称</label>
             <div class="layui-input-block">
-                <input type="text" readonly class="layui-input" th:value="${r.rName}">
+                <input type="hidden" id="arHId" th:value="${hId}">
+                <input type="text" class="layui-input" th:value="${hName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">未到店原因</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="arCause" autocomplete="off"></textarea>
             </div>
         </div>
     </form>
@@ -28,7 +36,6 @@
 </div>
 <script th:src="@{/layui/layui.js}"></script>
 <script>
-
     //加载form、laydate
     layui.use(['form', 'laydate'], function(){
         var form = layui.form

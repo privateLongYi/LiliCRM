@@ -142,4 +142,15 @@ public class Fail implements Serializable {
     public void setFlCause(String flCause) {
         this.flCause = flCause;
     }
+
+    public Fail(Integer flId, Integer flCId, Integer flHId, String flCause) {
+        this.flId = flId;
+        this.flCId = flCId;
+        this.flHId = flHId;
+        this.flCause = flCause;
+    }
+
+    public Fail() {
+
+    }
 }

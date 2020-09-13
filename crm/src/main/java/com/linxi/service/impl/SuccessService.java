@@ -48,4 +48,9 @@ public class SuccessService implements ISuccessService{
     public void editSBySId(Success success) {
         successMapper.editSBySId(success);
     }
+
+    @Override
+    public void saveSuccess(Success success) {
+        successMapper.saveSuccess(success);
+    }
 }

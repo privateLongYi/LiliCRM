@@ -47,4 +47,9 @@
     UPDATE atype SET at_type = #{atType} WHERE at_id = #{atId}
   </update>
 
+  <!--根据预约类型查询编号-->
+  <select id="queryAByAType" resultType="Integer">
+    SELECT at_id FROM atype WHERE at_type = #{atType}
+  </select>
+
 </mapper>

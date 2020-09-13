@@ -57,7 +57,7 @@ public interface ICustomerService {
     void editCByCId(Customer c);
 
     //根据编号修改客户状态
-    void editCStatuByCId(Integer ctCId, Integer cStatu);
+    void editCTypeIdByCId(@Param("cId") Integer cId, @Param("cTypeId") Integer cTypeId);
 
     /**
      * 根据客户类型 获得客户总数量

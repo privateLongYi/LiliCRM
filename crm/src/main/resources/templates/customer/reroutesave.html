@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增改约记录</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="reCId" th:value="${cId}">
+                <input type="text" class="layui-input" th:value="${cName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">门诊名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="reHId" th:value="${hId}">
+                <input type="text" class="layui-input" th:value="${hName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">上次预约时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input"
+                       id="reLastTime" th:value="${aTime}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">本次预约时间</label>
+            <div class="layui-input-block">
+                <input type="text" id="reTime" readonly placeholder="请输入本次预约时间"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">改约原因</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="reCause" autocomplete="off"></textarea>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#reTime' //指定元素
+            ,type: 'datetime' //时间格式
+            ,trigger: 'click' //采用click弹出
+        });
+
+    });
+
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.linxi.controller;
 
 import com.linxi.entity.Customer;
 import com.linxi.entity.Operating;
+import com.linxi.service.ICtypeService;
 import com.linxi.service.ICustomerService;
 import com.linxi.service.IOperatingService;
 import com.linxi.util.DataResult;
@@ -30,6 +31,9 @@ public class CustomerController {
 
     @Autowired
     private IOperatingService iOperatingService;
+
+    @Autowired
+    private ICtypeService iCtypeService;
 
     @GetMapping("queryCScreen")
     @ApiOperation(value = "查询客户信息")
@@ -119,16 +123,13 @@ public class CustomerController {
     @ApiOperation(value = "删除客户信息")
     @ResponseBody
     public DataResult delCByCId(@ApiParam(value = "客户编号", required = true) Integer cId,
+                                @ApiParam(value = "客户名称", required = true) String cName,
                                 @ApiParam(value = "用户编号", required = true) Integer uId){
         //删除
         iCustomerService.delCByCId(cId);
-        //new操作记录表
-        Operating operating = new Operating();
-        operating.setOpUId(uId);
-        operating.setPoCId(cId);
-        operating.setOpName("删除了ID为"+cId+"的客户");
-        //添加操作记录
-        Integer integer = iOperatingService.addOperatingRecord(operating);
+        //新增操作记录
+        Operating operating = new Operating(cId, uId, cName);
+        iOperatingService.addOperatingRecord(operating);
         return new DataResult(0, "删除成功");
     }
 
@@ -160,13 +161,9 @@ public class CustomerController {
         Customer c = new Customer(cId, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, cMessage, cTypeId);
         //编辑客户
         iCustomerService.editCByCId(c);
-        //new操作记录表
-        Operating operating = new Operating();
-        operating.setOpUId(uId);
-        operating.setPoCId(cId);
-        operating.setOpName("编辑了ID为"+cId+"的客户");
-        //添加操作记录
-        Integer integer = iOperatingService.addOperatingRecord(operating);
+        //新增操作记录
+        Operating operating = new Operating(cId, uId, cName);
+        iOperatingService.addOperatingRecord(operating);
         return new DataResult(0, "编辑成功");
     }
 
@@ -176,6 +173,18 @@ public class CustomerController {
         Customer c = iCustomerService.queryCByCId(cId);
         map.addAttribute("customer", c);
         return "customer/customerdetail";
+    }
+
+    @GetMapping("editCTypeIdByCId")
+    @ApiOperation(value = "编辑客户状态")
+    @ResponseBody
+    public DataResult editCTypeIdByCId(@ApiParam(value = "编号", required = true) Integer cId,
+                                       @ApiParam(value = "客户状态", required = true) String cType){
+        //根据客户状态查询编号
+        Integer cTypeId = iCtypeService.queryCtypeByCtType(cType);
+        //编辑客户状态
+        iCustomerService.editCTypeIdByCId(cId, cTypeId);
+        return new DataResult(0, "操作成功");
     }
 
 }

@@ -56,7 +56,7 @@ public interface CustomerMapper {
     //根据编号修改客户
     void editCByCId(Customer c);
 
-    //根据编号修改客户状态 ct_c_id  cTypeId
-    void editCStatuByCId(@Param("ct_c_id") Integer ctCId, @Param("cTypeId")Integer cStatu);
+    //根据编号修改客户状态
+    void editCTypeIdByCId(@Param("cId") Integer cId, @Param("cTypeId") Integer cTypeId);
 
 }

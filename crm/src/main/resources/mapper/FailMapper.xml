@@ -14,4 +14,9 @@
     <result column="fl_cause" jdbcType="LONGVARCHAR" property="flCause" />
   </resultMap>
 
+  <!--新增未成交客户-->
+  <insert id="saveFail">
+    INSERT INTO fail(fl_c_id, fl_h_id, fl_cause) VALUES (#{flCId}, #{flHId}, #{flCause})
+  </insert>
+
 </mapper>

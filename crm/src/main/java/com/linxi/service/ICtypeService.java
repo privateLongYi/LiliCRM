@@ -33,4 +33,7 @@ public interface ICtypeService {
     //根据编号编辑客户状态
     void editCtypeByCtId(Ctype ctype);
 
+    //根据客户状态查询编号
+    Integer queryCtypeByCtType(String ctType);
+
 }

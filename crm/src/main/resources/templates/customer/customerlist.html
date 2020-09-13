@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="UTF-8">
-		<title></title>
+		<title>客户信息列表</title>
 		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
 	</head>
 	<body>
@@ -237,7 +237,7 @@
                             ,{field: 'cTel', width: 120, title: '电话', align:'center'}
                             ,{field: 'cProject', width: 120, title: '报名项目', align:'center'}
                             ,{field: 'cPlaceTime', width: 200, title: '报名时间', align:'center'}
-                            ,{field: 'hospital', width: 120, title: '预约门诊', align:'center'}
+                            ,{field: 'hName', width: 120, title: '预约门诊', align:'center'}
                             ,{field: 'cRemark', width: 120, title: '备注', align:'center'}
                             ,{field: 'cEarnest', width: 120, title: '定金', align:'center'}
                             ,{field: 'uName', width: 120, title: '负责人', align:'center'}
@@ -283,7 +283,7 @@
                         ,layEvent = obj.event; //获得 lay-event 对应的值
                     if(layEvent === 'del'){
                         layer.confirm('真的删除行么', function(index){
-                            $.get("/customer/delCByCId?cId=" + data.cId + "&uId=" + uId, function(obj){
+                            $.get("/customer/delCByCId?cId=" + data.cId + "&cName=" + data.cName + "&uId=" + uId, function(obj){
                                 if (obj.code == 0) {
                                     layer.msg(obj.msg, {time: 500}, function () {
                                         tableReload();

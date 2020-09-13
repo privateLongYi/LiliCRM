@@ -21,4 +21,7 @@ public interface SuccessMapper {
     //根据成交客户编号编辑成交客户
     void editSBySId(Success success);
 
+    //新增成交客户
+    void saveSuccess(Success success);
+
 }

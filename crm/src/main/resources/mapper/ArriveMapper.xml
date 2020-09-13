@@ -14,4 +14,9 @@
     <result column="ar_cause" jdbcType="LONGVARCHAR" property="arCause" />
   </resultMap>
 
+  <!--新增未到店客户-->
+  <insert id="saveArrive">
+    INSERT INTO arrive(ar_c_id, ar_h_id, ar_cause) VALUES (#{arCId}, #{arHId}, #{arCause})
+  </insert>
+
 </mapper>

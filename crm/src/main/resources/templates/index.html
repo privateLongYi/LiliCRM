@@ -2,9 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>LiliCRM</title>
-    <link rel="stylesheet" href="layui/css/layui.css">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}" />
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
@@ -58,7 +57,7 @@
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
                     <iframe data-frameid="0" scrolling="auto" frameborder="0"
-                            src="workbench" style="width:100%;"></iframe>
+                            src="workbench" style="width:100%;height:510px;"></iframe>
                 </div>
             </div>
         </div>

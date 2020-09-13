@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增成交</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="sCId" th:value="${cId}">
+                <input type="text" class="layui-input" th:value="${cName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">门诊名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="sHId" th:value="${hId}">
+                <input type="text" class="layui-input" th:value="${hName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">成交信息</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="sMessage" autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">成交金额</label>
+            <div class="layui-input-block">
+                <input type="number" class="layui-input" placeholder="请输入成交金额"
+                       autocomplete="off" id="sSum">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户支付金额</label>
+            <div class="layui-input-block">
+                <input type="number" class="layui-input" placeholder="请输入客户支付金额"
+                       autocomplete="off" id="sPaysum">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="sRemark" autocomplete="off"></textarea>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+    });
+
+</script>
+</body>
+</html>

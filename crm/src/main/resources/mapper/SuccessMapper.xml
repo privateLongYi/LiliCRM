@@ -51,4 +51,10 @@
     s_paysum = #{sPaysum}, s_remark = #{sRemark} WHERE s_id = #{sId}
   </update>
 
+  <!--新增成交客户-->
+  <insert id="saveSuccess">
+    INSERT INTO success(s_c_id, s_h_id, s_message, s_sum, s_paysum, s_remark, s_time)
+    VALUES (#{sCId}, #{sHId}, #{sMessage}, #{sSum}, #{sPaysum}, #{sRemark}, now())
+  </insert>
+
 </mapper>

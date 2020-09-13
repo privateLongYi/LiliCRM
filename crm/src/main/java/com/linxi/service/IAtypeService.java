@@ -33,4 +33,7 @@ public interface IAtypeService {
     //根据编号编辑预约类型
     void editAtypeByAtId(Atype atype);
 
+    //根据预约类型查询编号
+    Integer queryAByAType(String atType);
+
 }

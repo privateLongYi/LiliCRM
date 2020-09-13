@@ -55,8 +55,8 @@ public class CustomerService implements ICustomerService{
     }
 
     @Override
-    public void editCStatuByCId(Integer ctCId, Integer cStatu) {
-        customerMapper.editCStatuByCId(ctCId, cStatu);
+    public void editCTypeIdByCId(Integer cId, Integer cTypeId) {
+        customerMapper.editCTypeIdByCId(cId, cTypeId);
     }
 
     /**

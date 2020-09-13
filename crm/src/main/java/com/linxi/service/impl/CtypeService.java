@@ -59,4 +59,10 @@ public class CtypeService implements ICtypeService{
     public void editCtypeByCtId(Ctype ctype) {
         ctypeMapper.editCtypeByCtId(ctype);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryCtypeByCtType(String ctType) {
+        return ctypeMapper.queryCtypeByCtType(ctType);
+    }
 }

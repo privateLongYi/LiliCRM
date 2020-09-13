@@ -47,4 +47,9 @@
     UPDATE ctype SET ct_type = #{ctType} WHERE ct_id = #{ctId}
   </update>
 
+  <!--根据客户状态查询编号-->
+  <select id="queryCtypeByCtType" resultType="Integer">
+    SELECT ct_id FROM ctype WHERE ct_type = #{ctType}
+  </select>
+
 </mapper>

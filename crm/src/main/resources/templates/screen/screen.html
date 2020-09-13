@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
-  <title>Layui</title>
-  <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <link rel="stylesheet" href="layui/css/layui.css">
+  <title>筛选条件</title>
+  <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
 </head>
 <body>
-	
+
+	<input type="hidden" id="ctId" th:value="${cTypeId}">
 	<div class="layui-fluid">
 		
 		<br />
@@ -79,10 +77,14 @@
 			<label class="layui-form-label" style="width: auto;">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
 			</label>
-			<div class="layui-input-inline layui-form">
-			  <select id="cTypeId" lay-verify="required">
+			<div class="layui-input-inline layui-form" id="none">
+			  <select id="typeId" lay-filter="change">
 				<option value=""></option>
 			  </select>
+			</div>
+			<div class="layui-input-inline layui-form" id="type">
+				<input type="hidden" th:value="${cTypeId}">
+				<input type="text" id="cType" readonly class="layui-input">
 			</div>
 		</div>
 		
@@ -92,8 +94,8 @@
 				&nbsp;&nbsp;报名时间
 			</label>
 			<div class="layui-input-inline layui-form">
-			  <input type="text" id="cPlaceTime" required readonly 
-				autocomplete="off" class="layui-input" style="width: 300px;">
+			  <input type="text" id="cPlaceTime" readonly placeholder="请输入报名时间"
+					 autocomplete="off" class="layui-input" style="width: 300px;">
 			</div>
 		</div>
 		
@@ -150,16 +152,34 @@
 			$("#cUId").attr("disabled", "disabled");
 		}
 
-        //获取所有客户状态
-        $.get("ctype/queryCtype", function (res){
-            //定义负责人下拉框内容
-            var html = "";
-            $.each(res.data, function (index, item) {
-                html += "<option value='" + item.ctId + "'>" + item.ctType + "</option>";
-            });
-            $("#cTypeId").append(html);
-            //append后必须重新渲染
-            form.render('select');
+		//获取客户状态编号
+		var ctId = $("#ctId").val();
+        //判断客户状态是否为零
+        if (ctId == 0){
+            //客户管理点击，隐藏文本框，显示下拉框
+            $("#none").addClass("layui-show");
+            $("#type").addClass("layui-hide");
+            //获取所有客户状态
+            $.get("ctype/queryCtype", function (res){
+                //定义负责人下拉框内容
+                var html = "";
+                $.each(res.data, function (index, item) {
+                    html += "<option value='" + item.ctId + "'>" + item.ctType + "</option>";
+                });
+                $("#cTypeId").append(html);
+                //append后必须重新渲染
+                form.render('select');
+            })
+        } else {
+            //其他点击，显示文本框，隐藏下拉框
+            $("#none").addClass("layui-hide");
+            $("#type").addClass("layui-show");
+		}
+
+        //下拉框改变事件
+        form.on('select(change)', function(data){
+            //改变客户状态
+            $("#cTypeId").val(data.value);
         })
 
     });

@@ -142,4 +142,15 @@ public class Arrive implements Serializable {
     public void setArCause(String arCause) {
         this.arCause = arCause;
     }
+
+    public Arrive(Integer arId, Integer arCId, Integer arHId, String arCause) {
+        this.arId = arId;
+        this.arCId = arCId;
+        this.arHId = arHId;
+        this.arCause = arCause;
+    }
+
+    public Arrive() {
+
+    }
 }
