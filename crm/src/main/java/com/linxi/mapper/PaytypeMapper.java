@@ -26,4 +26,7 @@ public interface PaytypeMapper {
     //根据编号编辑支付类型
     void editPaytypeByPayId(Paytype paytype);
 
+    //查询所有支付类型
+    List<Paytype> queryAllPaytype();
+
 }

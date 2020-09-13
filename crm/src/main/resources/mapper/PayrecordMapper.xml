@@ -29,4 +29,10 @@
     SELECT COUNT(*) FROM payrecord WHERE pay_s_id = #{paySId}
   </select>
 
+  <!--新增支付记录-->
+  <insert id="savePayrecord">
+    INSERT INTO payrecord(pay_s_id, pay_sum, pay_time, pay_type_id)
+    VALUES (#{paySId}, #{paySum}, now(), #{payTypeId})
+  </insert>
+
 </mapper>

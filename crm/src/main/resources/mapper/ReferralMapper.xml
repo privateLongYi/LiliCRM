@@ -16,4 +16,10 @@
     <result column="r_cause" jdbcType="LONGVARCHAR" property="rCause" />
   </resultMap>
 
+  <!--新增转诊记录-->
+  <insert id="saveReferral">
+    INSERT INTO referral(r_c_id, r_fail_h_id, r_h_id, r_message, r_cause)
+    VALUES (#{rCId}, #{rFailHId}, #{rHId}, #{rMessage}, #{rCause})
+  </insert>
+
 </mapper>

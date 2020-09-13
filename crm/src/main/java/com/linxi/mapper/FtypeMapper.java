@@ -26,4 +26,7 @@ public interface FtypeMapper {
     //根据编号编辑回访类型
     void editFtypeByFtId(Ftype ftype);
 
+    //根据回访类型查询编号
+    Integer queryFtIdByFtType(String ftType);
+
 }

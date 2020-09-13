@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增客户跟进</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="fCId" th:value="${cId}">
+                <input type="text" class="layui-input" th:value="${cName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">回访类型</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="fTypeId" th:value="${ftId}">
+                <input type="text" id="ftType" class="layui-input" th:value="${ftType}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">回访内容</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="fContent" autocomplete="off"></textarea>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+    });
+
+</script>
+</body>
+</html>

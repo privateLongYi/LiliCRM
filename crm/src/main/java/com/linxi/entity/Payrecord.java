@@ -29,7 +29,7 @@ public class Payrecord implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    private String paySum;
+    private Integer paySum;
 
     /**
      *
@@ -123,7 +123,7 @@ public class Payrecord implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public String getPaySum() {
+    public Integer getPaySum() {
         return paySum;
     }
 
@@ -135,7 +135,7 @@ public class Payrecord implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public void setPaySum(String paySum) {
+    public void setPaySum(Integer paySum) {
         this.paySum = paySum;
     }
 
@@ -201,5 +201,17 @@ public class Payrecord implements Serializable {
 
     public void setPayType(String payType) {
         this.payType = payType;
+    }
+
+    public Payrecord(Integer payId, Integer paySId, Integer paySum, Date payTime, Integer payTypeId) {
+        this.payId = payId;
+        this.paySId = paySId;
+        this.paySum = paySum;
+        this.payTime = payTime;
+        this.payTypeId = payTypeId;
+    }
+
+    public Payrecord() {
+
     }
 }

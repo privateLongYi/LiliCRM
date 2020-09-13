@@ -26,11 +26,12 @@
   <!-- 高级筛选加分页查询客户 -->
   <select id="queryCScreen" resultMap="BaseResultMap">
     SELECT c.*, u.u_name AS uName, ct.ct_type AS cType, h.h_id AS hId, h.h_name AS hName,
-    a.a_time AS aTime FROM customer c
+    a.a_time AS aTime, s.s_id AS sId FROM customer c
     LEFT JOIN `user` u ON c.c_u_id=u.u_id
     LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
     LEFT JOIN appointment a ON c.c_id=a.a_c_id
     LEFT JOIN hospital h ON a.a_h_id=h.h_id
+    LEFT JOIN success s ON s.s_c_id=c.c_id
     <where>
       <if test="rName != '管理员'">
         AND c.c_u_id = #{uId}
@@ -79,6 +80,7 @@
     LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
     LEFT JOIN appointment a ON c.c_id=a.a_c_id
     LEFT JOIN hospital h ON a.a_h_id=h.h_id
+    LEFT JOIN success s ON s.s_c_id=c.c_id
     <where>
       <if test="rName != '管理员'">
         AND c.c_u_id = #{uId}
@@ -114,6 +116,7 @@
       <if test="cTypeId != null">
         AND ct.ct_id = #{cTypeId}
       </if>
+      AND a.a_time = (SELECT MAX(a_time) FROM appointment WHERE a_c_id = c.c_id)
     </where>
   </select>
 

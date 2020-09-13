@@ -42,4 +42,9 @@
     UPDATE ftype SET ft_type = #{ftType} WHERE ft_id = #{ftId}
   </update>
 
+  <!--根据回访类型查询编号-->
+  <select id="queryFtIdByFtType" resultType="Integer">
+    SELECT ft_id FROM ftype WHERE ft_type = #{ftType}
+  </select>
+
 </mapper>

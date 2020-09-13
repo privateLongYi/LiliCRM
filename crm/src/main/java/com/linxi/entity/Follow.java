@@ -189,4 +189,16 @@ public class Follow implements Serializable {
     public void setfType(String fType) {
         this.fType = fType;
     }
+
+    public Follow(Integer fId, Integer fCId, Integer fTypeId, Date fTime, String fContent) {
+        this.fId = fId;
+        this.fCId = fCId;
+        this.fTypeId = fTypeId;
+        this.fTime = fTime;
+        this.fContent = fContent;
+    }
+
+    public Follow() {
+
+    }
 }

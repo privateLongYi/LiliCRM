@@ -26,4 +26,9 @@ public class FollowService implements IFollowService{
     public List<Follow> queryFByFCId(Integer fCId) {
         return followMapper.queryFByFCId(fCId);
     }
+
+    @Override
+    public void saveFollow(Follow follow) {
+        followMapper.saveFollow(follow);
+    }
 }

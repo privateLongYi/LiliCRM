@@ -72,4 +72,12 @@ public class PaytypeController {
         return new DataResult(0, "编辑成功");
     }
 
+    @GetMapping("queryAllPaytype")
+    @ApiOperation(value = "查询所有支付类型")
+    @ResponseBody
+    public DataResult queryAllPaytype(){
+        List<Paytype> paytypes = iPaytypeService.queryAllPaytype();
+        return new DataResult(0, "操作成功", 0, paytypes);
+    }
+
 }

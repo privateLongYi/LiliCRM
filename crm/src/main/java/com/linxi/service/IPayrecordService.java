@@ -16,4 +16,7 @@ public interface IPayrecordService {
     //根据成交客户编号查询支付记录总数
     Integer getTotalByPaySId(Integer paySId);
 
+    //新增支付记录
+    void savePayrecord(Payrecord payrecord);
+
 }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增支付记录</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">成交客户名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="paySId" th:value="${cId}">
+                <input type="text" class="layui-input" th:value="${cName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">支付金额</label>
+            <div class="layui-input-block">
+                <input type="number" class="layui-input" id="paySum"
+                       placeholder="请输入支付金额" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">支付类型</label>
+            <div class="layui-input-block">
+                <select id="payTypeId"></select>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+        //获取所有支付类型
+        $.get("/paytype/queryAllPaytype", function (res){
+            //定义负责人下拉框内容
+            var html = "";
+            $.each(res.data, function (index, item) {
+                html += "<option value='" + item.payId + "'>" + item.payType + "</option>";
+            });
+            $("#payTypeId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        })
+
+    });
+
+</script>
+</body>
+</html>

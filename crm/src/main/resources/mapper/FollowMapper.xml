@@ -23,4 +23,10 @@
     ORDER BY f.f_time DESC
   </select>
 
+  <!--新增客户跟进-->
+  <insert id="saveFollow">
+    INSERT INTO follow(f_c_id, f_type_id, f_time, f_content)
+    VALUES (#{fCId}, #{fTypeId}, now(), #{fContent})
+  </insert>
+
 </mapper>

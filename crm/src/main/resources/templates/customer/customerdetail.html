@@ -176,6 +176,10 @@
 				,layer = layui.layer
 				,table = layui.table;
 
+            //从sessionStorage中获取用户编号和角色名称
+            var uId = sessionStorage.getItem('uId');
+            var rName = sessionStorage.getItem('rName');
+
 			//获得客户信息
 			var cId = $("#cId").val();
 			var cName = $("#cName").val();
@@ -392,7 +396,7 @@
                                     }
                                     if (verify) {
                                         $.post("/success/editSBySId",
-                                            {sId:sId, sHId: sHId, sMessage:sMessage, sSum:sSum,
+                                            {uId:uId, sId:sId, sHId: sHId, sMessage:sMessage, sSum:sSum,
 												sPaysum:sPaysum, sRemark:sRemark},
                                             function (obj) {
                                                 if (obj.code == 0) {
@@ -418,7 +422,7 @@
                             layer.msg('请选择一行');
                         } else {
                             layer.confirm('真的删除行么', function(){
-                                $.get("/success/delSBySId?sId=" + checkStatus.data[0].sId, function(obj){
+                                $.get("/success/delSBySId?uId="+uId+"&sId=" + checkStatus.data[0].sId, function(obj){
                                     if (obj.code == 0) {
                                         layer.msg(obj.msg, {time: 500}, function () {
                                             tableReload('success', '/success/querySBySCId?sCId=' + cId);

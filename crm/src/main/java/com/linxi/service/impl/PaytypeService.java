@@ -53,4 +53,10 @@ public class PaytypeService implements IPaytypeService{
     public void editPaytypeByPayId(Paytype paytype) {
         paytypeMapper.editPaytypeByPayId(paytype);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Paytype> queryAllPaytype() {
+        return paytypeMapper.queryAllPaytype();
+    }
 }

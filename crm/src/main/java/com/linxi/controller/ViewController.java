@@ -1,6 +1,7 @@
 package com.linxi.controller;
 
 import com.linxi.service.ICtypeService;
+import com.linxi.service.IFtypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,6 +16,9 @@ public class ViewController {
 
     @Autowired
     private ICtypeService iCtypeService;
+
+    @Autowired
+    private IFtypeService iFtypeService;
 
     @GetMapping("workbench")
     @ApiOperation(value = "工作台")
@@ -38,6 +42,7 @@ public class ViewController {
             map.addAttribute("cType", cType);
         } else {
             map.addAttribute("cTypeId", 0);
+            map.addAttribute("cType", "");
         }
         return "screen/screen";
     }
@@ -212,5 +217,52 @@ public class ViewController {
     @GetMapping("arrive")
     @ApiOperation(value = "未到店客户列表")
     public String arrive(){return "customer/arrivelist";}
+
+    @GetMapping("fail")
+    @ApiOperation(value = "未成交客户列表")
+    public String fail(){return "customer/faillist";}
+
+    @GetMapping("followsave")
+    @ApiOperation(value = "新增客户跟进")
+    public String followssave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                              @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
+                              @ApiParam(name = "ftType", value = "回访类型", required = true) String ftType,
+                              ModelMap map){
+        //跟进回访类型查询编号
+        Integer ftId = iFtypeService.queryFtIdByFtType(ftType);
+        map.addAttribute("cId", cId);
+        map.addAttribute("cName", cName);
+        map.addAttribute("ftId", ftId);
+        map.addAttribute("ftType", ftType);
+        return "customer/followsave";
+    }
+
+    @GetMapping("referralsave")
+    @ApiOperation(value = "新增转诊记录")
+    public String referralsave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                               @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
+                               @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
+                               @ApiParam(name = "hName", value = "客户名称", required = true) String hName,
+                               ModelMap map){
+        map.addAttribute("cId", cId);
+        map.addAttribute("cName", cName);
+        map.addAttribute("hId", hId);
+        map.addAttribute("hName", hName);
+        return "customer/referralsave";
+    }
+
+    @GetMapping("success")
+    @ApiOperation(value = "成交客户列表")
+    public String success(){return "customer/successlist";}
+
+    @GetMapping("payrecordsave")
+    @ApiOperation(value = "新增支付记录")
+    public String payrecordsave(@ApiParam(name = "cId", value = "成交客户编号", required = true) Integer cId,
+                                @ApiParam(name = "cName", value = "成交客户名称", required = true) String cName,
+                                ModelMap map){
+        map.addAttribute("cId", cId);
+        map.addAttribute("cName", cName);
+        return "customer/payrecordsave";
+    }
 
 }

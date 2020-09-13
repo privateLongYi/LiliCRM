@@ -32,4 +32,9 @@ public class PayrecordService implements IPayrecordService{
     public Integer getTotalByPaySId(Integer paySId) {
         return payrecordMapper.getTotalByPaySId(paySId);
     }
+
+    @Override
+    public void savePayrecord(Payrecord payrecord) {
+        payrecordMapper.savePayrecord(payrecord);
+    }
 }

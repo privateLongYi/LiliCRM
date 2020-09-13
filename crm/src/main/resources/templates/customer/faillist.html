@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="UTF-8">
-		<title>未到店列表</title>
+		<title>未成交客户列表</title>
 		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
 	</head>
 	<body>
@@ -27,8 +27,9 @@
 		</script>
 
 		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-xs" lay-event="reroute">改约</a>
-			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="appoint">待预约</a>
+			<a class="layui-btn layui-btn-xs" lay-event="feedback">门诊反馈</a>
+			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="callback">客户回访</a>
+			<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="referral">转诊</a>
 		</script>
 
 		<script th:src="@{/layui/layui.js}"></script>
@@ -136,7 +137,7 @@
 					}
 					//根据筛选条件查询
                     table.reload('tab', {
-                        url: '/arrive/queryCScreen?uId='+uId+'&rName='+rName
+                        url: '/fail/queryCScreen?uId='+uId+'&rName='+rName
                         ,where: {
                             param: param
                         }
@@ -147,12 +148,48 @@
 
 				}
 
+				//新增客户跟进
+                function saveFollow(data, ftType){
+                    var ix = layer.open({
+                        type: 2, //层类型，iframe
+                        title: '新增客户跟进',
+                        content: ['/followsave?cId='+data.cId+
+                        '&cName='+data.cName+'&ftType='+ftType],
+                        area: ['450px', '350px'],
+                        resize: false,
+                        btn: '确定',
+                        btn1: function (index, layero) {
+                            var body = layer.getChildFrame('body', index);
+                            //获取值
+                            var fCId = $(body).find("#fCId").val();
+                            var fTypeId = $(body).find("#fTypeId").val();
+                            var ftType = $(body).find("#ftType").val();
+                            var fContent = $(body).find("#fContent").val();
+                            if (fContent != '' && fContent.trim() != '') {
+                                $.post("/follow/saveFollow", {uId:uId, fCId:fCId, fTypeId:fTypeId, fContent:fContent},
+                                    function (obj) {
+                                        layer.msg(obj.msg, {time: 500}, function () {
+                                            layer.close(ix);
+                                            tableReload();
+                                        });
+                                    }
+                                );
+                            } else {
+                                layer.msg('请输入门诊反馈内容');
+                            }
+                        },
+                        cancel: function(index, layero){
+                            layer.close(index);
+                        }
+                    });
+				}
+
                 //执行一个 table 实例
                 table.render({
                     elem: '#tab'
                     ,height: 420
-                    ,url: '/arrive/queryCScreen?uId='+uId+'&rName='+rName //数据接口
-                    ,title: '未到店客户表' //表格名称
+                    ,url: '/fail/queryCScreen?uId='+uId+'&rName='+rName //数据接口
+                    ,title: '未成交客户表' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
                     ,limit: 5 //每页显示条数
@@ -175,7 +212,7 @@
                             ,{field: 'cSource', width: 120, title: '来源', align:'center'}
                             ,{field: 'cMessage', width: 120, title: '症状信息', align:'center'}
                             ,{field: 'cType', width: 120, title: '状态', align:'center'}
-                            ,{fixed: 'right', width: 150, align:'center', toolbar: '#barDemo'}
+                            ,{fixed: 'right', width: 240, align:'center', toolbar: '#barDemo'}
                         ]
                     ]
                 });
@@ -195,28 +232,32 @@
                 table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
                     var data = obj.data //获得当前行数据
                         ,layEvent = obj.event; //获得 lay-event 对应的值
-                    if(layEvent === 'reroute'){
-                        //弹出改约页面
+                    if(layEvent === 'feedback'){
+                        saveFollow(data, "未成交门诊反馈");
+                    } else if(layEvent === 'callback'){
+                        saveFollow(data, "未成交客户回访");
+                    } else if(layEvent === 'referral'){
+                        //弹出转诊页面
                         var ix = layer.open({
                             type: 2, //层类型，iframe
-                            title: '新增改约记录',
-                            content: ['/reroutesave?cId='+data.cId+
-                            '&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
-							'&aTime='+data.aTime],
+                            title: '新增转诊记录',
+                            content: ['/referralsave?cId='+data.cId+
+                            '&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName],
                             area: ['450px', '450px'],
                             resize: false,
                             btn: '确定',
                             btn1: function (index, layero) {
                                 var body = layer.getChildFrame('body', index);
                                 //获取值
-                                var reCId = $(body).find("#reCId").val();
-                                var reHId = $(body).find("#reHId").val();
-                                var reLastTime = $(body).find("#reLastTime").val();
-                                var reTime = $(body).find("#reTime").val();
-                                var reCause = $(body).find("#reCause").val().trim();
-                                if (reTime != '' && reCause != '' && reCause.trim() != '') {
-                                    $.post("/reroute/saveReroute", {uId:uId, reCId:reCId, reHId:reHId,
-                                            reLastTime:reLastTime, reTime:reTime, reCause:reCause},
+                                var rCId = $(body).find("#rCId").val();
+                                var rFailHId = $(body).find("#rFailHId").val();
+                                var rHId = $(body).find("#rHId").val();
+                                var rMessage = $(body).find("#rMessage").val();
+                                var rCause = $(body).find("#rCause").val();
+                                if (rMessage != '' && rMessage.trim() != '' && rCause != '' && rCause.trim() != '') {
+                                    $.post("/referral/saveReferral",
+										{uId:uId, rCId:rCId, rFailHId:rFailHId,
+											rHId:rHId, rMessage:rMessage, rCause:rCause},
                                         function (obj) {
                                             layer.msg(obj.msg, {time: 500}, function () {
                                                 layer.close(ix);
@@ -225,24 +266,12 @@
                                         }
                                     );
                                 } else {
-                                    layer.msg('请输入带星号的必填项');
+                                    layer.msg('请填写带星号的必填项');
                                 }
                             },
                             cancel: function(index, layero){
                                 layer.close(index);
                             }
-                        });
-                    } else if(layEvent === 'appoint'){
-                        layer.confirm('确定更改为待预约状态？', {icon: 3, title:'提示'}, function(index){
-                            $.get("/customer/editCTypeIdByCId", {cId:data.cId, cType:"待预约"},
-                                function (obj) {
-                                    layer.msg(obj.msg, {time: 500}, function () {
-                                        layer.close(ix);
-                                        tableReload();
-                                    });
-                                }
-                            );
-                            layer.close(index);
                         });
                     }
                 });
@@ -252,7 +281,7 @@
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '高级筛选',
-                        content: ['screen?cType=未到店'],
+                        content: ['screen?cType=未成交'],
                         area: ['1000px', '420px'],
                         resize: false,
                         btn: '确定',

@@ -42,4 +42,9 @@
     UPDATE paytype SET pay_type = #{payType} WHERE pay_id = #{payId}
   </update>
 
+  <!--查询所有支付类型-->
+  <select id="queryAllPaytype" resultMap="BaseResultMap">
+    SELECT * FROM paytype
+  </select>
+
 </mapper>

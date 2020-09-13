@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增转诊记录</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">&nbsp;&nbsp;客户名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="rCId" th:value="${cId}">
+                <input type="text" class="layui-input" th:value="${cName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">&nbsp;&nbsp;未成交门诊名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="rFailHId" th:value="${hId}">
+                <input type="text" class="layui-input" th:value="${hName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">&nbsp;&nbsp;新预约门诊名称</label>
+            <div class="layui-input-block">
+                <select id="rHId"></select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>未成交信息</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="rMessage" autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>转诊原因</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="rCause" autocomplete="off"></textarea>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+        //获取所有门诊
+        $.get("/hospital/queryHospital", function (res){
+            //定义负责人下拉框内容
+            var html = "";
+            $.each(res.data, function (index, item) {
+                html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
+            });
+            $("#rHId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        })
+
+    });
+
+</script>
+</body>
+</html>

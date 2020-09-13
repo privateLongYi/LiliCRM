@@ -53,4 +53,10 @@ public class FtypeService implements IFtypeService{
     public void editFtypeByFtId(Ftype ftype) {
         ftypeMapper.editFtypeByFtId(ftype);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryFtIdByFtType(String ftType) {
+        return ftypeMapper.queryFtIdByFtType(ftType);
+    }
 }

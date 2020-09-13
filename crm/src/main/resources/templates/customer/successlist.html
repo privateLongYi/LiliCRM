@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="UTF-8">
-		<title>未到店列表</title>
+		<title>成交客户列表</title>
 		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
 	</head>
 	<body>
@@ -27,8 +27,10 @@
 		</script>
 
 		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-xs" lay-event="reroute">改约</a>
-			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="appoint">待预约</a>
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-xs" lay-event="feedback">门诊反馈</a>
+			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="callback">客户回访</a>
+			<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="gathering">收款</a>
 		</script>
 
 		<script th:src="@{/layui/layui.js}"></script>
@@ -136,7 +138,7 @@
 					}
 					//根据筛选条件查询
                     table.reload('tab', {
-                        url: '/arrive/queryCScreen?uId='+uId+'&rName='+rName
+                        url: '/success/queryCScreen?uId='+uId+'&rName='+rName
                         ,where: {
                             param: param
                         }
@@ -147,12 +149,48 @@
 
 				}
 
+				//新增客户跟进
+                function saveFollow(data, ftType){
+                    var ix = layer.open({
+                        type: 2, //层类型，iframe
+                        title: '新增客户跟进',
+                        content: ['/followsave?cId='+data.cId+
+                        '&cName='+data.cName+'&ftType='+ftType],
+                        area: ['450px', '350px'],
+                        resize: false,
+                        btn: '确定',
+                        btn1: function (index, layero) {
+                            var body = layer.getChildFrame('body', index);
+                            //获取值
+                            var fCId = $(body).find("#fCId").val();
+                            var fTypeId = $(body).find("#fTypeId").val();
+                            var ftType = $(body).find("#ftType").val();
+                            var fContent = $(body).find("#fContent").val();
+                            if (fContent != '' && fContent.trim() != '') {
+                                $.post("/follow/saveFollow", {uId:uId, fCId:fCId, fTypeId:fTypeId, fContent:fContent},
+                                    function (obj) {
+                                        layer.msg(obj.msg, {time: 500}, function () {
+                                            layer.close(ix);
+                                            tableReload();
+                                        });
+                                    }
+                                );
+                            } else {
+                                layer.msg('请输入门诊反馈内容');
+                            }
+                        },
+                        cancel: function(index, layero){
+                            layer.close(index);
+                        }
+                    });
+				}
+
                 //执行一个 table 实例
                 table.render({
                     elem: '#tab'
                     ,height: 420
-                    ,url: '/arrive/queryCScreen?uId='+uId+'&rName='+rName //数据接口
-                    ,title: '未到店客户表' //表格名称
+                    ,url: '/success/queryCScreen?uId='+uId+'&rName='+rName //数据接口
+                    ,title: '成交客户表' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
                     ,limit: 5 //每页显示条数
@@ -175,7 +213,7 @@
                             ,{field: 'cSource', width: 120, title: '来源', align:'center'}
                             ,{field: 'cMessage', width: 120, title: '症状信息', align:'center'}
                             ,{field: 'cType', width: 120, title: '状态', align:'center'}
-                            ,{fixed: 'right', width: 150, align:'center', toolbar: '#barDemo'}
+                            ,{fixed: 'right', width: 270, align:'center', toolbar: '#barDemo'}
                         ]
                     ]
                 });
@@ -195,54 +233,104 @@
                 table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
                     var data = obj.data //获得当前行数据
                         ,layEvent = obj.event; //获得 lay-event 对应的值
-                    if(layEvent === 'reroute'){
-                        //弹出改约页面
+                    if(layEvent === 'edit'){
+						//弹出编辑页面
                         var ix = layer.open({
                             type: 2, //层类型，iframe
-                            title: '新增改约记录',
-                            content: ['/reroutesave?cId='+data.cId+
-                            '&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
-							'&aTime='+data.aTime],
+                            title: '编辑成交客户',
+                            content: ['/success/querySBySId?sId='+data.sId],
                             area: ['450px', '450px'],
                             resize: false,
                             btn: '确定',
                             btn1: function (index, layero) {
                                 var body = layer.getChildFrame('body', index);
                                 //获取值
-                                var reCId = $(body).find("#reCId").val();
-                                var reHId = $(body).find("#reHId").val();
-                                var reLastTime = $(body).find("#reLastTime").val();
-                                var reTime = $(body).find("#reTime").val();
-                                var reCause = $(body).find("#reCause").val().trim();
-                                if (reTime != '' && reCause != '' && reCause.trim() != '') {
-                                    $.post("/reroute/saveReroute", {uId:uId, reCId:reCId, reHId:reHId,
-                                            reLastTime:reLastTime, reTime:reTime, reCause:reCause},
-                                        function (obj) {
-                                            layer.msg(obj.msg, {time: 500}, function () {
-                                                layer.close(ix);
-                                                tableReload();
-                                            });
-                                        }
-                                    );
+                                var sCId = $(body).find("#sCId").val();
+                                var sHId = $(body).find("#sHId").val();
+                                var sMessage = $(body).find("#sMessage").val();
+                                var sSum = $(body).find("#sSum").val();
+                                var sPaysum = $(body).find("#sPaysum").val();
+                                var sRemark = $(body).find("#sRemark").val();
+                                if (sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '') {
+                                    //声明格式是否正确
+                                    var verify = true;
+                                    if(sSum <= 0){
+                                        layer.msg("成交金额必须大于零");
+                                        verify = false;
+                                        return;
+                                    }
+                                    if(sPaysum <= 0){
+                                        layer.msg("客户支付金额必须大于零");
+                                        verify = false;
+                                        return;
+                                    }
+                                    if(verify) {
+                                        $.post("/success/editSBySId",
+                                            {
+                                                uId: uId, sCId: sCId, sHId: sHId, sMessage: sMessage,
+                                                sSum: sSum, sPaysum: sPaysum, sRemark: sRemark
+                                            },
+                                            function (obj) {
+                                                layer.msg(obj.msg, {time: 500}, function () {
+                                                    layer.close(ix);
+                                                    tableReload();
+                                                });
+                                            }
+                                        );
+                                    }
                                 } else {
-                                    layer.msg('请输入带星号的必填项');
+                                    layer.msg('请填写带星号的必填项');
                                 }
                             },
                             cancel: function(index, layero){
                                 layer.close(index);
                             }
                         });
-                    } else if(layEvent === 'appoint'){
-                        layer.confirm('确定更改为待预约状态？', {icon: 3, title:'提示'}, function(index){
-                            $.get("/customer/editCTypeIdByCId", {cId:data.cId, cType:"待预约"},
-                                function (obj) {
-                                    layer.msg(obj.msg, {time: 500}, function () {
-                                        layer.close(ix);
-                                        tableReload();
-                                    });
+                    } else if(layEvent === 'feedback'){
+                        saveFollow(data, "成交门诊反馈");
+                    } else if(layEvent === 'callback'){
+                        saveFollow(data, "成交客户回访");
+                    } else if(layEvent === 'gathering'){
+                        //弹出收款页面
+                        var ix = layer.open({
+                            type: 2, //层类型，iframe
+                            title: '新增支付记录',
+                            content: ['/payrecordsave?cId='+data.sId+'&cName='+data.cName],
+                            area: ['400px', '300px'],
+                            resize: false,
+                            btn: '确定',
+                            btn1: function (index, layero) {
+                                var body = layer.getChildFrame('body', index);
+                                //获取值
+                                var paySId = $(body).find("#paySId").val();
+                                var paySum = $(body).find("#paySum").val();
+                                var payTypeId = $(body).find("#payTypeId").val();
+                                if (paySum != '' && paySum.trim() != '') {
+                                    //声明格式是否正确
+                                    var verify = true;
+                                    if(paySum <= 0){
+                                        layer.msg("支付金额必须大于零");
+                                        verify = false;
+                                        return;
+                                    }
+                                    if(verify) {
+                                        $.post("/payrecord/savePayrecord",
+                                            {uId: uId, paySId: paySId, paySum: paySum, payTypeId: payTypeId},
+                                            function (obj) {
+                                                layer.msg(obj.msg, {time: 500}, function () {
+                                                    layer.close(ix);
+                                                    tableReload();
+                                                });
+                                            }
+                                        );
+                                    }
+                                } else {
+                                    layer.msg('请填写支付金额');
                                 }
-                            );
-                            layer.close(index);
+                            },
+                            cancel: function(index, layero){
+                                layer.close(index);
+                            }
                         });
                     }
                 });
@@ -252,7 +340,7 @@
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '高级筛选',
-                        content: ['screen?cType=未到店'],
+                        content: ['screen?cType=成交'],
                         area: ['1000px', '420px'],
                         resize: false,
                         btn: '确定',
