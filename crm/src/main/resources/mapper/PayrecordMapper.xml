@@ -35,4 +35,9 @@
     VALUES (#{paySId}, #{paySum}, now(), #{payTypeId})
   </insert>
 
+  <!--根据成交客户编号查询支付总金额-->
+  <select id="queryPPaysumBySId" resultType="Integer">
+    SELECT SUM(pay_sum) FROM payrecord WHERE pay_s_id = #{sId}
+  </select>
+
 </mapper>

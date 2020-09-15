@@ -4,6 +4,7 @@ import com.linxi.entity.Operating;
 import com.linxi.entity.Payrecord;
 import com.linxi.service.IOperatingService;
 import com.linxi.service.IPayrecordService;
+import com.linxi.service.ISuccessService;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,6 +33,9 @@ public class PayrecordController {
     @Autowired
     private IOperatingService iOperatingService;
 
+    @Autowired
+    private ISuccessService iSuccessService;
+
     @GetMapping("queryPByPaySId")
     @ApiOperation(value = "根据成交客户编号查询支付记录")
     @ResponseBody
@@ -54,6 +58,10 @@ public class PayrecordController {
         //新增支付记录
         Payrecord payrecord = new Payrecord(null, paySId, paySum, null, payTypeId);
         iPayrecordService.savePayrecord(payrecord);
+        //根据成交客户编号查询支付总金额
+        Integer paysum = iPayrecordService.queryPPaysumBySId(paySId);
+        //根据成交客户编号编辑支付金额
+        iSuccessService.editSPaysumBySId(paySId, paysum);
         return new DataResult(0, "新增成功");
     }
 

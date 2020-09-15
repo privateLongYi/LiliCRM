@@ -73,8 +73,6 @@
                             innerHTML += "电话：";
                         }else if(name == "cProject"){
                             innerHTML += "报名项目：";
-                        }else if(name == "hospital"){
-                            innerHTML += "预约门诊：";
                         }else if(name == "cEarnest"){
                             innerHTML += "是否交定金：";
                         }else if(name == "cSource"){
@@ -138,7 +136,7 @@
 					}
 					//根据筛选条件查询
                     table.reload('tab', {
-                        url: '/awaitarrive/queryCScreen?uId='+uId+'&rName='+rName
+                        url: '/awaitarrive/queryCScreenByCTypeId?uId='+uId+'&rName='+rName+'&ctType=待到店'
                         ,where: {
                             param: param
                         }
@@ -153,7 +151,7 @@
                 table.render({
                     elem: '#tab'
                     ,height: 420
-                    ,url: '/awaitarrive/queryCScreen?uId='+uId+'&rName='+rName //数据接口
+                    ,url: '/awaitarrive/queryCScreenByCTypeId?uId='+uId+'&rName='+rName+'&ctType=待到店' //数据接口
                     ,title: '待到店客户表' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
@@ -170,7 +168,6 @@
                             ,{field: 'cTel', width: 120, title: '电话', align:'center'}
                             ,{field: 'cProject', width: 120, title: '报名项目', align:'center'}
                             ,{field: 'cPlaceTime', width: 200, title: '报名时间', align:'center'}
-                            ,{field: 'hName', width: 120, title: '预约门诊', align:'center'}
                             ,{field: 'cRemark', width: 120, title: '备注', align:'center'}
                             ,{field: 'cEarnest', width: 120, title: '定金', align:'center'}
                             ,{field: 'uName', width: 120, title: '负责人', align:'center'}
@@ -377,7 +374,6 @@
                             var cName = $(body).find("#cName").val().trim();
                             var cTel = $(body).find("#cTel").val().trim();
                             var cProject = $(body).find("#cProject").val();
-                            var hId = $(body).find("#hId").val().trim();
                             //给是否交定金赋值
                             var cEarnest;
                             var cEarnestText;
@@ -403,10 +399,6 @@
                             if(cProject != ''){
                                 var cProjectText = $(body).find("#cProject [value="+cProject+"]").text();
                                 screen("cProject", cProject, cProjectText);
-                            }
-                            if(hId != ''){
-                                var hIdText = $(body).find("#hId [value="+hId+"]").text();
-                                screen("hId", hId, hIdText);
                             }
                             if(cEarnest != undefined){
                                 screen("cEarnest", cEarnest, cEarnestText);

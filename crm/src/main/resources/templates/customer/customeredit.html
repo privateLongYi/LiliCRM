@@ -71,8 +71,10 @@
 
         <br />
         <div class="layui-form-item">
+            <input type="hidden" id="page" th:value="${page}">
             <label class="layui-form-label" style="width: auto;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
+                <input type="hidden" id="uId" th:value="${c.cUId}">
                 <input type="hidden" id="cUId" th:value="${c.cUId}">
             </label>
             <div class="layui-input-inline layui-form" id="admin">
@@ -95,7 +97,9 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
             </label>
             <div class="layui-input-inline layui-form">
-                <input type="hidden" id="cTypeId">
+                <input type="hidden" id="typeId" th:value="${c.cTypeId}">
+                <input type="hidden" id="type" th:value="${c.cType}">
+                <input type="hidden" id="cTypeId" th:value="${c.cTypeId}">
                 <input type="text" id="cType" readonly th:value="${c.cType}"
                        autocomplete="off" class="layui-input">
             </div>
@@ -104,11 +108,19 @@
         <br />
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注
             </label>
             <div class="layui-input-inline">
                 <textarea class="layui-textarea" id="cRemark"
                           autocomplete="off" th:text="${c.cRemark}"></textarea>
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;症状信息
+            </label>
+            <div class="layui-input-inline">
+                <textarea class="layui-textarea" id="cMessage"
+                          autocomplete="off" th:text="${c.cMessage}"></textarea>
             </div>
         </div>
 
@@ -134,35 +146,45 @@
             $("#admin").addClass("layui-show");
             $("#sale").addClass("layui-hide");
 
-            //获取角色为销售员的用户对象
-            $.get("/user/queryUserByRName", function (res){
-                //定义负责人下拉框内容
-                var html = "";
-                //获取负责人编号
-                var cUId = $("#cUId").val();
-                $.each(res.data, function (index, item) {
-                    if(cUId == item.uId){
-                        html += "<option value='" + item.uId + "' selected>" + item.uName + "</option>";
-                    }else{
-                        html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
-                    }
-                });
-                $("#salelist").append(html);
+            //获取从哪个页面过来的
+            var page = $("#page").val();
+
+            if(page == "customer") {
+                //获取角色为销售员的用户对象
+                $.get("/user/queryUserByRName", function (res) {
+                    //定义负责人下拉框内容
+                    var html = "";
+                    //获取负责人编号
+                    var cUId = $("#cUId").val();
+                    $.each(res.data, function (index, item) {
+                        if (cUId == item.uId) {
+                            html += "<option value='" + item.uId + "' selected>" + item.uName + "</option>";
+                        } else {
+                            html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
+                        }
+                    });
+                    $("#salelist").append(html);
+                    //append后必须重新渲染
+                    form.render('select');
+                })
+
+                //客户状态赋值
+                if($("#cUId").val() != ""){
+                    //状态赋值
+                    $("#cType").val($("#type").val());
+                    $("#cTypeId").val($("#typeId").val());
+                }else{
+                    //状态赋值
+                    $("#cType").val("待分配");
+                    $("#cTypeId").val("1");
+                }
+
+            }else{
+                //禁用下拉框
+                $("#salelist").attr("disabled", "disabled");
                 //append后必须重新渲染
                 form.render('select');
-            })
-
-            //客户状态赋值
-            if($("#cUId").val() != ""){
-                //状态赋值
-                $("#cType").val("待联系");
-                $("#cTypeId").val("2");
-            }else{
-                //状态赋值
-                $("#cType").val("待分配");
-                $("#cTypeId").val("1");
             }
-
         } else {
             //销售员登录，显示负责人文本框，隐藏负责人下拉框
             $("#admin").addClass("layui-hide");
@@ -171,8 +193,8 @@
             $("#saleman").val(uName);
             $("#cUId").val(uId);
             //状态赋值
-            $("#cType").val("待联系");
-            $("#cTypeId").val("2");
+            $("#cType").val($("#type").val());
+            $("#cTypeId").val($("#typeId").val());
         }
 
         //下拉框改变事件
@@ -181,9 +203,16 @@
             $("#cUId").val(data.value+"");
             //改变客户状态
             if($("#cUId").val() != ""){
-                //状态赋值
-                $("#cType").val("待联系");
-                $("#cTypeId").val("2");
+                //没有改变负责人
+                if(data.value == $("#uId").val()){
+                    //状态赋值
+                    $("#cType").val($("#type").val());
+                    $("#cTypeId").val($("#typeId").val());
+                }else{
+                    //状态赋值
+                    $("#cType").val("待联系");
+                    $("#cTypeId").val("2");
+                }
             }else{
                 //状态赋值
                 $("#cType").val("待分配");

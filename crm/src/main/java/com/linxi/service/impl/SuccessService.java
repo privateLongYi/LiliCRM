@@ -53,4 +53,21 @@ public class SuccessService implements ISuccessService{
     public void saveSuccess(Success success) {
         successMapper.saveSuccess(success);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Success> querySByCName(Integer page, Integer limit, Integer uId, String rName, String cName) {
+        return successMapper.querySByCName(page, limit, uId, rName, cName);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalByCName(Integer uId, String rName, String cName) {
+        return successMapper.getTotalByCName(uId, rName, cName);
+    }
+
+    @Override
+    public void editSPaysumBySId(Integer sId, Integer paySum) {
+        successMapper.editSPaysumBySId(sId, paySum);
+    }
 }

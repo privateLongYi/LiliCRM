@@ -197,7 +197,7 @@ public class ViewController {
         map.addAttribute("cName", cName);
         map.addAttribute("hId", hId);
         map.addAttribute("hName", hName);
-        return "customer/failsave";
+        return "fail/failsave";
     }
 
     @GetMapping("successsave")
@@ -211,7 +211,7 @@ public class ViewController {
         map.addAttribute("cName", cName);
         map.addAttribute("hId", hId);
         map.addAttribute("hName", hName);
-        return "customer/successsave";
+        return "success/successsave";
     }
 
     @GetMapping("arrive")
@@ -220,7 +220,7 @@ public class ViewController {
 
     @GetMapping("fail")
     @ApiOperation(value = "未成交客户列表")
-    public String fail(){return "customer/faillist";}
+    public String fail(){return "fail/faillist";}
 
     @GetMapping("followsave")
     @ApiOperation(value = "新增客户跟进")
@@ -253,7 +253,7 @@ public class ViewController {
 
     @GetMapping("success")
     @ApiOperation(value = "成交客户列表")
-    public String success(){return "customer/successlist";}
+    public String success(){return "success/successlist";}
 
     @GetMapping("payrecordsave")
     @ApiOperation(value = "新增支付记录")
@@ -263,6 +263,20 @@ public class ViewController {
         map.addAttribute("cId", cId);
         map.addAttribute("cName", cName);
         return "customer/payrecordsave";
+    }
+
+    @GetMapping("appointment")
+    @ApiOperation(value = "待预约客户列表")
+    public String appointment(){return "customer/awaitappointlist";}
+
+    @GetMapping("appointmentsave")
+    @ApiOperation(value = "新增支付记录")
+    public String appointmentsave(@ApiParam(name = "cId", value = "成交客户编号", required = true) Integer cId,
+                                  @ApiParam(name = "cName", value = "成交客户名称", required = true) String cName,
+                                  ModelMap map){
+        map.addAttribute("cId", cId);
+        map.addAttribute("cName", cName);
+        return "appointment/appointmentsave";
     }
 
 }

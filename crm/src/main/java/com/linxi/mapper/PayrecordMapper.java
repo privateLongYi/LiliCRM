@@ -15,4 +15,7 @@ public interface PayrecordMapper {
     //新增支付记录
     void savePayrecord(Payrecord payrecord);
 
+    //根据成交客户编号查询支付总金额
+    Integer queryPPaysumBySId(Integer sId);
+
 }

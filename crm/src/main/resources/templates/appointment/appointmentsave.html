@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增预约客户</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="aCId" th:value="${cId}">
+                <input type="text" class="layui-input" th:value="${cName}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">门诊名称</label>
+            <div class="layui-input-block">
+                <select id="aHId"></select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">预约时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="aTime" readonly>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+        //从sessionStorage中获取用户编号
+        var uId = sessionStorage.getItem('uId');
+        var rName = sessionStorage.getItem('rName');
+
+        //时间控件
+        laydate.render({
+            elem: '#aTime' //指定元素
+            ,type: 'datetime' //时间格式
+            ,trigger: 'click' //采用click弹出
+        });
+
+        //获取所有门诊
+        $.get("/hospital/queryHospital", function (res){
+            //定义负责人下拉框内容
+            var html = "";
+            $.each(res.data, function (index, item) {
+                html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
+            });
+            $("#aHId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        })
+
+    });
+
+</script>
+</body>
+</html>

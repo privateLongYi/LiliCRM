@@ -54,4 +54,8 @@ public class AppointmentService implements IAppointmentService {
         appointmentMapper.delAByAId(aId);
     }
 
+    @Override
+    public void saveAppointment(Appointment appointment) {
+        appointmentMapper.saveAppointment(appointment);
+    }
 }

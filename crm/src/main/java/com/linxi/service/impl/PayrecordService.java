@@ -37,4 +37,10 @@ public class PayrecordService implements IPayrecordService{
     public void savePayrecord(Payrecord payrecord) {
         payrecordMapper.savePayrecord(payrecord);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryPPaysumBySId(Integer sId) {
+        return payrecordMapper.queryPPaysumBySId(sId);
+    }
 }

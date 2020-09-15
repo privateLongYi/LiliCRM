@@ -20,7 +20,7 @@
 
   <!--根据客户编号查询成交客户-->
   <select id="querySBySCId" resultMap="BaseResultMap">
-    SELECT s.*, c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hospital FROM success s
+    SELECT s.*, c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hName FROM success s
     LEFT JOIN customer c ON s.s_c_id = c.c_id
     LEFT JOIN hospital h ON s.s_h_id = h.h_id
     WHERE s.s_c_id = #{sCId}
@@ -39,7 +39,7 @@
 
   <!--根据成交客户编号查询成交客户-->
   <select id="querySBySId" resultMap="BaseResultMap">
-    SELECT s.*, c.c_name AS cName, h.h_name AS hospital FROM success s
+    SELECT s.*, c.c_name AS cName, h.h_name AS hName FROM success s
     LEFT JOIN customer c ON s.s_c_id = c.c_id
     LEFT JOIN hospital h ON s.s_h_id = h.h_id
     WHERE s.s_id = #{sId}
@@ -56,5 +56,42 @@
     INSERT INTO success(s_c_id, s_h_id, s_message, s_sum, s_paysum, s_remark, s_time)
     VALUES (#{sCId}, #{sHId}, #{sMessage}, #{sSum}, #{sPaysum}, #{sRemark}, now())
   </insert>
+
+  <!--根据客户名称查询未成交客户-->
+  <select id="querySByCName" resultMap="BaseResultMap">
+    SELECT s.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId,
+    h.h_name AS hName FROM success s
+    LEFT JOIN customer c ON s.s_c_id=c.c_id
+    LEFT JOIN hospital h ON s.s_h_id=h.h_id
+    <where>
+      <if test="rName != '管理员'">
+        AND c.c_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name = #{cName}
+      </if>
+    </where>
+    limit #{page}, #{limit}
+  </select>
+
+  <!--根据客户名称查询未成交客户总数-->
+  <select id="getTotalByCName" resultType="Integer">
+    SELECT COUNT(*) FROM success s
+    LEFT JOIN customer c ON s.s_c_id=c.c_id
+    LEFT JOIN hospital h ON s.s_h_id=h.h_id
+    <where>
+      <if test="rName != '管理员'">
+        AND c.c_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name = #{cName}
+      </if>
+    </where>
+  </select>
+
+  <!--根据成交客户编号编辑支付金额-->
+  <update id="editSPaysumBySId">
+    UPDATE success SET s_paysum = #{paySum} WHERE s_id = #{sId}
+  </update>
 
 </mapper>

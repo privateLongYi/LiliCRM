@@ -34,13 +34,14 @@ public class AwaitArriveController {
     @Autowired
     private ICtypeService iCtypeService;
 
-    @GetMapping("queryCScreen")
-    @ApiOperation(value = "查询客户信息")
+    @GetMapping("queryCScreenByCTypeId")
+    @ApiOperation(value = "查询各种状态的客户信息")
     @ResponseBody
-    public DataResult queryCScreen(@ApiParam(name = "page", value = "页码", required = true) Integer page,
+    public DataResult queryCScreenByCTypeId(@ApiParam(name = "page", value = "页码", required = true) Integer page,
                                    @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit,
                                    @ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
                                    @ApiParam(name = "rName", value = "角色名称", required = true) String rName,
+                                   @ApiParam(name = "ctType", value = "客户状态", required = true) String ctType,
                                    @ApiParam(name = "param", value = "筛选条件", required = false) String param){
         //姓名
         String cName = null;
@@ -48,16 +49,12 @@ public class AwaitArriveController {
         String cTel = null;
         //报名项目
         String cProject = null;
-        //预约门诊
-        Integer hId = null;
         //是否交定金
         Integer cEarnest = null;
         //负责人编号
         Integer cUId = null;
         //来源
         String cSource = null;
-        //根据客户状态查询编号
-        Integer cTypeId = iCtypeService.queryCtypeByCtType("待到店");
         //开始时间
         String beginTime = null;
         //结束时间
@@ -75,8 +72,6 @@ public class AwaitArriveController {
                     cTel = screen[1].trim();
                 } else if (screen[0].trim().equals("cProject")) {
                     cProject = screen[1].trim();
-                } else if (screen[0].trim().equals("hId")) {
-                    hId = Integer.parseInt(screen[1].trim());
                 } else if (screen[0].trim().equals("cEarnest")) {
                     cEarnest = Integer.parseInt(screen[1].trim());
                 } else if (screen[0].trim().equals("cUId")) {
@@ -90,10 +85,12 @@ public class AwaitArriveController {
                 }
             }
         }
+        //根据客户状态查询编号
+        Integer cTypeId = iCtypeService.queryCtypeByCtType(ctType);
         //根据筛选条件查询客户
-        List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+        List<Customer> customeres = iCustomerService.queryCScreenByCTypeId(uId, rName, (page - 1) * limit, limit, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
         //获取总条数
-        Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+        Integer total = iCustomerService.getTotalCScreenByCTypeId(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
         return new DataResult(0, "操作成功", total, customeres);
     }
 

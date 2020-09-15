@@ -136,7 +136,7 @@
 					}
 					//根据筛选条件查询
                     table.reload('tab', {
-                        url: '/arrive/queryCScreen?uId='+uId+'&rName='+rName
+                        url: '/arrive/queryCScreenByCTypeId?uId='+uId+'&rName='+rName+'&ctType=未到店'
                         ,where: {
                             param: param
                         }
@@ -151,7 +151,7 @@
                 table.render({
                     elem: '#tab'
                     ,height: 420
-                    ,url: '/arrive/queryCScreen?uId='+uId+'&rName='+rName //数据接口
+                    ,url: '/arrive/queryCScreenByCTypeId?uId='+uId+'&rName='+rName+'&ctType=未到店' //数据接口
                     ,title: '未到店客户表' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页

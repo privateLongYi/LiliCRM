@@ -42,38 +42,31 @@
 		
 		<br />
 		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: auto;">
-				&nbsp;&nbsp;预约门诊
-			</label>
-			<div class="layui-input-inline layui-form">
-				<select id="hId" lay-verify="required">
-					<option value=""></option>
-				</select>
-			</div>
 			<label class="layui-form-label" style="width: auto;">是否交定金</label>
 			<div class="layui-input-inline layui-form">
 				 <input type="radio" name="cEarnest" value="1" title="是">
 				 <input type="radio" name="cEarnest" value="0" title="否">
 			</div>
 			<label class="layui-form-label" style="width: auto;">
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
+				&nbsp;&nbsp;&nbsp;&nbsp;负责人
 			</label>
 			<div class="layui-input-inline layui-form">
 			  <select id="cUId" lay-verify="required">
 				<option value=""></option>
 			  </select>
 			</div>
+			<label class="layui-form-label" style="width: auto;">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;来源
+			</label>
+			<div class="layui-input-inline">
+				<input type="text" id="cSource" required  lay-verify="required"
+					   placeholder="请输入来源" autocomplete="off" class="layui-input">
+			</div>
 		</div>
 		
 		<br />
 		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: auto;">
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;来源
-			</label>
-			<div class="layui-input-inline">
-				<input type="text" id="cSource" required  lay-verify="required" 
-					placeholder="请输入来源" autocomplete="off" class="layui-input">
-			</div>
 			<label class="layui-form-label" style="width: auto;">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
 				<input type="hidden" id="cTypeId">
@@ -86,19 +79,15 @@
 			<div class="layui-input-inline layui-form" id="type">
 				<input type="text" id="cType" th:value="${cType}" readonly class="layui-input">
 			</div>
-		</div>
-		
-		<br />
-		<div class="layui-form-item">
 			<label class="layui-form-label" style="width: auto;">
 				&nbsp;&nbsp;报名时间
 			</label>
 			<div class="layui-input-inline layui-form">
-			  <input type="text" id="cPlaceTime" readonly placeholder="请输入报名时间"
-					 autocomplete="off" class="layui-input" style="width: 300px;">
+				<input type="text" id="cPlaceTime" readonly placeholder="请输入报名时间"
+					   autocomplete="off" class="layui-input" style="width: 300px;">
 			</div>
 		</div>
-		
+
   </div>
   
 <script src="layui/layui.js"></script>
@@ -123,18 +112,6 @@
 			,trigger: 'click' //采用click弹出
 			,range: true //开启左右面板范围选择
 		});
-
-        //获取所有门诊
-        $.get("/hospital/queryHospital", function (res){
-            //定义负责人下拉框内容
-            var html = "";
-            $.each(res.data, function (index, item) {
-                html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
-            });
-            $("#hId").append(html);
-            //append后必须重新渲染
-            form.render('select');
-        })
 
 		if (rName == "管理员"){
 			//获取角色为销售员的用户对象

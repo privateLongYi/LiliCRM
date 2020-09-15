@@ -23,14 +23,14 @@ public class CustomerService implements ICustomerService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryCScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String cProject, Integer hId, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
-        return customerMapper.queryCScreen(uId, rName, page, limit, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+    public List<Customer> queryCScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String cProject, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
+        return customerMapper.queryCScreen(uId, rName, page, limit, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getTotalByScreen(Integer uId, String rName, String cName, String cTel, String cProject, Integer hId, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
-        return customerMapper.getTotalByScreen(uId, rName, cName, cTel, cProject, hId, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+    public Integer getTotalByScreen(Integer uId, String rName, String cName, String cTel, String cProject, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
+        return customerMapper.getTotalByScreen(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
     }
 
     @Override
@@ -68,4 +68,17 @@ public class CustomerService implements ICustomerService{
     public Integer getTotalByType(Integer cTypeId) {
         return customerMapper.getTotalByType(cTypeId);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryCScreenByCTypeId(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String cProject, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
+        return customerMapper.queryCScreenByCTypeId(uId, rName, page, limit, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalCScreenByCTypeId(Integer uId, String rName, String cName, String cTel, String cProject, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
+        return customerMapper.getTotalCScreenByCTypeId(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+    }
+
 }

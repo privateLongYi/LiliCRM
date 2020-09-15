@@ -1,6 +1,7 @@
 package com.linxi.service;
 
 import com.linxi.entity.Success;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -27,5 +28,20 @@ public interface ISuccessService {
 
     //新增成交客户
     void saveSuccess(Success success);
+
+    //根据客户名称查询未成交客户
+    List<Success> querySByCName(@Param("page") Integer page,
+                                @Param("limit") Integer limit,
+                                @Param("uId") Integer uId,
+                                @Param("rName") String rName,
+                                @Param("cName") String cName);
+
+    //根据客户名称查询未成交客户总数
+    Integer getTotalByCName(@Param("uId") Integer uId,
+                            @Param("rName") String rName,
+                            @Param("cName") String cName);
+
+    //根据成交客户编号编辑支付金额
+    void editSPaysumBySId(@Param("sId") Integer sId, @Param("paySum") Integer paySum);
 
 }

@@ -14,19 +14,22 @@ public interface AppointmentMapper {
      */
     Integer addAppoint(@Param("appointment") Appointment appointment);
 
-    //根据客户编号查询客户预约
+    //根据客户编号查询预约客户
     List<Appointment> queryAByACId(Integer aCId);
 
-    //根据客户编号查询客户预约总数
+    //根据客户编号查询预约客户总数
     Integer getTotalAByACId(Integer aCId);
 
-    //根据编号查询客户预约
+    //根据编号查询预约客户
     Appointment queryAByAId(Integer aId);
 
-    //根据编号编辑客户预约
+    //根据编号编辑预约客户
     void editAByAId(Appointment appointment);
 
-    //根据编号删除客户预约
+    //根据编号删除预约客户
     void delAByAId(Integer aId);
+
+    //新增预约客户
+    void saveAppointment(Appointment appointment);
 
 }
