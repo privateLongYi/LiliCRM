@@ -22,4 +22,38 @@
     VALUES (#{rCId}, #{rFailHId}, #{rHId}, #{rMessage}, #{rCause})
   </insert>
 
+  <!--根据客户名称查询转诊客户-->
+  <select id="queryRByCName" resultMap="BaseResultMap">
+    SELECT r.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId,
+    ho.h_name AS failHName, h.h_name AS hName FROM referral r
+    LEFT JOIN customer c ON r.r_c_id=c.c_id
+    LEFT JOIN hospital h ON r.r_h_id=h.h_id
+    LEFT JOIN hospital ho ON r.r_fail_h_id=ho.h_id
+    <where>
+      <if test="rName != '管理员'">
+        AND c.c_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name LIKE '%${cName}%'
+      </if>
+    </where>
+    limit #{page}, #{limit}
+  </select>
+
+  <!--根据客户名称查询转诊客户总数-->
+  <select id="getTotalByCName" resultType="Integer">
+    SELECT COUNT(*) FROM referral r
+    LEFT JOIN customer c ON r.r_c_id=c.c_id
+    LEFT JOIN hospital h ON r.r_h_id=h.h_id
+    LEFT JOIN hospital ho ON r.r_fail_h_id=ho.h_id
+    <where>
+      <if test="rName != '管理员'">
+        AND c.c_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name = #{cName}
+      </if>
+    </where>
+  </select>
+
 </mapper>

@@ -1,7 +1,7 @@
 package com.linxi.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Payrecord implements Serializable {
     /**
@@ -38,7 +38,7 @@ public class Payrecord implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    private Date payTime;
+    private Timestamp payTime;
 
     /**
      *
@@ -147,7 +147,7 @@ public class Payrecord implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public Date getPayTime() {
+    public Timestamp getPayTime() {
         return payTime;
     }
 
@@ -159,7 +159,7 @@ public class Payrecord implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public void setPayTime(Date payTime) {
+    public void setPayTime(Timestamp payTime) {
         this.payTime = payTime;
     }
 
@@ -203,7 +203,7 @@ public class Payrecord implements Serializable {
         this.payType = payType;
     }
 
-    public Payrecord(Integer payId, Integer paySId, Integer paySum, Date payTime, Integer payTypeId) {
+    public Payrecord(Integer payId, Integer paySId, Integer paySum, Timestamp payTime, Integer payTypeId) {
         this.payId = payId;
         this.paySId = paySId;
         this.paySum = paySum;

@@ -68,7 +68,7 @@
         AND c.c_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
-        AND c.c_name = #{cName}
+        AND c.c_name LIKE '%${cName}%'
       </if>
     </where>
     limit #{page}, #{limit}
@@ -84,7 +84,7 @@
         AND c.c_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
-        AND c.c_name = #{cName}
+        AND c.c_name LIKE '%${cName}%'
       </if>
     </where>
   </select>

@@ -1,7 +1,7 @@
 package com.linxi.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Follow implements Serializable {
     /**
@@ -38,7 +38,7 @@ public class Follow implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    private Date fTime;
+    private Timestamp fTime;
 
     /**
      *
@@ -142,7 +142,7 @@ public class Follow implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public Date getfTime() {
+    public Timestamp getfTime() {
         return fTime;
     }
 
@@ -154,7 +154,7 @@ public class Follow implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public void setfTime(Date fTime) {
+    public void setfTime(Timestamp fTime) {
         this.fTime = fTime;
     }
 
@@ -190,7 +190,7 @@ public class Follow implements Serializable {
         this.fType = fType;
     }
 
-    public Follow(Integer fId, Integer fCId, Integer fTypeId, Date fTime, String fContent) {
+    public Follow(Integer fId, Integer fCId, Integer fTypeId, Timestamp fTime, String fContent) {
         this.fId = fId;
         this.fCId = fCId;
         this.fTypeId = fTypeId;

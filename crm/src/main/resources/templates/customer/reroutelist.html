@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>改约客户列表</title>
+		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+	</head>
+	<body>
+
+	<br>
+
+	<div id="screen">
+		根据客户名称：
+		<div class="layui-inline">
+			<input class="layui-input" id="cName" autocomplete="off">
+		</div>
+		<button class="layui-btn search">搜索</button>
+	</div>
+
+	<!-- 数据表格 -->
+	<table class="layui-hide" id="tab" lay-filter="test" lay-data="{id: 'tab'}"></table>
+
+		<script type="text/html" id="toolbarDemo">
+			<div class="layui-inline" lay-event="refresh"><i class="layui-icon layui-icon-refresh-1"></i></div>
+		</script>
+
+		<script th:src="@{/layui/layui.js}"></script>
+
+		<script>
+
+            layui.use(['laydate', 'laypage', 'layer', 'table', 'upload', 'element'], function(){
+                var laydate = layui.laydate //日期
+                    ,laypage = layui.laypage //分页
+                    ,layer = layui.layer //弹层
+                    ,table = layui.table //表格
+                    ,upload = layui.upload //上传
+                    ,element = layui.element //元素操作
+                    ,$ = layui.jquery //jQuery
+
+                //从sessionStorage中获取用户编号和角色名称
+                var uId = sessionStorage.getItem('uId');
+                var rName = sessionStorage.getItem('rName');
+
+                //为条件搜索按钮增加点击事件
+                $(".search").on("click", function(data){
+                    tableReload();
+                });
+
+                //表格重载
+				function tableReload(){
+				    //获取客户名称
+					var cName = $("#cName").val();
+					//根据客户名称查询
+                    table.reload('tab', {
+                        url: '/reroute/queryRByCName?uId='+uId+'&rName='+rName
+                        ,where: {
+                            cName: cName
+                        }
+                        ,page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    });
+				}
+
+                //执行一个 table 实例
+                table.render({
+                    elem: '#tab'
+                    ,height: 420
+                    ,url: '/reroute/queryRByCName?uId='+uId+'&rName='+rName //数据接口
+                    ,title: '改约客户表' //表格名称
+                    ,id: 'tab' //表格id
+                    ,page: true //开启分页
+                    ,limit: 5 //每页显示条数
+                    ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
+                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
+                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,cols: [ //表头
+                        [
+                            {field: 'reId', width: 120, title: '编号', sort: true, align:'center'}
+                            ,{field: 'cName', width: 120, title: '客户姓名', align:'center'}
+                            ,{field: 'hName', width: 120, title: '门诊名称', align:'center'}
+                            ,{field: 'reLastTime', width: 200, title: '删除预约时间', align:'center'}
+                            ,{field: 'reTime', width: 200, title: '删除预约时间', align:'center'}
+                            ,{field: 'reCause', title: '改约原因', align:'center'}
+                        ]
+                    ]
+                });
+
+                //监听头工具栏事件
+                table.on('toolbar(test)', function(obj){
+                    var checkStatus = table.checkStatus(obj.config.id)
+                        ,data = checkStatus.data; //获取选中的数据
+                    switch(obj.event){
+                        case 'refresh':
+                            tableReload();
+                            break;
+                    }
+                });
+
+            });
+
+		</script>
+
+	</body>
+</html>

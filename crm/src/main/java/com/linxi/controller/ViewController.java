@@ -279,4 +279,12 @@ public class ViewController {
     @ApiOperation(value = "待联系客户列表")
     public String contact(){return "customer/awaitcontactlist";}
 
+    @GetMapping("reroute")
+    @ApiOperation(value = "改约客户列表")
+    public String reroute(){return "customer/reroutelist";}
+
+    @GetMapping("referral")
+    @ApiOperation(value = "转诊客户列表")
+    public String referral(){return "customer/referrallist";}
+
 }

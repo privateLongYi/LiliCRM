@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @Author LongYi
  * @create 2020/9/12 20:06
@@ -22,5 +24,17 @@ public class RerouteService implements IRerouteService{
     @Override
     public void saveReroute(Reroute reroute) {
         rerouteMapper.saveReroute(reroute);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Reroute> queryRByCName(Integer page, Integer limit, Integer uId, String rName, String cName) {
+        return rerouteMapper.queryRByCName(page, limit, uId, rName, cName);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalByCName(Integer uId, String rName, String cName) {
+        return rerouteMapper.getTotalByCName(uId, rName, cName);
     }
 }

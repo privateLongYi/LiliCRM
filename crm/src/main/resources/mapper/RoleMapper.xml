@@ -22,7 +22,7 @@
     SELECT * FROM role
     <where>
       <if test="rName != null and rName != ''">
-        r_name = #{rName}
+        r_name LIKE '%${rName}%'
       </if>
     </where>
     limit #{page}, #{limit}
@@ -33,7 +33,7 @@
     SELECT COUNT(*) FROM role
     <where>
       <if test="rName != null and rName != ''">
-        r_name = #{rName}
+        r_name LIKE '%${rName}%'
       </if>
     </where>
   </select>

@@ -20,7 +20,7 @@
     SELECT * FROM menu
     <where>
       <if test="mName != null and mName != ''">
-        m_name = #{mName}
+        m_name LIKE '%${mName}%'
       </if>
     </where>
     limit #{page}, #{limit}
@@ -31,7 +31,7 @@
     SELECT COUNT(*) FROM menu
     <where>
       <if test="mName != null and mName != ''">
-        m_name = #{mName}
+        m_name LIKE '%${mName}%'
       </if>
     </where>
   </select>

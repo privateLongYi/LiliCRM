@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @Author LongYi
  * @create 2020/9/13 17:43
@@ -22,5 +24,17 @@ public class ReferralService implements IReferralService{
     @Override
     public void saveReferral(Referral referral) {
         referralMapper.saveReferral(referral);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Referral> queryRByCName(Integer page, Integer limit, Integer uId, String rName, String cName) {
+        return referralMapper.queryRByCName(page, limit, uId, rName, cName);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalByCName(Integer uId, String rName, String cName) {
+        return referralMapper.getTotalByCName(uId, rName, cName);
     }
 }

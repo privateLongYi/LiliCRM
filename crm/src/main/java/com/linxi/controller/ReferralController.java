@@ -10,9 +10,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * @Author LongYi
@@ -45,6 +48,19 @@ public class ReferralController {
         Referral referral = new Referral(null, rCId, rFailHId, rHId, rMessage, rCause);
         iReferralService.saveReferral(referral);
         return new DataResult(0, "新增成功");
+    }
+
+    @GetMapping("queryRByCName")
+    @ApiOperation(value = "根据客户名称查询转诊客户")
+    @ResponseBody
+    public DataResult queryRByCName(@ApiParam(name = "page", value = "页码", required = true) Integer page,
+                                    @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit,
+                                    @ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
+                                    @ApiParam(name = "rName", value = "角色名称", required = true) String rName,
+                                    @ApiParam(name = "cName", value = "客户名称", required = true) String cName){
+        List<Referral> referrals = iReferralService.queryRByCName((page-1)*limit, limit, uId, rName, cName);
+        Integer total = iReferralService.getTotalByCName(uId, rName, cName);
+        return new DataResult(0, "操作成功", total, referrals);
     }
 
 }

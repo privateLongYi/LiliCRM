@@ -1,7 +1,5 @@
 package com.linxi.entity;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.io.Serializable;
 import java.sql.Timestamp;
 

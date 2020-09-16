@@ -156,7 +156,7 @@
         AND c.c_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
-        AND c.c_name = #{cName}
+        AND c.c_name LIKE '%${cName}%'
       </if>
       <if test="cTel != null and cTel != ''">
         AND c.c_tel = #{cTel}
@@ -199,7 +199,7 @@
         AND c.c_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
-        AND c.c_name = #{cName}
+        AND c.c_name LIKE '%${cName}%'
       </if>
       <if test="cTel != null and cTel != ''">
         AND c.c_tel = #{cTel}

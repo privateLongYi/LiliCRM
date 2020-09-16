@@ -37,7 +37,7 @@
     SELECT u.*, r.r_name AS rName FROM user u LEFT JOIN role r ON u.u_role_id = r.r_id
     <where>
       <if test="uName != null and uName != ''">
-        AND u.u_name = #{uName}
+        AND u.u_name LIKE '%${uName}%'
       </if>
       <if test="uRoleId != null and uRoleId != 0">
         AND u.u_role_id = #{uRoleId}
@@ -51,7 +51,7 @@
     SELECT COUNT(*) FROM user
     <where>
       <if test="uName != null and uName != ''">
-        AND u_name = #{uName}
+        AND u_name LIKE '%${uName}%'
       </if>
       <if test="uRoleId != null and uRoleId != 0">
         AND u_role_id = #{uRoleId}

@@ -1,7 +1,7 @@
 package com.linxi.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Operating implements Serializable {
     /**
@@ -47,7 +47,7 @@ public class Operating implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    private Date opTime;
+    private Timestamp opTime;
 
     /**
      *用户名
@@ -166,7 +166,7 @@ public class Operating implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public Date getOpTime() {
+    public Timestamp getOpTime() {
         return opTime;
     }
 
@@ -178,7 +178,7 @@ public class Operating implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public void setOpTime(Date opTime) {
+    public void setOpTime(Timestamp opTime) {
         this.opTime = opTime;
     }
 
