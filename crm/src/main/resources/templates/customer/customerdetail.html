@@ -456,9 +456,6 @@
                             table.render({
                                 elem: "#" + index
                                 ,url: '/payrecord/queryPByPaySId?paySId=' + data.sId
-                                ,page: true //开启分页
-                                ,limit: 5 //每页显示条数
-                                ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
                                 ,cols: [
                                     [
                                         {field: 'payId', title: 'ID', sort: true}

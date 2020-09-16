@@ -22,6 +22,7 @@
 
 		<script type="text/html" id="toolbarDemo">
 			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="refresh">刷新</a>
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="save">新增</a>
 			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" lay-event="feedback">门诊反馈</a>
 			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="callback">客户回访</a>
@@ -138,13 +139,13 @@
                 //监听头工具栏事件
                 table.on('toolbar(test)', function(obj){
                     var checkStatus = table.checkStatus(obj.config.id)
-                        ,data = checkStatus.data[0]; //获取选中的数据
+                        ,data = checkStatus.data; //获取选中的数据
                     switch(obj.event){
                         case 'refresh':
                             tableReload();
                             break;
                         case 'edit':
-                            if(data.length === 0){
+                            if(data.length == 0){
                                 layer.msg('请选择一行');
                             } else if(data.length > 1){
                                 layer.msg('只能同时操作一个');
@@ -153,7 +154,7 @@
                                 var ix = layer.open({
                                     type: 2, //层类型，iframe
                                     title: '编辑成交客户',
-                                    content: ['/success/querySBySId?sId=' + data.sId],
+                                    content: ['/success/querySBySId?sId=' + data[0].sId],
                                     area: ['450px', '450px'],
                                     resize: false,
                                     btn: '确定',
@@ -204,25 +205,25 @@
                             }
                             break;
                         case 'feedback':
-                            if(data.length === 0){
+                            if(data.length == 0){
                                 layer.msg('请选择一行');
                             } else if(data.length > 1){
                                 layer.msg('只能同时操作一个');
                             } else {
-                                saveFollow(data, "成交门诊反馈");
+                                saveFollow(data[0], "成交门诊反馈");
                             }
                             break;
                         case 'callback':
-                            if(data.length === 0){
+                            if(data.length == 0){
                                 layer.msg('请选择一行');
                             } else if(data.length > 1){
                                 layer.msg('只能同时操作一个');
                             } else {
-                                saveFollow(data, "成交客户回访");
+                                saveFollow(data[0], "成交客户回访");
                             }
                             break;
                         case 'gathering':
-                            if(data.length === 0){
+                            if(data.length == 0){
                                 layer.msg('请选择一行');
                             } else if(data.length > 1){
                                 layer.msg('只能同时操作一个');
@@ -231,7 +232,7 @@
                                 var ix = layer.open({
                                     type: 2, //层类型，iframe
                                     title: '新增支付记录',
-                                    content: ['/payrecordsave?cId='+data.sId+'&cName='+data.cName],
+                                    content: ['/payrecordsave?cId='+data[0].sId+'&cName='+data[0].cName],
                                     area: ['400px', '300px'],
                                     resize: false,
                                     btn: '确定',
@@ -242,24 +243,15 @@
                                         var paySum = $(body).find("#paySum").val();
                                         var payTypeId = $(body).find("#payTypeId").val();
                                         if (paySum != '' && paySum.trim() != '') {
-                                            //声明格式是否正确
-                                            var verify = true;
-                                            if(paySum <= 0){
-                                                layer.msg("支付金额必须大于零");
-                                                verify = false;
-                                                return;
-                                            }
-                                            if(verify) {
-                                                $.post("/payrecord/savePayrecord",
-                                                    {uId: uId, paySId: paySId, paySum: paySum, payTypeId: payTypeId},
-                                                    function (obj) {
-                                                        layer.msg(obj.msg, {time: 500}, function () {
-                                                            layer.close(ix);
-                                                            tableReload();
-                                                        });
-                                                    }
-                                                );
-                                            }
+											$.post("/payrecord/savePayrecord",
+												{uId: uId, paySId: paySId, paySum: paySum, payTypeId: payTypeId},
+												function (obj) {
+													layer.msg(obj.msg, {time: 500}, function () {
+														layer.close(ix);
+														tableReload();
+													});
+												}
+											);
                                         } else {
                                             layer.msg('请填写支付金额');
                                         }
@@ -268,6 +260,15 @@
                                         layer.close(index);
                                     }
                                 });
+                            }
+                            break;
+                        case 'save':
+                            if(data.length == 0){
+                                layer.msg('请选择一行');
+                            } else if(data.length > 1){
+                                layer.msg('只能同时操作一个');
+                            } else {
+                                layer.msg("新增成交");
                             }
                             break;
                     }

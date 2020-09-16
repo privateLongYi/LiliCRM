@@ -29,7 +29,7 @@ public class AtypeController {
     private IAtypeService iAtypeService;
 
     @GetMapping("queryAtype")
-    @ApiOperation(value = "根据客户编号查询预约类型")
+    @ApiOperation(value = "查询所有预约类型")
     @ResponseBody
     public DataResult queryAtype(){
         List<Atype> atypes = iAtypeService.queryAtype();
@@ -78,6 +78,14 @@ public class AtypeController {
         Atype atype = new Atype(atId, atType);
         iAtypeService.editAtypeByAtId(atype);
         return new DataResult(0, "编辑成功");
+    }
+
+    @PostMapping("queryAByAType")
+    @ApiOperation(value = "根据预约类型查询编号")
+    @ResponseBody
+    public DataResult queryAByAType(@ApiParam(value = "预约类型", required = true) String atType){
+        Integer atId = iAtypeService.queryAByAType(atType);
+        return new DataResult(0, "编辑成功", 1, atId);
     }
 
 }

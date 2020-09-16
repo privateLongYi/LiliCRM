@@ -162,11 +162,12 @@
                                 var rCId = $(body).find("#rCId").val();
                                 var rFailHId = $(body).find("#rFailHId").val();
                                 var rHId = $(body).find("#rHId").val();
+                                var aTime = $(body).find("#aTime").val();
                                 var rMessage = $(body).find("#rMessage").val();
                                 var rCause = $(body).find("#rCause").val();
                                 if (rMessage != '' && rMessage.trim() != '' && rCause != '' && rCause.trim() != '') {
                                     $.post("/referral/saveReferral",
-										{uId:uId, rCId:rCId, rFailHId:rFailHId,
+										{uId:uId, rCId:rCId, rFailHId:rFailHId, aTime:aTime,
 											rHId:rHId, rMessage:rMessage, rCause:rCause},
                                         function (obj) {
                                             layer.msg(obj.msg, {time: 500}, function () {

@@ -86,13 +86,14 @@ public class AppointmentController {
     @ResponseBody
     public DataResult saveAppointment(@ApiParam(value = "客户编号", required = true) Integer aCId,
                                       @ApiParam(value = "预约时间", required = true) String aTime,
-                                      @ApiParam(value = "门诊编号", required = true) Integer aHId){
+                                      @ApiParam(value = "门诊编号", required = true) Integer aHId,
+                                      @ApiParam(value = "预约类型", required = true) String atType){
         //根据客户状态查询编号
         Integer cTypeId = iCtypeService.queryCtypeByCtType("待到店");
         //改变客户状态为未到店状态
         iCustomerService.editCTypeIdByCId(aCId, cTypeId);
         //根据预约类型查询编号
-        Integer aTypeId = iAtypeService.queryAByAType("普通预约");
+        Integer aTypeId = iAtypeService.queryAByAType(atType);
         //新增预约客户
         Appointment appointment = new Appointment(null, aCId, Timestamp.valueOf(aTime), aHId, aTypeId);
         iAppointmentService.saveAppointment(appointment);

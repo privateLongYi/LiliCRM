@@ -32,6 +32,12 @@
             </div>
         </div>
         <div class="layui-form-item">
+            <label class="layui-form-label">预约时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="aTime" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>未成交信息</label>
             <div class="layui-input-block">
                 <textarea class="layui-textarea" id="rMessage" autocomplete="off"></textarea>
@@ -54,6 +60,13 @@
             ,laydate = layui.laydate
             ,$ = layui.jquery
             ,layer = layui.layer;
+
+        //时间控件
+        laydate.render({
+            elem: '#aTime' //指定元素
+            ,type: 'datetime' //时间格式
+            ,trigger: 'click' //采用click弹出
+        });
 
         //获取所有门诊
         $.get("/hospital/queryHospital", function (res){

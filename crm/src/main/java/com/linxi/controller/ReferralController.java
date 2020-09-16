@@ -1,9 +1,9 @@
 package com.linxi.controller;
 
+import com.linxi.entity.Appointment;
 import com.linxi.entity.Operating;
 import com.linxi.entity.Referral;
-import com.linxi.service.IOperatingService;
-import com.linxi.service.IReferralService;
+import com.linxi.service.*;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -32,6 +33,18 @@ public class ReferralController {
     @Autowired
     private IOperatingService iOperatingService;
 
+    @Autowired
+    private ICtypeService iCtypeService;
+
+    @Autowired
+    private ICustomerService iCustomerService;
+
+    @Autowired
+    private IAtypeService iAtypeService;
+
+    @Autowired
+    private IAppointmentService iAppointmentService;
+
     @PostMapping("saveReferral")
     @ApiOperation(value = "新增转诊记录")
     @ResponseBody
@@ -39,8 +52,18 @@ public class ReferralController {
                                    @ApiParam(value = "客户编号", required = true) Integer rCId,
                                    @ApiParam(value = "未成交门诊编号", required = true) Integer rFailHId,
                                    @ApiParam(value = "新预约门诊编号", required = true) Integer rHId,
+                                   @ApiParam(value = "预约时间", required = true) String aTime,
                                    @ApiParam(value = "未成交信息", required = true) String rMessage,
                                    @ApiParam(value = "转诊原因", required = true) String rCause){
+        //根据客户状态查询编号
+        Integer cTypeId = iCtypeService.queryCtypeByCtType("待到店");
+        //根据编号编辑客户状态
+        iCustomerService.editCTypeIdByCId(rCId, cTypeId);
+        //根据预约类型查询编号
+        Integer aTypeId = iAtypeService.queryAByAType("转诊");
+        //新增预约记录
+        Appointment appointment = new Appointment(null, rCId, Timestamp.valueOf(aTime), rHId, aTypeId);
+        iAppointmentService.addAppoint(appointment);
         //新增操作记录
         Operating operating = new Operating(rCId, uId, "新增了转诊记录");
         iOperatingService.addOperatingRecord(operating);

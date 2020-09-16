@@ -266,12 +266,14 @@ public class ViewController {
     public String appointment(){return "customer/awaitappointlist";}
 
     @GetMapping("appointmentsave")
-    @ApiOperation(value = "新增支付记录")
+    @ApiOperation(value = "新增预约客户")
     public String appointmentsave(@ApiParam(name = "cId", value = "成交客户编号", required = true) Integer cId,
                                   @ApiParam(name = "cName", value = "成交客户名称", required = true) String cName,
+                                  @ApiParam(name = "atType", value = "成交客户名称", required = true) String atType,
                                   ModelMap map){
         map.addAttribute("cId", cId);
         map.addAttribute("cName", cName);
+        map.addAttribute("atType", atType);
         return "appointment/appointmentsave";
     }
 
