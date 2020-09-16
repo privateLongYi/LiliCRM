@@ -148,10 +148,6 @@ public class ViewController {
     @ApiOperation(value = "新增门诊")
     public String hospitalsave(){return "hospital/hospitalsave";}
 
-    @GetMapping("contact")
-    @ApiOperation(value = "待联系客户管理")
-    public String contact(){return "customer/contact";}
-
     @GetMapping("awaitarrive")
     @ApiOperation(value = "待到店客户列表")
     public String awaitarrive(){return "customer/awaitarrivelist";}
@@ -278,5 +274,9 @@ public class ViewController {
         map.addAttribute("cName", cName);
         return "appointment/appointmentsave";
     }
+
+    @GetMapping("contact")
+    @ApiOperation(value = "待联系客户列表")
+    public String contact(){return "customer/awaitcontactlist";}
 
 }

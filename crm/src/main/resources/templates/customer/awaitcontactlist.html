@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="UTF-8">
-		<title>待到店列表</title>
+		<title>待联系列表</title>
 		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
 	</head>
 	<body>
@@ -27,10 +27,10 @@
 		</script>
 
 		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="arrive">未到店</a>
-			<a class="layui-btn layui-btn-xs" lay-event="appoint">改约</a>
-			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="fail">未成交</a>
-			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="success">成交</a>
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="awaitappoint">待预约</a>
+			<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="appoint">预约</a>
+			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 		</script>
 
 		<script th:src="@{/layui/layui.js}"></script>
@@ -136,7 +136,7 @@
 					}
 					//根据筛选条件查询
                     table.reload('tab', {
-                        url: '/awaitarrive/queryCScreenByCTypeId?uId='+uId+'&rName='+rName+'&ctType=待到店'
+                        url: '/awaitcontact/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待联系'
                         ,where: {
                             param: param
                         }
@@ -151,8 +151,8 @@
                 table.render({
                     elem: '#tab'
                     ,height: 420
-                    ,url: '/awaitarrive/queryCScreenByCTypeId?uId='+uId+'&rName='+rName+'&ctType=待到店' //数据接口
-                    ,title: '待到店客户表' //表格名称
+                    ,url: '/awaitcontact/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待联系' //数据接口
+                    ,title: '待预约客户表' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
                     ,limit: 5 //每页显示条数
@@ -194,147 +194,67 @@
                 table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
                     var data = obj.data //获得当前行数据
                         ,layEvent = obj.event; //获得 lay-event 对应的值
-                    if(layEvent === 'arrive'){
-                        //弹出未到店页面
+                    if(layEvent === 'edit'){
+                        //弹出编辑页面
                         var ix = layer.open({
                             type: 2, //层类型，iframe
-                            title: '新增未到店客户',
-                            content: ['/arrivesave?cId='+data.cId+'&cName='+data.cName+
-									'&hId='+data.hId+'&hName='+data.hName],
-                            area: ['400px', '350px'],
+                            title: '编辑客户',
+                            content: ['/customer/queryCByCId?cId=' + data.cId + "&page=awaitcontact-edit"],
+                            area: ['1000px', '450px'],
                             resize: false,
                             btn: '确定',
                             btn1: function (index, layero) {
                                 var body = layer.getChildFrame('body', index);
                                 //获取值
-                                var arCId = $(body).find("#arCId").val();
-                                var arHId = $(body).find("#arHId").val();
-                                var arCause = $(body).find("#arCause").val().trim();
-                                if (arCause != '' && arCause.trim() != '') {
-									$.post("/arrive/saveArrive", {uId:uId, arCId:arCId, arHId:arHId, arCause:arCause},
-										function (obj) {
-											layer.msg(obj.msg, {time: 500}, function () {
-												layer.close(ix);
-												tableReload();
-											});
-										}
-									);
-                                } else {
-                                    layer.msg('请输入未到店原因');
+                                var cName = $(body).find("#cName").val().trim();
+                                var cSex = null;
+                                if($(body).find("[name=cSex]")[0].checked){
+                                    cSex = $(body).find("[name=cSex]")[0].value;
+                                }else{
+                                    cSex = $(body).find("[name=cSex]")[1].value;
                                 }
-                            },
-                            cancel: function(index, layero){
-                                layer.close(index);
-                            }
-                        });
-                    } else if(layEvent === 'appoint'){
-                        //弹出改约页面
-                        var ix = layer.open({
-                            type: 2, //层类型，iframe
-                            title: '新增改约记录',
-                            content: ['/reroutesave?cId='+data.cId+
-                            '&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
-							'&aTime='+data.aTime],
-                            area: ['450px', '450px'],
-                            resize: false,
-                            btn: '确定',
-                            btn1: function (index, layero) {
-                                var body = layer.getChildFrame('body', index);
-                                //获取值
-                                var reCId = $(body).find("#reCId").val();
-                                var reHId = $(body).find("#reHId").val();
-                                var reLastTime = $(body).find("#reLastTime").val();
-                                var reTime = $(body).find("#reTime").val();
-                                var reCause = $(body).find("#reCause").val().trim();
-                                if (reTime != '' && reCause != '' && reCause.trim() != '') {
-                                    $.post("/reroute/saveReroute", {uId:uId, reCId:reCId, reHId:reHId,
-                                            reLastTime:reLastTime, reTime:reTime, reCause:reCause},
-                                        function (obj) {
-                                            layer.msg(obj.msg, {time: 500}, function () {
-                                                layer.close(ix);
-                                                tableReload();
-                                            });
-                                        }
-                                    );
-                                } else {
-                                    layer.msg('请输入带星号的必填项');
-                                }
-                            },
-                            cancel: function(index, layero){
-                                layer.close(index);
-                            }
-                        });
-                    } else if(layEvent === 'fail'){
-                        //弹出未成交页面
-                        var ix = layer.open({
-                            type: 2, //层类型，iframe
-                            title: '新增未成交客户',
-                            content: ['/failsave?cId='+data.cId+'&cName='+data.cName+
-                            '&hId='+data.hId+'&hName='+data.hName],
-                            area: ['400px', '350px'],
-                            resize: false,
-                            btn: '确定',
-                            btn1: function (index, layero) {
-                                var body = layer.getChildFrame('body', index);
-                                //获取值
-                                var flCId = $(body).find("#flCId").val();
-                                var flHId = $(body).find("#flHId").val();
-                                var flCause = $(body).find("#flCause").val().trim();
-                                if (flCause != '' && flCause.trim() != '') {
-                                    $.post("/fail/saveFail", {uId:uId, flCId:flCId, flHId:flHId, flCause:flCause},
-                                        function (obj) {
-                                            layer.msg(obj.msg, {time: 500}, function () {
-                                                layer.close(ix);
-                                                tableReload();
-                                            });
-                                        }
-                                    );
-                                } else {
-                                    layer.msg('请输入成交原因');
-                                }
-                            },
-                            cancel: function(index, layero){
-                                layer.close(index);
-                            }
-                        });
-                    } else if(layEvent === 'success'){
-                        //弹出成交页面
-                        var ix = layer.open({
-                            type: 2, //层类型，iframe
-                            title: '新增成交客户',
-                            content: ['/successsave?cId='+data.cId+'&cName='+data.cName+
-                            '&hId='+data.hId+'&hName='+data.hName],
-                            area: ['500px', '450px'],
-                            resize: false,
-                            btn: '确定',
-                            btn1: function (index, layero) {
-                                var body = layer.getChildFrame('body', index);
-                                //获取值
-                                var sCId = $(body).find("#sCId").val();
-                                var sHId = $(body).find("#sHId").val();
-                                var sMessage = $(body).find("#sMessage").val();
-                                var sSum = $(body).find("#sSum").val();
-                                var sPaysum = $(body).find("#sPaysum").val();
-                                var sRemark = $(body).find("#sRemark").val();
-                                if (sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '') {
+                                var cAge = $(body).find("#cAge").val();
+                                var cTel = $(body).find("#cTel").val().trim();
+                                var cProject = $(body).find("#cProject").val();
+                                var cRemark = $(body).find("#cRemark").val().trim();
+                                var cEarnest = $(body).find("#cEarnest").val();
+                                var cUId = $(body).find("#cUId").val();
+                                var cSource = $(body).find("#cSource").val().trim();
+                                var cTypeId = $(body).find("#cTypeId").val();
+                                if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
                                     //声明格式是否正确
                                     var verify = true;
-                                    //验证成交金额
-                                    if(sSum <= 0){
-                                        layer.msg("成交金额不能小于等于零");
+                                    //验证姓名格式
+                                    if(cName.length > 6){
+                                        layer.msg("姓名长度不能大于6位");
                                         verify = false;
                                         return;
                                     }
-                                    if(verify) {
-                                        $.post("/success/saveSuccess", {
-                                                uId: uId,
-                                                sCId: sCId,
-                                                sHId: sHId,
-                                                sMessage: sMessage,
-												sSum: sSum,
-												sPaysum: sPaysum,
-												sRemark: sRemark
-                                            },
+                                    //验证年龄格式
+                                    if(cAge != ''){
+                                        if(cAge <= 0 || cAge >= 150){
+                                            layer.msg("年龄必须大于0小于150");
+                                            verify = false;
+                                            return;
+                                        }
+                                    }
+                                    //验证电话格式
+                                    if(!(/^1[3456789]\d{9}$/.test(cTel))){
+                                        layer.msg("手机号码格式错误");
+                                        verify = false;
+                                        return;
+                                    }
+                                    //验证定金格式
+                                    if(cEarnest != ''){
+                                        if(cEarnest < 0){
+                                            layer.msg("定金不能为负数");
+                                            verify = false;
+                                            return;
+                                        }
+                                    }
+                                    if(verify){
+                                        $.post("/customer/editCByCId?cId="+data.cId, {uId: uId, cName:cName, cSex:cSex, cAge:cAge, cTel:cTel, cProject:cProject,
+                                                cRemark:cRemark, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cTypeId:cTypeId},
                                             function (obj) {
                                                 layer.msg(obj.msg, {time: 500}, function () {
                                                     layer.close(ix);
@@ -344,12 +264,135 @@
                                         );
                                     }
                                 } else {
-                                    layer.msg('请填写带星号的必填项');
+                                    layer.msg('请输入带星号的必填项');
                                 }
                             },
                             cancel: function(index, layero){
                                 layer.close(index);
                             }
+                        });
+                    } else if(layEvent === 'awaitappoint'){
+                        //弹出预约页面
+                        var ix = layer.open({
+                            type: 2, //层类型，iframe
+                            title: '新增待预约客户',
+                            content: ['/customer/queryCByCId?cId=' + data.cId + "&page=awaitcontact-awaitappoint"],
+                            area: ['1000px', '450px'],
+                            resize: false,
+                            btn: '确定',
+                            btn1: function (index, layero) {
+                                var body = layer.getChildFrame('body', index);
+                                //获取值
+                                var cName = $(body).find("#cName").val().trim();
+                                var cSex = null;
+                                if($(body).find("[name=cSex]")[0].checked){
+                                    cSex = $(body).find("[name=cSex]")[0].value;
+                                }else{
+                                    cSex = $(body).find("[name=cSex]")[1].value;
+                                }
+                                var cAge = $(body).find("#cAge").val();
+                                var cTel = $(body).find("#cTel").val().trim();
+                                var cProject = $(body).find("#cProject").val();
+                                var cRemark = $(body).find("#cRemark").val().trim();
+                                var cEarnest = $(body).find("#cEarnest").val();
+                                var cUId = $(body).find("#cUId").val();
+                                var cSource = $(body).find("#cSource").val().trim();
+                                var cTypeId = $(body).find("#cTypeId").val();
+                                if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
+                                    //声明格式是否正确
+                                    var verify = true;
+                                    //验证姓名格式
+                                    if(cName.length > 6){
+                                        layer.msg("姓名长度不能大于6位");
+                                        verify = false;
+                                        return;
+                                    }
+                                    //验证年龄格式
+                                    if(cAge != ''){
+                                        if(cAge <= 0 || cAge >= 150){
+                                            layer.msg("年龄必须大于0小于150");
+                                            verify = false;
+                                            return;
+                                        }
+                                    }
+                                    //验证电话格式
+                                    if(!(/^1[3456789]\d{9}$/.test(cTel))){
+                                        layer.msg("手机号码格式错误");
+                                        verify = false;
+                                        return;
+                                    }
+                                    //验证定金格式
+                                    if(cEarnest != ''){
+                                        if(cEarnest < 0){
+                                            layer.msg("定金不能为负数");
+                                            verify = false;
+                                            return;
+                                        }
+                                    }
+                                    if(verify){
+                                        $.post("/customer/editCByCId?cId=" + data.cId, {uId: uId, cName:cName, cSex:cSex, cAge:cAge, cTel:cTel, cProject:cProject,
+                                                cRemark:cRemark, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cTypeId:cTypeId},
+                                            function (obj) {
+                                                layer.msg(obj.msg, {time: 500}, function () {
+                                                    layer.close(ix);
+                                                    tableReload();
+                                                });
+                                            }
+                                        );
+                                    }
+                                } else {
+                                    layer.msg('请输入带星号的必填项');
+                                }
+                            },
+                            cancel: function(index, layero){
+                                layer.close(index);
+                            }
+                        });
+                    } else if(layEvent === 'appoint'){
+                        //弹出预约页面
+                        var ix = layer.open({
+                            type: 2, //层类型，iframe
+                            title: '新增预约客户',
+                            content: ['/appointmentsave?cId='+data.cId+'&cName='+data.cName],
+                            area: ['450px', '450px'],
+                            resize: false,
+                            btn: '确定',
+                            btn1: function (index, layero) {
+                                var body = layer.getChildFrame('body', index);
+                                //获取值
+                                var aCId = $(body).find("#aCId").val();
+                                var aTime = $(body).find("#aTime").val();
+                                var aHId = $(body).find("#aHId").val();
+                                var aTypeId = $(body).find("#aTypeId").val();
+                                if (aTime != '') {
+                                    $.post("/appointment/saveAppointment", {uId:uId, aCId:aCId, aTime:aTime,
+                                            aHId:aHId, aTypeId:aTypeId},
+                                        function (obj) {
+                                            layer.msg(obj.msg, {time: 500}, function () {
+                                                layer.close(ix);
+                                                tableReload();
+                                            });
+                                        }
+                                    );
+                                } else {
+                                    layer.msg('请输入预约时间');
+                                }
+                            },
+                            cancel: function(index, layero){
+                                layer.close(index);
+                            }
+                        });
+                    } else if(layEvent === 'del'){
+                        layer.confirm('确定删除吗？', {icon: 3, title:'提示'}, function(index){
+                            $.get("/customer/delCByCId?cId=" + data.cId + "&cName=" + data.cName + "&uId=" + uId, function(obj){
+                                if (obj.code == 0) {
+                                    layer.msg(obj.msg, {time: 500}, function () {
+                                        tableReload();
+                                    });
+                                } else {
+                                    layer.msg(obj.msg)
+                                }
+                            });
                         });
                     }
                 });

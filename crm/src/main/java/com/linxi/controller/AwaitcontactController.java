@@ -20,9 +20,9 @@ import java.util.List;
  * @create 2020/9/15 21:01
  */
 @Controller
-@RequestMapping("awaitappoint")
-@Api(value = "待预约客户控制类", tags = "待预约客户控制类")
-public class AwaitappointController {
+@RequestMapping("awaitcontact")
+@Api(value = "待联系客户控制类", tags = "待联系客户控制类")
+public class AwaitcontactController {
 
     @Autowired
     private ICustomerService iCustomerService;

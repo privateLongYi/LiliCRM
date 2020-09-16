@@ -278,7 +278,7 @@
                     var data = obj.data //获得当前行数据
                         ,layEvent = obj.event; //获得 lay-event 对应的值
                     if(layEvent === 'del'){
-                        layer.confirm('真的删除行么', function(index){
+                        layer.confirm('确定删除吗？', {icon: 3, title:'提示'}, function(index){
                             $.get("/customer/delCByCId?cId=" + data.cId + "&cName=" + data.cName + "&uId=" + uId, function(obj){
                                 if (obj.code == 0) {
                                     layer.msg(obj.msg, {time: 500}, function () {
