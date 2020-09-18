@@ -72,4 +72,10 @@ public class UserService implements IUserService {
     public void editUByUId(User user) {
         userMapper.editUByUId(user);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getPerformanceByUId(Integer uId) {
+        return userMapper.getPerformanceByUId(uId);
+    }
 }

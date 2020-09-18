@@ -80,4 +80,13 @@
     WHERE u_id = #{uId}
   </update>
 
+  <!--根据用户编号查询客户支付总额（即业绩）-->
+  <select id="getPerformanceByUId" resultType="Integer">
+    SELECT SUM(p.pay_sum) FROM `user` u
+    LEFT JOIN customer c ON u.u_id=c.c_u_id
+    LEFT JOIN success s ON c.c_id=s.s_c_id
+    LEFT JOIN payrecord p ON s.s_id=p.pay_s_id
+    WHERE c.c_u_id = #{uId}
+  </select>
+
 </mapper>

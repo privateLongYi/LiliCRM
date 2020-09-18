@@ -81,4 +81,9 @@ public class CustomerService implements ICustomerService{
         return customerMapper.getTotalCScreenByCTypeId(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalCByUIdAndCTypeId(Integer uId, Integer cTypeId) {
+        return customerMapper.getTotalCByUIdAndCTypeId(uId, cTypeId);
+    }
 }

@@ -85,4 +85,8 @@ public interface CustomerMapper {
                                      @Param("cSource") String cSource,
                                      @Param("cTypeId") Integer cTypeId);
 
+    //根据用户编号和状态查询客户总条数
+    Integer getTotalCByUIdAndCTypeId(@Param("uId") Integer uId,
+                                     @Param("cTypeId") Integer cTypeId);
+
 }

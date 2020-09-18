@@ -230,4 +230,15 @@
     </where>
   </select>
 
+  <!--根据用户编号和状态查询客户总条数-->
+  <select id="getTotalCByUIdAndCTypeId" resultType="Integer">
+    SELECT COUNT(*) FROM customer
+    <where>
+      c_u_id = #{uId}
+      <if test="cTypeId != null">
+        AND c_type_id = #{cTypeId}
+      </if>
+    </where>
+  </select>
+
 </mapper>

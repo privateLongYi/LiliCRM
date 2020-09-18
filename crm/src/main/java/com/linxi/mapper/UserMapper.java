@@ -39,4 +39,7 @@ public interface UserMapper {
     //根据编号编辑用户
     void editUByUId(User user);
 
+    //根据用户编号查询客户支付总额（即业绩）
+    Integer getPerformanceByUId(Integer uId);
+
 }

@@ -87,7 +87,7 @@
                         if(name == "cPlaceTime"){
                             var beginTime = value.split(" - ")[0];
                             var endTime = value.split(" - ")[1];
-                            innerHTML += "<span id='span"+name+"'>"+text.trim()+"</span>"+
+                            innerHTML += "<span id='span"+name+"'>"+text+"</span>"+
                                 "<input type='hidden' id='beginTime' value='"+beginTime+"'>"+
                                 "<input type='hidden' id='endTime' value='"+endTime+"'>"+
                                 "</div>"+
@@ -95,8 +95,8 @@
                                 "<i class='layui-icon layui-icon-close' id='close"+name+"'></i>"+
                                 "</div>";
                         }else{
-                            innerHTML += "<span id='span"+name+"'>"+text.trim()+"</span>"+
-                                "<input type='hidden' id='"+name+"' value='"+value.trim()+"'>"+
+                            innerHTML += "<span id='span"+name+"'>"+text+"</span>"+
+                                "<input type='hidden' id='"+name+"' value='"+value+"'>"+
                                 "</div>"+
                                 "<div class='layui-input-inline' style='cursor: pointer; padding: 12px 0px;'>"+
                                 "<i class='layui-icon layui-icon-close' id='close"+name+"'></i>"+
@@ -112,9 +112,9 @@
                         });
                     }else{
                         //改变已有的值
-                        $("#span"+name).html(text.trim());
+                        $("#span"+name).html(text);
                         if(name != "cPlaceTime"){
-							$("#"+name).val(value.trim());
+							$("#"+name).val(value);
                         }else{
                             var beginTime = value.split(" - ")[0];
                             var endTime = value.split(" - ")[1];
@@ -151,7 +151,7 @@
                 function popup(ix, index, url) {
                     var body = layer.getChildFrame('body', index);
                     //获取值
-                    var cName = $(body).find("#cName").val().trim();
+                    var cName = $(body).find("#cName").val();
                     var cSex = null;
                     if($(body).find("[name=cSex]")[0].checked){
                         cSex = $(body).find("[name=cSex]")[0].value;
@@ -159,12 +159,13 @@
                         cSex = $(body).find("[name=cSex]")[1].value;
                     }
                     var cAge = $(body).find("#cAge").val();
-                    var cTel = $(body).find("#cTel").val().trim();
+                    var cTel = $(body).find("#cTel").val();
                     var cProject = $(body).find("#cProject").val();
-                    var cRemark = $(body).find("#cRemark").val().trim();
+                    var cRemark = $(body).find("#cRemark").val();
+                    var cMessage = $(body).find("#cMessage").val();
                     var cEarnest = $(body).find("#cEarnest").val();
                     var cUId = $(body).find("#cUId").val();
-                    var cSource = $(body).find("#cSource").val().trim();
+                    var cSource = $(body).find("#cSource").val();
                     var cTypeId = $(body).find("#cTypeId").val();
                     if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
 						//声明格式是否正确
@@ -198,7 +199,7 @@
                             }
 						}
                         if(verify){
-							$.post(url, {uId: uId, cName:cName, cSex:cSex, cAge:cAge, cTel:cTel, cProject:cProject,
+							$.post(url, {uId: uId, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cProject:cProject, cMessage:cMessage,
 									cRemark:cRemark, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cTypeId:cTypeId},
 								function (obj) {
 									layer.msg(obj.msg, {time: 500}, function () {
@@ -216,13 +217,12 @@
                 //执行一个 table 实例
                 table.render({
                     elem: '#tab'
-                    ,height: 420
                     ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName //数据接口
                     ,title: '客户信息表' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
-                    ,limit: 5 //每页显示条数
-                    ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
+                    ,limit: 20 //每页显示条数
+                    ,limits: [20, 50, 100] //自定义可选每页显示条数
                     ,toolbar: '#toolbarDemo' //刷新、增加工具栏
                     ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
                     ,cols: [ //表头
@@ -333,8 +333,8 @@
                         btn1: function(index, layero){
                             var body = layer.getChildFrame('body', index);
                             //获取筛选值
-                            var cName = $(body).find("#cName").val().trim();
-                            var cTel = $(body).find("#cTel").val().trim();
+                            var cName = $(body).find("#cName").val();
+                            var cTel = $(body).find("#cTel").val();
                             var cProject = $(body).find("#cProject").val();
                             //给是否交定金赋值
                             var cEarnest;
@@ -348,15 +348,15 @@
                                 cEarnestText = $(body).find("[name=cEarnest]")[1].title;
                             }
                             var cUId = $(body).find("#cUId").val();
-                            var cSource = $(body).find("#cSource").val().trim();
+                            var cSource = $(body).find("#cSource").val();
                             var cTypeId = $(body).find("#cTypeId").val();
                             var cPlaceTime = $(body).find("#cPlaceTime").val();
                             //新增筛选条件或者修改
                             if(cName != ''){
-                                screen("cName", cName, cName);
+                                screen("cName", cName.trim(), cName.trim());
                             }
                             if(cTel != ''){
-                                screen("cTel", cTel, cTel);
+                                screen("cTel", cTel.trim(), cTel.trim());
                             }
                             if(cProject != ''){
                                 var cProjectText = $(body).find("#cProject [value="+cProject+"]").text();
@@ -370,7 +370,7 @@
                                 screen("cUId", cUId, cUIdText);
                             }
                             if(cSource != ''){
-                                screen("cSource", cSource, cSource);
+                                screen("cSource", cSource.trim(), cSource.trim());
                             }
                             if(cTypeId != ''){
                                 var cTypeIdText = $(body).find("#cTypeId [value="+cTypeId+"]").text();

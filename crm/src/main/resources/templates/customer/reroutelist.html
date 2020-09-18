@@ -65,13 +65,12 @@
                 //执行一个 table 实例
                 table.render({
                     elem: '#tab'
-                    ,height: 420
                     ,url: '/reroute/queryRByCName?uId='+uId+'&rName='+rName //数据接口
                     ,title: '改约客户表' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
-                    ,limit: 5 //每页显示条数
-                    ,limits: [5, 10, 20, 50, 100] //自定义可选每页显示条数
+                    ,limit: 20 //每页显示条数
+                    ,limits: [20, 50, 100] //自定义可选每页显示条数
                     ,toolbar: '#toolbarDemo' //刷新、增加工具栏
                     ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
                     ,cols: [ //表头

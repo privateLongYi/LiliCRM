@@ -242,4 +242,16 @@ public class CustomerController {
         return new DataResult(0, "操作成功", total, customeres);
     }
 
+    @GetMapping("getTotalCByUIdAndCTypeId")
+    @ApiOperation(value = "根据用户编号和客户状态查询客户总条数")
+    @ResponseBody
+    public Integer getTotalCByUIdAndCTypeId(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                            @ApiParam(value = "客户状态", required = true) String ctType){
+        //根据客户状态查询编号
+        Integer cTypeId = iCtypeService.queryCtypeByCtType(ctType);
+        //根据用户编号和客户状态查询客户总条数
+        Integer total = iCustomerService.getTotalCByUIdAndCTypeId(uId, cTypeId);
+        return total;
+    }
+
 }

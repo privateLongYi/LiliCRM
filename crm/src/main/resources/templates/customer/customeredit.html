@@ -114,13 +114,15 @@
                 <textarea class="layui-textarea" id="cRemark"
                           autocomplete="off" th:text="${c.cRemark}"></textarea>
             </div>
-            <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;症状信息
-            </label>
-            <div class="layui-input-inline">
-                <textarea class="layui-textarea" id="cMessage"
-                          autocomplete="off" th:text="${c.cMessage}"></textarea>
+            <div id="message">
+                <label class="layui-form-label" style="width: auto;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;症状信息
+                </label>
+                <div class="layui-input-inline">
+                    <textarea class="layui-textarea" id="cMessage"
+                              autocomplete="off" th:text="${c.cMessage}"></textarea>
+                </div>
             </div>
         </div>
 
@@ -182,6 +184,13 @@
                 //状态赋值
                 $("#cType").val("待预约");
                 $("#cTypeId").val("3");
+                //禁用下拉框
+                $("#salelist").attr("disabled", "disabled");
+                //append后必须重新渲染
+                form.render('select');
+            }else if(page == "awaitcontact-edit"){
+                //隐藏症状信息
+                $("#message").hide();
                 //禁用下拉框
                 $("#salelist").attr("disabled", "disabled");
                 //append后必须重新渲染
