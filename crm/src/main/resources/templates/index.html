@@ -36,8 +36,7 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test" id="nav">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a href="javascript:;" data-url="workbench" data-title="工作台"
-                       data-id="0" class="site-demo-active" data-type="tabAdd">工作台</a>
+                    <a href="javascript:void(0);" id="workbench" class="skip">工作台</a>
                 </li>
             </ul>
         </div>
@@ -45,33 +44,16 @@
 
     <!-- 内容主体区域 -->
     <div class="layui-body" style="background-color: #f5f5f5; bottom: 0px;">
-
-        <!--可删除选项卡-->
-        <div class="layui-tab layui-tab-brief" lay-allowClose="true" lay-filter="demo">
-            <ul class="layui-tab-title">
-                <li lay-id="0" class="layui-this">
-                    工作台<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
-                </li>
-            </ul>
-            <div class="layui-tab-content">
-                <div class="layui-tab-item layui-show">
-                    <iframe data-frameid="0" scrolling="auto" frameborder="0"
-                            src="workbench" style="width:100%;height:510px;"></iframe>
-                </div>
-            </div>
-        </div>
-
+        <!--iframe框架-->
+        <iframe id="frame" name="frame" src="workbench" frameborder="0" scrolling="no"
+                style="width: 100%;"></iframe>
     </div>
-
-    <!-- 底部固定区域 -->
-    <!--<div class="layui-footer">-->
-        <!--© layui.com - 底部固定区域-->
-    <!--</div>-->
 
 </div>
 <script src="layui/layui.js"></script>
 
 <script>
+
     layui.use('element', function() {
         var $ = layui.jquery;
         var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
@@ -90,73 +72,51 @@
 
         //获取菜单列表
         $.get("/authority/queryRMByRId?rId="+uRoleId, function (obj) {
-                //定义内容
-                var html = "";
-                var parent = obj.data;
-                var child = obj.data;
-                for(index in parent){
-                    if(parent[index].mParentId == 0){
-                        html += "<li class='layui-nav-item'>" +
-                            "       <a class='' href='javascript:;'>"+parent[index].mName+"</a>" +
-                            "       <dl class='layui-nav-child'>";
-                        for(i in child){
-                            if(child[i].mParentId == parent[index].rmMId){
-                                html += "<dd>" +
-                                    "   <a href='javascript:;' data-url='"+child[i].mUrl+"' data-title='"+child[i].mName+"' " +
-                                    "     data-id='"+child[i].rmMId+"' class='site-demo-active' data-type='tabAdd'>"+child[i].mName+"</a>" +
-                                    "</dd>"
-                            }
+            //定义内容
+            var html = "";
+            var parent = obj.data;
+            var child = obj.data;
+            for(index in parent){
+                if(parent[index].mParentId == 0){
+                    html += "<li class='layui-nav-item'>" +
+                        "       <a class='' href='javascript:;'>"+parent[index].mName+"</a>" +
+                        "       <dl class='layui-nav-child'>";
+                    for(i in child){
+                        if(child[i].mParentId == parent[index].rmMId){
+                            html += "<dd>" +
+                                "   <a href='javascript:;' id='"+child[i].mUrl+"' class='skip'>"+child[i].mName+"</a>" +
+                                "</dd>"
                         }
-                        html += "   </dl>" +
-                            "</li>";
                     }
+                    html += "   </dl>" +
+                        "</li>";
                 }
-                //给导航条赋值
-                $("#nav").append(html);
-                //重新渲染元素
-                element.init();
-                //当点击有site-demo-active属性的标签时，即左侧菜单栏中内容 ，触发点击事件
-                $('.site-demo-active').on('click', function() {
-
-                    var dataid = $(this);
-
-                    //判断该tab项是否以及存在
-
-                    var isData = false; //初始化一个标志，为false说明未打开该tab项 为true则说明已有
-                    $.each($(".layui-tab-title li[lay-id]"), function () {
-                        //如果点击左侧菜单栏所传入的id 在右侧tab项中的lay-id属性可以找到，则说明该tab项已经打开
-                        if ($(this).attr("lay-id") == dataid.attr("data-id")) {
-                            isData = true;
-                        }
-                    })
-                    if (isData == false) {
-                        //标志为false 新增一个tab项
-                        active.tabAdd(dataid.attr("data-url"), dataid.attr("data-id"),dataid.attr("data-title"));
-                    }
-                    //最后不管是否新增tab，最后都转到要打开的选项页面上
-                    active.tabChange(dataid.attr("data-id"));
-                });
-            });
-
-        //触发事件
-        var active = {
-            //在这里给active绑定几项事件，后面可通过active调用这些事件
-            tabAdd: function(url,id,name) {
-                //新增一个Tab项 传入三个参数，分别对应其标题，tab页面的地址，还有一个规定的id，是标签中data-id的属性值
-                //关于tabAdd的方法所传入的参数可看layui的开发文档中基础方法部分
-                element.tabAdd('demo', {
-                    title: name,
-                    content: '<iframe data-frameid="'+id+'" scrolling="auto" frameborder="0" src="' + url + '" style="width:100%;height:510px;"></iframe>',
-                    id: id //规定好的id
-                })
-            },
-            tabChange: function(id) {
-                //切换到指定Tab项
-                element.tabChange('demo', id); //根据传入的id传入到指定的tab项
-            },
-            tabDelete: function (id) {
-                element.tabDelete("demo", id);//删除
             }
+
+            //给导航条赋值
+            $("#nav").append(html);
+            //重新渲染元素
+            element.init();
+
+            //绑定跳转事件
+            $(".skip").on("click", function () {
+                //设置跳转路径
+                $("#frame").attr("src", this.id);
+            })
+
+        });
+
+        function setIframeHeight(iframe) {
+            if (iframe) {
+                var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+                if (iframeWin.document.body) {
+                    iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+                }
+            }
+        };
+
+        window.onload = function () {
+            setIframeHeight(document.getElementById('frame'));
         };
 
     });

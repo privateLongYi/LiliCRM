@@ -8,7 +8,6 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />
 </head>
 <body bgcolor="#F0F0F0">
-<br />
 
 <!--全局栅格布局div-->
 <div class="layui-row layui-col-space10 all_div">
@@ -22,7 +21,7 @@
                 <div class="layui-card-body">
                     <!--待联系客户button-->
                     <div class="panel col">
-                        <a href="javascript:;" data-url="page/message/message.html">
+                        <a href="javascript:skip('contact');">
                             <div class="panel_icon">
                                 <i class="layui-icon" data-icon="&#xe63a;">&#xe613;</i>
                             </div>
@@ -34,7 +33,7 @@
                     </div>
                     <!--待预约客户button-->
                     <div class="panel col">
-                        <a href="javascript:;" data-url="page/user/allUsers.html">
+                        <a href="javascript:skip('appointment');">
                             <div class="panel_icon" style="background-color:#009688;">
                                 <i class="layui-icon" data-icon="&#xe613;">&#xe613;</i>
                             </div>
@@ -46,7 +45,7 @@
                     </div>
                     <!--待到店客户button-->
                     <div class="panel col">
-                        <a href="javascript:;" data-url="page/img/images.html">
+                        <a href="javascript:skip('awaitarrive');">
                             <div class="panel_icon" style="background-color:#5FB878;">
                                 <i class="layui-icon" data-icon="&#xe64a;">&#xe613;</i>
                             </div>
@@ -58,7 +57,7 @@
                     </div>
                     <!--未成交客户button-->
                     <div class="panel col">
-                        <a href="javascript:;" data-url="page/img/images.html">
+                        <a href="javascript:skip('fail');">
                             <div class="panel_icon" style="background-color:#5FB878;">
                                 <i class="layui-icon" data-icon="&#xe64a;">&#xe613;</i>
                             </div>
@@ -70,7 +69,7 @@
                     </div>
                     <!--成交客户button-->
                     <div class="panel col">
-                        <a href="javascript:;" data-url="page/img/images.html">
+                        <a href="javascript:skip('success');">
                             <div class="panel_icon" style="background-color:#5FB878;">
                                 <i class="layui-icon" data-icon="&#xe64a;">&#xe613;</i>
                             </div>
@@ -147,9 +146,15 @@
 <script th:src="@{/layui/layui.js}"></script>
 <script th:src="@{/js/echarts.min.js}"></script>
 <!--统计图表JS-->
-<script type="text/javascript" src="js/vue_test.js"></script>
-<script type="text/javascript" src="js/vue_t.js"></script>
+<script type="text/javascript" th:src="@{/js/vue_test.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue_t.js}"></script>
 <script>
+
+    //跳转页面
+    function skip(id) {
+        top.document.getElementById("frame").src=id;
+    }
+
     //注意进度条依赖 element 模块，否则无法进行正常渲染和功能性操作
     layui.use('element', function() {
         var element = layui.element;
