@@ -53,6 +53,8 @@ public class CustomerController {
         Integer cEarnest = null;
         //负责人编号
         Integer cUId = null;
+        //负责人编号
+        Integer cTypeId = null;
         //来源
         String cSource = null;
         //开始时间
@@ -76,6 +78,8 @@ public class CustomerController {
                     cEarnest = Integer.parseInt(screen[1].trim());
                 } else if (screen[0].trim().equals("cUId")) {
                     cUId = Integer.parseInt(screen[1].trim());
+                } else if (screen[0].trim().equals("cTypeId")) {
+                    cTypeId = Integer.parseInt(screen[1].trim());
                 } else if (screen[0].trim().equals("cSource")) {
                     cSource = screen[1].trim();
                 } else if (screen[0].trim().equals("beginTime")) {
@@ -86,9 +90,9 @@ public class CustomerController {
             }
         }
         //根据筛选条件查询客户
-        List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, null);
+        List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
         //获取总条数
-        Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, null);
+        Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
         return new DataResult(0, "操作成功", total, customeres);
     }
 

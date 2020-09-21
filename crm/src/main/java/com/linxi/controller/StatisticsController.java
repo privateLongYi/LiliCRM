@@ -44,9 +44,14 @@ public class StatisticsController {
         double awaitarrive = iCustomerService.getTotalCByUIdAndCTypeId(uId, awaitarriveId);
         double fail = iCustomerService.getTotalCByUIdAndCTypeId(uId, failId);
         double success = iCustomerService.getTotalCByUIdAndCTypeId(uId, successId);
-        double percent = (fail + success) / (awaitarrive + fail + success) * 100;
-        BigDecimal b = new BigDecimal(percent);
-        percent = b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
+        double percent;
+        if ((awaitarrive + fail + success) == 0){
+            percent = 0.0;
+        } else {
+            percent = (fail + success) / (awaitarrive + fail + success) * 100;
+            BigDecimal b = new BigDecimal(percent);
+            percent = b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
+        }
         System.out.println("客户到店率："+percent+"%");
         return percent+"%";
     }
@@ -61,9 +66,14 @@ public class StatisticsController {
         //根据用户编号和客户状态查询客户
         double fail = iCustomerService.getTotalCByUIdAndCTypeId(uId, failId);
         double success = iCustomerService.getTotalCByUIdAndCTypeId(uId, successId);
-        double percent = success / (fail + success) * 100;
-        BigDecimal b = new BigDecimal(percent);
-        percent = b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
+        double percent;
+        if ((fail + success) == 0){
+            percent = 0.0;
+        } else {
+            percent = success / (fail + success) * 100;
+            BigDecimal b = new BigDecimal(percent);
+            percent = b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
+        }
         System.out.println("到店成交率："+percent+"%");
         return percent+"%";
     }
@@ -74,6 +84,9 @@ public class StatisticsController {
     public String performance(@ApiParam(name = "uId", value = "用户编号", required = true) Integer uId){
         //根据用户编号查询客户支付总额（即业绩）
         Integer performance = iUserService.getPerformanceByUId(uId);
+        if (performance == null){
+            performance = 0;
+        }
         System.out.println("目标业绩完成度："+performance+"/1000000");
         return performance+"/1000000";
     }

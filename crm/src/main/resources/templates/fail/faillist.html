@@ -10,7 +10,7 @@
 	<br>
 
 	<div id="screen">
-		根据客户名称：
+		&nbsp;&nbsp;&nbsp;根据客户名称：
 		<div class="layui-inline">
 			<input class="layui-input" id="cName" autocomplete="off">
 		</div>
@@ -30,7 +30,8 @@
 			<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="referral">转诊</a>
 		</script>
 
-		<script th:src="@{/layui/layui.js}"></script>
+		<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
+		<!--<script th:src="@{/layui/layui.js}"></script>-->
 
 		<script>
 
@@ -118,11 +119,11 @@
                     ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
                     ,cols: [ //表头
                         [
-                            {field: 'flId', title: '编号', sort: true, align:'center'}
-                            ,{field: 'cName', title: '客户姓名', align:'center'}
-                            ,{field: 'hName', title: '门诊名称', align:'center'}
-                            ,{field: 'flCause', title: '未成交原因', align:'center'}
-                            ,{fixed: 'right', width: 240, align:'center', toolbar: '#barDemo'}
+                            {field: 'flId', minWidth: 120, title: '编号', sort: true, align:'center'}
+                            ,{field: 'cName', minWidth: 120, title: '客户姓名', align:'center'}
+                            ,{field: 'hName', minWidth: 200, title: '门诊名称', align:'center'}
+                            ,{field: 'flCause', minWidth: 200, title: '未成交原因', align:'center'}
+                            ,{fixed: 'right', minWidth: 240, align:'center', toolbar: '#barDemo'}
                         ]
                     ]
                 });

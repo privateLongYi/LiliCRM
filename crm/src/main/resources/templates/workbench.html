@@ -16,7 +16,7 @@
             <!--顶部快捷键卡片面版div-->
             <div class="panel_box row layui-card">
                 <!--卡片面版header div-->
-                <div class="layui-card-header">快捷菜单</div>
+                <div class="layui-card-header">&nbsp;&nbsp;&nbsp;快捷菜单</div>
                 <!--卡片面版bpdy div-->
                 <div class="layui-card-body">
                     <!--待联系客户button-->
@@ -109,7 +109,7 @@
                             <div class="layui-timeline-content layui-text">
                                 <h3 class="layui-timeline-title">客户到店率</h3><br />
                                 <div class="layui-progress" lay-showPercent="yes" lay-filter="arrive">
-                                    <div class="layui-progress-bar layui-bg-red" lay-percent="0%"></div>
+                                    <div class="layui-progress-bar layui-bg-red" lay-percent="0.0%"></div>
                                 </div><br />
                             </div>
                         </li>
@@ -118,7 +118,7 @@
                             <div class="layui-timeline-content layui-text">
                                 <h3 class="layui-timeline-title">到店成交率</h3><br />
                                 <div class="layui-progress" lay-showPercent="yes" lay-filter="success">
-                                    <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                                    <div class="layui-progress-bar layui-bg-green" lay-percent="0.0%"></div>
                                 </div><br />
                             </div>
                         </li>
@@ -127,7 +127,7 @@
                             <div class="layui-timeline-content layui-text">
                                 <h3 class="layui-timeline-title">目标业绩完成度</h3><br />
                                 <div class="layui-progress" lay-showPercent="true" lay-filter="performance">
-                                    <div class="layui-progress-bar layui-bg-blue" lay-percent="0%"></div>
+                                    <div class="layui-progress-bar layui-bg-blue" lay-percent="0/1000000"></div>
                                 </div>
                             </div>
                         </li>
@@ -143,9 +143,10 @@
 
 </body>
 
-<script th:src="@{/layui/layui.js}"></script>
-<script th:src="@{/js/echarts.min.js}"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
+<!--<script th:src="@{/layui/layui.all.js}"></script>-->
 <!--统计图表JS-->
+<script src="//cdn.bootcdn.net/ajax/libs/echarts/2.1.10/echarts-all.js"></script>
 <script type="text/javascript" th:src="@{/js/vue_test.js}"></script>
 <script type="text/javascript" th:src="@{/js/vue_t.js}"></script>
 <script>
@@ -197,18 +198,24 @@
         //获取客户到店率
         $.get("/statistics/arrivePercent?uId="+uId, function (data) {
             //赋值
+            $(".layui-bg-red").attr("lay-percent", data);
+            element.init();
             element.progress('arrive', data);
         });
 
         //获取到店成交率
         $.get("/statistics/successPercent?uId="+uId, function (data) {
             //赋值
+            $(".layui-bg-green").attr("lay-percent", data);
+            element.init();
             element.progress('success', data);
         });
 
         //获取目标业绩完成度
         $.get("/statistics/performance?uId="+uId, function (data) {
             //赋值
+            $(".layui-bg-blue").attr("lay-percent", data);
+            element.init();
             element.progress('performance', data);
         });
 

@@ -67,17 +67,15 @@
 		
 		<br />
 		<div class="layui-form-item">
-			<label class="layui-form-label" style="width: auto;">
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
-				<input type="hidden" id="cTypeId">
-			</label>
-			<div class="layui-input-inline layui-form" id="none">
-			  <select id="typeId" lay-filter="change">
-				<option value=""></option>
-			  </select>
-			</div>
-			<div class="layui-input-inline layui-form" id="type">
-				<input type="text" id="cType" th:value="${cType}" readonly class="layui-input">
+			<div id="type">
+				<label class="layui-form-label" style="width: auto;">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
+				</label>
+				<div class="layui-input-inline layui-form" id="none">
+				  <select id="cTypeId" lay-filter="change">
+					<option value=""></option>
+				  </select>
+				</div>
 			</div>
 			<label class="layui-form-label" style="width: auto;">
 				&nbsp;&nbsp;报名时间
@@ -89,8 +87,9 @@
 		</div>
 
   </div>
-  
-<script src="layui/layui.js"></script>
+
+<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
+<!--<script src="layui/layui.js"></script>-->
  
 <script>
 	layui.use(['form', 'layer', 'element', 'laydate'], function(){
@@ -133,9 +132,6 @@
 		var ctId = $("#ctId").val();
         //判断客户状态是否为零
         if (ctId == 0){
-            //客户管理点击，隐藏文本框，显示下拉框
-            $("#none").addClass("layui-show");
-            $("#type").addClass("layui-hide");
             //获取所有客户状态
             $.get("/ctype/queryCtype", function (res){
                 //定义负责人下拉框内容
@@ -143,23 +139,15 @@
                 $.each(res.data, function (index, item) {
                     html += "<option value='" + item.ctId + "'>" + item.ctType + "</option>";
                 });
-                $("#typeId").append(html);
+                $("#cTypeId").append(html);
                 //append后必须重新渲染
                 form.render('select');
             })
         } else {
-            //其他点击，显示文本框，隐藏下拉框
-            $("#none").addClass("layui-hide");
-            $("#type").addClass("layui-show");
-            //赋值
-            $("#type").val();
+            //客户状态不为零点击隐藏下拉框
+            $("#type").addClass("layui-hide");
+            $("#cTypeId").val(ctId);
 		}
-
-        //下拉框改变事件
-        form.on('select(change)', function(data){
-            //改变客户状态
-            $("#cTypeId").val(data.value);
-        })
 
     });
 
