@@ -40,4 +40,7 @@ public interface SuccessMapper {
     //根据成交客户编号编辑支付金额
     void editSPaysumBySId(@Param("sId") Integer sId, @Param("paySum") Integer paySum);
 
+    //根据客户编号查询总成交金额
+    Integer queryTotalMoneyByCId(@Param("cId") Integer cId, @Param("type") Integer type);
+
 }

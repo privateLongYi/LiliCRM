@@ -1,10 +1,7 @@
 package com.linxi.controller;
 
-import com.linxi.entity.Customer;
-import com.linxi.entity.Operating;
-import com.linxi.service.ICtypeService;
-import com.linxi.service.ICustomerService;
-import com.linxi.service.IOperatingService;
+import com.linxi.entity.*;
+import com.linxi.service.*;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +12,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author LongYi
@@ -34,6 +34,15 @@ public class CustomerController {
 
     @Autowired
     private ICtypeService iCtypeService;
+
+    @Autowired
+    private IAppointmentService iAppointmentService;
+
+    @Autowired
+    private ISuccessService iSuccessService;
+
+    @Autowired
+    private IFollowService iFollowService;
 
     @GetMapping("queryCScreen")
     @ApiOperation(value = "查询客户信息")
@@ -166,12 +175,42 @@ public class CustomerController {
         return new DataResult(0, "编辑成功");
     }
 
-    @GetMapping("goDetail")
-    @ApiOperation(value = "去客户信息详情页面")
-    public String editCByCId(@ApiParam(value = "客户编号", required = true) Integer cId, ModelMap map){
+    @GetMapping("detail")
+    @ApiOperation(value = "查询客户详情")
+    @ResponseBody
+    public Map<String, Object> detail(@ApiParam(value = "客户编号", required = true) Integer cId){
+        //声明集合
+        Map<String, Object> map = new HashMap<String, Object>();
+        //根据客户编号查询客户并加入集合
         Customer c = iCustomerService.queryCByCId(cId);
-        map.addAttribute("customer", c);
-        return "customer/customerdetail";
+        map.put("customer", c);
+        //根据客户编号查询最近预约门诊
+        String hName = iAppointmentService.queryLastHNameByCId(cId);
+        map.put("hName", hName);
+        //根据客户编号查询成交金额
+        Integer successMoney = iSuccessService.queryTotalMoneyByCId(cId, 0);
+        if (successMoney == null){
+            map.put("successMoney", 0);
+        } else {
+            map.put("successMoney", successMoney);
+        }
+        //根据客户编号查询已交金额
+        Integer payMoney = iSuccessService.queryTotalMoneyByCId(cId, 1);
+        if (successMoney == null){
+            map.put("payMoney", 0);
+        } else {
+            map.put("payMoney", payMoney);
+        }
+        //待交金额
+        if (successMoney != null && payMoney != null){
+            map.put("waitMoney", successMoney-payMoney);
+        } else {
+            map.put("waitMoney", 0);
+        }
+        //最后修改时间
+        String s = iOperatingService.queryOpTimeByOpCId(cId);
+        map.put("updateTime", s);
+        return map;
     }
 
     @GetMapping("editCTypeIdByCId")

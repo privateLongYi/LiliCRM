@@ -112,4 +112,24 @@ public class UserController {
         return new DataResult(0, "编辑成功");
     }
 
+    @PostMapping("verifyPwd")
+    @ApiOperation(value = "验证密码是否正确")
+    @ResponseBody
+    public Boolean verifyPwd(@ApiParam(name = "uId", value = "编号", required = true) Integer uId,
+                             @ApiParam(name = "uPassword", value = "密码", required = true) String uPassword){
+        User user = iUserService.queryUByUId(uId);
+        return passwordConfig.matches(uPassword, user.getuPassword());
+    }
+
+    @PostMapping("editPwd")
+    @ApiOperation(value = "修改密码")
+    @ResponseBody
+    public DataResult editPwd(@ApiParam(name = "uId", value = "编号", required = true) Integer uId,
+                              @ApiParam(name = "uPassword", value = "密码", required = true) String uPassword){
+        //MD5加密
+        uPassword = passwordConfig.encode(uPassword);
+        iUserService.editPwd(uId, uPassword);
+        return new DataResult(0, "修改成功");
+    }
+
 }

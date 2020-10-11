@@ -29,4 +29,11 @@
     ORDER BY op.op_time DESC
   </select>
 
+  <!--根据客户编号查询最近的操作时间-->
+  <select id="queryOpTimeByOpCId" resultType="String">
+      SELECT op_time from operating
+      WHERE op_c_id = #{cId}
+      ORDER BY op_time DESC limit 0,1
+  </select>
+    
 </mapper>

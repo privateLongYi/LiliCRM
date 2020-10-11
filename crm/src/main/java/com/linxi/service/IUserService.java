@@ -46,4 +46,8 @@ public interface IUserService {
     //根据用户编号查询客户支付总额（即业绩）
     Integer getPerformanceByUId(Integer uId);
 
+    //修改密码
+    void editPwd(@Param("uId") Integer uId,
+                 @Param("uPassword") String uPassword);
+
 }

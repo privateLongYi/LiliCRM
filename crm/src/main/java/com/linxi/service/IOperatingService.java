@@ -2,6 +2,7 @@ package com.linxi.service;
 
 import com.linxi.entity.Operating;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -19,5 +20,8 @@ public interface IOperatingService {
 
     //根据客户编号查询操作记录
     List<Operating> queryOpByOpCId(Integer opCId);
+
+    //根据客户编号查询最近的操作时间
+    String queryOpTimeByOpCId(Integer opCId);
 
 }

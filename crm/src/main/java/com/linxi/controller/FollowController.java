@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,14 +34,6 @@ public class FollowController {
     @Autowired
     private IOperatingService iOperatingService;
 
-    @GetMapping("queryFByFCId")
-    @ApiOperation(value = "根据客户编号查询客户跟进")
-    @ResponseBody
-    public DataResult queryFByFCId(@ApiParam(value = "客户编号", required = true) Integer fCId){
-        List<Follow> follows = iFollowService.queryFByFCId(fCId);
-        return new DataResult(0, "操作成功", 0, follows);
-    }
-
     @PostMapping("saveFollow")
     @ApiOperation(value = "新增客户跟进")
     @ResponseBody
@@ -54,6 +48,35 @@ public class FollowController {
         Follow follow = new Follow(null, fCId, fTypeId, null, fContent);
         iFollowService.saveFollow(follow);
         return new DataResult(0, "新增成功");
+    }
+
+    @GetMapping("queryFtypeByFCId")
+    @ApiOperation(value = "根据客户编号查询所拥有的跟进类型")
+    @ResponseBody
+    public List<String> queryFtypeByFCId(@ApiParam(value = "客户编号", required = true) Integer cId){
+        ArrayList<String> strings = new ArrayList<>();
+        List<Follow> follows = iFollowService.queryFtypeByFCId(cId);
+        for (Follow f : follows){
+            strings.add(f.getfType());
+        }
+        return strings;
+    }
+
+    @GetMapping("queryLastFTimeByFtypeAndFCId")
+    @ApiOperation(value = "根据跟进类型和客户编号查询最后一次跟进时间")
+    @ResponseBody
+    public String queryLastFTimeByFtype(@ApiParam(value = "客户编号", required = true) Integer cId,
+                                           @ApiParam(value = "跟进类型", required = true) String ftType){
+        return iFollowService.queryLastFTimeByFtypeAndFCId(cId, ftType);
+    }
+
+    @GetMapping("queryFByFtypeAndFCId")
+    @ApiOperation(value = "根据客户编号查询客户跟进")
+    @ResponseBody
+    public DataResult queryFByFCId(@ApiParam(value = "客户编号", required = true) Integer fCId,
+                                   @ApiParam(value = "跟进类型", required = true) String ftType){
+        List<Follow> follows = iFollowService.queryFByFtypeAndFCId(fCId, ftType);
+        return new DataResult(0, "操作成功", 0, follows);
     }
 
 }

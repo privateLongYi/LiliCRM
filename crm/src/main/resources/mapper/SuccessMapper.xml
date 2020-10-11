@@ -94,4 +94,16 @@
     UPDATE success SET s_paysum = #{paySum} WHERE s_id = #{sId}
   </update>
 
+  <!--根据客户编号查询成交金额-->
+  <select id="queryTotalMoneyByCId" resultType="Integer">
+    SELECT
+    <if test="type == 0">
+      SUM(s_sum)
+    </if>
+    <if test="type == 1">
+      SUM(s_paySum)
+    </if>
+    FROM success WHERE s_c_id = #{cId}
+  </select>
+
 </mapper>

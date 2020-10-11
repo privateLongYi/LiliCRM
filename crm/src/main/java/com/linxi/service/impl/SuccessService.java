@@ -70,4 +70,10 @@ public class SuccessService implements ISuccessService{
     public void editSPaysumBySId(Integer sId, Integer paySum) {
         successMapper.editSPaysumBySId(sId, paySum);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryTotalMoneyByCId(Integer cId, Integer type) {
+        return successMapper.queryTotalMoneyByCId(cId, type);
+    }
 }

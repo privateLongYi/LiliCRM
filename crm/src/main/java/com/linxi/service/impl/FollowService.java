@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -22,13 +23,25 @@ public class FollowService implements IFollowService{
     private FollowMapper followMapper;
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Follow> queryFByFCId(Integer fCId) {
-        return followMapper.queryFByFCId(fCId);
+    public void saveFollow(Follow follow) {
+        followMapper.saveFollow(follow);
     }
 
     @Override
-    public void saveFollow(Follow follow) {
-        followMapper.saveFollow(follow);
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Follow> queryFtypeByFCId(Integer fCId) {
+        return followMapper.queryFtypeByFCId(fCId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public String queryLastFTimeByFtypeAndFCId(Integer cId, String ftType) {
+        return followMapper.queryLastFTimeByFtypeAndFCId(cId, ftType);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Follow> queryFByFtypeAndFCId(Integer cId, String ftType) {
+        return followMapper.queryFByFtypeAndFCId(cId, ftType);
     }
 }

@@ -289,4 +289,8 @@ public class ViewController {
     @ApiOperation(value = "转诊客户列表")
     public String referral(){return "customer/referrallist";}
 
+    @GetMapping("goEditPwd")
+    @ApiOperation(value = "修改密码")
+    public String goEditPwd(){return "user/editPassword";}
+
 }

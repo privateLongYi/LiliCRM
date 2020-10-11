@@ -58,4 +58,10 @@ public class AppointmentService implements IAppointmentService {
     public void saveAppointment(Appointment appointment) {
         appointmentMapper.saveAppointment(appointment);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public String queryLastHNameByCId(Integer cId) {
+        return appointmentMapper.queryLastHNameByCId(cId);
+    }
 }

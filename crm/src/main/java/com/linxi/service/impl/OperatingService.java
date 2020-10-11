@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -30,5 +31,11 @@ public class OperatingService implements IOperatingService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Operating> queryOpByOpCId(Integer opCId) {
         return operatingMapper.queryOpByOpCId(opCId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public String queryOpTimeByOpCId(Integer opCId) {
+        return operatingMapper.queryOpTimeByOpCId(opCId);
     }
 }

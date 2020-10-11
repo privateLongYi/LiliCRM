@@ -125,8 +125,9 @@
 
   <!-- 根据编号查看客户 -->
   <select id="queryCByCId" resultMap="BaseResultMap">
-    SELECT c.*, ct.ct_type AS cType FROM customer c
-    LEFT JOIN ctype ct ON c.c_type_id = ct_id WHERE c.c_id = #{cId}
+    SELECT c.*, u.u_name AS uName, ct.ct_type AS cType FROM customer c
+    LEFT JOIN ctype ct ON c.c_type_id = ct_id
+    LEFT JOIN user u ON c.c_u_id = u.u_id WHERE c.c_id = #{cId}
   </select>
 
   <!-- 根据编号编辑客户 -->

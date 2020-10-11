@@ -36,4 +36,7 @@ public interface IAppointmentService {
     //新增预约客户
     void saveAppointment(Appointment appointment);
 
+    //根据客户编号查询最近预约门诊
+    String queryLastHNameByCId(Integer cId);
+
 }

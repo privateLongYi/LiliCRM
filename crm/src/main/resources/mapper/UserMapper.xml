@@ -89,4 +89,9 @@
     WHERE c.c_u_id = #{uId}
   </select>
 
+  <!--修改密码-->
+  <update id="editPwd">
+    UPDATE user SET u_password = #{uPassword} WHERE u_id = #{uId}
+  </update>
+
 </mapper>

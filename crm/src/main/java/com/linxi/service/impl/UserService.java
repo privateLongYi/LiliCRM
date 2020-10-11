@@ -78,4 +78,9 @@ public class UserService implements IUserService {
     public Integer getPerformanceByUId(Integer uId) {
         return userMapper.getPerformanceByUId(uId);
     }
+
+    @Override
+    public void editPwd(Integer uId, String uPassword) {
+        userMapper.editPwd(uId, uPassword);
+    }
 }

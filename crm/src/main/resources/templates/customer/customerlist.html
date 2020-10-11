@@ -4,8 +4,14 @@
 		<meta charset="UTF-8">
 		<title>客户信息列表</title>
 		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+		<style>
+			.baseMargin{
+				margin: 5px 0 10px 0;
+			}
+			.baseColor{color: #1E9FFF}
+		</style>
 	</head>
-	<body>
+	<body style='overflow:scroll;overflow-x:hidden'>
 
 	<!-- 高级筛选 -->
 	<br />
@@ -22,6 +28,185 @@
 	<!-- 数据表格 -->
 	<table class="layui-hide" id="tab" lay-filter="test" lay-data="{id: 'tab'}"></table>
 
+	<!--详情页面-->
+	<div id="detail" style="position:absolute; z-index:999999; top:0; right:-100%;
+		transition:all linear 0.5s; width: 900px; height: 580px;background-color:white;
+		border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px;margin-top: 2px;">
+
+		<div style="float: left; margin: 5px;">
+			<span style="font-size: 20px;">客户详情</span>
+		</div>
+		<div style="float: right; cursor: pointer;">
+			<i onclick="javascript:document.getElementById('detail').style.right = '-100%';" class="layui-icon layui-icon-close" style="font-size: 25px;"></i>
+		</div>
+		<br>
+
+		<!--head-->
+		<div class="layui-row layui-card" style="height: 120px;">
+			<div class="layui-col-md9 layui-row">
+				<div class="layui-col-space1">
+					<!--客户信息-->
+					<br />
+					<div class="layui-col-md4 layui-row">
+						<div class="layui-col-space1">
+							<div class="layui-col-md3" style="padding-top: 10px;"><img id="img" th:src="@{/images/boy.png}" width="40px" height="40px" /></div>
+							<div class="layui-col-md7">
+								<div class="layui-row" style="margin-bottom: 2px;">
+									<div class="layui-col-md6"><span style="font-size: 20px;" name="cName"></span></div>
+									<div class="layui-col-md3"><span style="float: right;margin-top: 3px;" name="cAge"></span></div>岁
+								</div>
+								<div style="margin-bottom: 2px;"><span name="cTel"></span></div>
+								<div>上次:<span id="hName"></span></div>
+							</div>
+						</div>
+					</div>
+					<!--成交金额-->
+					<div class="layui-col-md2">
+						<br><div><span id="successMoney"></span></div>
+						<div><span style="color: #9F9F9F;">成交金额</span></div>
+					</div>
+					<!--已收金额-->
+					<div class="layui-col-md2">
+						<br><span id="payMoney"></span><br />
+						<span style="color: #9F9F9F;">已交金额</span>
+					</div>
+					<!--待收金额-->
+					<div class="layui-col-md2">
+						<br><span id="waitMoney"></span><br />
+						<span style="color: #9F9F9F;">待交金额</span>
+					</div>
+					<!--预交金额-->
+					<div class="layui-col-md2">
+						<br><span name="cEarnest"></span><br />
+						<span style="color: #9F9F9F;">预交金额</span>
+					</div>
+				</div>
+			</div>
+			<br />
+			<div class="layui-col-md3">
+				<div style="margin-bottom: 2px;">创建时间:<span id="createTime"></span></div>
+				<div style="margin-bottom: 2px;">修改时间:<span id="editTime"></span></div>
+				<div>负责人:<span id="uName"></span></div>
+			</div>
+		</div>
+
+		<!--body-->
+		<div class="layui-row">
+			<div class="layui-col-space10">
+				<!--左侧选项卡、预约记录-->
+				<div class="layui-col-md8">
+					<!--选项卡-->
+					<div class="layui-card" style="height: 265px;">
+						<div style="height: 330px;">
+							<div class="layui-tab">
+								<ul class="layui-tab-title">
+									<li class="layui-this">基本信息</li>
+									<li>操作记录</li>
+									<li>成交记录</li>
+								</ul>
+								<div class="layui-tab-content">
+									<!--基本信息-->
+									<div class="layui-tab-item layui-show">
+										<div class="layui-row" style="align-content: center;margin-left: 5px;">
+											<div class="layui-col-md4 baseMargin">姓名：<span class="baseColor" name="cName"></span></div>
+											<div class="layui-col-md4 baseMargin">性别：<span class="baseColor" id="cSex"></span></div>
+											<div class="layui-col-md4 baseMargin">年龄：<span class="baseColor" name="cAge"></span></div>
+											<div class="layui-col-md4 baseMargin">电话：<span class="baseColor" name="cTel"></span></div>
+											<div class="layui-col-md4 baseMargin">来源：<span class="baseColor" id="cSource"></span></div>
+											<div class="layui-col-md4 baseMargin">预交金额：<span class="baseColor" name="cEarnest"></span></div><br>
+											<div class="layui-col-md4 baseMargin">报名项目：<span class="baseColor" id="cProject"></span></div>
+											<div class="layui-col-md8 baseMargin">报名时间：<span class="baseColor" id="cPlaceTime"></span></div>
+										</div>
+									</div>
+									<!--操作记录-->
+									<div class="layui-tab-item">
+										<!--表格-->
+										<table class="layui-hide" id="operating" lay-filter="operating"></table>
+									</div>
+									<!--成交记录-->
+									<div class="layui-tab-item">
+										<!--表格-->
+										<table class="layui-hide" id="success" lay-filter="success"></table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--预约记录-->
+					<div style="height: 145px;overflow-y: auto;">
+						<ul class="layui-timeline">
+							<li class="layui-timeline-item">
+								<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+								<div class="layui-timeline-content layui-text">
+									<div style="margin-bottom: 5px;">
+										<span style="font-size: 18px;">初诊</span>
+									</div>
+									<p>
+										<span>欧卡多</span>
+										<i class="layui-icon">&#xe602;</i><span>2020-10-03</span>
+										<i class="layui-icon">&#xe602;</i><span>到店</span>
+										<i class="layui-icon">&#xe602;</i><span>罗洋</span>
+										<i class="layui-icon">&#xe602;</i><span>种植</span>
+										<i class="layui-icon">&#xe602;</i><span>3799</span>
+									</p>
+								</div>
+							</li>
+							<li class="layui-timeline-item">
+								<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+								<div class="layui-timeline-content layui-text">
+									<div style="margin-bottom: 5px;">
+										<span style="font-size: 18px;">初诊</span>
+									</div>
+									<p>
+										<span>欧卡多</span>
+										<i class="layui-icon">&#xe602;</i><span>2020-10-03</span>
+										<i class="layui-icon">&#xe602;</i><span>到店</span>
+										<i class="layui-icon">&#xe602;</i><span>罗洋</span>
+										<i class="layui-icon">&#xe602;</i><span>种植</span>
+										<i class="layui-icon">&#xe602;</i><span>3799</span>
+									</p>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!--右侧跟进-->
+				<div class="layui-col-md4">
+					<div class="layui-card" style="height: 430px;overflow-y: auto;">
+						<!--表单-->
+						<div style="border:1px solid #f2f2f2;height: 230px;">
+							<form class="layui-form" action="">
+								<div class="layui-form-item">
+									<div style="margin: 15px 15px 0 15px;">
+										<select id="followSel" lay-filter="followSel">
+											<option value="0">客户跟进</option>
+											<option value="2">成交回访</option>
+											<option value="3">未成交回访</option>
+											<option value="4">未到店联系</option>
+										</select>
+									</div>
+								</div>
+								<div class="layui-form-item layui-form-text" style="margin-top: 15px; margin-left: 15px; margin-right: 15px;">
+									<textarea id="content" placeholder="请输入内容" class="layui-textarea" style="border-color: #FFFFFF;"></textarea>
+								</div>
+								<div class="layui-form-item" style="margin-top: 15px;text-align: center;">
+									<button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="formDemo">提交</button>
+									<button type="reset" class="layui-btn layui-btn-sm layui-btn-primary">重置</button>
+								</div>
+							</form>
+						</div>
+						<!--时间线-->
+						<div style="margin-top: 20px;">
+							<ul class="layui-timeline" id="follow">
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
 		<script type="text/html" id="toolbarDemo">
 			<div class="layui-inline" lay-event="refresh"><i class="layui-icon layui-icon-refresh-1"></i></div>
 			<div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
@@ -35,363 +220,555 @@
 
 		<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
 		<!--<script th:src="@{/layui/layui.all.js}"></script>-->
-
 		<script>
 
-            layui.use(['laydate', 'laypage', 'layer', 'table', 'upload', 'element'], function(){
-                var laydate = layui.laydate //日期
-                    ,laypage = layui.laypage //分页
-                    ,layer = layui.layer //弹层
-                    ,table = layui.table //表格
-                    ,upload = layui.upload //上传
-                    ,element = layui.element //元素操作
-                    ,$ = layui.jquery //jQuery
+			var layer = layui.layer //弹层
+				,table = layui.table //表格
+				,element = layui.element //元素操作
+				,$ = layui.jquery //jQuery
 
-                //从sessionStorage中获取用户编号和角色名称
-                var uId = sessionStorage.getItem('uId');
-                var rName = sessionStorage.getItem('rName');
+			//从sessionStorage中获取用户编号和角色名称
+			var uId = sessionStorage.getItem('uId');
+			var rName = sessionStorage.getItem('rName');
 
-                //筛选条件
-                function screen(name, value, text){
-                    //判断是否是报名时间
-                    var condition;
-                    if(name == "cPlaceTime"){
-                        condition = "#beginTime";
-					}else{
-                        condition = "#"+name;
+            //弹出详情页面
+            function goDetail(cId) {
+                //显示详情页面
+                document.getElementById("detail").style.right = 0;
+                document.getElementById("detail").style.top = document.scrollingElement.scrollTop + "px";
+				//根据客户编号查询信息并赋值
+				$.get("/customer/detail", {cId:cId}, function (data) {
+				    if (data.customer.cSex == "男"){
+				        $("#img").attr("src", "/images/boy.png");
+					} else {
+                        $("#img").attr("src", "/images/boy.png");
 					}
-                    //判断是否存在该条件
-                    if($(condition).val() == undefined){
-                        //新增节点
-                        var div = document.createElement("div");
-                        div.setAttribute('id', 'div'+name);
-                        div.setAttribute('class', 'layui-input-inline');
-                        var innerHTML = "<div class='layui-form-mid layui-word-aux'>"+
-                            				"&nbsp;&nbsp;&nbsp;";
-                        if(name == "cName"){
-                            innerHTML += "姓名：";
-                        }else if(name == "cTel"){
-                            innerHTML += "电话：";
-                        }else if(name == "cProject"){
-                            innerHTML += "报名项目：";
-                        }else if(name == "cEarnest"){
-                            innerHTML += "是否交定金：";
-                        }else if(name == "cSource"){
-                            innerHTML += "来源：";
-                        }else if(name == "cUId"){
-                            innerHTML += "负责人：";
-                        }else if(name == "cTypeId"){
-                            innerHTML += "状态：";
-                        }else if(name == "cPlaceTime"){
-                            innerHTML += "报名时间：";
-                        }
-                        if(name == "cPlaceTime"){
-                            var beginTime = value.split(" - ")[0];
-                            var endTime = value.split(" - ")[1];
-                            innerHTML += "<span id='span"+name+"'>"+text+"</span>"+
-                                "<input type='hidden' id='beginTime' value='"+beginTime+"'>"+
-                                "<input type='hidden' id='endTime' value='"+endTime+"'>"+
-                                "</div>"+
-                                "<div class='layui-input-inline' style='cursor: pointer; padding: 10px 0px;'>"+
-                                "<i class='layui-icon layui-icon-close' id='close"+name+"'></i>"+
-                                "</div>";
-                        }else{
-                            innerHTML += "<span id='span"+name+"'>"+text+"</span>"+
-                                "<input type='hidden' id='"+name+"' value='"+value+"'>"+
-                                "</div>"+
-                                "<div class='layui-input-inline' style='cursor: pointer; padding: 12px 0px;'>"+
-                                "<i class='layui-icon layui-icon-close' id='close"+name+"'></i>"+
-                                "</div>";
-                        }
-                        div.innerHTML = innerHTML;
-                        document.getElementById("list").appendChild(div);
-                        //关闭事件（移除节点）
-                        $("#close"+name).click(function(){
-                            list.removeChild(document.getElementById("div"+name));
-                            //根据筛选条件查询客户
-                            tableReload();
-                        });
-                    }else{
-                        //改变已有的值
-                        $("#span"+name).html(text);
-                        if(name != "cPlaceTime"){
-							$("#"+name).val(value);
-                        }else{
-                            var beginTime = value.split(" - ")[0];
-                            var endTime = value.split(" - ")[1];
-                            $("#beginTime").val(beginTime);
-                            $("#endTime").val(endTime);
-						}
+				    //上次门诊
+					$("#hName").text(data.hName);
+					//给基本信息赋值
+                    var cNameList = $("[name=cName]");
+                    for(var i = 0; i < cNameList.length; i++){
+                        cNameList[i].innerText = data.customer.cName;
                     }
-                }
-
-                //表格重载
-				function tableReload(){
-
-                    //获取筛选条件
-                    var screenList = $("#list [type=hidden]");
-                    //条件参数
-                    var param = "";
-                    for(var i = 0; i < screenList.length; i++){
-						param += screenList[i].id + ":" + screenList[i].value + ",";
-					}
-					//根据筛选条件查询
-                    table.reload('tab', {
-                        url: '/customer/queryCScreen?uId='+uId+'&rName='+rName
-                        ,where: {
-                            param: param
-                        }
-                        ,page: {
-                            curr: 1 //重新从第 1 页开始
-                        }
-                    });
-
-				}
-
-				//处理弹出的新增或修改页面
-                function popup(ix, index, url) {
-                    var body = layer.getChildFrame('body', index);
-                    //获取值
-                    var cName = $(body).find("#cName").val();
-                    var cSex = null;
-                    if($(body).find("[name=cSex]")[0].checked){
-                        cSex = $(body).find("[name=cSex]")[0].value;
-                    }else{
-                        cSex = $(body).find("[name=cSex]")[1].value;
+                    var cAgeList = $("[name=cAge]");
+                    for(var i = 0; i < cAgeList.length; i++){
+                        cAgeList[i].innerText = data.customer.cAge;
                     }
-                    var cAge = $(body).find("#cAge").val();
-                    var cTel = $(body).find("#cTel").val();
-                    var cProject = $(body).find("#cProject").val();
-                    var cRemark = $(body).find("#cRemark").val();
-                    var cMessage = $(body).find("#cMessage").val();
-                    var cEarnest = $(body).find("#cEarnest").val();
-                    var cUId = $(body).find("#cUId").val();
-                    var cSource = $(body).find("#cSource").val();
-                    var cTypeId = $(body).find("#cTypeId").val();
-                    if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
-						//声明格式是否正确
-						var verify = true;
-                        //验证姓名格式
-						if(cName.length > 6){
-							layer.msg("姓名长度不能大于6位");
-							verify = false;
-                            return;
-						}
-                        //验证年龄格式
-                        if(cAge != ''){
-                            if(cAge <= 0 || cAge >= 150){
-                                layer.msg("年龄必须大于0小于150");
-                                verify = false;
-                                return;
-                            }
-						}
-                        //验证电话格式
-                        if(!(/^1[3456789]\d{9}$/.test(cTel))){
-                            layer.msg("手机号码格式错误");
-                            verify = false;
-                            return;
-                        }
-                        //验证定金格式
-						if(cEarnest != ''){
-                            if(cEarnest < 0){
-                                layer.msg("定金不能为负数");
-                                verify = false;
-                                return;
-                            }
-						}
-                        if(verify){
-							$.post(url, {uId: uId, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cProject:cProject, cMessage:cMessage,
-									cRemark:cRemark, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cTypeId:cTypeId},
-								function (obj) {
-									layer.msg(obj.msg, {time: 500}, function () {
-										layer.close(ix);
-										tableReload();
-									});
-								}
-							);
-                        }
-                    } else {
-                        layer.msg('请输入带星号的必填项');
+                    var cTelList = $("[name=cTel]");
+                    for(var i = 0; i < cTelList.length; i++){
+                        cTelList[i].innerText = data.customer.cTel;
                     }
-                }
+                    var cEarnestList = $("[name=cEarnest]");
+                    for(var i = 0; i < cEarnestList.length; i++){
+                        cEarnestList[i].innerText = data.customer.cEarnest;
+                    }
+                    //成交金额
+                    $("#successMoney").text(data.successMoney);
+                    //已交金额
+                    $("#payMoney").text(data.payMoney);
+                    //待交金额
+                    $("#waitMoney").text(data.waitMoney);
+                    //创建时间
+                    $("#createTime").text(data.customer.cPlaceTime);
+                    //修改时间
+                    $("#editTime").text(data.updateTime);
+                    //负责人
+                    $("#uName").text(data.customer.uName);
+                    //性别
+                    $("#cSex").text(data.customer.cSex);
+                    //来源
+                    $("#cSource").text(data.customer.cSource);
+                    //报名项目
+                    $("#cProject").text(data.customer.cProject);
+                    //报名时间
+                    $("#cPlaceTime").text(data.customer.cPlaceTime);
+                });
 
-                //执行一个 table 实例
+                //成交记录
                 table.render({
-                    elem: '#tab'
-                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName //数据接口
-                    ,title: '客户信息表' //表格名称
-                    ,id: 'tab' //表格id
+                    elem: '#success'
+                    ,url: '/success/querySBySCId?sCId=' + cId //访问路径
+					,height: '200px'
                     ,page: true //开启分页
-                    ,limit: 20 //每页显示条数
-                    ,limits: [20, 50, 100] //自定义可选每页显示条数
-                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
-                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
-                    ,cols: [ //表头
+                    ,limit: 5 //每页显示条数
+                    ,limits: [5] //自定义可选每页显示条数
+                    ,cols: [
                         [
-                            {field: 'cId', minWidth: 120, title: 'ID', sort: true, align:'center'}
-                            ,{field: 'cName', minWidth: 120, title: '姓名', align:'center'}
-                            ,{field: 'cSex', minWidth: 120, title: '性别', sort: true, align:'center'}
-                            ,{field: 'cAge', minWidth: 120, title: '年龄', align:'center'}
-                            ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
-                            ,{field: 'cProject', minWidth: 120, title: '报名项目', align:'center'}
-                            ,{field: 'cPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
-                            ,{field: 'cRemark', minWidth: 120, title: '备注', align:'center'}
-                            ,{field: 'cEarnest', minWidth: 120, title: '定金', align:'center'}
-                            ,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
-                            ,{field: 'cSource', minWidth: 120, title: '来源', align:'center'}
-                            ,{field: 'cMessage', minWidth: 120, title: '症状信息', align:'center'}
-                            ,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
-                            ,{fixed: 'right', minWidth: 180, align:'center', toolbar: '#barDemo'}
+                            {field: 'sId', title: 'ID', minWidth: 120, sort: true, event: 'collapse',
+                            templet: function(data) {
+                                return "<div style='position: relative; padding: 0 10px 0 20px; cursor:pointer;'>" + data.sId +
+                                    "<i	style='left: 0px;' lay-tips='展开' class='layui-icon layui-colla-icon layui-icon-right'></i>" +
+                                    "</div>";
+                            }
+                        }
+                            ,{field: 'cName', title: '客户名称', minWidth: 120}
+                            ,{field: 'cTel', title: '电话', minWidth: 120}
+                            ,{field: 'hName', title: '成交门诊', minWidth: 150}
+                            ,{field: 'sMessage', title: '成交信息', minWidth: 150}
+                            ,{field: 'sSum', title: '成交金额', minWidth: 120, sort: true}
+                            ,{field: 'sPaysum', title: '已交金额', minWidth: 120, sort: true}
+                            ,{field: 'sRemark', title: '成交备注', minWidth: 250}
+                            ,{field: 'sTime', title: '成交时间', minWidth: 200}
                         ]
                     ]
                 });
 
-                //监听头工具栏事件
-                table.on('toolbar(test)', function(obj){
-                    var checkStatus = table.checkStatus(obj.config.id)
-                        ,data = checkStatus.data; //获取选中的数据
-                    switch(obj.event){
-                        case 'add':
-                            //弹出新增页面
-                            var ix = layer.open({
-                                type: 2, //层类型，iframe
-                                title: '新增客户',
-                                content: ['/customer/customersave'],
-                                area: ['1000px', '450px'],
-                                resize: false,
-                                btn: '确定',
-                                btn1: function (index, layero) {
-                                    popup(ix, index, "/customer/saveCustomer");
-                                },
-                                cancel: function(index, layero){
-                                    layer.close(index);
-                                }
-                            });
-                            break;
-                        case 'refresh':
-                            tableReload();
-                            break;
+                //成交记录监听行工具事件
+                table.on('tool(success)', function(obj) {
+                    var data = obj.data;
+                    if (obj.event === 'collapse') {
+                        var trObj = layui.$(this).parent('tr'); //当前行
+                        var accordion = true //开启手风琴，那么在进行折叠操作时，始终只会展现当前展开的表格。
+                        var content = '<table></table>' //内容
+                        //表格行折叠方法
+                        collapseTable({
+                            elem: trObj,
+                            accordion: accordion,
+                            content: content,
+                            success: function(trObjChildren, index) { //成功回调函数
+                                //trObjChildren 展开tr层DOM
+                                //index 当前层索引
+                                trObjChildren.find('table').attr("id", index);
+                                table.render({
+                                    elem: "#" + index
+                                    ,url: '/payrecord/queryPByPaySId?paySId=' + data.sId
+                                    ,cols: [
+                                        [
+                                            {field: 'payId', minWidth: 120, title: 'ID', sort: true}
+                                            ,{field: 'cName', minWidth: 120, title: '客户名称'}
+                                            ,{field: 'paySum', minWidth: 120, title: '支付金额', sort: true}
+                                            ,{field: 'payTime', minWidth: 200, title: '支付时间', sort: true}
+                                            ,{field: 'payType', minWidth: 120, title: '支付类型'}
+                                        ]
+                                    ]
+                                });
+
+                            }
+                        });
+
                     }
                 });
 
-                //监听行工具事件
-                table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
-                    var data = obj.data //获得当前行数据
-                        ,layEvent = obj.event; //获得 lay-event 对应的值
-                    if(layEvent === 'del'){
-                        layer.confirm('确定删除吗？', {icon: 3, title:'提示'}, function(index){
-                            $.get("/customer/delCByCId?cId=" + data.cId + "&cName=" + data.cName + "&uId=" + uId, function(obj){
-                                if (obj.code == 0) {
-                                    layer.msg(obj.msg, {time: 500}, function () {
-                                        tableReload();
-                                    });
-                                } else {
-                                    layer.msg(obj.msg)
+                //表格折叠方法
+                function collapseTable(options) {
+                    var trObj = options.elem;
+                    if (!trObj) return;
+                    var accordion = options.accordion,
+                        success = options.success,
+                        content = options.content || '';
+                    var tableView = trObj.parents('.layui-table-view'); //当前表格视图
+                    var id = tableView.attr('lay-id'); //当前表格标识
+                    var index = trObj.data('index'); //当前行索引
+                    var leftTr = tableView.find('.layui-table-fixed.layui-table-fixed-l tr[data-index="' + index + '"]'); //左侧当前固定行
+                    var rightTr = tableView.find('.layui-table-fixed.layui-table-fixed-r tr[data-index="' + index + '"]'); //右侧当前固定行
+                    var colspan = trObj.find('td').length; //获取合并长度
+                    var trObjChildren = trObj.next(); //展开行Dom
+                    var indexChildren = id + '-' + index + '-children'; //展开行索引
+                    var leftTrChildren = tableView.find('.layui-table-fixed.layui-table-fixed-l tr[data-index="' + indexChildren + '"]'); //左侧展开固定行
+                    var rightTrChildren = tableView.find('.layui-table-fixed.layui-table-fixed-r tr[data-index="' + indexChildren + '"]'); //右侧展开固定行
+                    var lw = leftTr.width() + 15; //左宽
+                    var rw = rightTr.width() + 15; //右宽
+                    //不存在就创建展开行
+                    if (trObjChildren.data('index') != indexChildren) {
+                        //装载HTML元素
+                        var tr = '<tr data-index="' + indexChildren + '"><td colspan="' + colspan + '"><div style="height: auto;padding-left:' + lw + 'px;padding-right:' + rw + 'px" class="layui-table-cell">' + content + '</div></td></tr>';
+                        trObjChildren = trObj.after(tr).next().hide(); //隐藏展开行
+                        var fixTr = '<tr data-index="' + indexChildren + '"></tr>';//固定行
+                        leftTrChildren = leftTr.after(fixTr).next().hide(); //左固定
+                        rightTrChildren = rightTr.after(fixTr).next().hide(); //右固定
+                    }
+                    //展开|折叠箭头图标
+                    trObj.find('td[lay-event="collapse"] i.layui-colla-icon').toggleClass("layui-icon-right layui-icon-down");
+                    //显示|隐藏展开行
+                    trObjChildren.toggle();
+                    //开启手风琴折叠和折叠箭头
+                    if (accordion) {
+                        trObj.siblings().find('td[lay-event="collapse"] i.layui-colla-icon').removeClass("layui-icon-down").addClass("layui-icon-right");
+                        trObjChildren.siblings('[data-index$="-children"]').hide(); //展开
+                        rightTrChildren.siblings('[data-index$="-children"]').hide(); //左固定
+                        leftTrChildren.siblings('[data-index$="-children"]').hide(); //右固定
+                    }
+                    success(trObjChildren, indexChildren); //回调函数
+                    heightChildren = trObjChildren.height(); //展开高度固定
+                    rightTrChildren.height(heightChildren + 115).toggle(); //左固定
+                    leftTrChildren.height(heightChildren + 115).toggle(); //右固定
+                }
+/*
+
+				//根据客户编号查询所拥有的跟进类型
+                $.get("/follow/queryFtypeByFCId?cId=" + cId, function(obj){
+                    var html = "";
+                    for(var i = 0; i < obj.length; i++) {
+                        //根据跟进类型查询和客户编号最后一次跟进时间
+                        $.get("/follow/queryLastFTimeByFtypeAndFCId?cId=" + cId + "&ftType=" + obj[i], function (obj2) {
+                            var year = obj2.substring(0, 4);
+                            var month = obj2.substring(5, 7);
+                            var day = obj2.substring(8, 10);
+                            var date = year+"年"+month+"月"+day+"日";
+                            html += "<li class='layui-timeline-item'>" +
+                                "<i class='layui-icon layui-timeline-axis'>&#xe63f;</i>" +
+                                "<div class='layui-timeline-content layui-text'>" +
+                                "<h3>" + date + "（" + obj.data[j].ftype + "）</h3>" +
+                                "<ul>";
+                            //根据跟进类型和客户编号查询跟进记录
+                            $.get("/follow/queryFByFtypeAndFCId?fCId=" + cId + "&ftType=" + obj[i], function(obj3){
+                                for(var j = 0; j < obj3.data.length; j++){
+                                    html += "<li>" + obj3.data[j].opName + "</li>";
                                 }
                             });
-                        });
-                    } else if(layEvent === 'edit'){
-						//弹出编辑页面
-                        var ix = layer.open({
-                            type: 2, //层类型，iframe
-                            title: '编辑客户',
-                            content: ['/customer/queryCByCId?cId=' + data.cId + "&page=customer"],
-                            area: ['1000px', '450px'],
-                            resize: false,
-                            btn: '确定',
-                            btn1: function (index, layero) {
-                                popup(ix, index, "/customer/editCByCId?cId=" + data.cId);
-                            },
-                            cancel: function(index, layero){
-                                layer.close(index);
-                            }
-                        });
-                    } else if(layEvent === 'detail'){
-						//弹出详情页面
-                        layer.open({
-                            type: 2, //层类型，iframe
-                            title: '查看详情', //标题
-                            content: ['/customer/goDetail?cId=' + data.cId], //页面内容
-                            area: ['800px', '500px'], //宽高
-                            resize: false, //不允许拉伸
-                            cancel: function(index, layero){
-                                layer.close(index);
-                            }
+                            "</ul>" +
+                            "</div>" +
+                            "</li>";
                         });
                     }
+                    //赋值
+                    $("#follow").html(html);
+				});
+*/
 
-                });
+            }
 
-                //弹出高级筛选列表
-                $("#screen").click(function(){
-                    layer.open({
-                        type: 2, //层类型，iframe
-                        title: '高级筛选',
-                        content: ['screen'],
-                        area: ['1000px', '420px'],
-                        resize: false,
-                        btn: '确定',
-                        btn1: function(index, layero){
-                            var body = layer.getChildFrame('body', index);
-                            //获取筛选值
-                            var cName = $(body).find("#cName").val();
-                            var cTel = $(body).find("#cTel").val();
-                            var cProject = $(body).find("#cProject").val();
-                            //给是否交定金赋值
-                            var cEarnest;
-                            var cEarnestText;
-                            if($(body).find("[name=cEarnest]")[0].checked){
-                                cEarnest = $(body).find("[name=cEarnest]")[0].value;
-                                cEarnestText = $(body).find("[name=cEarnest]")[0].title;
-                            }
-                            if($(body).find("[name=cEarnest]")[1].checked){
-                                cEarnest = $(body).find("[name=cEarnest]")[1].value;
-                                cEarnestText = $(body).find("[name=cEarnest]")[1].title;
-                            }
-                            var cUId = $(body).find("#cUId").val();
-                            var cSource = $(body).find("#cSource").val();
-                            var cTypeId = $(body).find("#cTypeId").val();
-                            var cPlaceTime = $(body).find("#cPlaceTime").val();
-                            //新增筛选条件或者修改
-                            if(cName != ''){
-                                screen("cName", cName.trim(), cName.trim());
-                            }
-                            if(cTel != ''){
-                                screen("cTel", cTel.trim(), cTel.trim());
-                            }
-                            if(cProject != ''){
-                                var cProjectText = $(body).find("#cProject [value="+cProject+"]").text();
-                                screen("cProject", cProject, cProjectText);
-                            }
-                            if(cEarnest != undefined){
-                                screen("cEarnest", cEarnest, cEarnestText);
-                            }
-                            if(cUId != ''){
-                                var cUIdText = $(body).find("#cUId [value="+cUId+"]").text();
-                                screen("cUId", cUId, cUIdText);
-                            }
-                            if(cSource != ''){
-                                screen("cSource", cSource.trim(), cSource.trim());
-                            }
-                            if(cTypeId != ''){
-                                var cTypeIdText = $(body).find("#cTypeId [value="+cTypeId+"]").text();
-                                screen("cTypeId", cTypeId, cTypeIdText);
-                            }
-                            if(cPlaceTime != ''){
-                                screen("cPlaceTime", cPlaceTime, cPlaceTime);
-                            }
-                            //关闭弹出框
-                            layer.close(layer.index);
-                            //根据筛选条件查询客户
-                            tableReload();
-                        },
-                        cancel: function(layero,index){
-                            layer.close(layer.index);
-                        }
-                    });
-                });
+			//筛选条件
+			function screen(name, value, text){
+				//判断是否是报名时间
+				var condition;
+				if(name == "cPlaceTime"){
+					condition = "#beginTime";
+				}else{
+					condition = "#"+name;
+				}
+				//判断是否存在该条件
+				if($(condition).val() == undefined){
+					//新增节点
+					var div = document.createElement("div");
+					div.setAttribute('id', 'div'+name);
+					div.setAttribute('class', 'layui-input-inline');
+					var innerHTML = "<div class='layui-form-mid layui-word-aux'>"+
+										"&nbsp;&nbsp;&nbsp;";
+					if(name == "cName"){
+						innerHTML += "姓名：";
+					}else if(name == "cTel"){
+						innerHTML += "电话：";
+					}else if(name == "cProject"){
+						innerHTML += "报名项目：";
+					}else if(name == "cEarnest"){
+						innerHTML += "是否交定金：";
+					}else if(name == "cSource"){
+						innerHTML += "来源：";
+					}else if(name == "cUId"){
+						innerHTML += "负责人：";
+					}else if(name == "cTypeId"){
+						innerHTML += "状态：";
+					}else if(name == "cPlaceTime"){
+						innerHTML += "报名时间：";
+					}
+					if(name == "cPlaceTime"){
+						var beginTime = value.split(" - ")[0];
+						var endTime = value.split(" - ")[1];
+						innerHTML += "<span id='span"+name+"'>"+text+"</span>"+
+							"<input type='hidden' id='beginTime' value='"+beginTime+"'>"+
+							"<input type='hidden' id='endTime' value='"+endTime+"'>"+
+							"</div>"+
+							"<div class='layui-input-inline' style='cursor: pointer; padding: 10px 0px;'>"+
+							"<i class='layui-icon layui-icon-close' id='close"+name+"'></i>"+
+							"</div>";
+					}else{
+						innerHTML += "<span id='span"+name+"'>"+text+"</span>"+
+							"<input type='hidden' id='"+name+"' value='"+value+"'>"+
+							"</div>"+
+							"<div class='layui-input-inline' style='cursor: pointer; padding: 12px 0px;'>"+
+							"<i class='layui-icon layui-icon-close' id='close"+name+"'></i>"+
+							"</div>";
+					}
+					div.innerHTML = innerHTML;
+					document.getElementById("list").appendChild(div);
+					//关闭事件（移除节点）
+					$("#close"+name).click(function(){
+						list.removeChild(document.getElementById("div"+name));
+						//根据筛选条件查询客户
+						tableReload();
+					});
+				}else{
+					//改变已有的值
+					$("#span"+name).html(text);
+					if(name != "cPlaceTime"){
+						$("#"+name).val(value);
+					}else{
+						var beginTime = value.split(" - ")[0];
+						var endTime = value.split(" - ")[1];
+						$("#beginTime").val(beginTime);
+						$("#endTime").val(endTime);
+					}
+				}
+			}
 
-            });
+			//表格重载
+			function tableReload(){
+
+				//获取筛选条件
+				var screenList = $("#list [type=hidden]");
+				//条件参数
+				var param = "";
+				for(var i = 0; i < screenList.length; i++){
+					param += screenList[i].id + ":" + screenList[i].value + ",";
+				}
+				//根据筛选条件查询
+				table.reload('tab', {
+					url: '/customer/queryCScreen?uId='+uId+'&rName='+rName
+					,where: {
+						param: param
+					}
+					,page: {
+						curr: 1 //重新从第 1 页开始
+					}
+				});
+
+			}
+
+			//处理弹出的新增或修改页面
+			function popup(ix, index, url) {
+				var body = layer.getChildFrame('body', index);
+				//获取值
+				var cName = $(body).find("#cName").val();
+				var cSex = null;
+				if($(body).find("[name=cSex]")[0].checked){
+					cSex = $(body).find("[name=cSex]")[0].value;
+				}else{
+					cSex = $(body).find("[name=cSex]")[1].value;
+				}
+				var cAge = $(body).find("#cAge").val();
+				var cTel = $(body).find("#cTel").val();
+				var cProject = $(body).find("#cProject").val();
+				var cRemark = $(body).find("#cRemark").val();
+				var cMessage = $(body).find("#cMessage").val();
+				var cEarnest = $(body).find("#cEarnest").val();
+				var cUId = $(body).find("#cUId").val();
+				var cSource = $(body).find("#cSource").val();
+				var cTypeId = $(body).find("#cTypeId").val();
+				if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
+					//声明格式是否正确
+					var verify = true;
+					//验证姓名格式
+					if(cName.length > 6){
+						layer.msg("姓名长度不能大于6位");
+						verify = false;
+						return;
+					}
+					//验证年龄格式
+					if(cAge != ''){
+						if(cAge <= 0 || cAge >= 150){
+							layer.msg("年龄必须大于0小于150");
+							verify = false;
+							return;
+						}
+					}
+					//验证电话格式
+					if(!(/^1[3456789]\d{9}$/.test(cTel))){
+						layer.msg("手机号码格式错误");
+						verify = false;
+						return;
+					}
+					//验证定金格式
+					if(cEarnest != ''){
+						if(cEarnest < 0){
+							layer.msg("定金不能为负数");
+							verify = false;
+							return;
+						}
+					}
+					if(verify){
+						$.post(url, {uId: uId, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cProject:cProject, cMessage:cMessage,
+								cRemark:cRemark, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cTypeId:cTypeId},
+							function (obj) {
+								layer.msg(obj.msg, {time: 500}, function () {
+									layer.close(ix);
+									tableReload();
+								});
+							}
+						);
+					}
+				} else {
+					layer.msg('请输入带星号的必填项');
+				}
+			}
+
+			//执行一个 table 实例
+			table.render({
+				elem: '#tab'
+				,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName //数据接口
+				,title: '客户信息表' //表格名称
+				,id: 'tab' //表格id
+				,page: true //开启分页
+				,limit: 20 //每页显示条数
+				,limits: [20, 50, 100] //自定义可选每页显示条数
+				,toolbar: '#toolbarDemo' //刷新、增加工具栏
+				,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+				,cols: [ //表头
+					[
+						{field: 'cId', minWidth: 120, title: 'ID', sort: true, align:'center'}
+						,{field: 'cName', minWidth: 120, title: '姓名', align:'center'
+							,templet: '<div><a href="javascript:goDetail({{d.cId}});" class="layui-table-link">{{d.cName}}</a></div>'
+						}
+						,{field: 'cSex', minWidth: 120, title: '性别', sort: true, align:'center'}
+						,{field: 'cAge', minWidth: 120, title: '年龄', align:'center'}
+						,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
+						,{field: 'cProject', minWidth: 120, title: '报名项目', align:'center'}
+						,{field: 'cPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+						,{field: 'cRemark', minWidth: 120, title: '备注', align:'center'}
+						,{field: 'cEarnest', minWidth: 120, title: '定金', align:'center'}
+						,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
+						,{field: 'cSource', minWidth: 120, title: '来源', align:'center'}
+						,{field: 'cMessage', minWidth: 120, title: '症状信息', align:'center'}
+						,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
+						,{fixed: 'right', minWidth: 180, align:'center', toolbar: '#barDemo'}
+					]
+				]
+			});
+
+			//监听头工具栏事件
+			table.on('toolbar(test)', function(obj){
+				var checkStatus = table.checkStatus(obj.config.id)
+					,data = checkStatus.data; //获取选中的数据
+				switch(obj.event){
+					case 'add':
+						//弹出新增页面
+						var ix = layer.open({
+							type: 2, //层类型，iframe
+							title: '新增客户',
+							content: ['/customer/customersave'],
+							area: ['1000px', '450px'],
+							resize: false,
+							btn: '确定',
+							btn1: function (index, layero) {
+								popup(ix, index, "/customer/saveCustomer");
+							},
+							cancel: function(index, layero){
+								layer.close(index);
+							}
+						});
+						break;
+					case 'refresh':
+						tableReload();
+						break;
+				}
+			});
+
+			//监听行工具事件
+			table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+				var data = obj.data //获得当前行数据
+					,layEvent = obj.event; //获得 lay-event 对应的值
+				if(layEvent === 'del'){
+					layer.confirm('确定删除吗？', {icon: 3, title:'提示'}, function(index){
+						$.get("/customer/delCByCId?cId=" + data.cId + "&cName=" + data.cName + "&uId=" + uId, function(obj){
+							if (obj.code == 0) {
+								layer.msg(obj.msg, {time: 500}, function () {
+									tableReload();
+								});
+							} else {
+								layer.msg(obj.msg)
+							}
+						});
+					});
+				} else if(layEvent === 'edit'){
+					//弹出编辑页面
+					var ix = layer.open({
+						type: 2, //层类型，iframe
+						title: '编辑客户',
+						content: ['/customer/queryCByCId?cId=' + data.cId + "&page=customer"],
+						area: ['1000px', '450px'],
+						resize: false,
+						btn: '确定',
+						btn1: function (index, layero) {
+							popup(ix, index, "/customer/editCByCId?cId=" + data.cId);
+						},
+						cancel: function(index, layero){
+							layer.close(index);
+						}
+					});
+				} else if(layEvent === 'detail'){
+					//弹出详情页面
+					layer.open({
+						type: 2, //层类型，iframe
+						title: '查看详情', //标题
+						content: ['/customer/goDetail?cId=' + data.cId], //页面内容
+						area: ['800px', '500px'], //宽高
+						resize: false, //不允许拉伸
+						cancel: function(index, layero){
+							layer.close(index);
+						}
+					});
+				}
+
+			});
+
+			//弹出高级筛选列表
+			$("#screen").click(function(){
+				layer.open({
+					type: 2, //层类型，iframe
+					title: '高级筛选',
+					content: ['screen'],
+					area: ['1000px', '420px'],
+					resize: false,
+					btn: '确定',
+					btn1: function(index, layero){
+						var body = layer.getChildFrame('body', index);
+						//获取筛选值
+						var cName = $(body).find("#cName").val();
+						var cTel = $(body).find("#cTel").val();
+						var cProject = $(body).find("#cProject").val();
+						//给是否交定金赋值
+						var cEarnest;
+						var cEarnestText;
+						if($(body).find("[name=cEarnest]")[0].checked){
+							cEarnest = $(body).find("[name=cEarnest]")[0].value;
+							cEarnestText = $(body).find("[name=cEarnest]")[0].title;
+						}
+						if($(body).find("[name=cEarnest]")[1].checked){
+							cEarnest = $(body).find("[name=cEarnest]")[1].value;
+							cEarnestText = $(body).find("[name=cEarnest]")[1].title;
+						}
+						var cUId = $(body).find("#cUId").val();
+						var cSource = $(body).find("#cSource").val();
+						var cTypeId = $(body).find("#cTypeId").val();
+						var cPlaceTime = $(body).find("#cPlaceTime").val();
+						//新增筛选条件或者修改
+						if(cName != ''){
+							screen("cName", cName.trim(), cName.trim());
+						}
+						if(cTel != ''){
+							screen("cTel", cTel.trim(), cTel.trim());
+						}
+						if(cProject != ''){
+							var cProjectText = $(body).find("#cProject [value="+cProject+"]").text();
+							screen("cProject", cProject, cProjectText);
+						}
+						if(cEarnest != undefined){
+							screen("cEarnest", cEarnest, cEarnestText);
+						}
+						if(cUId != ''){
+							var cUIdText = $(body).find("#cUId [value="+cUId+"]").text();
+							screen("cUId", cUId, cUIdText);
+						}
+						if(cSource != ''){
+							screen("cSource", cSource.trim(), cSource.trim());
+						}
+						if(cTypeId != ''){
+							var cTypeIdText = $(body).find("#cTypeId [value="+cTypeId+"]").text();
+							screen("cTypeId", cTypeId, cTypeIdText);
+						}
+						if(cPlaceTime != ''){
+							screen("cPlaceTime", cPlaceTime, cPlaceTime);
+						}
+						//关闭弹出框
+						layer.close(layer.index);
+						//根据筛选条件查询客户
+						tableReload();
+					},
+					cancel: function(layero,index){
+						layer.close(layer.index);
+					}
+				});
+			});
 
 		</script>
 

@@ -62,4 +62,10 @@
     VALUES (#{aCId}, #{aTime}, #{aHId}, #{aTypeId})
   </insert>
 
+  <!--根据客户编号查询最近预约门诊-->
+  <select id="queryLastHNameByCId" resultType="String">
+    SELECT h.h_name AS hName FROM appointment a INNER JOIN hospital h ON a.a_h_id=h.h_id
+    WHERE a_c_id = #{cId} ORDER BY a.a_time DESC limit 0,1
+  </select>
+
 </mapper>
