@@ -71,19 +71,26 @@ public class CustomerService implements ICustomerService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryCScreenByCTypeId(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String cProject, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
-        return customerMapper.queryCScreenByCTypeId(uId, rName, page, limit, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getTotalCScreenByCTypeId(Integer uId, String rName, String cName, String cTel, String cProject, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
-        return customerMapper.getTotalCScreenByCTypeId(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public Integer getTotalCByUIdAndCTypeId(Integer uId, Integer cTypeId) {
         return customerMapper.getTotalCByUIdAndCTypeId(uId, cTypeId);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryCByCNameOrCTel(String key) {
+        return customerMapper.queryCByCNameOrCTel(key);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryCAndHNameScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String cProject, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
+        return customerMapper.queryCAndHNameScreen(uId, rName, page, limit, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalAndHNameByScreen(Integer uId, String rName, String cName, String cTel, String cProject, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
+        return customerMapper.getTotalAndHNameByScreen(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+    }
+
 }

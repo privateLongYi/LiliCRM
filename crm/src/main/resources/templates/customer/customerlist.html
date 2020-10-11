@@ -9,20 +9,85 @@
 				margin: 5px 0 10px 0;
 			}
 			.baseColor{color: #1E9FFF}
+			.layui-table-fixed .layui-table-body {
+				height: auto!important;
+			}
+			.layui-table-fixed.layui-hide {
+				display: block!important;
+			}
 		</style>
 	</head>
 	<body style='overflow:scroll;overflow-x:hidden'>
 
-	<!-- 高级筛选 -->
-	<br />
-	<div>
-		&nbsp;&nbsp;&nbsp;<button id="screen" type="button" class="layui-btn">高级筛选</button>
-	</div>
-	<br />
+	<br>
 
-	<!-- 列出筛选条件 -->
-	<div id="list">
-
+	<div class="layui-fluid">
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<label class="layui-form-label">姓名</label>
+				<div class="layui-inline">
+					<input class="layui-input" id="searchCName" autocomplete="off">
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<label class="layui-form-label">电话</label>
+				<div class="layui-inline">
+					<input class="layui-input" id="searchCTel" autocomplete="off">
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<label class="layui-form-label">报名项目</label>
+				<div class="layui-input-inline layui-form">
+					<select id="searchCProject">
+						<option value=""></option>
+						<option value="种植">种植</option>
+						<option value="矫正">矫正</option>
+						<option value="牙贴面">牙贴面</option>
+						<option value="牙齿治疗">牙齿治疗</option>
+					</select>
+				</div>
+			</div><br><br><br>
+			<div class="layui-col-md4">
+				<label class="layui-form-label">是否交定金</label>
+				<div class="layui-input-inline layui-form">
+					<input type="radio" name="searchCEarnest" value="1" title="是">
+					<input type="radio" name="searchCEarnest" value="0" title="否">
+					<input type="radio" name="searchCEarnest" value="2" title="全部">
+				</div>
+			</div>
+			<div class="layui-col-md4" id="principal">
+				<label class="layui-form-label">负责人</label>
+				<div class="layui-input-inline layui-form">
+					<select id="searchCUId">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<label class="layui-form-label">来源</label>
+				<div class="layui-inline">
+					<input class="layui-input" id="searchCSource" autocomplete="off">
+				</div>
+			</div><br><br><br>
+			<div class="layui-col-md4">
+				<label class="layui-form-label">状态</label>
+				<div class="layui-input-inline layui-form">
+					<select id="searchCTypeId">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-col-md8">
+				<label class="layui-form-label">报名时间</label>
+				<div class="layui-input-inline layui-form">
+					<input type="text" id="searchCPlaceTime" readonly
+						   autocomplete="off" class="layui-input" style="width: 300px;">
+				</div>
+			</div><br><br><br>
+		</div>
+		<div style="text-align: center;">
+			<button class="layui-btn" onclick="tableReload()">查询</button>
+		</div>
 	</div>
 
 	<!-- 数据表格 -->
@@ -213,7 +278,6 @@
 		</script>
 
 		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 		</script>
@@ -226,10 +290,48 @@
 				,table = layui.table //表格
 				,element = layui.element //元素操作
 				,$ = layui.jquery //jQuery
+				,laydate = layui.laydate //时间控件
+				,form = layui.form //表单
 
 			//从sessionStorage中获取用户编号和角色名称
 			var uId = sessionStorage.getItem('uId');
 			var rName = sessionStorage.getItem('rName');
+
+            //时间控件
+            laydate.render({
+                elem: '#searchCPlaceTime' //指定元素
+                ,type: 'datetime' //时间格式
+                ,trigger: 'click' //采用click弹出
+                ,range: true //开启左右面板范围选择
+            });
+
+            if (rName == "销售员"){
+                $("#searchCUId").attr("disabled", "disabled");
+            } else {
+                //获取角色为销售员的用户对象
+                $.get("/user/queryUserByRName", function (res){
+                    //定义负责人下拉框内容
+                    var html = "";
+                    $.each(res.data, function (index, item) {
+                        html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
+                    });
+                    $("#searchCUId").append(html);
+                    //append后必须重新渲染
+                    form.render('select');
+                })
+            }
+
+            //获取所有客户状态
+            $.get("/ctype/queryCtype", function (res){
+                //定义负责人下拉框内容
+                var html = "";
+                $.each(res.data, function (index, item) {
+                    html += "<option value='" + item.ctId + "'>" + item.ctType + "</option>";
+                });
+                $("#searchCTypeId").append(html);
+                //append后必须重新渲染
+                form.render('select');
+            })
 
             //弹出详情页面
             function goDetail(cId) {
@@ -427,6 +529,7 @@
 */
 
             }
+/*
 
 			//筛选条件
 			function screen(name, value, text){
@@ -501,28 +604,50 @@
 					}
 				}
 			}
+*/
 
 			//表格重载
 			function tableReload(){
-
 				//获取筛选条件
-				var screenList = $("#list [type=hidden]");
-				//条件参数
-				var param = "";
-				for(var i = 0; i < screenList.length; i++){
-					param += screenList[i].id + ":" + screenList[i].value + ",";
+				var cName = $("#searchCName").val();
+                var cTel = $("#searchCTel").val();
+                var cProject = $("#searchCProject").val();
+                var cEarnest;
+                if ($("[name=searchCEarnest]")[0].checked){
+                    cEarnest = $("[name=searchCEarnest]")[0].value;
+				} else if ($("[name=searchCEarnest]")[1].checked){
+                    cEarnest = $("[name=searchCEarnest]")[1].value;
+				} else if ($("[name=searchCEarnest]")[2].checked){
+                    cEarnest = $("[name=searchCEarnest]")[2].value;
+                }
+                var cUId = $("#searchCUId").val();
+                var cSource = $("#searchCSource").val();
+                var cTypeId = $("#searchCTypeId").val();
+                var searchCPlaceTime = $("#searchCPlaceTime").val();
+                var beginTime;
+                var endTime;
+                if (searchCPlaceTime != null){
+                    var beginTime = searchCPlaceTime.split(" - ")[0];
+                    var endTime = searchCPlaceTime.split(" - ")[1];
 				}
 				//根据筛选条件查询
 				table.reload('tab', {
 					url: '/customer/queryCScreen?uId='+uId+'&rName='+rName
 					,where: {
-						param: param
+						cName: cName
+						,cTel: cTel
+                        ,cProject: cProject
+                        ,cEarnest: cEarnest
+                        ,cUId: cUId
+                        ,cSource: cSource
+                        ,cTypeId: cTypeId
+                        ,beginTime: beginTime
+                        ,endTime: endTime
 					}
 					,page: {
 						curr: 1 //重新从第 1 页开始
 					}
 				});
-
 			}
 
 			//处理弹出的新增或修改页面
@@ -620,7 +745,7 @@
 						,{field: 'cSource', minWidth: 120, title: '来源', align:'center'}
 						,{field: 'cMessage', minWidth: 120, title: '症状信息', align:'center'}
 						,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
-						,{fixed: 'right', minWidth: 180, align:'center', toolbar: '#barDemo'}
+						,{fixed: 'right', minWidth: 120, title: '操作', toolbar: '#barDemo', align:'center'}
 					]
 				]
 			});
@@ -685,21 +810,11 @@
 							layer.close(index);
 						}
 					});
-				} else if(layEvent === 'detail'){
-					//弹出详情页面
-					layer.open({
-						type: 2, //层类型，iframe
-						title: '查看详情', //标题
-						content: ['/customer/goDetail?cId=' + data.cId], //页面内容
-						area: ['800px', '500px'], //宽高
-						resize: false, //不允许拉伸
-						cancel: function(index, layero){
-							layer.close(index);
-						}
-					});
 				}
 
 			});
+
+			/*
 
 			//弹出高级筛选列表
 			$("#screen").click(function(){
@@ -769,6 +884,7 @@
 					}
 				});
 			});
+*/
 
 		</script>
 

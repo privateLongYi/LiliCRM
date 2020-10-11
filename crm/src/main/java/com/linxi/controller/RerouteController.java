@@ -3,10 +3,7 @@ package com.linxi.controller;
 import com.linxi.entity.Appointment;
 import com.linxi.entity.Operating;
 import com.linxi.entity.Reroute;
-import com.linxi.service.IAppointmentService;
-import com.linxi.service.IAtypeService;
-import com.linxi.service.IOperatingService;
-import com.linxi.service.IRerouteService;
+import com.linxi.service.*;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +39,11 @@ public class RerouteController {
     @Autowired
     private IAppointmentService iAppointmentService;
 
+    @Autowired
+    private ICustomerService iCustomerService;
+
+    @Autowired ICtypeService iCtypeService;
+
     @PostMapping("saveReroute")
     @ApiOperation(value = "新增改约记录")
     @ResponseBody
@@ -59,6 +61,10 @@ public class RerouteController {
         //新增预约记录
         Appointment appointment = new Appointment(null, reCId, reTime, reHId, atId);
         iAppointmentService.addAppoint(appointment);
+        //查询待到店编号
+        Integer ctId = iCtypeService.queryCtypeByCtType("待到店");
+        //编辑客户状态
+        iCustomerService.editCTypeIdByCId(reCId, ctId);
         //新增改约记录
         Reroute reroute = new Reroute(reCId, reHId, reLastTime, reTime, reCause);
         iRerouteService.saveReroute(reroute);

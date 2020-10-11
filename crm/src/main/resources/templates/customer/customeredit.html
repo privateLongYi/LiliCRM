@@ -142,8 +142,9 @@
         //从sessionStorage中获取用户编号和用户名
         var uId = sessionStorage.getItem('uId');
         var uName = sessionStorage.getItem('uName');
+        var rName = sessionStorage.getItem('rName');
 
-        if(uId == 1){
+        if(rName == "管理员"){
 
             //管理员登录，隐藏负责人文本框，显示负责人下拉框
             $("#admin").addClass("layui-show");
@@ -180,7 +181,8 @@
                     $("#cType").val("待分配");
                     $("#cTypeId").val("1");
                 }
-
+                //隐藏症状信息
+                $("#message").hide();
             }else if(page == "awaitcontact-awaitappoint") {
                 //状态赋值
                 $("#cType").val("待预约");
@@ -190,8 +192,6 @@
                 //append后必须重新渲染
                 form.render('select');
             }else if(page == "awaitcontact-edit"){
-                //隐藏症状信息
-                $("#message").hide();
                 //禁用下拉框
                 $("#salelist").attr("disabled", "disabled");
                 //append后必须重新渲染
@@ -212,6 +212,59 @@
             //状态赋值
             $("#cType").val($("#type").val());
             $("#cTypeId").val($("#typeId").val());
+
+            //获取从哪个页面过来的
+            var page = $("#page").val();
+
+            if(page == "customer") {
+                //隐藏症状信息
+                $("#message").hide();
+                //获取角色为销售员的用户对象
+                $.get("/user/queryUserByRName", function (res) {
+                    //定义负责人下拉框内容
+                    var html = "";
+                    //获取负责人编号
+                    var cUId = $("#cUId").val();
+                    $.each(res.data, function (index, item) {
+                        if (cUId == item.uId) {
+                            html += "<option value='" + item.uId + "' selected>" + item.uName + "</option>";
+                        } else {
+                            html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
+                        }
+                    });
+                    $("#salelist").append(html);
+                    //append后必须重新渲染
+                    form.render('select');
+                })
+                //客户状态赋值
+                if($("#cUId").val() != ""){
+                    //状态赋值
+                    $("#cType").val($("#type").val());
+                    $("#cTypeId").val($("#typeId").val());
+                }else{
+                    //状态赋值
+                    $("#cType").val("待分配");
+                    $("#cTypeId").val("1");
+                }
+            }else if(page == "awaitcontact-awaitappoint") {
+                //状态赋值
+                $("#cType").val("待预约");
+                $("#cTypeId").val("3");
+                //禁用下拉框
+                $("#salelist").attr("disabled", "disabled");
+                //append后必须重新渲染
+                form.render('select');
+            }else if(page == "awaitcontact-edit"){
+                //禁用下拉框
+                $("#salelist").attr("disabled", "disabled");
+                //append后必须重新渲染
+                form.render('select');
+            }else{
+                //禁用下拉框
+                $("#salelist").attr("disabled", "disabled");
+                //append后必须重新渲染
+                form.render('select');
+            }
         }
 
         //下拉框改变事件

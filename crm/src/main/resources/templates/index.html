@@ -9,7 +9,7 @@
             margin: 5px 0 10px 0;
         }
         .baseColor{color: #1E9FFF}
-        .list{cursor: pointer;height: 40px;padding: 0 5px;top: 0;}
+        .list{cursor: pointer;height: 30px;padding: 5px;top: 0;line-height: 30px;}
         #list{border: 1px solid #C9C9C9; border-top: none;}
     </style>
 </head>
@@ -22,16 +22,9 @@
         <!--左侧导航-->
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item">
-                <input type="text" placeholder="搜索..." autocomplete="off" class="layui-input"
+                <input type="text" placeholder="请输入客户姓名/手机号" autocomplete="off" class="layui-input"
                        id="search" style="border: 0;background-color: #383d49;color: #bdbeb7;margin-top: 10px;">
-                <div id="list" style="background-color: #383d49;height: auto; display: none;">
-                    <div class="list" onclick="javascript:goDetail(55);" id="1">龙意/19958738180</div>
-                    <div class="list">龙意/19958738180</div>
-                    <div class="list">龙意/19958738180</div>
-                    <div class="list">龙意/19958738180</div>
-                    <div class="list">龙意/19958738180</div>
-                    <div class="list" style="text-align: right;" id="close">关闭</div>
-                </div>
+                <div id="list" style="background-color: #383d49;height: auto; display: none;"></div>
             </li>
         </ul>
         <!--右侧导航-->
@@ -49,7 +42,7 @@
                     <dd><a href="javascript:editPwd();">修改密码</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a th:href="@{/logout}">注销</a></li>
+            <li class="layui-nav-item"><a th:href="@{/logout}">退出登录</a></li>
         </ul>
     </div>
 
@@ -260,13 +253,30 @@
     var $ = layui.jquery;
     var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
     var layer = layui.layer;
+    var table = layui.table;
 
     //给搜索框添加input事件
     $("#search").on("input", function(){
         var search = $("#search").val();
         if(search != ""){
+            //根据客户名称或者客户电话查询客户
+            $.post("/customer/queryCByCNameOrCTel", {key:search}, function (data) {
+                var html = "";
+                for (i = 0; i < data.data.length; i++){
+                    html += "<div class='list' onclick='javascript:goDetail("+data.data[i].cId+");'>"+data.data[i].cName+"/"+data.data[i].cTel+"</div>";
+                }
+                html += "<div class='list' style='text-align: right;margin-top: -10px;' id='close'>关闭</div>";
+                //赋值
+                $("#list").html(html);
+                //给关闭添加onclick事件
+                $("#close").on("click", function(){
+                    $("#list").attr("style", "background-color: #383d49;height: auto; display: none;");
+                });
+            });
             $("#list").attr("style", "background-color: #383d49;height: auto; display: block;");
         }else{
+            //赋值
+            $("#list").html("");
             $("#list").attr("style", "background-color: #383d49;height: auto; display: none;");
         }
     });
@@ -277,11 +287,6 @@
         if(search != ""){
             $("#list").attr("style", "background-color: #383d49;height: auto; display: ;");
         }
-    });
-
-    //给关闭添加onclick事件
-    $("#close").on("click", function(){
-        $("#list").attr("style", "background-color: #383d49;height: auto; display: none;");
     });
 
     //弹出详情页面
@@ -518,7 +523,7 @@
                     if (data){
                         if (newPwd.length >=6 && newPwd.length <=16 && newPwd2.length >=6 && newPwd2.length <=16){
                             if (newPwd == newPwd2){
-                                $.post("/user/editPwd", {uId:uId, uPassword:oldPwd}, function (data) {
+                                $.post("/user/editPwd", {uId:uId, uPassword:newPwd}, function (data) {
                                     layer.close(ix);
                                     layer.msg("密码已修改，请重新登录", {time: 1000}, function () {
                                         location.href = "/loginPage";

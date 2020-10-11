@@ -42,12 +42,12 @@
         AND c.c_project = #{cProject}
       </if>
       <if test="cEarnest != null and cEarnest == 0">
-        AND c.c_earnest = 0
+        AND (c.c_earnest = 0 OR c.c_earnest IS NULL)
       </if>
       <if test="cEarnest != null and cEarnest == 1">
         AND c.c_earnest != 0
       </if>
-      <if test="beginTime != null or endTime != null">
+      <if test="beginTime != null and endTime != null">
         AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
         AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>
@@ -84,12 +84,12 @@
         AND c.c_project = #{cProject}
       </if>
       <if test="cEarnest != null and cEarnest == 0">
-        AND c.c_earnest = 0
+        AND (c.c_earnest = 0 OR c.c_earnest IS NULL)
       </if>
       <if test="cEarnest != null and cEarnest == 1">
         AND c.c_earnest != 0
       </if>
-      <if test="beginTime != null or endTime != null">
+      <if test="beginTime != null and endTime != null">
         AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
         AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>
@@ -144,10 +144,26 @@
     UPDATE customer SET c_type_id = #{cTypeId} WHERE c_id = #{cId}
   </update>
 
-  <!-- 高级筛选加分页查询各种状态的客户 -->
-  <select id="queryCScreenByCTypeId" resultMap="BaseResultMap">
-    SELECT c.*, u.u_name AS uName, ct.ct_type AS cType,
-    h.h_id AS hId, h.h_name AS hName, a.a_time AS aTime FROM customer c
+  <!--根据用户编号和状态查询客户总条数-->
+  <select id="getTotalCByUIdAndCTypeId" resultType="Integer">
+    SELECT COUNT(*) FROM customer
+    <where>
+      c_u_id = #{uId}
+      <if test="cTypeId != null">
+        AND c_type_id = #{cTypeId}
+      </if>
+    </where>
+  </select>
+
+  <!--根据客户名称或者客户电话查询客户-->
+  <select id="queryCByCNameOrCTel" resultMap="BaseResultMap">
+    SELECT * FROM customer WHERE c_name LIKE '%${key}%' OR c_tel LIKE '%${key}%' limit 0,3
+  </select>
+
+  <!-- 高级筛选加分页查询客户 -->
+  <select id="queryCAndHNameScreen" resultMap="BaseResultMap">
+    SELECT c.*, u.u_name AS uName, ct.ct_type AS cType, h.h_id AS hId,
+    h.h_name AS hName, a.a_time AS aTime FROM customer c
     LEFT JOIN `user` u ON c.c_u_id=u.u_id
     LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
     LEFT JOIN appointment a ON c.c_id=a.a_c_id
@@ -166,12 +182,12 @@
         AND c.c_project = #{cProject}
       </if>
       <if test="cEarnest != null and cEarnest == 0">
-        AND c.c_earnest = 0
+        AND (c.c_earnest = 0 OR c.c_earnest IS NULL)
       </if>
       <if test="cEarnest != null and cEarnest == 1">
         AND c.c_earnest != 0
       </if>
-      <if test="beginTime != null or endTime != null">
+      <if test="beginTime != null and endTime != null">
         AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
         AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>
@@ -181,15 +197,16 @@
       <if test="cSource != null and cSource != ''">
         AND c.c_source = #{cSource}
       </if>
-        AND ct.ct_id = #{cTypeId}
-        AND a.a_time = (SELECT MAX(a_time) FROM appointment WHERE a_c_id = c.c_id)
+      <if test="cTypeId != null">
+        AND c.c_type_id = #{cTypeId}
+      </if>
     </where>
     ORDER BY c_place_time DESC
     limit #{page}, #{limit}
   </select>
 
-  <!-- 根据筛选条件查询各种状态的客户总数 -->
-  <select id="getTotalCScreenByCTypeId" resultType="Integer">
+  <!-- 根据筛选条件查询客户总数 -->
+  <select id="getTotalAndHNameByScreen" resultType="Integer">
     SELECT COUNT(*) FROM customer c
     LEFT JOIN `user` u ON c.c_u_id=u.u_id
     LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
@@ -209,12 +226,12 @@
         AND c.c_project = #{cProject}
       </if>
       <if test="cEarnest != null and cEarnest == 0">
-        AND c.c_earnest = 0
+        AND (c.c_earnest = 0 OR c.c_earnest IS NULL)
       </if>
       <if test="cEarnest != null and cEarnest == 1">
         AND c.c_earnest != 0
       </if>
-      <if test="beginTime != null or endTime != null">
+      <if test="beginTime != null and endTime != null">
         AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
         AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>
@@ -225,19 +242,7 @@
         AND c.c_source = #{cSource}
       </if>
       <if test="cTypeId != null">
-        AND ct.ct_id = #{cTypeId}
-      </if>
-        AND a.a_time = (SELECT MAX(a_time) FROM appointment WHERE a_c_id = c.c_id)
-    </where>
-  </select>
-
-  <!--根据用户编号和状态查询客户总条数-->
-  <select id="getTotalCByUIdAndCTypeId" resultType="Integer">
-    SELECT COUNT(*) FROM customer
-    <where>
-      c_u_id = #{uId}
-      <if test="cTypeId != null">
-        AND c_type_id = #{cTypeId}
+        AND c.c_type_id = #{cTypeId}
       </if>
     </where>
   </select>
