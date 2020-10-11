@@ -22,61 +22,56 @@
 
 	</body>
 
-	<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
-	<!--<script th:src="@{/layui/layui.js}"></script>-->
+	<script th:src="@{/layui/layui.js}"></script>
 	<script>
-
-        layui.use(['tree', 'util'], function() {
-            var tree = layui.tree //树形组件
-                ,util = layui.util //util
-                ,layer = layui.layer //弹层
-                ,element = layui.element //元素操作
-                ,$ = layui.jquery //jQuery
-                ,form = layui.form //表单
+        layui.use(['tree', 'util'], function(){
+            var tree = layui.tree
+                ,layer = layui.layer
+                ,util = layui.util
+				,$ = layui.jquery;
 
 			//获取值
 			var rId = $("#rId").val();
 
-            //获取树形组件
-            $.get('/role/roleSetting?rId=' + rId, function(data){
+			//获取树形组件
+			$.get('/role/roleSetting?rId=' + rId, function(data){
 
-                tree.render({
-                    elem: '#demo'
-                    ,data: data
-                    ,showCheckbox: true  //是否显示复选框
-                    ,id: 'demoId'
-                });
+				tree.render({
+					elem: '#demo'
+					,data: data
+					,showCheckbox: true  //是否显示复选框
+					,id: 'demoId'
+				});
 
 			});
 
-            //按钮事件
-            util.event('lay-demo', {
-                getChecked: function(othis){
-                    //获取选中节点的数据
-                    var checkedData = tree.getChecked('demoId');//获取选中节点的数据
+			//按钮事件
+			util.event('lay-demo', {
+				getChecked: function(othis){
+					//获取选中节点的数据
+					var checkedData = tree.getChecked('demoId');//获取选中节点的数据
 					//定义选择数据编号列表
 					var menuList = "";
 					for(var i = 0; i < checkedData.length; i++){
-					    //添加到数组
-                        menuList += checkedData[i].id + ",";
+						//添加到数组
+						menuList += checkedData[i].id + ",";
 						if("undefind" != checkedData[i].children){
-                            for(var j = 0; j < checkedData[i].children.length; j++){
-                                //添加到数组
-                                menuList += checkedData[i].children[j].id + ",";
-                            }
+							for(var j = 0; j < checkedData[i].children.length; j++){
+								//添加到数组
+								menuList += checkedData[i].children[j].id + ",";
+							}
 						}
 					}
 					//去除最后一个逗号
-                    menuList = menuList.substring(0, menuList.length-1)
+					menuList = menuList.substring(0, menuList.length-1)
 					//保存到数据库
 					$.get("/authority/editRMByRId", {rId:rId, menuList:menuList}, function(obj){
-					    if(obj.code == 0){
-					        layer.msg(obj.msg);
+						if(obj.code == 0){
+							layer.msg(obj.msg);
 						}
 					});
-                }
-            });
-
+				}
+			});
         });
 
 	</script>
