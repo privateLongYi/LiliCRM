@@ -64,12 +64,27 @@ public class Appointment implements Serializable {
     /**
      * 预约门诊
      */
-    private String hospital;
+    private String hName;
 
     /**
      * 预约类型
      */
     private String aType;
+
+    /**
+     * 负责人名称
+     */
+    private String uName;
+
+    /**
+     * 预约门诊
+     */
+    private String cProject;
+
+    /**
+     * 成交金额
+     */
+    private Integer sSum;
 
     private static final long serialVersionUID = 1L;
 
@@ -201,12 +216,12 @@ public class Appointment implements Serializable {
         this.cName = cName;
     }
 
-    public String getHospital() {
-        return hospital;
+    public String gethName() {
+        return hName;
     }
 
-    public void setHospital(String hospital) {
-        this.hospital = hospital;
+    public void sethName(String hName) {
+        this.hName = hName;
     }
 
     public String getaType() {
@@ -215,6 +230,30 @@ public class Appointment implements Serializable {
 
     public void setaType(String aType) {
         this.aType = aType;
+    }
+
+    public String getuName() {
+        return uName;
+    }
+
+    public void setuName(String uName) {
+        this.uName = uName;
+    }
+
+    public String getcProject() {
+        return cProject;
+    }
+
+    public void setcProject(String cProject) {
+        this.cProject = cProject;
+    }
+
+    public Integer getsSum() {
+        return sSum;
+    }
+
+    public void setsSum(Integer sSum) {
+        this.sSum = sSum;
     }
 
     public Appointment() {
@@ -228,17 +267,4 @@ public class Appointment implements Serializable {
         this.aTypeId = aTypeId;
     }
 
-    @Override
-    public String toString() {
-        return "Appointment{" +
-                "aId=" + aId +
-                ", aCId=" + aCId +
-                ", aTime=" + aTime +
-                ", aHId=" + aHId +
-                ", aTypeId=" + aTypeId +
-                ", cName='" + cName + '\'' +
-                ", hospital='" + hospital + '\'' +
-                ", aType='" + aType + '\'' +
-                '}';
-    }
 }

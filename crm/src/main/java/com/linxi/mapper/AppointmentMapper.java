@@ -35,4 +35,7 @@ public interface AppointmentMapper {
     //根据客户编号查询最近预约门诊
     String queryLastHNameByCId(Integer cId);
 
+    //根据客户编号查询预约记录（详情）
+    List<Appointment> queryAToDetail(Integer cId);
+
 }

@@ -199,40 +199,7 @@
 					</div>
 					<!--预约记录-->
 					<div style="height: 145px;overflow-y: auto;">
-						<ul class="layui-timeline">
-							<li class="layui-timeline-item">
-								<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-								<div class="layui-timeline-content layui-text">
-									<div style="margin-bottom: 5px;">
-										<span style="font-size: 18px;">初诊</span>
-									</div>
-									<p>
-										<span>欧卡多</span>
-										<i class="layui-icon">&#xe602;</i><span>2020-10-03</span>
-										<i class="layui-icon">&#xe602;</i><span>到店</span>
-										<i class="layui-icon">&#xe602;</i><span>罗洋</span>
-										<i class="layui-icon">&#xe602;</i><span>种植</span>
-										<i class="layui-icon">&#xe602;</i><span>3799</span>
-									</p>
-								</div>
-							</li>
-							<li class="layui-timeline-item">
-								<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-								<div class="layui-timeline-content layui-text">
-									<div style="margin-bottom: 5px;">
-										<span style="font-size: 18px;">初诊</span>
-									</div>
-									<p>
-										<span>欧卡多</span>
-										<i class="layui-icon">&#xe602;</i><span>2020-10-03</span>
-										<i class="layui-icon">&#xe602;</i><span>到店</span>
-										<i class="layui-icon">&#xe602;</i><span>罗洋</span>
-										<i class="layui-icon">&#xe602;</i><span>种植</span>
-										<i class="layui-icon">&#xe602;</i><span>3799</span>
-									</p>
-								</div>
-							</li>
-						</ul>
+						<ul class="layui-timeline" id="appoint"></ul>
 					</div>
 				</div>
 				<!--右侧跟进-->
@@ -335,10 +302,12 @@
 
             //弹出详情页面
             function goDetail(cId) {
+
                 //显示详情页面
                 document.getElementById("detail").style.right = 0;
                 document.getElementById("detail").style.top = document.scrollingElement.scrollTop + "px";
-				//根据客户编号查询信息并赋值
+
+                //根据客户编号查询信息并赋值
 				$.get("/customer/detail", {cId:cId}, function (data) {
 				    if (data.customer.cSex == "男"){
 				        $("#img").attr("src", "/images/boy.png");
@@ -384,6 +353,29 @@
                     $("#cProject").text(data.customer.cProject);
                     //报名时间
                     $("#cPlaceTime").text(data.customer.cPlaceTime);
+                });
+
+				//预约记录
+				$.get("/appointment/queryAToDetail", {cId:cId}, function (data) {
+					var html = "";
+                    $.each(data.data, function (index, item) {
+                        html += "<li class='layui-timeline-item'>" +
+                            		"<i class='layui-icon layui-timeline-axis'>&#xe63f;</i>" +
+                            		"<div class='layui-timeline-content layui-text'>" +
+                            			"<div style='margin-bottom: 5px;'>" +
+                            				"<span style='font-size: 18px;'>"+item.aType+"</span>" +
+                            			"</div>" +
+                            			"<p>" +
+                            				"<span>"+item.hName+"</span>" +
+											"<i class='layui-icon'>&#xe602;</i><span>"+item.aTime+"</span>" +
+											"<i class='layui-icon'>&#xe602;</i><span>"+item.uName+"</span>" +
+											"<i class='layui-icon'>&#xe602;</i><span>"+item.cProject+"</span>" +
+											"<i class='layui-icon'>&#xe602;</i><span>"+item.sSum+"</span>" +
+                            			"</p>" +
+                            		"</div>" +
+                            	"</li>";
+                    });
+                    $("#appoint").html(html);
                 });
 
                 //成交记录
@@ -495,7 +487,8 @@
                     rightTrChildren.height(heightChildren + 115).toggle(); //左固定
                     leftTrChildren.height(heightChildren + 115).toggle(); //右固定
                 }
-/*
+
+				/*
 
 				//根据客户编号查询所拥有的跟进类型
                 $.get("/follow/queryFtypeByFCId?cId=" + cId, function(obj){
@@ -529,7 +522,8 @@
 */
 
             }
-/*
+
+			/*
 
 			//筛选条件
 			function screen(name, value, text){

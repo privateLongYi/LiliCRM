@@ -100,4 +100,12 @@ public class AppointmentController {
         return new DataResult(0, "新增成功");
     }
 
+    @GetMapping("queryAToDetail")
+    @ApiOperation(value = "根据客户编号查询预约记录（详情）")
+    @ResponseBody
+    public DataResult queryAToDetail(@ApiParam(value = "客户编号", required = true) Integer cId){
+        List<Appointment> appointments = iAppointmentService.queryAToDetail(cId);
+        return new DataResult(0, "操作成功", 0, appointments);
+    }
+
 }

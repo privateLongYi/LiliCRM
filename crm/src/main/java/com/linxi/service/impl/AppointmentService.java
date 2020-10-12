@@ -64,4 +64,10 @@ public class AppointmentService implements IAppointmentService {
     public String queryLastHNameByCId(Integer cId) {
         return appointmentMapper.queryLastHNameByCId(cId);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Appointment> queryAToDetail(Integer cId) {
+        return appointmentMapper.queryAToDetail(cId);
+    }
 }
