@@ -426,9 +426,8 @@
 							var sHId = $(body).find("#sHId").val();
 							var sMessage = $(body).find("#sMessage").val();
 							var sSum = $(body).find("#sSum").val();
-							var sPaysum = $(body).find("#sPaysum").val();
 							var sRemark = $(body).find("#sRemark").val();
-							if (sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '') {
+							if (sSum != '' && sSum.trim() != '') {
 								//声明格式是否正确
 								var verify = true;
 								//验证成交金额
@@ -444,7 +443,6 @@
 											sHId: sHId,
 											sMessage: sMessage,
 											sSum: sSum.trim(),
-											sPaysum: sPaysum.trim(),
 											sRemark: sRemark
 										},
 										function (obj) {

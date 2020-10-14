@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增成交</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+    <style>
+        .list{cursor: pointer;height: 30px;padding: 5px;top: 0;line-height: 30px;}
+        #list{border: 1px solid #C9C9C9; border-top: none;}
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>客户名称
+            </label>
+            <div class="layui-input-block">
+                <input type="hidden" id="sCId">
+                <input type="text" class="layui-input" autocomplete="off" id="cName">
+                <div id="list" style="height: auto; display: none; background-color: white;"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>门诊名称
+            </label>
+            <div class="layui-input-block">
+                <input type="hidden" id="sHId">
+                <input type="text" class="layui-input" id="hName" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">成交信息</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="sMessage" autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>成交金额
+            </label>
+            <div class="layui-input-block">
+                <input type="hidden" id="sPaysum" value="0">
+                <input type="number" class="layui-input" placeholder="请输入成交金额"
+                       autocomplete="off" id="sSum">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="sRemark" autocomplete="off"></textarea>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
+<!--<script th:src="@{/layui/layui.js}"></script>-->
+<script>
+
+    var form = layui.form
+        ,$ = layui.jquery
+        ,layer = layui.layer;
+
+    //从sessionStorage中获取用户编号和角色名称
+    var uId = sessionStorage.getItem('uId');
+    var rName = sessionStorage.getItem('rName');
+
+    //给搜索框添加input事件
+    $("#cName").on("input", function(){
+        var cName = $("#cName").val();
+        if(cName != ""){
+            //根据客户名称或者客户电话查询客户
+            $.post("/customer/querySCByUIdAndCName", {rName:rName, uId:uId, cName:cName}, function (data) {
+                var html = "";
+                for (i = 0; i < data.data.length; i++){
+                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].hId+"&quot;,&quot;"+data.data[i].hName+"&quot;);'>"+data.data[i].cName+"</div>";
+                }
+                html += "<div class='list' style='text-align: right;margin-top: -10px;' id='close'>关闭</div>";
+                //赋值
+                $("#list").html(html);
+                //给关闭添加onclick事件
+                $("#close").on("click", function(){
+                    $("#list").attr("style", "background-color: white;height: auto; display: none;");
+                });
+            });
+            $("#list").attr("style", "background-color: white;height: auto; display: block;");
+        }else{
+            //赋值
+            $("#list").html("");
+            $("#list").attr("style", "background-color: white;height: auto; display: none;");
+        }
+    });
+
+    //给搜索框添加onfocus事件
+    $("#cName").on("focus", function(){
+        var cName = $("#cName").val();
+        if(cName != ""){
+            $("#list").attr("style", "background-color: white;height: auto; display: block;");
+        }
+    });
+
+    //赋值
+    function assign(cId, cName, hId, hName) {
+        $("#sCId").val(cId);
+        $("#cName").val(cName);
+        $("#sHId").val(hId);
+        $("#hName").val(hName);
+    }
+
+</script>
+</body>
+</html>

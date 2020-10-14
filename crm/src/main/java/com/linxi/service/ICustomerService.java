@@ -67,7 +67,9 @@ public interface ICustomerService {
                                      @Param("cTypeId") Integer cTypeId);
 
     //根据客户名称或者客户电话查询客户
-    List<Customer> queryCByCNameOrCTel(@Param("key") String key);
+    List<Customer> queryCByCNameOrCTel(@Param("rName") String rName,
+                                       @Param("uId") Integer uId,
+                                       @Param("key") String key);
 
     //高级筛选加分页查询客户
     List<Customer> queryCAndHNameScreen(@Param("uId") Integer uId,
@@ -96,5 +98,10 @@ public interface ICustomerService {
                                      @Param("cUId") Integer cUId,
                                      @Param("cSource") String cSource,
                                      @Param("cTypeId") Integer cTypeId);
+
+    //根据用户编号和客户名称查询可成交客户
+    List<Customer> querySCByUIdAndCName(@Param("rName") String rName,
+                                        @Param("uId") Integer uId,
+                                        @Param("cName") String cName);
 
 }

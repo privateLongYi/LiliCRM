@@ -293,4 +293,8 @@ public class ViewController {
     @ApiOperation(value = "修改密码")
     public String goEditPwd(){return "user/editPassword";}
 
+    @GetMapping("indexGoSuccessSave")
+    @ApiOperation(value = "从首页去新增成交页面")
+    public String indexGoSuccessSave(){return "success/indexGoSuccessSave";}
+
 }

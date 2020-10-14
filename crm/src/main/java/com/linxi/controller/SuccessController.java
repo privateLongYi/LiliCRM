@@ -100,7 +100,6 @@ public class SuccessController {
                                   @ApiParam(name = "sHId", value = "门诊编号", required = true) Integer sHId,
                                   @ApiParam(name = "sMessage", value = "成交信息", required = true) String sMessage,
                                   @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
-                                  @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
                                   @ApiParam(name = "sRemark", value = "备注", required = true) String sRemark){
         //添加操作记录
         Operating operating = new Operating(sCId, uId, "添加了成交客户");
@@ -110,7 +109,7 @@ public class SuccessController {
         //改变客户状态为成交状态
         iCustomerService.editCTypeIdByCId(sCId, cTypeId);
         //新增成交客户
-        Success success = new Success(null, sCId, sHId, sMessage, sSum, sPaysum, sRemark);
+        Success success = new Success(null, sCId, sHId, sMessage, sSum, null, sRemark);
         iSuccessService.saveSuccess(success);
         return new DataResult(0, "新增成功");
     }

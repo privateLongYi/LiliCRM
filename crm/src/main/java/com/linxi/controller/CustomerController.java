@@ -215,8 +215,10 @@ public class CustomerController {
     @PostMapping("queryCByCNameOrCTel")
     @ApiOperation(value = "根据客户名称或者客户电话查询客户")
     @ResponseBody
-    public DataResult queryCByCNameOrCTel(@ApiParam(value = "关键字", required = true) String key){
-        List<Customer> customers = iCustomerService.queryCByCNameOrCTel(key);
+    public DataResult queryCByCNameOrCTel(@ApiParam(value = "角色名称", required = true) String rName,
+                                          @ApiParam(value = "用户编号", required = true) Integer uId,
+                                          @ApiParam(value = "关键字", required = true) String key){
+        List<Customer> customers = iCustomerService.queryCByCNameOrCTel(rName, uId, key);
         return new DataResult(0, "操作成功", 0, customers);
     }
 
@@ -246,6 +248,16 @@ public class CustomerController {
         //获取总条数
         Integer total = iCustomerService.getTotalAndHNameByScreen(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
         return new DataResult(0, "操作成功", total, customeres);
+    }
+
+    @PostMapping("querySCByUIdAndCName")
+    @ApiOperation(value = "根据用户编号和客户名称查询可成交客户")
+    @ResponseBody
+    public DataResult querySCByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
+                                           @ApiParam(value = "用户编号", required = true) Integer uId,
+                                           @ApiParam(value = "客户名称", required = true) String cName){
+        List<Customer> customers = iCustomerService.querySCByUIdAndCName(rName, uId, cName);
+        return new DataResult(0, "操作成功", 0, customers);
     }
 
 }

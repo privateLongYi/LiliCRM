@@ -77,8 +77,8 @@ public class CustomerService implements ICustomerService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryCByCNameOrCTel(String key) {
-        return customerMapper.queryCByCNameOrCTel(key);
+    public List<Customer> queryCByCNameOrCTel(String rName, Integer uId, String key) {
+        return customerMapper.queryCByCNameOrCTel(rName, uId, key);
     }
 
     @Override
@@ -91,6 +91,12 @@ public class CustomerService implements ICustomerService{
     @Transactional(propagation = Propagation.SUPPORTS)
     public Integer getTotalAndHNameByScreen(Integer uId, String rName, String cName, String cTel, String cProject, Integer cEarnest, String beginTime, String endTime, Integer cUId, String cSource, Integer cTypeId) {
         return customerMapper.getTotalAndHNameByScreen(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> querySCByUIdAndCName(String rName, Integer uId, String cName) {
+        return customerMapper.querySCByUIdAndCName(rName, uId, cName);
     }
 
 }

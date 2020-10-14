@@ -157,7 +157,14 @@
 
   <!--根据客户名称或者客户电话查询客户-->
   <select id="queryCByCNameOrCTel" resultMap="BaseResultMap">
-    SELECT * FROM customer WHERE c_name LIKE '%${key}%' OR c_tel LIKE '%${key}%' limit 0,3
+    SELECT * FROM customer
+    <where>
+      (c_name LIKE '%${key}%' OR c_tel LIKE '%${key}%')
+      <if test="rName != '管理员'">
+        AND c_u_id = #{uId}
+      </if>
+    </where>
+    limit 0,3
   </select>
 
   <!-- 高级筛选加分页查询客户 -->
@@ -245,6 +252,22 @@
         AND c.c_type_id = #{cTypeId}
       </if>
     </where>
+  </select>
+
+  <!--根据用户编号和客户名称查询可成交客户-->
+  <select id="querySCByUIdAndCName" resultMap="BaseResultMap">
+    SELECT c.c_id, c.c_name, h.h_id AS hId, h.h_name AS hName FROM customer c
+    LEFT JOIN `user` u ON c.c_u_id=u.u_id
+    LEFT JOIN appointment a ON c.c_id=a.a_c_id
+    LEFT JOIN hospital h ON a.a_h_id=h.h_id
+    <where>
+      c.c_name LIKE '%${cName}%'
+      AND (c.c_type_id = 4 OR c.c_type_id = 7)
+      <if test="rName != '管理员'">
+        AND c.c_u_id = #{uId}
+      </if>
+    </where>
+    limit 0, 3
   </select>
 
 </mapper>

@@ -52,7 +52,7 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test" id="nav">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a href="javascript:void(0);" id="workbench" class="skip">工作台</a>
+                    <a href="javascript:void(0);" id="workbench" class="skip">首页</a>
                 </li>
             </ul>
         </div>
@@ -222,6 +222,18 @@
     var layer = layui.layer;
     var table = layui.table;
 
+    //获取用户编号和用户名
+    var uId = $("#uId").val();
+    var uName = $("#uName").val();
+    var uRoleId = $("#uRoleId").val();
+    var rName = $("#rName").val();
+
+    //把用户编号和用户名存到sessionStorage
+    sessionStorage.setItem('uId', uId);
+    sessionStorage.setItem('uName', uName);
+    sessionStorage.setItem('uRoleId', uRoleId);
+    sessionStorage.setItem('rName', rName);
+
     //设置iframe框架高度
     $(document).ready(function(){
         var height = $(window).height(); //浏览器当前窗口可视区域高度
@@ -237,7 +249,7 @@
         var search = $("#search").val();
         if(search != ""){
             //根据客户名称或者客户电话查询客户
-            $.post("/customer/queryCByCNameOrCTel", {key:search}, function (data) {
+            $.post("/customer/queryCByCNameOrCTel", {rName:rName, uId:uId, key:search}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
                     html += "<div class='list' onclick='javascript:goDetail("+data.data[i].cId+");'>"+data.data[i].cName+"/"+data.data[i].cTel+"</div>";
@@ -262,7 +274,7 @@
     $("#search").on("focus", function(){
         var search = $("#search").val();
         if(search != ""){
-            $("#list").attr("style", "background-color: #383d49;height: auto; display: ;");
+            $("#list").attr("style", "background-color: #383d49;height: auto; display: block;");
         }
     });
 
@@ -493,18 +505,6 @@
     function skip(id) {
         $("#frame").attr("src", id);
     }
-
-    //获取用户编号和用户名
-    var uId = $("#uId").val();
-    var uName = $("#uName").val();
-    var uRoleId = $("#uRoleId").val();
-    var rName = $("#rName").val();
-
-    //把用户编号和用户名存到sessionStorage
-    sessionStorage.setItem('uId', uId);
-    sessionStorage.setItem('uName', uName);
-    sessionStorage.setItem('uRoleId', uRoleId);
-    sessionStorage.setItem('rName', rName);
 
     //修改密码
     function editPwd() {

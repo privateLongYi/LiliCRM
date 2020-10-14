@@ -54,7 +54,7 @@
   <!--新增成交客户-->
   <insert id="saveSuccess">
     INSERT INTO success(s_c_id, s_h_id, s_message, s_sum, s_paysum, s_remark, s_time)
-    VALUES (#{sCId}, #{sHId}, #{sMessage}, #{sSum}, #{sPaysum}, #{sRemark}, now())
+    VALUES (#{sCId}, #{sHId}, #{sMessage}, #{sSum}, 0, #{sRemark}, now())
   </insert>
 
   <!--根据客户名称查询未成交客户-->
