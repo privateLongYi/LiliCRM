@@ -255,7 +255,7 @@
   </select>
 
   <!--根据用户编号和客户名称查询可成交客户-->
-  <select id="querySCByUIdAndCName" resultMap="BaseResultMap">
+  <select id="queryCSCByUIdAndCName" resultMap="BaseResultMap">
     SELECT c.c_id, c.c_name, h.h_id AS hId, h.h_name AS hName FROM customer c
     LEFT JOIN `user` u ON c.c_u_id=u.u_id
     LEFT JOIN appointment a ON c.c_id=a.a_c_id
@@ -263,6 +263,20 @@
     <where>
       c.c_name LIKE '%${cName}%'
       AND (c.c_type_id = 4 OR c.c_type_id = 7)
+      <if test="rName != '管理员'">
+        AND c.c_u_id = #{uId}
+      </if>
+    </where>
+    limit 0, 3
+  </select>
+
+  <!--根据用户编号和客户名称查询可预约客户-->
+  <select id="queryCACByUIdAndCName" resultMap="BaseResultMap">
+    SELECT c.c_id, c.c_name FROM customer c
+    LEFT JOIN `user` u ON c.c_u_id=u.u_id
+    <where>
+      c.c_name LIKE '%${cName}%'
+      AND c.c_type_id = 3
       <if test="rName != '管理员'">
         AND c.c_u_id = #{uId}
       </if>

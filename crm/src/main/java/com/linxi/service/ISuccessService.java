@@ -47,4 +47,9 @@ public interface ISuccessService {
     //根据客户编号查询总成交金额
     Integer queryTotalMoneyByCId(@Param("cId") Integer cId, @Param("type") Integer type);
 
+    //根据用户编号和客户名称查询成交客户
+    List<Success> querySCByUIdAndCName(@Param("rName") String rName,
+                                       @Param("uId") Integer uId,
+                                       @Param("cName") String cName);
+
 }

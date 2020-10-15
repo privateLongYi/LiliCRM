@@ -297,4 +297,12 @@ public class ViewController {
     @ApiOperation(value = "从首页去新增成交页面")
     public String indexGoSuccessSave(){return "success/indexGoSuccessSave";}
 
+    @GetMapping("indexGoPayrecordSave")
+    @ApiOperation(value = "从首页去客户退款页面")
+    public String indexGoPayrecordSave(){return "customer/indexGoPayrecordSave";}
+
+    @GetMapping("indexGoAppointSave")
+    @ApiOperation(value = "从首页去新增预约页面")
+    public String indexGoAppointSave(){return "appointment/indexGoAppointSave";}
+
 }

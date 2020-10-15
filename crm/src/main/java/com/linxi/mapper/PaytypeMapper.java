@@ -29,4 +29,7 @@ public interface PaytypeMapper {
     //查询所有支付类型
     List<Paytype> queryAllPaytype();
 
+    //根据支付类型查询编号
+    Integer queryPByPayType(String payType);
+
 }

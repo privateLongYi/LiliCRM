@@ -378,6 +378,180 @@
         });
     });
 
+    //客户退款
+    $("#refund").click(function () {
+        layer.open({
+            type: 2, //层类型，iframe
+            title: '客户退款',
+            content: ['/indexGoPayrecordSave'],
+            area: ['500px', '450px'],
+            resize: false,
+            btn: '确定',
+            btn1: function (index, layero) {
+                var body = layer.getChildFrame('body', index);
+                //获取值
+                var paySId = $(body).find("#paySId").val();
+                var paySum = $(body).find("#paySum").val();
+                var payTypeId = $(body).find("#payTypeId").val();
+                if (paySId != '' && paySum != '' && paySum.trim() != '') {
+                    //声明格式是否正确
+                    var verify = true;
+                    //验证成交金额
+                    if(paySum <= 0){
+                        layer.msg("退款金额不能小于等于零");
+                        verify = false;
+                        return;
+                    }
+                    if(verify) {
+                        $.post("/payrecord/savePayrecord",
+                            {uId: uId, paySId: paySId, paySum: paySum, payTypeId: payTypeId},
+                            function (obj) {
+                                layer.msg(obj.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    location.reload();
+                                });
+                            }
+                        );
+                    }
+                } else {
+                    layer.msg('请填写带星号的必填项');
+                }
+            },
+            cancel: function(index, layero){
+                layer.close(index);
+                location.reload();
+            }
+        });
+    });
+
+    //新增客户
+    $("#insert").click(function () {
+        layer.open({
+            type: 2, //层类型，iframe
+            title: '新增客户',
+            content: ['/customer/customersave'],
+            area: ['1000px', '450px'],
+            resize: false,
+            btn: '确定',
+            btn1: function (index, layero) {
+                var body = layer.getChildFrame('body', index);
+                //获取值
+                var cName = $(body).find("#cName").val();
+                var cSex = null;
+                if ($(body).find("[name=cSex]")[0].checked) {
+                    cSex = $(body).find("[name=cSex]")[0].value;
+                } else {
+                    cSex = $(body).find("[name=cSex]")[1].value;
+                }
+                var cAge = $(body).find("#cAge").val();
+                var cTel = $(body).find("#cTel").val();
+                var cProject = $(body).find("#cProject").val();
+                var cRemark = $(body).find("#cRemark").val();
+                var cMessage = $(body).find("#cMessage").val();
+                var cEarnest = $(body).find("#cEarnest").val();
+                var cUId = $(body).find("#cUId").val();
+                var cSource = $(body).find("#cSource").val();
+                var cTypeId = $(body).find("#cTypeId").val();
+                if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
+                    //声明格式是否正确
+                    var verify = true;
+                    //验证姓名格式
+                    if (cName.length > 6) {
+                        layer.msg("姓名长度不能大于6位");
+                        verify = false;
+                        return;
+                    }
+                    //验证年龄格式
+                    if (cAge != '') {
+                        if (cAge <= 0 || cAge >= 150) {
+                            layer.msg("年龄必须大于0小于150");
+                            verify = false;
+                            return;
+                        }
+                    }
+                    //验证电话格式
+                    if (!(/^1[3456789]\d{9}$/.test(cTel))) {
+                        layer.msg("手机号码格式错误");
+                        verify = false;
+                        return;
+                    }
+                    //验证定金格式
+                    if (cEarnest != '') {
+                        if (cEarnest < 0) {
+                            layer.msg("定金不能为负数");
+                            verify = false;
+                            return;
+                        }
+                    }
+                    if (verify) {
+                        $.post("/customer/saveCustomer", {
+                                uId: uId,
+                                cName: cName.trim(),
+                                cSex: cSex,
+                                cAge: cAge,
+                                cTel: cTel.trim(),
+                                cProject: cProject,
+                                cMessage: cMessage,
+                                cRemark: cRemark,
+                                cEarnest: cEarnest,
+                                cUId: cUId,
+                                cSource: cSource,
+                                cTypeId: cTypeId
+                            },
+                            function (obj) {
+                                layer.msg(obj.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    location.reload();
+                                });
+                            }
+                        );
+                    }
+                } else {
+                    layer.msg('请输入带星号的必填项');
+                }
+            },
+            cancel: function (index, layero) {
+                layer.close(index);
+            }
+        });
+    });
+    
+    //新增预约
+    $("#appoint").click(function () {
+        layer.open({
+            type: 2, //层类型，iframe
+            title: '新增预约客户',
+            content: ['/indexGoAppointSave'],
+            area: ['450px', '450px'],
+            resize: false,
+            btn: '确定',
+            btn1: function (index, layero) {
+                var body = layer.getChildFrame('body', index);
+                //获取值
+                var aCId = $(body).find("#aCId").val();
+                var aTime = $(body).find("#aTime").val();
+                var aHId = $(body).find("#aHId").val();
+                var atType = $(body).find("#atType").val();
+                if (aTime != '') {
+                    $.post("/appointment/saveAppointment", {uId:uId, aCId:aCId, aTime:aTime,
+                            aHId:aHId, atType:atType},
+                        function (obj) {
+                            layer.msg(obj.msg, {time: 500}, function () {
+                                layer.close(index);
+                                location.reload();
+                            });
+                        }
+                    );
+                } else {
+                    layer.msg('请输入预约时间');
+                }
+            },
+            cancel: function(index, layero){
+                layer.close(index);
+            }
+        });
+    });
+
     //禁止输入
     $("#bulletinInput").on("input", function() {
         $("#bulletinInput").val($("#bulletinHid").val());

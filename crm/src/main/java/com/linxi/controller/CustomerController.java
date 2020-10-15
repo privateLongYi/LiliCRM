@@ -250,13 +250,23 @@ public class CustomerController {
         return new DataResult(0, "操作成功", total, customeres);
     }
 
-    @PostMapping("querySCByUIdAndCName")
+    @PostMapping("queryCSCByUIdAndCName")
     @ApiOperation(value = "根据用户编号和客户名称查询可成交客户")
     @ResponseBody
-    public DataResult querySCByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
+    public DataResult queryCSCByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
                                            @ApiParam(value = "用户编号", required = true) Integer uId,
                                            @ApiParam(value = "客户名称", required = true) String cName){
-        List<Customer> customers = iCustomerService.querySCByUIdAndCName(rName, uId, cName);
+        List<Customer> customers = iCustomerService.queryCSCByUIdAndCName(rName, uId, cName);
+        return new DataResult(0, "操作成功", 0, customers);
+    }
+
+    @PostMapping("queryCACByUIdAndCName")
+    @ApiOperation(value = "根据用户编号和客户名称查询可成交客户")
+    @ResponseBody
+    public DataResult queryCACByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
+                                            @ApiParam(value = "用户编号", required = true) Integer uId,
+                                            @ApiParam(value = "客户名称", required = true) String cName){
+        List<Customer> customers = iCustomerService.queryCACByUIdAndCName(rName, uId, cName);
         return new DataResult(0, "操作成功", 0, customers);
     }
 

@@ -95,8 +95,14 @@ public class CustomerService implements ICustomerService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> querySCByUIdAndCName(String rName, Integer uId, String cName) {
-        return customerMapper.querySCByUIdAndCName(rName, uId, cName);
+    public List<Customer> queryCSCByUIdAndCName(String rName, Integer uId, String cName) {
+        return customerMapper.queryCSCByUIdAndCName(rName, uId, cName);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryCACByUIdAndCName(String rName, Integer uId, String cName) {
+        return customerMapper.queryCACByUIdAndCName(rName, uId, cName);
     }
 
 }

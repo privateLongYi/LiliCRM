@@ -80,4 +80,12 @@ public class PaytypeController {
         return new DataResult(0, "操作成功", 0, paytypes);
     }
 
+    @GetMapping("queryPByPayType")
+    @ApiOperation(value = "根据支付类型查询编号")
+    @ResponseBody
+    public DataResult queryPaytypeByPayId(@ApiParam(value = "支付类型", required = true) String payType){
+        Integer payId = iPaytypeService.queryPByPayType(payType);
+        return new DataResult(0, "操作成功", 0, payId);
+    }
+
 }

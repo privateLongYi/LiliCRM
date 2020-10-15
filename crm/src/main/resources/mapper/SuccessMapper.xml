@@ -106,4 +106,19 @@
     FROM success WHERE s_c_id = #{cId}
   </select>
 
+  <!--根据用户编号和客户名称查询成交客户-->
+  <select id="querySCByUIdAndCName" resultMap="BaseResultMap">
+    SELECT s.s_id, c.c_name AS cName FROM customer c
+    LEFT JOIN `user` u ON c.c_u_id=u.u_id
+    LEFT JOIN success s ON c.c_id=s.s_c_id
+    <where>
+      c.c_name LIKE '%${cName}%'
+      AND c.c_type_id = 7
+      <if test="rName != '管理员'">
+        AND c.c_u_id = #{uId}
+      </if>
+    </where>
+    limit 0, 3
+  </select>
+
 </mapper>

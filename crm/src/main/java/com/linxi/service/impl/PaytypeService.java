@@ -59,4 +59,10 @@ public class PaytypeService implements IPaytypeService{
     public List<Paytype> queryAllPaytype() {
         return paytypeMapper.queryAllPaytype();
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryPByPayType(String payType) {
+        return paytypeMapper.queryPByPayType(payType);
+    }
 }

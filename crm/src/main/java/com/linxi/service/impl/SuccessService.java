@@ -76,4 +76,11 @@ public class SuccessService implements ISuccessService{
     public Integer queryTotalMoneyByCId(Integer cId, Integer type) {
         return successMapper.queryTotalMoneyByCId(cId, type);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Success> querySCByUIdAndCName(String rName, Integer uId, String cName) {
+        return successMapper.querySCByUIdAndCName(rName, uId, cName);
+    }
+
 }

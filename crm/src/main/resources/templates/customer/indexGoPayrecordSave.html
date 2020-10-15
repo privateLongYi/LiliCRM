@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>新增成交</title>
+    <title>新增支付记录(退款)</title>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
     <style>
         .list{cursor: pointer;height: 30px;padding: 5px;top: 0;line-height: 30px;}
@@ -20,40 +20,25 @@
                 <span style="color: red;">*&nbsp;</span>客户名称
             </label>
             <div class="layui-input-block">
-                <input type="hidden" id="sCId">
+                <input type="hidden" id="paySId">
                 <input type="text" class="layui-input" autocomplete="off" id="cName">
                 <div id="list" style="height: auto; display: none; background-color: white;"></div>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">
-                <span style="color: red;">*&nbsp;</span>门诊名称
+                <span style="color: red;">*&nbsp;</span>支付金额
             </label>
             <div class="layui-input-block">
-                <input type="hidden" id="sHId">
-                <input type="text" class="layui-input" id="hName" readonly>
+                <input type="number" class="layui-input" id="paySum"
+                       placeholder="请输入支付金额" autocomplete="off">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">成交信息</label>
+            <label class="layui-form-label">支付类型</label>
             <div class="layui-input-block">
-                <textarea class="layui-textarea" id="sMessage" autocomplete="off"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">
-                <span style="color: red;">*&nbsp;</span>成交金额
-            </label>
-            <div class="layui-input-block">
-                <input type="hidden" id="sPaysum" value="0">
-                <input type="number" class="layui-input" placeholder="请输入成交金额"
-                       autocomplete="off" id="sSum">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">备注</label>
-            <div class="layui-input-block">
-                <textarea class="layui-textarea" id="sRemark" autocomplete="off"></textarea>
+                <input type="hidden" id="payTypeId">
+                <input type="text" class="layui-input" value="退款" readonly>
             </div>
         </div>
     </form>
@@ -64,6 +49,7 @@
 <script>
 
     var form = layui.form
+        ,laydate = layui.laydate
         ,$ = layui.jquery
         ,layer = layui.layer;
 
@@ -75,11 +61,11 @@
     $("#cName").on("input", function(){
         var cName = $("#cName").val();
         if(cName != ""){
-            //根据客户名称查询可成交客户(待到店，成交）
-            $.post("/customer/queryCSCByUIdAndCName", {rName:rName, uId:uId, cName:cName}, function (data) {
+            //根据客户名称查询成交客户
+            $.post("/success/querySCByUIdAndCName", {rName:rName, uId:uId, cName:cName}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
-                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].hId+"&quot;,&quot;"+data.data[i].hName+"&quot;);'>"+data.data[i].cName+"</div>";
+                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].sId+"&quot;,&quot;"+data.data[i].cName+"&quot;);'>"+data.data[i].cName+"</div>";
                 }
                 html += "<div class='list' style='text-align: right;margin-top: -10px;' id='close'>关闭</div>";
                 //赋值
@@ -106,12 +92,16 @@
     });
 
     //赋值
-    function assign(cId, cName, hId, hName) {
-        $("#sCId").val(cId);
+    function assign(sId, cName) {
+        $("#paySId").val(sId);
         $("#cName").val(cName);
-        $("#sHId").val(hId);
-        $("#hName").val(hName);
     }
+
+    //根据支付类型查询编号
+    $.get("/paytype/queryPByPayType", {payType:'退款'}, function (data){
+        //赋值
+        $("#payTypeId").val(data.data);
+    })
 
 </script>
 </body>

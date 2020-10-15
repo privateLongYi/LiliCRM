@@ -127,4 +127,14 @@ public class SuccessController {
         return new DataResult(0, "操作成功", total, fails);
     }
 
+    @PostMapping("querySCByUIdAndCName")
+    @ApiOperation(value = "根据用户编号和客户名称查询成交客户")
+    @ResponseBody
+    public DataResult querySCByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
+                                           @ApiParam(value = "用户编号", required = true) Integer uId,
+                                           @ApiParam(value = "客户名称", required = true) String cName){
+        List<Success> successes = iSuccessService.querySCByUIdAndCName(rName, uId, cName);
+        return new DataResult(0, "操作成功", 0, successes);
+    }
+
 }

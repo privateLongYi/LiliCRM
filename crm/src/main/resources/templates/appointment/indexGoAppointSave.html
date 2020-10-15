@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>新增成交</title>
+    <title>新增预约客户</title>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
     <style>
         .list{cursor: pointer;height: 30px;padding: 5px;top: 0;line-height: 30px;}
@@ -16,44 +16,29 @@
     <br />
     <form class="layui-form" lay-filter="form">
         <div class="layui-form-item">
-            <label class="layui-form-label">
-                <span style="color: red;">*&nbsp;</span>客户名称
-            </label>
+            <label class="layui-form-label">客户名称</label>
             <div class="layui-input-block">
-                <input type="hidden" id="sCId">
+                <input type="hidden" id="aCId">
                 <input type="text" class="layui-input" autocomplete="off" id="cName">
                 <div id="list" style="height: auto; display: none; background-color: white;"></div>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">
-                <span style="color: red;">*&nbsp;</span>门诊名称
-            </label>
+            <label class="layui-form-label">门诊名称</label>
             <div class="layui-input-block">
-                <input type="hidden" id="sHId">
-                <input type="text" class="layui-input" id="hName" readonly>
+                <select id="aHId"></select>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">成交信息</label>
+            <label class="layui-form-label">预约时间</label>
             <div class="layui-input-block">
-                <textarea class="layui-textarea" id="sMessage" autocomplete="off"></textarea>
+                <input type="text" class="layui-input" id="aTime" readonly>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">
-                <span style="color: red;">*&nbsp;</span>成交金额
-            </label>
+            <label class="layui-form-label">预约类型</label>
             <div class="layui-input-block">
-                <input type="hidden" id="sPaysum" value="0">
-                <input type="number" class="layui-input" placeholder="请输入成交金额"
-                       autocomplete="off" id="sSum">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">备注</label>
-            <div class="layui-input-block">
-                <textarea class="layui-textarea" id="sRemark" autocomplete="off"></textarea>
+                <input type="text" class="layui-input" id="atType" value="普通预约" readonly>
             </div>
         </div>
     </form>
@@ -64,10 +49,11 @@
 <script>
 
     var form = layui.form
+        ,laydate = layui.laydate
         ,$ = layui.jquery
         ,layer = layui.layer;
 
-    //从sessionStorage中获取用户编号和角色名称
+    //从sessionStorage中获取用户编号
     var uId = sessionStorage.getItem('uId');
     var rName = sessionStorage.getItem('rName');
 
@@ -75,11 +61,11 @@
     $("#cName").on("input", function(){
         var cName = $("#cName").val();
         if(cName != ""){
-            //根据客户名称查询可成交客户(待到店，成交）
-            $.post("/customer/queryCSCByUIdAndCName", {rName:rName, uId:uId, cName:cName}, function (data) {
+            //根据客户名称查询可预约客户
+            $.post("/customer/queryCACByUIdAndCName", {rName:rName, uId:uId, cName:cName}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
-                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].hId+"&quot;,&quot;"+data.data[i].hName+"&quot;);'>"+data.data[i].cName+"</div>";
+                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].cName+"&quot;);'>"+data.data[i].cName+"</div>";
                 }
                 html += "<div class='list' style='text-align: right;margin-top: -10px;' id='close'>关闭</div>";
                 //赋值
@@ -106,12 +92,29 @@
     });
 
     //赋值
-    function assign(cId, cName, hId, hName) {
-        $("#sCId").val(cId);
+    function assign(cId, cName) {
+        $("#aCId").val(cId);
         $("#cName").val(cName);
-        $("#sHId").val(hId);
-        $("#hName").val(hName);
     }
+
+    //时间控件
+    laydate.render({
+        elem: '#aTime' //指定元素
+        ,type: 'datetime' //时间格式
+        ,trigger: 'click' //采用click弹出
+    });
+
+    //获取所有门诊
+    $.get("/hospital/queryHospital", function (res){
+        //定义负责人下拉框内容
+        var html = "";
+        $.each(res.data, function (index, item) {
+            html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
+        });
+        $("#aHId").append(html);
+        //append后必须重新渲染
+        form.render('select');
+    })
 
 </script>
 </body>

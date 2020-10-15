@@ -100,8 +100,13 @@ public interface ICustomerService {
                                      @Param("cTypeId") Integer cTypeId);
 
     //根据用户编号和客户名称查询可成交客户
-    List<Customer> querySCByUIdAndCName(@Param("rName") String rName,
-                                        @Param("uId") Integer uId,
-                                        @Param("cName") String cName);
+    List<Customer> queryCSCByUIdAndCName(@Param("rName") String rName,
+                                         @Param("uId") Integer uId,
+                                         @Param("cName") String cName);
+
+    //根据用户编号和客户名称查询可成交客户
+    List<Customer> queryCACByUIdAndCName(@Param("rName") String rName,
+                                         @Param("uId") Integer uId,
+                                         @Param("cName") String cName);
 
 }

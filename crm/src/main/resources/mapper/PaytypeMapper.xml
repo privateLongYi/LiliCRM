@@ -47,4 +47,9 @@
     SELECT * FROM paytype
   </select>
 
+  <!--根据支付类型查询编号-->
+  <select id="queryPByPayType" resultType="Integer">
+    SELECT pay_id FROM paytype WHERE pay_type = #{payType}
+  </select>
+
 </mapper>
