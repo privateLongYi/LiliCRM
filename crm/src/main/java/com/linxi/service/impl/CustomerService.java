@@ -105,4 +105,10 @@ public class CustomerService implements ICustomerService{
         return customerMapper.queryCACByUIdAndCName(rName, uId, cName);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryCByUIdAndTimeAndCTypeId(Integer uId, Integer cTypeId, String beginTime, String endTime) {
+        return customerMapper.queryCByUIdAndTimeAndCTypeId(uId, cTypeId, beginTime, endTime);
+    }
+
 }

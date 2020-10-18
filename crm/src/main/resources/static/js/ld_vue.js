@@ -1,8 +1,8 @@
-      // 基于准备好的dom，初始化echarts实例
-	        var myChart = echarts.init(document.getElementById('like'));
-	
-	        // 指定图表的配置项和数据
-	        var option = option = {
+// 基于准备好的dom，初始化echarts实例
+var myChart = echarts.init(document.getElementById('like'));
+
+// 指定图表的配置项和数据
+var option = option = {
     tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b}: {c} ({d}%)'
@@ -40,9 +40,5 @@
     ]
 };
 
-
-
-
-	
-	        // 使用刚指定的配置项和数据显示图表。
-			myChart.setOption(option);
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);

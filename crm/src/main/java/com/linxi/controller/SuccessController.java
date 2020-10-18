@@ -1,13 +1,9 @@
 package com.linxi.controller;
 
-import com.linxi.entity.Customer;
-import com.linxi.entity.Operating;
-import com.linxi.entity.Success;
-import com.linxi.service.ICtypeService;
-import com.linxi.service.ICustomerService;
-import com.linxi.service.IOperatingService;
-import com.linxi.service.ISuccessService;
+import com.linxi.entity.*;
+import com.linxi.service.*;
 import com.linxi.util.DataResult;
+import com.linxi.vo.SuccessStatisticsVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +38,12 @@ public class SuccessController {
 
     @Autowired
     private ICustomerService iCustomerService;
+
+    @Autowired
+    private IUserService iUserService;
+
+    @Autowired
+    private IHospitalService iHospitalService;
 
     @GetMapping("querySBySCId")
     @ApiOperation(value = "根据客户编号查询成交客户")
@@ -135,6 +138,127 @@ public class SuccessController {
                                            @ApiParam(value = "客户名称", required = true) String cName){
         List<Success> successes = iSuccessService.querySCByUIdAndCName(rName, uId, cName);
         return new DataResult(0, "操作成功", 0, successes);
+    }
+
+    @GetMapping("querySByUIdAndTime")
+    @ApiOperation(value = "根据用户编号和起止时间查询成交总数")
+    @ResponseBody
+    public DataResult querySByUIdAndTime(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                         @ApiParam(value = "开始时间", required = true) String beginTime,
+                                         @ApiParam(value = "结束时间", required = true) String endTime){
+        Integer total = iSuccessService.querySByUIdAndTime(uId, beginTime, endTime);
+        return new DataResult(0, "操作成功", 0, total);
+    }
+
+    @GetMapping("querySSumByUIdAndTime")
+    @ApiOperation(value = "根据用户编号和起止时间查询成交总金额")
+    @ResponseBody
+    public DataResult querySSumByUIdAndTime(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                            @ApiParam(value = "开始时间", required = true) String beginTime,
+                                            @ApiParam(value = "结束时间", required = true) String endTime){
+        Integer total = iSuccessService.querySSumByUIdAndTime(uId, beginTime, endTime);
+        if (total == null){
+            return new DataResult(0, "操作成功", 0, 0);
+        } else {
+            return new DataResult(0, "操作成功", 0, total);
+        }
+    }
+
+    @GetMapping("querySPaysumByUIdAndTime")
+    @ApiOperation(value = "根据用户编号和起止时间查询收款总金额")
+    @ResponseBody
+    public DataResult querySPaysumByUIdAndTime(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                               @ApiParam(value = "开始时间", required = true) String beginTime,
+                                               @ApiParam(value = "结束时间", required = true) String endTime){
+        Integer total = iSuccessService.querySPaysumByUIdAndTime(uId, beginTime, endTime);
+        if (total == null){
+            return new DataResult(0, "操作成功", 0, 0);
+        } else {
+            return new DataResult(0, "操作成功", 0, total);
+        }
+    }
+
+    @GetMapping("getGruopByUNameSSum")
+    @ApiOperation(value = "获取分组成交总金额")
+    @ResponseBody
+    public DataResult getGruopByUNameSSum(@ApiParam(value = "页码", required = true) Integer page,
+                                          @ApiParam(value = "显示条数", required = true) Integer limit,
+                                          @ApiParam(value = "统计单位", required = true) String unit,
+                                          @ApiParam(value = "开始时间", required = true) String beginTime,
+                                          @ApiParam(value = "结束时间", required = true) String endTime){
+        //创建列表
+        List<SuccessStatisticsVo> list = new ArrayList<>();
+        if (unit.equals("负责人")){
+            //查询所有销售员
+            List<User> users = iUserService.queryUserByRName();
+            //分组获取在起止时间内有成交额的用户
+            List<Success> successes = iSuccessService.querySSumGruopByUId(beginTime, endTime);
+            for (User user : users){
+                Boolean b = false;
+                for (Success success : successes){
+                    if (user.getuName().equals(success.getuName())){
+                        list.add(new SuccessStatisticsVo(user.getuName(), success.getTotalSum()));
+                        b = true;
+                        break;
+                    }
+                }
+                if (b == false){
+                    list.add(new SuccessStatisticsVo(user.getuName(), 0));
+                }
+            }
+        } else if(unit.equals("门诊")){
+            //获取所有门诊
+            List<Hospital> hospitals = iHospitalService.queryHospital();
+            //分组获取在起止时间内有成交额的门诊
+            List<Success> successes = iSuccessService.querySSumGruopByHId(beginTime, endTime);
+            for (Hospital hospital : hospitals){
+                Boolean b = false;
+                for (Success success : successes){
+                    if (hospital.gethName().equals(success.gethName())){
+                        list.add(new SuccessStatisticsVo(hospital.gethName(), success.getTotalSum()));
+                        b = true;
+                        break;
+                    }
+                }
+                if (b == false){
+                    list.add(new SuccessStatisticsVo(hospital.gethName(), 0));
+                }
+            }
+        } else {
+            //所有报名项目
+            List<String> projectes = new ArrayList<>();
+            projectes.add("种植");
+            projectes.add("矫正");
+            projectes.add("牙贴面");
+            projectes.add("牙齿治疗");
+            //分组获取在起止时间内有成交额的报名项目
+            List<Success> successes = iSuccessService.querySSumGruopByCProject(beginTime, endTime);
+            for (String project : projectes){
+                Boolean b = false;
+                for (Success success : successes){
+                    if (project.equals(success.getProject())){
+                        list.add(new SuccessStatisticsVo(project, success.getTotalSum()));
+                        b = true;
+                        break;
+                    }
+                }
+                if (b == false){
+                    list.add(new SuccessStatisticsVo(project, 0));
+                }
+            }
+        }
+        if (page == null && limit == null){
+            return new DataResult(0, "操作成功", list.size(), list);
+        } else {
+            //分页获取数据
+            List<SuccessStatisticsVo> newList = new ArrayList<>();
+            for (int i = (page-1)*limit; i < (page-1)*limit+limit; i++){
+                if (i < list.size()){
+                    newList.add(list.get(i));
+                }
+            }
+            return new DataResult(0, "操作成功", list.size(), newList);
+        }
     }
 
 }

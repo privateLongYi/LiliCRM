@@ -95,6 +95,8 @@
     function assign(sId, cName) {
         $("#paySId").val(sId);
         $("#cName").val(cName);
+        //隐藏列表
+        $("#list").attr("style", "background-color: white;height: auto; display: none;");
     }
 
     //根据支付类型查询编号

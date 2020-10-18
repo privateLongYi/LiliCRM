@@ -52,4 +52,31 @@ public interface ISuccessService {
                                        @Param("uId") Integer uId,
                                        @Param("cName") String cName);
 
+    //根据用户编号和起止时间查询成交总数
+    Integer querySByUIdAndTime(@Param("uId") Integer uId,
+                               @Param("beginTime") String beginTime,
+                               @Param("endTime") String endTime);
+
+    //根据用户编号和起止时间查询成交总金额
+    Integer querySSumByUIdAndTime(@Param("uId") Integer uId,
+                                  @Param("beginTime") String beginTime,
+                                  @Param("endTime") String endTime);
+
+    //根据用户编号和起止时间查询收款总金额
+    Integer querySPaysumByUIdAndTime(@Param("uId") Integer uId,
+                                     @Param("beginTime") String beginTime,
+                                     @Param("endTime") String endTime);
+
+    //根据门诊分组查询总成交额
+    List<Success> querySSumGruopByHId(@Param("beginTime") String beginTime,
+                                      @Param("endTime") String endTime);
+
+    //根据用户分组查询总成交额
+    List<Success> querySSumGruopByUId(@Param("beginTime") String beginTime,
+                                      @Param("endTime") String endTime);
+
+    //根据报名项目分组查询总成交额
+    List<Success> querySSumGruopByCProject(@Param("beginTime") String beginTime,
+                                           @Param("endTime") String endTime);
+
 }

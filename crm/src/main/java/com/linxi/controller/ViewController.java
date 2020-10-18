@@ -305,4 +305,16 @@ public class ViewController {
     @ApiOperation(value = "从首页去新增预约页面")
     public String indexGoAppointSave(){return "appointment/indexGoAppointSave";}
 
+    @GetMapping("business")
+    @ApiOperation(value = "业务概览")
+    public String business(){
+        return "dataStatistics/business";
+    }
+
+    @GetMapping("paydetail")
+    @ApiOperation(value = "付款详情")
+    public String paydetail(){
+        return "dataStatistics/paydetail";
+    }
+
 }

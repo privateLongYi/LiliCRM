@@ -32,7 +32,7 @@ public class HospitalController {
     @GetMapping("queryHospital")
     @ApiOperation(value = "查询门诊")
     @ResponseBody
-    public DataResult queryCByCId(){
+    public DataResult queryHospital(){
         List<Hospital> hospitals = iHospitalService.queryHospital();
         return new DataResult(0, "操作成功", 0, hospitals);
     }

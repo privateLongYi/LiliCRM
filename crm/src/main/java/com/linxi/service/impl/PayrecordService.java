@@ -43,4 +43,16 @@ public class PayrecordService implements IPayrecordService{
     public Integer queryPPaysumBySId(Integer sId) {
         return payrecordMapper.queryPPaysumBySId(sId);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Payrecord> queryPByScreen(Integer page, Integer limit, Integer uId, Integer hId, Integer payId, String beginTime, String endTime) {
+        return payrecordMapper.queryPByScreen(page, limit, uId, hId, payId, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalByScreen(Integer uId, Integer hId, Integer payId, String beginTime, String endTime) {
+        return payrecordMapper.getTotalByScreen(uId, hId, payId, beginTime, endTime);
+    }
 }

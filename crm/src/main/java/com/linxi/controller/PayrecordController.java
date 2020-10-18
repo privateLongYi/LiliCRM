@@ -65,4 +65,19 @@ public class PayrecordController {
         return new DataResult(0, "新增成功");
     }
 
+    @GetMapping("queryPByScreen")
+    @ApiOperation(value = "根据筛选条件查询支付记录")
+    @ResponseBody
+    public DataResult queryPByScreen(@ApiParam(value = "页码", required = true) Integer page,
+                                     @ApiParam(value = "显示条数", required = true) Integer limit,
+                                     @ApiParam(value = "负责人编号", required = true) Integer uId,
+                                     @ApiParam(value = "成交门诊编号", required = true) Integer hId,
+                                     @ApiParam(value = "支付类型编号", required = true) Integer payId,
+                                     @ApiParam(value = "开始时间", required = true) String beginTime,
+                                     @ApiParam(value = "结束时间", required = true) String endTime){
+        List<Payrecord> payrecords = iPayrecordService.queryPByScreen((page - 1) * limit, limit, uId, hId, payId, beginTime, endTime);
+        Integer total = iPayrecordService.getTotalByScreen(uId, hId, payId, beginTime, endTime);
+        return new DataResult(0, "操作成功", total, payrecords);
+    }
+
 }

@@ -4,13 +4,30 @@
     <meta charset="UTF-8">
     <title>工作台</title>
     <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/css/job_n.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/css/d_type.css}" />
     <style>
-        .span:hover{background-color: #f0f6ff;}
-        .firstSpan{padding: 0 25px 0 15px; color: #999; cursor: pointer;}
-        .span{padding: 10px 25px; cursor: pointer;}
-        .div{padding: 0 0 0 30px; margin: 10px 0;}
+        .number{color: #01AAED; font-size: 30px;}
+        .indexFont{font-size: 20px;}
+        .css1 {
+            width: 90%;
+            height: 60px;
+            background: #f1f5ff;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .l_font{
+            font-size: 12px;
+            color: #333;
+        }
+        .r_font{
+            font-size: 14px;
+            color: #4f7afd;
+        }
+        input:hover{cursor: pointer;}
     </style>
 </head>
 <body bgcolor="#F0F0F0" style='overflow:scroll;overflow-x:hidden'>
@@ -42,85 +59,51 @@
         <div class="layui-card">
             <div class="layui-card-header">
                 <span style="font-size: 20px; font-weight: normal;">销售简报</span>
-                <div style="float: right;cursor: pointer; margin-left: -50px; z-index: 99;" class="layui-inline">
+                <div style="float: right; margin-left: -20px; z-index: 99;" class="layui-inline">
                     <i class="layui-icon layui-icon-date" style="font-size: 20px;"></i>
                 </div>
                 <div style="float: right; margin-top: 7px;" class="layui-inline">
-                    <input type="hidden" id="bulletinHid" value="本周">
-                    <input class="layui-input" id="bulletinInput" autocomplete="off" value="本周"
-                           style="height: 28px; width: 100px; font-size: 10px;">
-                </div>
-                <div></div>
-                <!--日期筛选-->
-                <div id="bulletinDiv" style="display: none; background-color: white; right: 20px;
-                    width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px;
-                    position: absolute; z-index: 999;">
-                    <div class="div">
-                        <span class="firstSpan">天</span>
-                        <span class="span">今天</span>
-                        <span class="span">昨天</span>
-                    </div>
-                    <div class="div">
-                        <span class="firstSpan">周</span>
-                        <span class="span">本周</span>
-                        <span class="span">上周</span>
-                    </div>
-                    <div class="div">
-                        <span class="firstSpan">月</span>
-                        <span class="span">本月</span>
-                        <span class="span">上月</span>
-                    </div>
-                    <div class="div">
-                        <span class="firstSpan">季</span>
-                        <span class="span">本季</span>
-                        <span class="span">上季</span>
-                    </div>
-                    <div class="div">
-                        <span class="firstSpan">年</span>
-                        <span class="span">本年</span>
-                        <span class="span">上年</span>
-                    </div>
-                    <div id="bulletinClose" style="float: right; cursor: pointer;
-                        margin: -10px 5px 0 0;">关闭</div>
+                    <input class="layui-input" id="bulletin" autocomplete="off" readonly
+                           style="height: 28px; width: 170px; font-size: 10px;">
                 </div>
             </div>
             <div class="layui-card-body layui-row">
                 <!--新增-->
                 <div class="layui-col-md4">
-                    <span class="sp_a">新增</span>
+                    <span class="indexFont">新增</span>
                     <div class="layui-row">
                         <div class="layui-col-md3">
-                            <div><a class="nb_a">3</a></div>
+                            <div><span class="number" id="addAwaitContact"></span></div>
                             <span class="nb_b">待联系</span>
                         </div>
                         <div class="layui-col-md3">
-                            <div><a class="nb_a">3</a></div>
+                            <div><span class="number" id="addAwaitAppoint">3</span></div>
                             <span class="nb_b">待预约</span>
                         </div>
                         <div class="layui-col-md3">
-                            <div><a class="nb_a">3</a></div>
+                            <div><span class="number" id="addAppoint"></span></div>
                             <span class="nb_b">预约</span>
                         </div>
                         <div class="layui-col-md3">
-                            <div><a class="nb_a">3</a></div>
+                            <div><span class="number" id="addSuccess"></span></div>
                             <span class="nb_b">成交</span>
                         </div>
                     </div>
                 </div>
                 <!--成交-->
                 <div class="layui-col-md4">
-                    <span class="sp_a">成交</span>
+                    <span style="font-size: 20px; font-weight: normal;">成交</span>
                     <div class="layui-row">
                         <div class="layui-col-md4">
-                            <div><a class="nb_a">2</a></div>
+                            <div><span class="number" id="total"></span></div>
                             <span class="nb_b">成交数</span>
                         </div>
                         <div class="layui-col-md4">
-                            <div><a class="nb_a">8598</a></div>
+                            <div><span class="number" id="totalMoney"></span></div>
                             <span class="nb_b">成交金额</span>
                         </div>
                         <div class="layui-col-md4">
-                            <div><a class="nb_a">5599</a></div>
+                            <div><span class="number" id="payMoney"></span></div>
                             <span class="nb_b">实收金额</span>
                         </div>
                     </div>
@@ -131,174 +114,72 @@
         <!--分块功能区-->
         <div class="layui-row layui-col-space10" style="background-color:#F0F0F0 ;">
             <div class="layui-col-md4">
-            <div class="layui-card" style="height: 29.75rem;">
-                <div class="layui-card-header">
-                    <span style="font-size: 20px; font-weight: normal;">待办客资</span>
-                    <div style="float: right;cursor: pointer; margin-left: -50px; z-index: 99;" class="layui-inline">
-                        <i class="layui-icon layui-icon-date" style="font-size: 20px;"></i>
+                <div class="layui-card" style="height: 29.75rem;">
+                    <div class="layui-card-header">
+                        <span style="font-size: 20px; font-weight: normal;">待办客资</span>
+                        <div style="float: right; margin-left: -20px; z-index: 99;" class="layui-inline">
+                            <i class="layui-icon layui-icon-date" style="font-size: 20px;"></i>
+                        </div>
+                        <div style="float: right; margin-top: 7px;" class="layui-inline">
+                            <input class="layui-input" id="await" autocomplete="off" readonly
+                                   style="height: 28px; width: 170px; font-size: 10px;">
+                        </div>
                     </div>
-                    <div style="float: right; margin-top: 7px;" class="layui-inline">
-                        <input type="hidden" id="awaitHid" value="本周">
-                        <input class="layui-input" id="awaitInput" autocomplete="off" value="本周"
-                               style="height: 28px; width: 100px; font-size: 10px;">
+                    <div class="layui-card-body">
+                        <a href="hello.html">
+                            <div class="css1">
+                                <span class="l_font">待联系客户</span>
+                                <span class="r_font" id="awaitContact"></span>
+                            </div>
+                        </a>
+                        <a href="hello.html">
+                            <div class="css1">
+                                <span class="l_font">待预约客户</span>
+                                <span class="r_font" id="awaitAppoint"></span>
+                            </div>
+                        </a>
+                        <a href="hello.html">
+                            <div class="css1">
+                                <span class="l_font">待到店客户</span>
+                                <span class="r_font" id="awaitArrive"></span>
+                            </div>
+                        </a>
+                        <a href="hello.html">
+                            <div class="css1">
+                                <span class="l_font">待处理客户</span>
+                                <span class="r_font">10</span>
+                            </div>
+                        </a>
                     </div>
-                    <div></div>
-                    <!--日期筛选-->
-                    <div id="awaitDiv" style="display: none; background-color: white; right: 20px;
-                    width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px;
-                    position: absolute; z-index: 999;">
-                        <div class="div">
-                            <span class="firstSpan">天</span>
-                            <span class="span">今天</span>
-                            <span class="span">昨天</span>
-                        </div>
-                        <div class="div">
-                            <span class="firstSpan">周</span>
-                            <span class="span">本周</span>
-                            <span class="span">上周</span>
-                        </div>
-                        <div class="div">
-                            <span class="firstSpan">月</span>
-                            <span class="span">本月</span>
-                            <span class="span">上月</span>
-                        </div>
-                        <div class="div">
-                            <span class="firstSpan">季</span>
-                            <span class="span">本季</span>
-                            <span class="span">上季</span>
-                        </div>
-                        <div class="div">
-                            <span class="firstSpan">年</span>
-                            <span class="span">本年</span>
-                            <span class="span">上年</span>
-                        </div>
-                        <div id="awaitClose" style="float: right; cursor: pointer;
-                            margin: -10px 5px 0 0;">关闭</div>
-                    </div>
-                </div>
-                <div class="layui-card-body">
-                    <a href="hello.html">
-                        <div class="css1">
-                            <span class="l_font">待联系客户</span>
-                            <span class="r_font">3</span>
-                        </div>
-                    </a>
-                    <a href="hello.html">
-                        <div class="css1">
-                            <span class="l_font">待预约客户</span>
-                            <span class="r_font">3</span>
-                        </div>
-                    </a>
-                    <a href="hello.html">
-                        <div class="css1">
-                            <span class="l_font">待到店客户</span>
-                            <span class="r_font">3</span>
-                        </div>
-                    </a>
-                    <a href="hello.html">
-                        <div class="css1">
-                            <span class="l_font">待处理客户</span>
-                            <span class="r_font">3</span>
-                        </div>
-                    </a>
                 </div>
             </div>
-        </div>
             <div class="layui-col-md4">
-            <div class="layui-card" style="height: 29.75rem;" >
-                <div class="layui-card-header">
-                    <span style="font-size: 20px; font-weight: normal;">销售目标</span>
-                    <div style="float: right;cursor: pointer; margin-left: -50px; z-index: 99;" class="layui-inline">
-                        <i class="layui-icon layui-icon-date" style="font-size: 20px;"></i>
+                <div class="layui-card" style="height: 29.75rem;" >
+                    <div class="layui-card-header">
+                        <span style="font-size: 20px; font-weight: normal;">销售目标</span>
+                        <div style="float: right; margin-left: -20px; z-index: 99;" class="layui-inline">
+                            <i class="layui-icon layui-icon-date" style="font-size: 20px;"></i>
+                        </div>
+                        <div style="float: right; margin-top: 7px;" class="layui-inline">
+                            <input class="layui-input" id="target" autocomplete="off" readonly
+                                   style="height: 28px; width: 170px; font-size: 10px;">
+                        </div>
                     </div>
-                    <div style="float: right; margin-top: 7px;" class="layui-inline">
-                        <input type="hidden" id="targetHid" value="本周">
-                        <input class="layui-input" id="targetInput" autocomplete="off" value="本周"
-                               style="height: 28px; width: 100px; font-size: 10px;">
+                    <div class="layui-card-body">
+                        <div id="like" style="width: 100%;height:350px;"></div>
                     </div>
-                    <div></div>
-                    <!--日期筛选-->
-                    <div id="targetDiv" style="display: none; background-color: white; right: 20px;
-                    width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px;
-                    position: absolute; z-index: 999;">
-                        <div class="div">
-                            <span class="firstSpan">天</span>
-                            <span class="span">今天</span>
-                            <span class="span">昨天</span>
-                        </div>
-                        <div class="div">
-                            <span class="firstSpan">周</span>
-                            <span class="span">本周</span>
-                            <span class="span">上周</span>
-                        </div>
-                        <div class="div">
-                            <span class="firstSpan">月</span>
-                            <span class="span">本月</span>
-                            <span class="span">上月</span>
-                        </div>
-                        <div class="div">
-                            <span class="firstSpan">季</span>
-                            <span class="span">本季</span>
-                            <span class="span">上季</span>
-                        </div>
-                        <div class="div">
-                            <span class="firstSpan">年</span>
-                            <span class="span">本年</span>
-                            <span class="span">上年</span>
-                        </div>
-                        <div id="targetClose" style="float: right; cursor: pointer;
-                            margin: -10px 5px 0 0;">关闭</div>
-                    </div>
-                </div>
-                <div class="layui-card-body">
-                    <div id="like" style="width: 100%;height:350px;"></div>
                 </div>
             </div>
-        </div>
             <div class="layui-col-md4">
                 <div class="layui-card" style="height: 29.75rem;">
                     <div class="layui-card-header">
                         <span style="font-size: 20px; font-weight: normal;">业务概览</span>
-                        <div style="float: right;cursor: pointer; margin-left: -50px; z-index: 99;" class="layui-inline">
+                        <div style="float: right; margin-left: -20px; z-index: 99;" class="layui-inline">
                             <i class="layui-icon layui-icon-date" style="font-size: 20px;"></i>
                         </div>
                         <div style="float: right; margin-top: 7px;" class="layui-inline">
-                            <input type="hidden" id="businessHid" value="本周">
-                            <input class="layui-input" id="businessInput" autocomplete="off" value="本周"
-                                   style="height: 28px; width: 100px; font-size: 10px;">
-                        </div>
-                        <div></div>
-                        <!--日期筛选-->
-                        <div id="businessDiv" style="display: none; background-color: white; right: 20px;
-                    width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px;
-                    position: absolute; z-index: 999;">
-                            <div class="div">
-                                <span class="firstSpan">天</span>
-                                <span class="span">今天</span>
-                                <span class="span">昨天</span>
-                            </div>
-                            <div class="div">
-                                <span class="firstSpan">周</span>
-                                <span class="span">本周</span>
-                                <span class="span">上周</span>
-                            </div>
-                            <div class="div">
-                                <span class="firstSpan">月</span>
-                                <span class="span">本月</span>
-                                <span class="span">上月</span>
-                            </div>
-                            <div class="div">
-                                <span class="firstSpan">季</span>
-                                <span class="span">本季</span>
-                                <span class="span">上季</span>
-                            </div>
-                            <div class="div">
-                                <span class="firstSpan">年</span>
-                                <span class="span">本年</span>
-                                <span class="span">上年</span>
-                            </div>
-                            <div id="businessClose" style="float: right; cursor: pointer;
-                            margin: -10px 5px 0 0;">关闭</div>
+                            <input class="layui-input" id="business" autocomplete="off" readonly
+                                   style="height: 28px; width: 170px; font-size: 10px;">
                         </div>
                     </div>
                     <div class="layui-card-body">
@@ -320,7 +201,8 @@
 
     var element = layui.element
         ,layer = layui.layer
-        ,$ = layui.jquery;
+        ,$ = layui.jquery
+        ,laydate = layui.laydate
 
     //从sessionStorage中获取用户编号和角色名称
     var uId = sessionStorage.getItem('uId');
@@ -552,81 +434,138 @@
         });
     });
 
-    //禁止输入
-    $("#bulletinInput").on("input", function() {
-        $("#bulletinInput").val($("#bulletinHid").val());
+    //给筛选条件赋值（默认本月）
+    var date = new Date();
+    var begin = date.getFullYear()+"-"+eval(date.getMonth()+1)+"-01";
+    var end = date.getFullYear()+"-"+eval(date.getMonth()+1)+"-"+date.getDate();
+    var time = begin + " - " + end;
+    $("input").val(time);
+
+    //onload事件
+    $(function () {
+        //销售简报
+        bulletin(begin, end);
+        //待办客资
+        await(begin, end);
     })
 
-    //显示筛选div
-    $("#bulletinInput").focus(function () {
-        $("#bulletinDiv").attr("style", "display: block; background-color: white; right: 20px;" +
-                                "width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px; " +
-                                "position: absolute; z-index: 999;");
-    })
+    //销售简报加载事件
+    function bulletin(begin, end) {
+        //查询待联系总数并赋值
+        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
+            {uId:uId, ctType:'待联系', beginTime:begin, endTime:end},
+            function (data) {
+                $("#addAwaitContact").html(data.data);
+            }
+        );
+        //查询待预约总数并赋值
+        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
+            {uId:uId, ctType:'待预约', beginTime:begin, endTime:end},
+            function (data) {
+                $("#addAwaitAppoint").html(data.data);
+            }
+        );
+        //查询待待到店总数并赋值
+        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
+            {uId:uId, ctType:'待到店', beginTime:begin, endTime:end},
+            function (data) {
+                $("#addAppoint").html(data.data);
+            }
+        );
+        //查询成交总数并赋值
+        $.get('/success/querySByUIdAndTime',
+            {uId:uId, beginTime:begin, endTime:end},
+            function (data) {
+                $("#addSuccess").html(data.data);
+                $("#total").html(data.data);
+            }
+        );
+        //查询成交总金额并赋值
+        $.get('/success/querySSumByUIdAndTime',
+            {uId:uId, beginTime:begin, endTime:end},
+            function (data) {
+                $("#totalMoney").html(data.data);
+            }
+        );
+        //查询成交收款总金额并赋值
+        $.get('/success/querySPaysumByUIdAndTime',
+            {uId:uId, beginTime:begin, endTime:end},
+            function (data) {
+                $("#payMoney").html(data.data);
+            }
+        );
+    }
 
-    //隐藏筛选div
-    $("#bulletinClose").click(function () {
-        $("#bulletinDiv").attr("style", "display: none; background-color: white; right: 20px;" +
-                                "width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px; " +
-                                "position: absolute; z-index: 999;");
-    })
+    //待办客资加载事件
+    function await(begin, end) {
+        //查询待联系总数并赋值
+        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
+            {uId:uId, ctType:'待联系', beginTime:begin, endTime:end},
+            function (data) {
+                $("#awaitContact").html(data.data);
+            }
+        );
+        //查询待预约总数并赋值
+        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
+            {uId:uId, ctType:'待预约', beginTime:begin, endTime:end},
+            function (data) {
+                $("#awaitAppoint").html(data.data);
+            }
+        );
+        //查询待待到店总数并赋值
+        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
+            {uId:uId, ctType:'待到店', beginTime:begin, endTime:end},
+            function (data) {
+                $("#awaitArrive").html(data.data);
+            }
+        );
+    }
 
-    //禁止输入
-    $("#awaitInput").on("input", function() {
-        $("#awaitInput").val($("#awaitHid").val());
-    })
+    //销售简报
+    laydate.render({
+        elem: '#bulletin' //指定元素
+        ,trigger: 'click' //采用click弹出
+        ,range: true //范围选择
+        ,max: 0 //最大值为今天
+        ,btns: ['confirm'] //右下角显示按钮
+        ,done: function(value){ //控件选择完毕后的回调
+            var begin = value.substring(0, 10);
+            var end = value.substring(13, 23);
+            bulletin(begin, end);
+        }
+    });
 
-    //显示筛选div
-    $("#awaitInput").focus(function () {
-        $("#awaitDiv").attr("style", "display: block; background-color: white; right: 20px;" +
-            "width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px; " +
-            "position: absolute; z-index: 999;");
-    })
+    //待办客资
+    laydate.render({
+        elem: '#await' //指定元素
+        ,trigger: 'click' //采用click弹出
+        ,range: true //范围选择
+        ,max: 0 //最大值为今天
+        ,btns: ['confirm'] //右下角显示按钮
+        ,done: function(value){ //控件选择完毕后的回调
+            var begin = value.substring(0, 10);
+            var end = value.substring(13, 23);
+            await(begin, end);
+        }
+    });
 
-    //隐藏筛选div
-    $("#awaitClose").click(function () {
-        $("#awaitDiv").attr("style", "display: none; background-color: white; right: 20px;" +
-            "width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px; " +
-            "position: absolute; z-index: 999;");
-    })
+    //销售目标
+    laydate.render({
+        elem: '#target' //指定元素
+        ,trigger: 'click' //采用click弹出
+        ,range: true //范围选择
+        ,max: 0 //最大值为今天
+        ,btns: ['confirm'] //右下角显示按钮
+    });
 
-    //禁止输入
-    $("#targetInput").on("input", function() {
-        $("#targetInput").val($("#targetHid").val());
-    })
-
-    //显示筛选div
-    $("#targetInput").focus(function () {
-        $("#targetDiv").attr("style", "display: block; background-color: white; right: 20px;" +
-            "width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px; " +
-            "position: absolute; z-index: 999;");
-    })
-
-    //隐藏筛选div
-    $("#targetClose").click(function () {
-        $("#targetDiv").attr("style", "display: none; background-color: white; right: 20px;" +
-            "width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px; " +
-            "position: absolute; z-index: 999;");
-    })
-
-    //禁止输入
-    $("#businessInput").on("input", function() {
-        $("#businessInput").val($("#businessHid").val());
-    })
-
-    //显示筛选div
-    $("#businessInput").focus(function () {
-        $("#businessDiv").attr("style", "display: block; background-color: white; right: 20px;" +
-            "width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px; " +
-            "position: absolute; z-index: 999;");
-    })
-
-    //隐藏筛选div
-    $("#businessClose").click(function () {
-        $("#businessDiv").attr("style", "display: none; background-color: white; right: 20px;" +
-            "width: 260px; border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px; " +
-            "position: absolute; z-index: 999;");
-    })
+    //业务概览
+    laydate.render({
+        elem: '#business ' //指定元素
+        ,trigger: 'click' //采用click弹出
+        ,range: true //范围选择
+        ,max: 0 //最大值为今天
+        ,btns: ['confirm'] //右下角显示按钮
+    });
 
     /*
     //根据用户编号和状态查询待联系客户总条数

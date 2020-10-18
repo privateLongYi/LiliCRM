@@ -41,4 +41,57 @@
     (SELECT SUM(pay_sum) FROM payrecord WHERE pay_s_id = #{sId} AND pay_type_id = 3)
   </select>
 
+  <!--根据筛选条件查询支付记录-->
+  <select id="queryPByScreen" resultMap="BaseResultMap">
+    SELECT u.u_name AS uName, c.c_name AS cName, c.c_tel AS cTel,
+    h.h_name AS hName, p.pay_time, p.pay_sum, pt.pay_type AS payType FROM payrecord p
+    INNER JOIN paytype pt ON p.pay_type_id=pt.pay_id
+    INNER JOIN success s ON p.pay_s_id=s.s_id
+    INNER JOIN hospital h ON s.s_h_id=h.h_id
+    INNER JOIN customer c ON s.s_c_id=c.c_id
+    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    <where>
+      <if test="uId != null">
+        AND u.u_id = #{uId}
+      </if>
+      <if test="hId != null">
+        AND s.s_h_id = #{hId}
+      </if>
+      <if test="payId != null">
+        AND pt.pay_id = #{payId}
+      </if>
+      <if test="beginTime != null and endTime != null">
+        AND <![CDATA[  p.pay_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+        AND <![CDATA[  p.pay_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      </if>
+    </where>
+    ORDER BY p.pay_time DESC
+    limit #{page}, #{limit}
+  </select>
+
+  <!--根据筛选条件查询支付记录总条数-->
+  <select id="getTotalByScreen" resultType="Integer">
+    SELECT COUNT(*) FROM payrecord p
+    INNER JOIN paytype pt ON p.pay_type_id=pt.pay_id
+    INNER JOIN success s ON p.pay_s_id=s.s_id
+    INNER JOIN hospital h ON s.s_h_id=h.h_id
+    INNER JOIN customer c ON s.s_c_id=c.c_id
+    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    <where>
+      <if test="uId != null">
+        AND u.u_id = #{uId}
+      </if>
+      <if test="hId != null">
+        AND s.s_h_id = #{hId}
+      </if>
+      <if test="payId != null">
+        AND pt.pay_id = #{payId}
+      </if>
+      <if test="beginTime != null and endTime != null">
+        AND <![CDATA[  p.pay_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+        AND <![CDATA[  p.pay_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      </if>
+    </where>
+  </select>
+
 </mapper>

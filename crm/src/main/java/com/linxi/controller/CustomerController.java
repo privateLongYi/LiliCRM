@@ -270,4 +270,17 @@ public class CustomerController {
         return new DataResult(0, "操作成功", 0, customers);
     }
 
+    @GetMapping("queryCByUIdAndTimeAndCTypeId")
+    @ApiOperation(value = "根据用户编号和起始时间和客户状态查询客户数量")
+    @ResponseBody
+    public DataResult queryCByUIdAndTimeAndCTypeId(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                                   @ApiParam(value = "客户状态", required = true) String ctType,
+                                                   @ApiParam(value = "开始时间", required = true) String beginTime,
+                                                   @ApiParam(value = "结束时间", required = true) String endTime){
+        //根据客户状态查询编号
+        Integer cTypeId = iCtypeService.queryCtypeByCtType(ctType);
+        Integer total = iCustomerService.queryCByUIdAndTimeAndCTypeId(uId, cTypeId, beginTime, endTime);
+        return new DataResult(0, "操作成功", 0, total);
+    }
+
 }

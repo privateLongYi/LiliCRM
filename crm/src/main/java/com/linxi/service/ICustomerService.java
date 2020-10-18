@@ -109,4 +109,10 @@ public interface ICustomerService {
                                          @Param("uId") Integer uId,
                                          @Param("cName") String cName);
 
+    //根据用户编号和起始时间和客户状态查询客户数量
+    Integer queryCByUIdAndTimeAndCTypeId(@Param("uId") Integer uId,
+                                         @Param("cTypeId") Integer cTypeId,
+                                         @Param("beginTime") String beginTime,
+                                         @Param("endTime") String endTime);
+
 }

@@ -3,6 +3,7 @@ package com.linxi.service.impl;
 import com.linxi.entity.Success;
 import com.linxi.mapper.SuccessMapper;
 import com.linxi.service.ISuccessService;
+import com.linxi.vo.SuccessStatisticsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -81,6 +82,42 @@ public class SuccessService implements ISuccessService{
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Success> querySCByUIdAndCName(String rName, Integer uId, String cName) {
         return successMapper.querySCByUIdAndCName(rName, uId, cName);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer querySByUIdAndTime(Integer uId, String beginTime, String endTime) {
+        return successMapper.querySByUIdAndTime(uId, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer querySSumByUIdAndTime(Integer uId, String beginTime, String endTime) {
+        return successMapper.querySSumByUIdAndTime(uId, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer querySPaysumByUIdAndTime(Integer uId, String beginTime, String endTime) {
+        return successMapper.querySPaysumByUIdAndTime(uId, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Success> querySSumGruopByHId(String beginTime, String endTime) {
+        return successMapper.querySSumGruopByHId(beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Success> querySSumGruopByUId(String beginTime, String endTime) {
+        return successMapper.querySSumGruopByUId(beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Success> querySSumGruopByCProject(String beginTime, String endTime) {
+        return successMapper.querySSumGruopByCProject(beginTime, endTime);
     }
 
 }

@@ -121,4 +121,65 @@
     limit 0, 3
   </select>
 
+  <!--根据用户编号和起止时间查询成交总数-->
+  <select id="querySByUIdAndTime" resultType="Integer">
+    SELECT COUNT(*) FROM success s
+    INNER JOIN customer c ON s.s_c_id=c.c_id
+    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    WHERE u.u_id = 17
+    AND <![CDATA[  s.s_time >= DATE_FORMAT('2020-10-01', '%Y-%m-%d') ]]>
+    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT('2020-10-17', '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+  </select>
+
+  <!--根据用户编号和起止时间查询成交总金额-->
+  <select id="querySSumByUIdAndTime" resultType="Integer">
+    SELECT SUM(s.s_sum) FROM success s
+    INNER JOIN customer c ON s.s_c_id=c.c_id
+    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    WHERE u.u_id = #{uId}
+    AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+  </select>
+
+  <!--根据用户编号和起止时间查询收款总金额-->
+  <select id="querySPaysumByUIdAndTime" resultType="Integer">
+    SELECT SUM(s.s_paysum) FROM success s
+    INNER JOIN customer c ON s.s_c_id=c.c_id
+    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    WHERE u.u_id = #{uId}
+    AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+  </select>
+
+  <!--根据用户分组查询总成交额-->
+  <select id="querySSumGruopByUId" resultMap="BaseResultMap">
+    SELECT u.u_name AS uName, SUM(s.s_sum) AS totalSum FROM success s
+    INNER JOIN customer c ON s.s_c_id=c.c_id
+    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    INNER JOIN hospital h ON s.s_h_id=h.h_id
+    WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    GROUP BY u.u_id
+  </select>
+
+  <!--根据门诊分组查询总成交额-->
+  <select id="querySSumGruopByHId" resultMap="BaseResultMap">
+    SELECT h.h_name AS hName, SUM(s.s_sum) AS totalSum FROM success s
+    INNER JOIN customer c ON s.s_c_id=c.c_id
+    INNER JOIN `user` u ON c.c_u_id=u.u_id
+	INNER JOIN hospital h ON s.s_h_id=h.h_id
+    WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    GROUP BY s.s_h_id
+  </select>
+
+  <!--根据报名项目分组查询总成交额-->
+  <select id="querySSumGruopByCProject" resultMap="BaseResultMap">
+    SELECT c.c_project AS project, SUM(s.s_sum) AS totalSum FROM success s
+    INNER JOIN customer c ON s.s_c_id=c.c_id
+    WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    GROUP BY c.c_project
+  </select>
+
 </mapper>

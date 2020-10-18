@@ -284,4 +284,11 @@
     limit 0, 3
   </select>
 
+  <!--根据用户编号和起始时间和客户状态查询客户数量-->
+  <select id="queryCByUIdAndTimeAndCTypeId" resultType="Integer">
+    SELECT COUNT(*) FROM customer WHERE c_u_id = #{uId} AND c_type_id = #{cTypeId}
+    AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+    AND <![CDATA[  c_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+  </select>
+
 </mapper>
