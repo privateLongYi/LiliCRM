@@ -14,7 +14,9 @@
         <div class="layui-form-item">
             <label class="layui-form-label">客户名称</label>
             <div class="layui-input-block">
-                <input type="hidden" id="arCId" th:value="${cId}">
+                <input type="hidden" id="cId" th:value="${cId}">
+                <input type="hidden" id="clId" th:value="${clId}">
+                <input type="hidden" id="arAId" th:value="${aId}">
                 <input type="text" class="layui-input" th:value="${cName}" readonly>
             </div>
         </div>

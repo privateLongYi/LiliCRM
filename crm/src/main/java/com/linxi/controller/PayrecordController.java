@@ -52,16 +52,22 @@ public class PayrecordController {
                                     @ApiParam(value = "成交客户编号", required = true) Integer paySId,
                                     @ApiParam(value = "支付金额", required = true) Integer paySum,
                                     @ApiParam(value = "支付类型编号", required = true) Integer payTypeId){
+        System.out.println("paySum:"+paySum);
         //新增操作记录
         Operating operating = new Operating(paySId, uId, "新增了支付记录");
-        iOperatingService.addOperatingRecord(operating);
+        iOperatingService.saveOperating(operating);
         //新增支付记录
         Payrecord payrecord = new Payrecord(null, paySId, paySum, null, payTypeId);
         iPayrecordService.savePayrecord(payrecord);
         //根据成交客户编号查询支付总金额
         Integer paysum = iPayrecordService.queryPPaysumBySId(paySId);
+        //根据成交客户编号查询退款总金额
+        Integer refund = iPayrecordService.queryRefundBySId(paySId);
+        if (refund == null){
+            refund = 0;
+        }
         //根据成交客户编号编辑支付金额
-        iSuccessService.editSPaysumBySId(paySId, paysum);
+        iSuccessService.editSPaysumBySId(paySId, (paysum-refund));
         return new DataResult(0, "新增成功");
     }
 

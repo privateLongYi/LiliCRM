@@ -72,4 +72,12 @@ public class FtypeController {
         return new DataResult(0, "编辑成功");
     }
 
+    @GetMapping("queryFtype")
+    @ApiOperation(value = "查询所有回访类型")
+    @ResponseBody
+    public DataResult queryFtype(){
+        List<Ftype> follows = iFtypeService.queryFtype();
+        return new DataResult(0, "操作成功", 0, follows);
+    }
+
 }

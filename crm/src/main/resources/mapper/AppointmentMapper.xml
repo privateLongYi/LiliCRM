@@ -9,17 +9,17 @@
       This element was generated on Thu Aug 20 21:32:10 CST 2020.
     -->
     <id column="a_id" jdbcType="INTEGER" property="aId" />
-    <result column="a_c_id" jdbcType="INTEGER" property="aCId" />
+    <result column="a_cl_id" jdbcType="INTEGER" property="aClId" />
     <result column="a_time" jdbcType="TIMESTAMP" property="aTime" />
     <result column="a_h_id" jdbcType="INTEGER" property="aHId" />
     <result column="a_type_id" jdbcType="INTEGER" property="aTypeId" />
+    <result column="a_u_id" jdbcType="INTEGER" property="aUId" />
+    <result column="a_invalid" jdbcType="INTEGER" property="aInvalid" />
   </resultMap>
 
-  <insert id="addAppoint">
-
-   INSERT INTO `lili_crm`.`appointment`(`a_c_id`, `a_time`, `a_h_id`, `a_type_id`) VALUES
-   ( #{appointment.aCId}, #{appointment.aTime}, #{appointment.aHId}, #{appointment.aTypeId});
-
+  <insert id="saveAppointment">
+   INSERT INTO appointment(a_cl_id, a_time, a_h_id, a_type_id, a_u_id, a_invalid)
+   VALUES(#{aClId}, #{aTime}, #{aHId}, #{aTypeId}, #{aUId}, #{aInvalid})
   </insert>
 
   <!--根据客户编号查询预约客户-->
@@ -56,28 +56,27 @@
     DELETE FROM appointment WHERE a_id = #{aId}
   </delete>
 
-  <!--新增预约客户-->
-  <insert id="saveAppointment">
-    INSERT INTO appointment(a_c_id, a_time, a_h_id, a_type_id)
-    VALUES (#{aCId}, #{aTime}, #{aHId}, #{aTypeId})
-  </insert>
-
-  <!--根据客户编号查询最近预约门诊-->
-  <select id="queryLastHNameByCId" resultType="String">
+  <!--根据线索编号查询最近预约门诊-->
+  <select id="queryLastHNameByClId" resultType="String">
     SELECT h.h_name AS hName FROM appointment a INNER JOIN hospital h ON a.a_h_id=h.h_id
-    WHERE a_c_id = #{cId} ORDER BY a.a_time DESC limit 0,1
+    WHERE a_cl_id = #{clId} ORDER BY a.a_time DESC limit 0,1
   </select>
 
   <!--根据客户编号查询预约记录（详情）-->
   <select id="queryAToDetail" resultMap="BaseResultMap">
-    SELECT a.a_c_id, at.at_type AS aType, h.h_name AS hName, a.a_time,
-    u.u_name AS uName, c.c_project AS cProject, s.s_sum AS sSum FROM appointment a
+    SELECT a.a_time, at.at_type AS aType, cl.cl_project AS clProject, u.u_name AS uName,
+    cl.cl_earnest AS clEarnest, s.s_sum AS sSum FROM appointment a
     LEFT JOIN atype at ON a.a_type_id=at.at_id
-    LEFT JOIN hospital h ON a.a_h_id=h.h_id
-    LEFT JOIN customer c ON a.a_c_id=c.c_id
-    LEFT JOIN `user` u ON c.c_u_id=u.u_id
-    LEFT JOIN success s ON c.c_id=s.s_c_id
-    WHERE c.c_id = #{cId} ORDER BY a.a_time DESC
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
+    LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
+    LEFT JOIN success s ON s.s_a_id=a.a_id
+    WHERE cl.cl_id = #{clId} ORDER BY a.a_time DESC
   </select>
+
+  <!--根据预约编号编辑预约记录为失效-->
+  <update id="editAInvalidByAId">
+    UPDATE appointment SET a_invalid = 1 WHERE a_id = #{aId}
+  </update>
 
 </mapper>

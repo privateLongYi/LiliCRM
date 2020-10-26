@@ -11,17 +11,13 @@ import java.util.List;
  */
 public interface IOperatingService {
 
-    /***
-     * 添加操作记录
-     * @param op 操作记录对象
-     * @return
-     */
-    Integer addOperatingRecord(Operating op);
+    //新增操作记录
+    Integer saveOperating(Operating op);
 
-    //根据客户编号查询操作记录
-    List<Operating> queryOpByOpCId(Integer opCId);
+    //根据线索编号查询操作记录
+    List<Operating> queryOpByClId(Integer clId);
 
-    //根据客户编号查询最近的操作时间
-    String queryOpTimeByOpCId(Integer opCId);
+    //根据线索编号查询最近的操作时间
+    String queryOpTimeByClId(Integer clId);
 
 }

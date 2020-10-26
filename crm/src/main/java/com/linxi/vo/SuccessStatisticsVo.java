@@ -8,10 +8,14 @@ import lombok.Data;
  */
 public class SuccessStatisticsVo {
 
-    //统计单位
+    /**
+     * 统计单位
+     */
     private String unit;
 
-    //成交额
+    /**
+     * 成交额
+     */
     private Integer sum;
 
     public SuccessStatisticsVo() {

@@ -9,7 +9,7 @@
       This element was generated on Thu Aug 20 21:32:10 CST 2020.
     -->
     <id column="r_id" jdbcType="INTEGER" property="rId" />
-    <result column="r_c_id" jdbcType="INTEGER" property="rCId" />
+    <result column="r_a_id" jdbcType="INTEGER" property="rAId" />
     <result column="r_fail_h_id" jdbcType="INTEGER" property="rFailHId" />
     <result column="r_h_id" jdbcType="INTEGER" property="rHId" />
     <result column="r_message" jdbcType="LONGVARCHAR" property="rMessage" />
@@ -18,20 +18,22 @@
 
   <!--新增转诊记录-->
   <insert id="saveReferral">
-    INSERT INTO referral(r_c_id, r_fail_h_id, r_h_id, r_message, r_cause)
-    VALUES (#{rCId}, #{rFailHId}, #{rHId}, #{rMessage}, #{rCause})
+    INSERT INTO referral(r_a_id, r_fail_h_id, r_h_id, r_message, r_cause)
+    VALUES (#{rAId}, #{rFailHId}, #{rHId}, #{rMessage}, #{rCause})
   </insert>
 
   <!--根据客户名称查询转诊客户-->
   <select id="queryRByCName" resultMap="BaseResultMap">
     SELECT r.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId,
     ho.h_name AS failHName, h.h_name AS hName FROM referral r
-    LEFT JOIN customer c ON r.r_c_id=c.c_id
+    LEFT JOIN appointment a ON a.a_id=r.r_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON r.r_h_id=h.h_id
     LEFT JOIN hospital ho ON r.r_fail_h_id=ho.h_id
     <where>
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
@@ -43,12 +45,14 @@
   <!--根据客户名称查询转诊客户总数-->
   <select id="getTotalByCName" resultType="Integer">
     SELECT COUNT(*) FROM referral r
-    LEFT JOIN customer c ON r.r_c_id=c.c_id
+    LEFT JOIN appointment a ON a.a_id=r.r_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON r.r_h_id=h.h_id
     LEFT JOIN hospital ho ON r.r_fail_h_id=ho.h_id
     <where>
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
         AND c.c_name = #{cName}

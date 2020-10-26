@@ -1,10 +1,7 @@
 package com.linxi.controller;
 
 import com.linxi.entity.Appointment;
-import com.linxi.service.IAppointmentService;
-import com.linxi.service.IAtypeService;
-import com.linxi.service.ICtypeService;
-import com.linxi.service.ICustomerService;
+import com.linxi.service.*;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,6 +38,9 @@ public class AppointmentController {
     private ICustomerService iCustomerService;
 
     @Autowired
+    private IClueService iClueService;
+
+    @Autowired
     private IAtypeService iAtypeService;
 
     @GetMapping("queryAByACId")
@@ -63,12 +63,13 @@ public class AppointmentController {
     @PostMapping("editAByAId")
     @ApiOperation(value = "根据编号编辑预约客户")
     @ResponseBody
-    public DataResult editAByAId(@ApiParam(value = "编号", required = true) Integer aId,
-                                 @ApiParam(value = "客户编号", required = true) Integer aCId,
+    public DataResult editAByAId(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                 @ApiParam(value = "编号", required = true) Integer aId,
+                                 @ApiParam(value = "线索编号", required = true) Integer aClId,
                                  @ApiParam(value = "预约时间", required = true) String aTime,
                                  @ApiParam(value = "门诊编号", required = true) Integer aHId,
                                  @ApiParam(value = "预约类型编号", required = true) Integer aTypeId){
-        Appointment appointment = new Appointment(aId, aCId, Timestamp.valueOf(aTime), aHId, aTypeId);
+        Appointment appointment = new Appointment(aId, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, uId, 0);
         iAppointmentService.editAByAId(appointment);
         return new DataResult(0, "编辑成功");
     }
@@ -84,27 +85,28 @@ public class AppointmentController {
     @PostMapping("saveAppointment")
     @ApiOperation(value = "新增预约客户")
     @ResponseBody
-    public DataResult saveAppointment(@ApiParam(value = "客户编号", required = true) Integer aCId,
+    public DataResult saveAppointment(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                      @ApiParam(value = "线索编号", required = true) Integer aClId,
                                       @ApiParam(value = "预约时间", required = true) String aTime,
                                       @ApiParam(value = "门诊编号", required = true) Integer aHId,
                                       @ApiParam(value = "预约类型", required = true) String atType){
         //根据客户状态查询编号
-        Integer cTypeId = iCtypeService.queryCtypeByCtType("待到店");
+        Integer clTypeId = iCtypeService.queryCtypeByCtType("待到店");
         //改变客户状态为未到店状态
-        iCustomerService.editCTypeIdByCId(aCId, cTypeId);
+        iClueService.editClTypeIdByClId(aClId, clTypeId);
         //根据预约类型查询编号
         Integer aTypeId = iAtypeService.queryAByAType(atType);
         //新增预约客户
-        Appointment appointment = new Appointment(null, aCId, Timestamp.valueOf(aTime), aHId, aTypeId);
+        Appointment appointment = new Appointment(null, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, uId, 0);
         iAppointmentService.saveAppointment(appointment);
         return new DataResult(0, "新增成功");
     }
 
     @GetMapping("queryAToDetail")
-    @ApiOperation(value = "根据客户编号查询预约记录（详情）")
+    @ApiOperation(value = "根据线索编号查询预约记录（详情）")
     @ResponseBody
-    public DataResult queryAToDetail(@ApiParam(value = "客户编号", required = true) Integer cId){
-        List<Appointment> appointments = iAppointmentService.queryAToDetail(cId);
+    public DataResult queryAToDetail(@ApiParam(value = "线索编号", required = true) Integer clId){
+        List<Appointment> appointments = iAppointmentService.queryAToDetail(clId);
         return new DataResult(0, "操作成功", 0, appointments);
     }
 

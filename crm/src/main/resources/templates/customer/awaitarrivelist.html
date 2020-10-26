@@ -34,7 +34,7 @@
 			<div class="layui-col-md4">
 				<label class="layui-form-label">报名项目</label>
 				<div class="layui-input-inline layui-form">
-					<select id="searchCProject">
+					<select id="searchClProject">
 						<option value=""></option>
 						<option value="种植">种植</option>
 						<option value="矫正">矫正</option>
@@ -46,15 +46,15 @@
 			<div class="layui-col-md4">
 				<label class="layui-form-label">是否交定金</label>
 				<div class="layui-input-inline layui-form">
-					<input type="radio" name="searchCEarnest" value="1" title="是">
-					<input type="radio" name="searchCEarnest" value="0" title="否">
-					<input type="radio" name="searchCEarnest" value="2" title="全部">
+					<input type="radio" name="searchClEarnest" value="0" title="否">
+					<input type="radio" name="searchClEarnest" value="1" title="是">
+					<input type="radio" name="searchClEarnest" value="2" title="全部">
 				</div>
 			</div>
 			<div class="layui-col-md4" id="principal">
 				<label class="layui-form-label">负责人</label>
 				<div class="layui-input-inline layui-form">
-					<select id="searchCUId">
+					<select id="searchClUId">
 						<option value=""></option>
 					</select>
 				</div>
@@ -62,13 +62,13 @@
 			<div class="layui-col-md4">
 				<label class="layui-form-label">来源</label>
 				<div class="layui-inline">
-					<input class="layui-input" id="searchCSource" autocomplete="off">
+					<input class="layui-input" id="searchClSource" autocomplete="off">
 				</div>
 			</div><br><br><br>
 			<div class="layui-col-md8">
 				<label class="layui-form-label">报名时间</label>
 				<div class="layui-input-inline layui-form">
-					<input type="text" id="searchCPlaceTime" readonly
+					<input type="text" id="searchClPlaceTime" readonly
 						   autocomplete="off" class="layui-input" style="width: 300px;">
 				</div>
 			</div><br><br><br>
@@ -109,14 +109,15 @@
 
             //时间控件
             laydate.render({
-                elem: '#searchCPlaceTime' //指定元素
+                elem: '#searchClPlaceTime' //指定元素
                 ,type: 'datetime' //时间格式
                 ,trigger: 'click' //采用click弹出
                 ,range: true //开启左右面板范围选择
             });
 
             if (rName == "销售员"){
-                $("#searchCUId").attr("disabled", "disabled");
+                $("#searchClUId").attr("disabled", "disabled");
+                form.render('select');
             } else {
                 //获取角色为销售员的用户对象
                 $.get("/user/queryUserByRName", function (res){
@@ -125,7 +126,7 @@
                     $.each(res.data, function (index, item) {
                         html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
                     });
-                    $("#searchCUId").append(html);
+                    $("#searchClUId").append(html);
                     //append后必须重新渲染
                     form.render('select');
                 })
@@ -138,7 +139,7 @@
                 $.each(res.data, function (index, item) {
                     html += "<option value='" + item.ctId + "'>" + item.ctType + "</option>";
                 });
-                $("#searchCTypeId").append(html);
+                $("#searchClTypeId").append(html);
                 //append后必须重新渲染
                 form.render('select');
             });
@@ -223,34 +224,34 @@
                 //获取筛选条件
                 var cName = $("#searchCName").val();
                 var cTel = $("#searchCTel").val();
-                var cProject = $("#searchCProject").val();
-                var cEarnest;
-                if ($("[name=searchCEarnest]")[0].checked){
-                    cEarnest = $("[name=searchCEarnest]")[0].value;
-                } else if ($("[name=searchCEarnest]")[1].checked){
-                    cEarnest = $("[name=searchCEarnest]")[1].value;
-                } else if ($("[name=searchCEarnest]")[2].checked){
-                    cEarnest = $("[name=searchCEarnest]")[2].value;
+                var clProject = $("#searchClProject").val();
+                var clEarnest;
+                if ($("[name=searchClEarnest]")[0].checked){
+                    clEarnest = $("[name=searchClEarnest]")[0].value;
+                } else if ($("[name=searchClEarnest]")[1].checked){
+                    clEarnest = $("[name=searchClEarnest]")[1].value;
+                } else if ($("[name=searchClEarnest]")[2].checked){
+                    clEarnest = $("[name=searchClEarnest]")[2].value;
                 }
-                var cUId = $("#searchCUId").val();
-                var cSource = $("#searchCSource").val();
-                var searchCPlaceTime = $("#searchCPlaceTime").val();
+                var clUId = $("#searchClUId").val();
+                var clSource = $("#searchClSource").val();
+                var searchClPlaceTime = $("#searchClPlaceTime").val();
                 var beginTime;
                 var endTime;
-                if (searchCPlaceTime != null){
-                    var beginTime = searchCPlaceTime.split(" - ")[0];
-                    var endTime = searchCPlaceTime.split(" - ")[1];
+                if (searchClPlaceTime != null && searchClPlaceTime != ""){
+                    var beginTime = searchClPlaceTime.split(" - ")[0];
+                    var endTime = searchClPlaceTime.split(" - ")[1];
                 }
                 //根据筛选条件查询
                 table.reload('tab', {
-                    url: '/customer/queryCAndHNameScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'
+                    url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'
                     ,where: {
                         cName: cName
                         ,cTel: cTel
-                        ,cProject: cProject
-                        ,cEarnest: cEarnest
-                        ,cUId: cUId
-                        ,cSource: cSource
+                        ,clProject: clProject
+                        ,clEarnest: clEarnest
+                        ,clUId: clUId
+                        ,clSource: clSource
                         ,beginTime: beginTime
                         ,endTime: endTime
                     }
@@ -263,7 +264,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/customer/queryCAndHNameScreen?uId='+uId+'&rName='+rName+'&ctType=待到店' //数据接口
+				,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店' //数据接口
 				,title: '待到店客户表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -278,13 +279,13 @@
 						,{field: 'cSex', minWidth: 120, title: '性别', sort: true, align:'center'}
 						,{field: 'cAge', minWidth: 120, title: '年龄', align:'center'}
 						,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
-						,{field: 'cProject', minWidth: 120, title: '报名项目', align:'center'}
-						,{field: 'cPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
-						,{field: 'cRemark', minWidth: 120, title: '备注', align:'center'}
-						,{field: 'cEarnest', minWidth: 120, title: '定金', align:'center'}
+						,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
+						,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+						,{field: 'clRemark', minWidth: 120, title: '备注', align:'center'}
+						,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
 						,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
-						,{field: 'cSource', minWidth: 120, title: '来源', align:'center'}
-						,{field: 'cMessage', minWidth: 120, title: '症状信息', align:'center'}
+						,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
+						,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
 						,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
 						,{fixed: 'right', minWidth: 240, title: '操作', toolbar: '#barDemo', align:'center'}
 					]
@@ -311,19 +312,22 @@
 					var ix = layer.open({
 						type: 2, //层类型，iframe
 						title: '新增未到店客户',
-						content: ['/arrivesave?cId='+data.cId+'&cName='+data.cName+
-								'&hId='+data.hId+'&hName='+data.hName],
+						content: ['/arrivesave?cId='+data.cId+'&clId='+data.clId+'&aId='+data.aId+
+                        	'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName],
 						area: ['400px', '350px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
 							var body = layer.getChildFrame('body', index);
 							//获取值
-							var arCId = $(body).find("#arCId").val();
+							var cId = $(body).find("#cId").val();
+                            var clId = $(body).find("#clId").val();
+                            var arAId = $(body).find("#arAId").val();
 							var arHId = $(body).find("#arHId").val();
 							var arCause = $(body).find("#arCause").val();
 							if (arCause != '' && arCause.trim() != '') {
-								$.post("/arrive/saveArrive", {uId:uId, arCId:arCId, arHId:arHId, arCause:arCause.trim()},
+								$.post("/arrive/saveArrive", {uId:uId, cId:cId, clId:clId,
+										arAId:arAId, arHId:arHId, arCause:arCause},
 									function (obj) {
 										layer.msg(obj.msg, {time: 500}, function () {
 											layer.close(ix);
@@ -344,8 +348,8 @@
 					var ix = layer.open({
 						type: 2, //层类型，iframe
 						title: '新增改约记录',
-						content: ['/reroutesave?cId='+data.cId+
-						'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
+						content: ['/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+
+                        '&aId='+data.aId+'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
 						'&aTime='+data.aTime],
 						area: ['450px', '450px'],
 						resize: false,
@@ -353,14 +357,17 @@
 						btn1: function (index, layero) {
 							var body = layer.getChildFrame('body', index);
 							//获取值
-							var reCId = $(body).find("#reCId").val();
+							var cId = $(body).find("#cId").val();
+                            var reClId = $(body).find("#reClId").val();
+                            var reUId = $(body).find("#reUId").val();
+                            var aId = $(body).find("#aId").val();
 							var reHId = $(body).find("#reHId").val();
 							var reLastTime = $(body).find("#reLastTime").val();
 							var reTime = $(body).find("#reTime").val();
 							var reCause = $(body).find("#reCause").val();
 							if (reTime != '' && reCause != '' && reCause.trim() != '') {
-								$.post("/reroute/saveReroute", {uId:uId, reCId:reCId, reHId:reHId,
-										reLastTime:reLastTime, reTime:reTime, reCause:reCause.trim()},
+								$.post("/reroute/saveReroute", {uId:uId, cId:cId, reClId:reClId, reUId:reUId,
+										aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause},
 									function (obj) {
 										layer.msg(obj.msg, {time: 500}, function () {
 											layer.close(ix);
@@ -381,19 +388,22 @@
 					var ix = layer.open({
 						type: 2, //层类型，iframe
 						title: '新增未成交客户',
-						content: ['/failsave?cId='+data.cId+'&cName='+data.cName+
-						'&hId='+data.hId+'&hName='+data.hName],
+						content: ['/failsave?cId='+data.cId+'&clId='+data.clId+'&aId='+data.aId+
+						'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName],
 						area: ['400px', '350px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
 							var body = layer.getChildFrame('body', index);
 							//获取值
-							var flCId = $(body).find("#flCId").val();
+                            var cId = $(body).find("#cId").val();
+                            var clId = $(body).find("#clId").val();
+							var flAId = $(body).find("#flAId").val();
 							var flHId = $(body).find("#flHId").val();
 							var flCause = $(body).find("#flCause").val();
 							if (flCause != '' && flCause.trim() != '') {
-								$.post("/fail/saveFail", {uId:uId, flCId:flCId, flHId:flHId, flCause:flCause.trim()},
+								$.post("/fail/saveFail", {uId:uId, cId:cId, clId:clId,
+										flAId:flAId, flHId:flHId, flCause:flCause.trim()},
 									function (obj) {
 										layer.msg(obj.msg, {time: 500}, function () {
 											layer.close(ix);
@@ -402,7 +412,7 @@
 									}
 								);
 							} else {
-								layer.msg('请输入成交原因');
+								layer.msg('请输入未成交原因');
 							}
 						},
 						cancel: function(index, layero){
@@ -414,15 +424,17 @@
 					var ix = layer.open({
 						type: 2, //层类型，iframe
 						title: '新增成交客户',
-						content: ['/successsave?cId='+data.cId+'&cName='+data.cName+
-						'&hId='+data.hId+'&hName='+data.hName],
+						content: ['/successsave?cId='+data.cId+'&clId='+data.clId+'&sAId='+data.aId+
+						'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName],
 						area: ['500px', '450px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
 							var body = layer.getChildFrame('body', index);
 							//获取值
-							var sCId = $(body).find("#sCId").val();
+                            var cId = $(body).find("#cId").val();
+                            var clId = $(body).find("#clId").val();
+							var sAId = $(body).find("#sAId").val();
 							var sHId = $(body).find("#sHId").val();
 							var sMessage = $(body).find("#sMessage").val();
 							var sSum = $(body).find("#sSum").val();
@@ -439,7 +451,9 @@
 								if(verify) {
 									$.post("/success/saveSuccess", {
 											uId: uId,
-											sCId: sCId,
+                                            cId: cId,
+                                            clId: clId,
+											sAId: sAId,
 											sHId: sHId,
 											sMessage: sMessage,
 											sSum: sSum.trim(),

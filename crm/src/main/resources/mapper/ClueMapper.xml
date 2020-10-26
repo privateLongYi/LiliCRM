@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linxi.mapper.ClueMapper">
+
+  <resultMap id="BaseResultMap" type="com.linxi.entity.Clue">
+    <id column="c_id" jdbcType="INTEGER" property="clCId" />
+    <result column="cl_c_id" jdbcType="INTEGER" property="clCId" />
+    <result column="cl_project" jdbcType="VARCHAR" property="clProject" />
+    <result column="cl_place_time" jdbcType="TIMESTAMP" property="clPlaceTime" />
+    <result column="cl_earnest" jdbcType="INTEGER" property="clEarnest" />
+    <result column="cl_u_id" jdbcType="INTEGER" property="clUId" />
+    <result column="cl_source" jdbcType="VARCHAR" property="clSource" />
+    <result column="cl_type_id" jdbcType="INTEGER" property="clTypeId" />
+    <result column="cl_remark" jdbcType="LONGVARCHAR" property="clRemark" />
+    <result column="cl_message" jdbcType="LONGVARCHAR" property="clMessage" />
+    <result column="cl_invalid" jdbcType="INTEGER" property="clInvalid" />
+  </resultMap>
+
+  <!-- 根据客户类型获得有效线索总数量 -->
+  <select id="getTotalByType" resultType="Integer">
+    SELECT COUNT(*) FROM clue where cl_type_id=#{clTypeId} AND cl_invalid = 0
+  </select>
+
+  <!-- 新增线索 -->
+  <insert id="saveClue">
+    INSERT INTO clue(cl_c_id, cl_project, cl_place_time, cl_earnest, cl_u_id,
+    cl_source, cl_remark, cl_type_id, cl_invalid)
+    VALUES (#{clCId}, #{clProject}, #{clPlaceTime}, #{clEarnest},
+    #{clUId}, #{clSource}, #{clRemark}, #{clTypeId}, 0)
+  </insert>
+
+  <!-- 根据编号删除线索 -->
+  <delete id="delClByClCId">
+    DELETE FROM clue WHERE cl_c_id = #{clCId}
+  </delete>
+
+  <!-- 根据编号编辑线索 -->
+  <update id="editClByCId">
+    UPDATE clue SET cl_project = #{clProject}, cl_earnest = #{clEarnest},
+    cl_u_id = #{clUId}, cl_source = #{clSource}, cl_remark = #{clRemark},
+    cl_message = #{clMessage}, cl_type_id = #{clTypeId}
+    WHERE cl_c_id = #{clCId}
+  </update>
+
+  <!-- 根据编号编辑客户状态 -->
+  <update id="editClTypeIdByClId">
+    UPDATE clue SET cl_type_id = #{clTypeId} WHERE cl_id = #{clId}
+  </update>
+
+</mapper>

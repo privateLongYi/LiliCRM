@@ -1,5 +1,6 @@
 package com.linxi.mapper;
 
+import com.linxi.entity.Clue;
 import com.linxi.entity.Customer;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,36 +15,32 @@ public interface CustomerMapper {
                                 @Param("limit") Integer limit,
                                 @Param("cName") String cName,
                                 @Param("cTel") String cTel,
-                                @Param("cProject") String cProject,
-                                @Param("cEarnest") Integer cEarnest,
+                                @Param("clProject") String clProject,
+                                @Param("clEarnest") Integer clEarnest,
                                 @Param("beginTime") String beginTime,
                                 @Param("endTime") String endTime,
-                                @Param("cUId") Integer cUId,
-                                @Param("cSource") String cSource,
-                                @Param("cTypeId") Integer cTypeId);
+                                @Param("clUId") Integer clUId,
+                                @Param("clSource") String clSource,
+                                @Param("clTypeId") Integer clTypeId);
 
     //获得客户总数量
     Integer getTotalByScreen(@Param("uId") Integer uId,
                              @Param("rName") String rName,
                              @Param("cName") String cName,
                              @Param("cTel") String cTel,
-                             @Param("cProject") String cProject,
-                             @Param("cEarnest") Integer cEarnest,
+                             @Param("clProject") String clProject,
+                             @Param("clEarnest") Integer clEarnest,
                              @Param("beginTime") String beginTime,
                              @Param("endTime") String endTime,
-                             @Param("cUId") Integer cUId,
-                             @Param("cSource") String cSource,
-                             @Param("cTypeId") Integer cTypeId);
-
-    /**
-     * 根据客户类型 获得客户总数量
-     * @param cTypeId
-     * @return
-     */
-    Integer getTotalByType(@Param("cTypeId")Integer cTypeId);
+                             @Param("clUId") Integer clUId,
+                             @Param("clSource") String clSource,
+                             @Param("clTypeId") Integer clTypeId);
 
     //新增客户
     void saveCustomer(Customer c);
+
+    //查询最大的编号（新增客户的编号）
+    Integer queryMaxCId();
 
     //根据编号删除客户
     void delCByCId(Integer cId);
@@ -51,62 +48,34 @@ public interface CustomerMapper {
     //根据编号查询客户
     Customer queryCByCId(Integer cId);
 
+    //根据线索编号查询客户
+    Customer queryCByClId(Integer clId);
+
     //根据编号修改客户
     void editCByCId(Customer c);
 
-    //根据编号修改客户状态
-    void editCTypeIdByCId(@Param("cId") Integer cId, @Param("cTypeId") Integer cTypeId);
-
     //根据用户编号和状态查询客户总条数
     Integer getTotalCByUIdAndCTypeId(@Param("uId") Integer uId,
-                                     @Param("cTypeId") Integer cTypeId);
+                                     @Param("clTypeId") Integer clTypeId);
 
     //根据客户名称或者客户电话查询客户
     List<Customer> queryCByCNameOrCTel(@Param("rName") String rName,
                                        @Param("uId") Integer uId,
                                        @Param("key") String key);
 
-    //高级筛选加分页查询客户
-    List<Customer> queryCAndHNameScreen(@Param("uId") Integer uId,
-                                @Param("rName") String rName,
-                                @Param("page") Integer page,
-                                @Param("limit") Integer limit,
-                                @Param("cName") String cName,
-                                @Param("cTel") String cTel,
-                                @Param("cProject") String cProject,
-                                @Param("cEarnest") Integer cEarnest,
-                                @Param("beginTime") String beginTime,
-                                @Param("endTime") String endTime,
-                                @Param("cUId") Integer cUId,
-                                @Param("cSource") String cSource,
-                                @Param("cTypeId") Integer cTypeId);
-
-    //获得客户总数量
-    Integer getTotalAndHNameByScreen(@Param("uId") Integer uId,
-                             @Param("rName") String rName,
-                             @Param("cName") String cName,
-                             @Param("cTel") String cTel,
-                             @Param("cProject") String cProject,
-                             @Param("cEarnest") Integer cEarnest,
-                             @Param("beginTime") String beginTime,
-                             @Param("endTime") String endTime,
-                             @Param("cUId") Integer cUId,
-                             @Param("cSource") String cSource,
-                             @Param("cTypeId") Integer cTypeId);
-
     //根据用户编号和客户名称查询可成交客户
     List<Customer> queryCSCByUIdAndCName(@Param("rName") String rName,
-                                        @Param("uId") Integer uId,
-                                        @Param("cName") String cName);
+                                         @Param("uId") Integer uId,
+                                         @Param("cName") String cName);
 
     //根据用户编号和客户名称查询可成交客户
     List<Customer> queryCACByUIdAndCName(@Param("rName") String rName,
-                                        @Param("uId") Integer uId,
-                                        @Param("cName") String cName);
+                                         @Param("uId") Integer uId,
+                                         @Param("cName") String cName);
 
     //根据用户编号和起始时间和客户状态查询客户数量
     Integer queryCByUIdAndTimeAndCTypeId(@Param("uId") Integer uId,
-                                         @Param("cTypeId") Integer cTypeId,
+                                         @Param("clTypeId") Integer clTypeId,
                                          @Param("beginTime") String beginTime,
                                          @Param("endTime") String endTime);
 

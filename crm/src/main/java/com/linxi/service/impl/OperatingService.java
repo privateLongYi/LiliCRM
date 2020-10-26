@@ -23,19 +23,19 @@ public class OperatingService implements IOperatingService {
     private OperatingMapper operatingMapper;
 
     @Override
-    public Integer addOperatingRecord(Operating op) {
-        return operatingMapper.addOperatingRecord(op);
+    public Integer saveOperating(Operating op) {
+        return operatingMapper.saveOperating(op);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Operating> queryOpByOpCId(Integer opCId) {
-        return operatingMapper.queryOpByOpCId(opCId);
+    public List<Operating> queryOpByClId(Integer clId) {
+        return operatingMapper.queryOpByClId(clId);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public String queryOpTimeByOpCId(Integer opCId) {
-        return operatingMapper.queryOpTimeByOpCId(opCId);
+    public String queryOpTimeByClId(Integer clId) {
+        return operatingMapper.queryOpTimeByClId(clId);
     }
 }

@@ -22,11 +22,6 @@ public class AppointmentService implements IAppointmentService {
     AppointmentMapper appointmentMapper;
 
     @Override
-    public Integer addAppoint(Appointment appointment) {
-        return appointmentMapper.addAppoint(appointment);
-    }
-
-    @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Appointment> queryAByACId(Integer aCId) {
         return appointmentMapper.queryAByACId(aCId);
@@ -61,13 +56,18 @@ public class AppointmentService implements IAppointmentService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public String queryLastHNameByCId(Integer cId) {
-        return appointmentMapper.queryLastHNameByCId(cId);
+    public String queryLastHNameByClId(Integer clId) {
+        return appointmentMapper.queryLastHNameByClId(clId);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Appointment> queryAToDetail(Integer cId) {
-        return appointmentMapper.queryAToDetail(cId);
+    public List<Appointment> queryAToDetail(Integer clId) {
+        return appointmentMapper.queryAToDetail(clId);
+    }
+
+    @Override
+    public void editAInvalidByAId(Integer aId) {
+        appointmentMapper.editAInvalidByAId(aId);
     }
 }

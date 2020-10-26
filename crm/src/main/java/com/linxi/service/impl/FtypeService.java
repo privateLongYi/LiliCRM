@@ -59,4 +59,10 @@ public class FtypeService implements IFtypeService{
     public Integer queryFtIdByFtType(String ftType) {
         return ftypeMapper.queryFtIdByFtType(ftType);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Ftype> queryFtype() {
+        return ftypeMapper.queryFtype();
+    }
 }

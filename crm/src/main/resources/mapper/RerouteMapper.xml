@@ -9,28 +9,30 @@
       This element was generated on Thu Aug 20 21:32:10 CST 2020.
     -->
     <id column="re_id" jdbcType="INTEGER" property="reId" />
-    <result column="re_c_id" jdbcType="INTEGER" property="reCId" />
+    <result column="re_cl_id" jdbcType="INTEGER" property="reClId" />
     <result column="re_h_id" jdbcType="INTEGER" property="reHId" />
     <result column="re_last_time" jdbcType="TIMESTAMP" property="reLastTime" />
     <result column="re_time" jdbcType="TIMESTAMP" property="reTime" />
     <result column="re_cause" jdbcType="LONGVARCHAR" property="reCause" />
+    <result column="re_u_id" jdbcType="INTEGER" property="reUId" />
   </resultMap>
 
   <!--新增改约纪录-->
   <insert id="saveReroute">
-    INSERT INTO reroute(re_c_id, re_h_id, re_last_time, re_time, re_cause)
-    VALUES (#{reCId}, #{reHId}, #{reLastTime}, #{reTime}, #{reCause})
+    INSERT INTO reroute(re_cl_id, re_h_id, re_last_time, re_time, re_cause, re_u_id)
+    VALUES (#{reClId}, #{reHId}, #{reLastTime}, #{reTime}, #{reCause}, #{reUId})
   </insert>
 
   <!--根据客户名称查询改约客户-->
   <select id="queryRByCName" resultMap="BaseResultMap">
     SELECT r.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId,
     h.h_name AS hName FROM reroute r
-    LEFT JOIN customer c ON r.re_c_id=c.c_id
+    LEFT JOIN clue cl ON cl.cl_id=r.re_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON r.re_h_id=h.h_id
     <where>
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
@@ -42,11 +44,12 @@
   <!--根据客户名称查询改约客户总数-->
   <select id="getTotalByCName" resultType="Integer">
     SELECT COUNT(*) FROM reroute r
-    LEFT JOIN customer c ON r.re_c_id=c.c_id
+    LEFT JOIN clue cl ON cl.cl_id=r.re_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON r.re_h_id=h.h_id
     <where>
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
         AND c.c_name = #{cName}

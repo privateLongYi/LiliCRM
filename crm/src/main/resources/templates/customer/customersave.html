@@ -44,35 +44,43 @@
                 <span style="color: red;">*&nbsp;</span>电话
             </label>
             <div class="layui-input-inline">
-                <input type="tel" id="cTel"  placeholder="请输入电话"
+                <input type="tel" id="cTel" placeholder="请输入电话"
                        autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label" style="width: auto;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;报名项目
+                <span style="color: red;">*&nbsp;</span>报名时间
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="clPlaceTime" placeholder="请输入报名时间"
+                       autocomplete="off" class="layui-input" readonly>
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;报名项目
             </label>
             <div class="layui-input-inline layui-form">
-                <select id="cProject">
+                <select id="clProject">
                     <option value="种植">种植</option>
                     <option value="矫正">矫正</option>
                     <option value="牙贴面">牙贴面</option>
                     <option value="牙齿治疗">牙齿治疗</option>
                 </select>
             </div>
-            <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;定金
-            </label>
-            <div class="layui-input-inline">
-                <input type="number" id="cEarnest" placeholder="请输入定金"
-                       autocomplete="off" class="layui-input">
-            </div>
         </div>
 
         <br />
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
-                <input type="hidden" id="cUId" value="">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;定金
+            </label>
+            <div class="layui-input-inline">
+                <input type="number" id="clEarnest" placeholder="请输入定金"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
+                <input type="hidden" id="clUId" value="">
             </label>
             <div class="layui-input-inline layui-form" id="admin">
                 <select id="salelist" lay-filter="change">
@@ -83,19 +91,10 @@
                 <input type="text" id="saleman" readonly class="layui-input">
             </div>
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;来源
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="cSource" placeholder="请输入来源"
-                       autocomplete="off" class="layui-input">
-            </div>
-            <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
-            </label>
-            <div class="layui-input-inline layui-form">
-                <input type="hidden" id="cTypeId">
-                <input type="text" id="cType" readonly
+                <input type="text" id="clSource" placeholder="请输入来源"
                        autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -103,10 +102,19 @@
         <br />
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
+            </label>
+            <div class="layui-input-inline layui-form">
+                <input type="hidden" id="clTypeId">
+                <input type="text" id="cType" readonly
+                       autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注
             </label>
             <div class="layui-input-inline">
-                <textarea class="layui-textarea" id="cRemark" name="cRemark"
+                <textarea class="layui-textarea" id="clRemark"
                           autocomplete="off"></textarea>
             </div>
         </div>
@@ -128,6 +136,13 @@
         var uId = sessionStorage.getItem('uId');
         var uName = sessionStorage.getItem('uName');
 
+        //时间控件
+        laydate.render({
+            elem: '#clPlaceTime' //指定元素
+            ,type: 'datetime' //时间格式
+            ,trigger: 'click' //采用click弹出
+        });
+
         if(uId == 1){
 
             //管理员登录，隐藏负责人文本框，显示负责人下拉框
@@ -135,7 +150,7 @@
             $("#sale").addClass("layui-hide");
             //状态赋值
             $("#cType").val("待分配");
-            $("#cTypeId").val("1");
+            $("#clTypeId").val("1");
 
             //获取角色为销售员的用户对象
             $.get("/user/queryUserByRName", function (res){
@@ -155,23 +170,23 @@
             $("#sale").addClass("layui-show");
             //赋值
             $("#saleman").val(uName);
-            $("#cUId").val(uId);
+            $("#clUId").val(uId);
             //状态赋值
             $("#cType").val("待预约");
-            $("#cTypeId").val("3");
+            $("#clTypeId").val("3");
         }
 
         //下拉框改变事件
         form.on('select(change)', function(data){
             //改变负责人编号
-            $("#cUId").val(data.value+"");
+            $("#clUId").val(data.value+"");
             //改变客户状态
-            if($("#cUId").val() != ""){
+            if($("#clUId").val() != ""){
                 $("#cType").val("待联系");
-                $("#cTypeId").val("2");
+                $("#clTypeId").val("2");
             }else{
                 $("#cType").val("待分配");
-                $("#cTypeId").val("1");
+                $("#clTypeId").val("1");
             }
         })
 

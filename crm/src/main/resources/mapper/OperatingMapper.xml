@@ -15,24 +15,27 @@
     <result column="op_time" jdbcType="TIMESTAMP" property="opTime" />
   </resultMap>
 
-  <insert id="addOperatingRecord" >
-
- INSERT INTO `operating`( `op_c_id`, `op_u_id`, `op_name`, `op_time`) VALUES ( #{opCId} , #{opUId}, #{opName}, now());
-
+  <!--新增操作记录-->
+  <insert id="saveOperating" >
+    INSERT INTO operating(op_c_id, op_u_id, op_name, op_time)
+    VALUES (#{opCId}, #{opUId}, #{opName}, now());
   </insert>
 
-  <!--根据客户编号查询操作记录-->
-  <select id="queryOpByOpCId" resultMap="BaseResultMap">
+  <!--根据线索编号查询操作记录-->
+  <select id="queryOpByClId" resultMap="BaseResultMap">
     SELECT op.*, u.u_name AS uName FROM operating op
     LEFT JOIN user u ON op.op_u_id = u.u_id
-    WHERE op.op_c_id = #{opCId}
+    LEFT JOIN clue cl ON cl.cl_u_id=u.u_id
+    WHERE cl.cl_id = #{clId}
     ORDER BY op.op_time DESC
   </select>
 
-  <!--根据客户编号查询最近的操作时间-->
-  <select id="queryOpTimeByOpCId" resultType="String">
-      SELECT op_time from operating
-      WHERE op_c_id = #{cId}
+  <!--根据线索编号查询最近的操作时间-->
+  <select id="queryOpTimeByClId" resultType="String">
+      SELECT op_time from operating op
+      LEFT JOIN customer c ON c.c_id=op.op_c_id
+      LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+      WHERE cl.cl_id = #{clId} AND cl.cl_invalid = 0
       ORDER BY op_time DESC limit 0,1
   </select>
     

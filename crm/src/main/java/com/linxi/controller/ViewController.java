@@ -155,11 +155,15 @@ public class ViewController {
     @GetMapping("arrivesave")
     @ApiOperation(value = "新增未到店客户")
     public String arrivesave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                             @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
+                             @ApiParam(name = "aId", value = "预约编号", required = true) Integer aId,
                              @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
                              @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
                              @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
                              ModelMap map){
         map.addAttribute("cId", cId);
+        map.addAttribute("clId", clId);
+        map.addAttribute("aId", aId);
         map.addAttribute("cName", cName);
         map.addAttribute("hId", hId);
         map.addAttribute("hName", hName);
@@ -169,12 +173,20 @@ public class ViewController {
     @GetMapping("reroutesave")
     @ApiOperation(value = "新增改约记录")
     public String reroutesave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                              @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
+                              @ApiParam(name = "reUId", value = "负责人编号", required = true) Integer reUId,
+                              @ApiParam(name = "arId", value = "未到店编号", required = true) Integer arId,
+                              @ApiParam(name = "aId", value = "预约编号", required = true) Integer aId,
                               @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
                               @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
                               @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
                               @ApiParam(name = "aTime", value = "上次预约时间", required = true) String aTime,
                               ModelMap map){
         map.addAttribute("cId", cId);
+        map.addAttribute("clId", clId);
+        map.addAttribute("reUId", reUId);
+        map.addAttribute("arId", arId);
+        map.addAttribute("aId", aId);
         map.addAttribute("cName", cName);
         map.addAttribute("hId", hId);
         map.addAttribute("hName", hName);
@@ -185,11 +197,15 @@ public class ViewController {
     @GetMapping("failsave")
     @ApiOperation(value = "新增未成交客户")
     public String failsave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                           @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
+                           @ApiParam(name = "aId", value = "预约编号", required = true) Integer aId,
                            @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
                            @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
                            @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
                            ModelMap map){
         map.addAttribute("cId", cId);
+        map.addAttribute("clId", clId);
+        map.addAttribute("aId", aId);
         map.addAttribute("cName", cName);
         map.addAttribute("hId", hId);
         map.addAttribute("hName", hName);
@@ -199,11 +215,15 @@ public class ViewController {
     @GetMapping("successsave")
     @ApiOperation(value = "新增成交客户")
     public String successsave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                              @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
+                              @ApiParam(name = "sAId", value = "预约编号", required = true) Integer sAId,
                               @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
                               @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
                               @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
                               ModelMap map){
         map.addAttribute("cId", cId);
+        map.addAttribute("clId", clId);
+        map.addAttribute("sAId", sAId);
         map.addAttribute("cName", cName);
         map.addAttribute("hId", hId);
         map.addAttribute("hName", hName);
@@ -221,12 +241,16 @@ public class ViewController {
     @GetMapping("followsave")
     @ApiOperation(value = "新增客户跟进")
     public String followssave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                              @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
+                              @ApiParam(name = "clUId", value = "负责人编号", required = true) Integer clUId,
                               @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
                               @ApiParam(name = "ftType", value = "回访类型", required = true) String ftType,
                               ModelMap map){
         //跟进回访类型查询编号
         Integer ftId = iFtypeService.queryFtIdByFtType(ftType);
         map.addAttribute("cId", cId);
+        map.addAttribute("clId", clId);
+        map.addAttribute("clUId", clUId);
         map.addAttribute("cName", cName);
         map.addAttribute("ftId", ftId);
         map.addAttribute("ftType", ftType);
@@ -236,11 +260,19 @@ public class ViewController {
     @GetMapping("referralsave")
     @ApiOperation(value = "新增转诊记录")
     public String referralsave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                               @ApiParam(name = "clId", value = "下午编号", required = true) Integer clId,
+                               @ApiParam(name = "rAId", value = "预约编号", required = true) Integer rAId,
+                               @ApiParam(name = "clUId", value = "负责人编号", required = true) Integer clUId,
+                               @ApiParam(name = "flId", value = "未成交编号", required = true) Integer flId,
                                @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
                                @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
                                @ApiParam(name = "hName", value = "客户名称", required = true) String hName,
                                ModelMap map){
         map.addAttribute("cId", cId);
+        map.addAttribute("clId", clId);
+        map.addAttribute("rAId", rAId);
+        map.addAttribute("clUId", clUId);
+        map.addAttribute("flId", flId);
         map.addAttribute("cName", cName);
         map.addAttribute("hId", hId);
         map.addAttribute("hName", hName);
@@ -267,11 +299,11 @@ public class ViewController {
 
     @GetMapping("appointmentsave")
     @ApiOperation(value = "新增预约客户")
-    public String appointmentsave(@ApiParam(name = "cId", value = "成交客户编号", required = true) Integer cId,
-                                  @ApiParam(name = "cName", value = "成交客户名称", required = true) String cName,
-                                  @ApiParam(name = "atType", value = "成交客户名称", required = true) String atType,
+    public String appointmentsave(@ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
+                                  @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
+                                  @ApiParam(name = "atType", value = "预约类型", required = true) String atType,
                                   ModelMap map){
-        map.addAttribute("cId", cId);
+        map.addAttribute("clId", clId);
         map.addAttribute("cName", cName);
         map.addAttribute("atType", atType);
         return "appointment/appointmentsave";

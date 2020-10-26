@@ -14,7 +14,7 @@
 		<div class="layui-inline">
 			<input class="layui-input" id="cName" autocomplete="off">
 		</div>
-		<button class="layui-btn search">搜索</button>
+		<button class="layui-btn search">查询</button>
 	</div>
 
 	<!-- 数据表格 -->
@@ -70,25 +70,27 @@
                     });
                 }
 
-				//新增客户跟进
+                //新增客户跟进
                 function saveFollow(data, ftType){
                     var ix = layer.open({
                         type: 2, //层类型，iframe
                         title: '新增客户跟进',
-                        content: ['/followsave?cId='+data.cId+
-                        '&cName='+data.cName+'&ftType='+ftType],
+                        content: ['/followsave?cId='+data.cId+'&clId='+data.clId+
+                        '&clUId='+data.clUId+'&cName='+data.cName+'&ftType='+ftType],
                         area: ['450px', '350px'],
                         resize: false,
                         btn: '确定',
                         btn1: function (index, layero) {
                             var body = layer.getChildFrame('body', index);
                             //获取值
-                            var fCId = $(body).find("#fCId").val();
+                            var cId = $(body).find("#cId").val();
+                            var fClId = $(body).find("#fClId").val();
+                            var clUId = $(body).find("#clUId").val();
                             var fTypeId = $(body).find("#fTypeId").val();
-                            var ftType = $(body).find("#ftType").val();
                             var fContent = $(body).find("#fContent").val();
                             if (fContent != '' && fContent.trim() != '') {
-                                $.post("/follow/saveFollow", {uId:uId, fCId:fCId, fTypeId:fTypeId, fContent:fContent},
+                                $.post("/follow/saveFollow", {uId:uId, cId:cId, fClId:fClId,
+                                        clUId:clUId, fTypeId:fTypeId, ftType:ftType, fContent:fContent},
                                     function (obj) {
                                         layer.msg(obj.msg, {time: 500}, function () {
                                             layer.close(ix);
@@ -104,7 +106,7 @@
                             layer.close(index);
                         }
                     });
-				}
+                }
 
                 //执行一个 table 实例
                 table.render({
@@ -158,20 +160,21 @@
                                 var ix = layer.open({
                                     type: 2, //层类型，iframe
                                     title: '编辑成交客户',
-                                    content: ['/success/querySBySId?sId=' + data[0].sId],
+                                    content: ['/success/querySBySId?sId='+data[0].sId+'&cId='+data[0].cId],
                                     area: ['450px', '450px'],
                                     resize: false,
                                     btn: '确定',
                                     btn1: function (index, layero) {
                                         var body = layer.getChildFrame('body', index);
                                         //获取值
-                                        var sCId = $(body).find("#sCId").val();
+                                        var sId = $(body).find("#sId").val();
+                                        var cId = $(body).find("#cId").val();
+                                        var sAId = $(body).find("#sAId").val();
                                         var sHId = $(body).find("#sHId").val();
                                         var sMessage = $(body).find("#sMessage").val();
                                         var sSum = $(body).find("#sSum").val();
-                                        var sPaysum = $(body).find("#sPaysum").val();
                                         var sRemark = $(body).find("#sRemark").val();
-                                        if (sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '') {
+                                        if (sSum != '' && sSum.trim() != '') {
                                             //声明格式是否正确
                                             var verify = true;
                                             if (sSum <= 0) {
@@ -179,16 +182,11 @@
                                                 verify = false;
                                                 return;
                                             }
-                                            if (sPaysum <= 0) {
-                                                layer.msg("客户支付金额必须大于零");
-                                                verify = false;
-                                                return;
-                                            }
                                             if (verify) {
                                                 $.post("/success/editSBySId",
                                                     {
-                                                        uId: uId, sCId: sCId, sHId: sHId, sMessage: sMessage,
-                                                        sSum: sSum, sPaysum: sPaysum, sRemark: sRemark
+                                                        uId: uId, sId:sId, cId:cId, sAId: sAId, sHId: sHId,
+														sMessage: sMessage, sSum: sSum, sRemark: sRemark
                                                     },
                                                     function (obj) {
                                                         layer.msg(obj.msg, {time: 500}, function () {
@@ -276,15 +274,17 @@
                                 var ix = layer.open({
                                     type: 2, //层类型，iframe
                                     title: '新增成交客户',
-                                    content: ['/successsave?cId='+data[0].cId+'&cName='+data[0].cName+
-                                    '&hId='+data[0].hId+'&hName='+data[0].hName],
+                                    content: ['/successsave?cId='+data[0].cId+'&clId='+data[0].clId+
+                                    '&sAId='+data[0].sAId+'&cName='+data[0].cName+'&hId='+data[0].hId+'&hName='+data[0].hName],
                                     area: ['500px', '450px'],
                                     resize: false,
                                     btn: '确定',
                                     btn1: function (index, layero) {
                                         var body = layer.getChildFrame('body', index);
                                         //获取值
-                                        var sCId = $(body).find("#sCId").val();
+                                        var cId = $(body).find("#clId").val();
+                                        var clId = $(body).find("#clId").val();
+                                        var sAId = $(body).find("#sAId").val();
                                         var sHId = $(body).find("#sHId").val();
                                         var sMessage = $(body).find("#sMessage").val();
                                         var sSum = $(body).find("#sSum").val();
@@ -302,7 +302,9 @@
                                             if(verify) {
                                                 $.post("/success/saveSuccess", {
                                                         uId: uId,
-                                                        sCId: sCId,
+                                                        cId: cId,
+                                                        clId: clId,
+                                                        sAId: sAId,
                                                         sHId: sHId,
                                                         sMessage: sMessage,
                                                         sSum: sSum.trim(),

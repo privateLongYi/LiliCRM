@@ -9,14 +9,67 @@
       This element was generated on Thu Aug 20 21:32:10 CST 2020.
     -->
     <id column="ar_id" jdbcType="INTEGER" property="arId" />
-    <result column="ar_c_id" jdbcType="INTEGER" property="arCId" />
+    <result column="ar_a_id" jdbcType="INTEGER" property="arAId" />
     <result column="ar_h_id" jdbcType="INTEGER" property="arHId" />
     <result column="ar_cause" jdbcType="LONGVARCHAR" property="arCause" />
+    <result column="ar_invalid" jdbcType="INTEGER" property="arInvalid" />
   </resultMap>
+
+  <!--根据客户名称查询未到店客户-->
+  <select id="queryAByCName" resultMap="BaseResultMap">
+    SELECT ar.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId,
+    h.h_name AS hName, cl.cl_id AS clId, cl.cl_u_id AS clUId,
+    a.a_id AS aId, a.a_time AS aTime FROM arrive ar
+    LEFT JOIN appointment a ON ar.ar_a_id=a.a_id
+    LEFT JOIN hospital h ON h.h_id=a.a_h_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
+    <where>
+      <if test="rName != '管理员'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name LIKE '%${cName}%'
+      </if>
+      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+      AND ar.ar_invalid = 0
+    </where>
+    limit #{page}, #{limit}
+  </select>
+
+  <!--根据客户名称查询未到店客户-->
+  <select id="getTotalByCName" resultType="Integer">
+    SELECT COUNT(*) FROM arrive ar
+    LEFT JOIN appointment a ON ar.ar_a_id=a.a_id
+    LEFT JOIN hospital h ON h.h_id=a.a_h_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
+    <where>
+      <if test="rName != '管理员'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name LIKE '%${cName}%'
+      </if>
+      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+      AND ar.ar_invalid = 0
+    </where>
+  </select>
 
   <!--新增未到店客户-->
   <insert id="saveArrive">
-    INSERT INTO arrive(ar_c_id, ar_h_id, ar_cause) VALUES (#{arCId}, #{arHId}, #{arCause})
+    INSERT INTO arrive(ar_a_id, ar_h_id, ar_cause, ar_invalid)
+    VALUES (#{arAId}, #{arHId}, #{arCause}, #{arInvalid})
   </insert>
+
+  <!--根据预约编号编辑未到店客户为失效状态-->
+  <update id="editArInvalidByAId">
+    UPDATE arrive SET ar_invalid = 1 WHERE ar_a_id = #{aId}
+  </update>
+
+  <!--根据未到店编号编辑未到店客户为失效状态-->
+  <update id="editArInvalidByArId">
+    UPDATE arrive SET ar_invalid = 1 WHERE ar_id = #{arId}
+  </update>
 
 </mapper>

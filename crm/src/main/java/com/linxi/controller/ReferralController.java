@@ -37,7 +37,7 @@ public class ReferralController {
     private ICtypeService iCtypeService;
 
     @Autowired
-    private ICustomerService iCustomerService;
+    private IClueService iClueService;
 
     @Autowired
     private IAtypeService iAtypeService;
@@ -45,32 +45,41 @@ public class ReferralController {
     @Autowired
     private IAppointmentService iAppointmentService;
 
+    @Autowired
+    private IFailService iFailService;
+
     @PostMapping("saveReferral")
     @ApiOperation(value = "新增转诊记录")
     @ResponseBody
     public DataResult saveReferral(@ApiParam(value = "用户编号", required = true) Integer uId,
-                                   @ApiParam(value = "客户编号", required = true) Integer rCId,
+                                   @ApiParam(value = "客户编号", required = true) Integer cId,
+                                   @ApiParam(value = "线索编号", required = true) Integer clId,
+                                   @ApiParam(value = "预约编号", required = true) Integer rAId,
+                                   @ApiParam(value = "负责人编号", required = true) Integer clUId,
+                                   @ApiParam(value = "未成交编号", required = true) Integer flId,
                                    @ApiParam(value = "未成交门诊编号", required = true) Integer rFailHId,
                                    @ApiParam(value = "新预约门诊编号", required = true) Integer rHId,
                                    @ApiParam(value = "预约时间", required = true) String aTime,
                                    @ApiParam(value = "未成交信息", required = true) String rMessage,
                                    @ApiParam(value = "转诊原因", required = true) String rCause){
         //根据客户状态查询编号
-        Integer cTypeId = iCtypeService.queryCtypeByCtType("待到店");
+        Integer clTypeId = iCtypeService.queryCtypeByCtType("待到店");
         //根据编号编辑客户状态
-        iCustomerService.editCTypeIdByCId(rCId, cTypeId);
+        iClueService.editClTypeIdByClId(clId, clTypeId);
         //根据预约类型查询编号
         Integer aTypeId = iAtypeService.queryAByAType("转诊");
         //新增预约记录
-        Appointment appointment = new Appointment(null, rCId, Timestamp.valueOf(aTime), rHId, aTypeId);
-        iAppointmentService.addAppoint(appointment);
+        Appointment appointment = new Appointment(null, clId, Timestamp.valueOf(aTime), rHId, aTypeId, clUId, 0);
+        iAppointmentService.saveAppointment(appointment);
         //新增操作记录
-        Operating operating = new Operating(rCId, uId, "新增了转诊记录");
-        iOperatingService.addOperatingRecord(operating);
+        Operating operating = new Operating(cId, uId, "新增了转诊记录");
+        iOperatingService.saveOperating(operating);
         //新增转诊记录
-        Referral referral = new Referral(null, rCId, rFailHId, rHId, rMessage, rCause);
+        Referral referral = new Referral(null, rAId, rFailHId, rHId, rMessage, rCause);
         iReferralService.saveReferral(referral);
-        return new DataResult(0, "新增成功");
+        //根据未成交编号编辑为失效
+        iFailService.editFlInvalidByFlId(flId);
+        return new DataResult(0, "转诊成功");
     }
 
     @GetMapping("queryRByCName")

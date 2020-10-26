@@ -9,7 +9,7 @@
       This element was generated on Thu Aug 20 21:32:10 CST 2020.
     -->
     <id column="s_id" jdbcType="INTEGER" property="sId" />
-    <result column="s_c_id" jdbcType="INTEGER" property="sCId" />
+    <result column="s_a_id" jdbcType="INTEGER" property="sAId" />
     <result column="s_h_id" jdbcType="INTEGER" property="sHId" />
     <result column="s_sum" jdbcType="INTEGER" property="sSum" />
     <result column="s_paysum" jdbcType="INTEGER" property="sPaysum" />
@@ -19,17 +19,27 @@
   </resultMap>
 
   <!--根据客户编号查询成交客户-->
-  <select id="querySBySCId" resultMap="BaseResultMap">
+  <select id="querySByClId" resultMap="BaseResultMap">
     SELECT s.*, c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hName FROM success s
-    LEFT JOIN customer c ON s.s_c_id = c.c_id
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON s.s_h_id = h.h_id
-    WHERE s.s_c_id = #{sCId}
+    WHERE cl.cl_id = #{clId}
+    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     ORDER BY s_time DESC
+    limit #{page}, #{limit}
   </select>
 
-  <!--根据客户编号查询成交客户总条数-->
-  <select id="getTotalBySCId" resultType="Integer">
-    SELECT COUNT(*) FROM success s WHERE s.s_c_id = #{sCId}
+  <!--根据线索编号查询成交客户总条数-->
+  <select id="getTotalByClId" resultType="Integer">
+    SELECT COUNT(*) FROM success s
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
+    LEFT JOIN hospital h ON s.s_h_id = h.h_id
+    WHERE cl.cl_id = #{clId}
+    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
   </select>
 
   <!--根据成交客户编号删除成交客户-->
@@ -39,8 +49,10 @@
 
   <!--根据成交客户编号查询成交客户-->
   <select id="querySBySId" resultMap="BaseResultMap">
-    SELECT s.*, c.c_name AS cName, h.h_name AS hName FROM success s
-    LEFT JOIN customer c ON s.s_c_id = c.c_id
+    SELECT s.*, c.c_name AS cName, h.h_name AS hName, c.c_id AS cId FROM success s
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON s.s_h_id = h.h_id
     WHERE s.s_id = #{sId}
   </select>
@@ -48,44 +60,50 @@
   <!--根据成交客户编号编辑成交客户-->
   <update id="editSBySId">
     UPDATE success SET s_h_id = #{sHId}, s_message = #{sMessage}, s_sum = #{sSum},
-    s_paysum = #{sPaysum}, s_remark = #{sRemark} WHERE s_id = #{sId}
+    s_remark = #{sRemark} WHERE s_id = #{sId}
   </update>
 
   <!--新增成交客户-->
   <insert id="saveSuccess">
-    INSERT INTO success(s_c_id, s_h_id, s_message, s_sum, s_paysum, s_remark, s_time)
-    VALUES (#{sCId}, #{sHId}, #{sMessage}, #{sSum}, 0, #{sRemark}, now())
+    INSERT INTO success(s_a_id, s_h_id, s_message, s_sum, s_paysum, s_remark, s_time)
+    VALUES (#{sAId}, #{sHId}, #{sMessage}, #{sSum}, 0, #{sRemark}, now())
   </insert>
 
-  <!--根据客户名称查询未成交客户-->
+  <!--根据客户名称查询成交客户-->
   <select id="querySByCName" resultMap="BaseResultMap">
     SELECT s.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId,
-    h.h_name AS hName FROM success s
-    LEFT JOIN customer c ON s.s_c_id=c.c_id
+    h.h_name AS hName, cl.cl_id AS clId, cl.cl_u_id AS clUId FROM success s
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON s.s_h_id=h.h_id
     <where>
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
+      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     </where>
     limit #{page}, #{limit}
   </select>
 
-  <!--根据客户名称查询未成交客户总数-->
+  <!--根据客户名称查询成交客户总数-->
   <select id="getTotalByCName" resultType="Integer">
     SELECT COUNT(*) FROM success s
-    LEFT JOIN customer c ON s.s_c_id=c.c_id
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON s.s_h_id=h.h_id
     <where>
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
+      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     </where>
   </select>
 
@@ -94,8 +112,8 @@
     UPDATE success SET s_paysum = #{paySum} WHERE s_id = #{sId}
   </update>
 
-  <!--根据客户编号查询成交金额-->
-  <select id="queryTotalMoneyByCId" resultType="Integer">
+  <!--根据线索编号查询成交金额-->
+  <select id="queryTotalMoneyByClId" resultType="Integer">
     SELECT
     <if test="type == 0">
       SUM(s_sum)
@@ -103,20 +121,25 @@
     <if test="type == 1">
       SUM(s_paySum)
     </if>
-    FROM success WHERE s_c_id = #{cId}
+    FROM success s
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    WHERE cl.cl_id = #{clId}
   </select>
 
   <!--根据用户编号和客户名称查询成交客户-->
   <select id="querySCByUIdAndCName" resultMap="BaseResultMap">
-    SELECT s.s_id, c.c_name AS cName FROM customer c
-    LEFT JOIN `user` u ON c.c_u_id=u.u_id
-    LEFT JOIN success s ON c.c_id=s.s_c_id
+    SELECT s.s_id, c.c_name AS cName FROM success s
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     <where>
       c.c_name LIKE '%${cName}%'
-      AND c.c_type_id = 7
+      AND cl.cl_type_id = 7
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
+      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     </where>
     limit 0, 3
   </select>
@@ -124,19 +147,23 @@
   <!--根据用户编号和起止时间查询成交总数-->
   <select id="querySByUIdAndTime" resultType="Integer">
     SELECT COUNT(*) FROM success s
-    INNER JOIN customer c ON s.s_c_id=c.c_id
-    INNER JOIN `user` u ON c.c_u_id=u.u_id
-    WHERE u.u_id = 17
-    AND <![CDATA[  s.s_time >= DATE_FORMAT('2020-10-01', '%Y-%m-%d') ]]>
-    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT('2020-10-17', '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    INNER JOIN appointment a ON s.s_a_id=a.a_id
+	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
+    WHERE u.u_id = #{uId}
+    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+    AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
   </select>
 
   <!--根据用户编号和起止时间查询成交总金额-->
   <select id="querySSumByUIdAndTime" resultType="Integer">
     SELECT SUM(s.s_sum) FROM success s
-    INNER JOIN customer c ON s.s_c_id=c.c_id
-    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    INNER JOIN appointment a ON s.s_a_id=a.a_id
+	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
     WHERE u.u_id = #{uId}
+    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
   </select>
@@ -144,9 +171,11 @@
   <!--根据用户编号和起止时间查询收款总金额-->
   <select id="querySPaysumByUIdAndTime" resultType="Integer">
     SELECT SUM(s.s_paysum) FROM success s
-    INNER JOIN customer c ON s.s_c_id=c.c_id
-    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    INNER JOIN appointment a ON s.s_a_id=a.a_id
+	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
     WHERE u.u_id = #{uId}
+    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
   </select>
@@ -154,32 +183,38 @@
   <!--根据用户分组查询总成交额-->
   <select id="querySSumGruopByUId" resultMap="BaseResultMap">
     SELECT u.u_name AS uName, SUM(s.s_sum) AS totalSum FROM success s
-    INNER JOIN customer c ON s.s_c_id=c.c_id
-    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    INNER JOIN appointment a ON s.s_a_id=a.a_id
+	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
     INNER JOIN hospital h ON s.s_h_id=h.h_id
     WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     GROUP BY u.u_id
   </select>
 
   <!--根据门诊分组查询总成交额-->
   <select id="querySSumGruopByHId" resultMap="BaseResultMap">
     SELECT h.h_name AS hName, SUM(s.s_sum) AS totalSum FROM success s
-    INNER JOIN customer c ON s.s_c_id=c.c_id
-    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    INNER JOIN appointment a ON s.s_a_id=a.a_id
+	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
 	INNER JOIN hospital h ON s.s_h_id=h.h_id
     WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     GROUP BY s.s_h_id
   </select>
 
   <!--根据报名项目分组查询总成交额-->
   <select id="querySSumGruopByCProject" resultMap="BaseResultMap">
-    SELECT c.c_project AS project, SUM(s.s_sum) AS totalSum FROM success s
-    INNER JOIN customer c ON s.s_c_id=c.c_id
+    SELECT cl.cl_project AS project, SUM(s.s_sum) AS totalSum FROM success s
+    INNER JOIN appointment a ON s.s_a_id=a.a_id
+	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
     WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
-    GROUP BY c.c_project
+    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+    GROUP BY cl.cl_project
   </select>
 
 </mapper>

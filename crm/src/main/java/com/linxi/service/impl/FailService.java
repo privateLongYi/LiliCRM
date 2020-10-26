@@ -37,4 +37,10 @@ public class FailService implements IFailService{
     public Integer getTotalByCName(Integer uId, String rName, String cName) {
         return failMapper.getTotalByCName(uId, rName, cName);
     }
+
+    @Override
+    public void editFlInvalidByFlId(Integer flId) {
+        failMapper.editFlInvalidByFlId(flId);
+    }
+
 }

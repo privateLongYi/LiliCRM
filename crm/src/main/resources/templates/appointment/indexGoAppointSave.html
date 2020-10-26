@@ -18,7 +18,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">客户名称</label>
             <div class="layui-input-block">
-                <input type="hidden" id="aCId">
+                <input type="hidden" id="aClId">
                 <input type="text" class="layui-input" autocomplete="off" id="cName">
                 <div id="list" style="height: auto; display: none; background-color: white;"></div>
             </div>
@@ -65,7 +65,7 @@
             $.post("/customer/queryCACByUIdAndCName", {rName:rName, uId:uId, cName:cName}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
-                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].cName+"&quot;);'>"+data.data[i].cName+"</div>";
+                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].cName+"&quot;);'>"+data.data[i].cName+"</div>";
                 }
                 html += "<div class='list' style='text-align: right;margin-top: -10px;' id='close'>关闭</div>";
                 //赋值
@@ -92,8 +92,8 @@
     });
 
     //赋值
-    function assign(cId, cName) {
-        $("#aCId").val(cId);
+    function assign(clId, cName) {
+        $("#aClId").val(clId);
         $("#cName").val(cName);
         //隐藏列表
         $("#list").attr("style", "background-color: white;height: auto; display: none;");

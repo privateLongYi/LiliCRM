@@ -34,7 +34,7 @@
 			<div class="layui-col-md4">
 				<label class="layui-form-label">报名项目</label>
 				<div class="layui-input-inline layui-form">
-					<select id="searchCProject">
+					<select id="searchClProject">
 						<option value=""></option>
 						<option value="种植">种植</option>
 						<option value="矫正">矫正</option>
@@ -46,15 +46,15 @@
 			<div class="layui-col-md4">
 				<label class="layui-form-label">是否交定金</label>
 				<div class="layui-input-inline layui-form">
-					<input type="radio" name="searchCEarnest" value="1" title="是">
-					<input type="radio" name="searchCEarnest" value="0" title="否">
-					<input type="radio" name="searchCEarnest" value="2" title="全部">
+					<input type="radio" name="searchClEarnest" value="0" title="否">
+					<input type="radio" name="searchClEarnest" value="1" title="是">
+					<input type="radio" name="searchClEarnest" value="2" title="全部">
 				</div>
 			</div>
 			<div class="layui-col-md4" id="principal">
 				<label class="layui-form-label">负责人</label>
 				<div class="layui-input-inline layui-form">
-					<select id="searchCUId">
+					<select id="searchClUId">
 						<option value=""></option>
 					</select>
 				</div>
@@ -62,13 +62,13 @@
 			<div class="layui-col-md4">
 				<label class="layui-form-label">来源</label>
 				<div class="layui-inline">
-					<input class="layui-input" id="searchCSource" autocomplete="off">
+					<input class="layui-input" id="searchClSource" autocomplete="off">
 				</div>
 			</div><br><br><br>
 			<div class="layui-col-md8">
 				<label class="layui-form-label">报名时间</label>
 				<div class="layui-input-inline layui-form">
-					<input type="text" id="searchCPlaceTime" readonly
+					<input type="text" id="searchClPlaceTime" readonly
 						   autocomplete="off" class="layui-input" style="width: 300px;">
 				</div>
 			</div><br><br><br>
@@ -107,14 +107,15 @@
 
             //时间控件
             laydate.render({
-                elem: '#searchCPlaceTime' //指定元素
+                elem: '#searchClPlaceTime' //指定元素
                 ,type: 'datetime' //时间格式
                 ,trigger: 'click' //采用click弹出
                 ,range: true //开启左右面板范围选择
             });
 
             if (rName == "销售员"){
-                $("#searchCUId").attr("disabled", "disabled");
+                $("#searchClUId").attr("disabled", "disabled");
+                form.render('select');
             } else {
                 //获取角色为销售员的用户对象
                 $.get("/user/queryUserByRName", function (res){
@@ -123,7 +124,7 @@
                     $.each(res.data, function (index, item) {
                         html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
                     });
-                    $("#searchCUId").append(html);
+                    $("#searchClUId").append(html);
                     //append后必须重新渲染
                     form.render('select');
                 })
@@ -136,7 +137,7 @@
                 $.each(res.data, function (index, item) {
                     html += "<option value='" + item.ctId + "'>" + item.ctType + "</option>";
                 });
-                $("#searchCTypeId").append(html);
+                $("#searchClTypeId").append(html);
                 //append后必须重新渲染
                 form.render('select');
             });
@@ -218,23 +219,23 @@
                 //获取筛选条件
                 var cName = $("#searchCName").val();
                 var cTel = $("#searchCTel").val();
-                var cProject = $("#searchCProject").val();
-                var cEarnest;
-                if ($("[name=searchCEarnest]")[0].checked){
-                    cEarnest = $("[name=searchCEarnest]")[0].value;
-                } else if ($("[name=searchCEarnest]")[1].checked){
-                    cEarnest = $("[name=searchCEarnest]")[1].value;
-                } else if ($("[name=searchCEarnest]")[2].checked){
-                    cEarnest = $("[name=searchCEarnest]")[2].value;
+                var clProject = $("#searchClProject").val();
+                var clEarnest;
+                if ($("[name=searchClEarnest]")[0].checked){
+                    clEarnest = $("[name=searchClEarnest]")[0].value;
+                } else if ($("[name=searchClEarnest]")[1].checked){
+                    clEarnest = $("[name=searchClEarnest]")[1].value;
+                } else if ($("[name=searchClEarnest]")[2].checked){
+                    clEarnest = $("[name=searchClEarnest]")[2].value;
                 }
-                var cUId = $("#searchCUId").val();
-                var cSource = $("#searchCSource").val();
-                var searchCPlaceTime = $("#searchCPlaceTime").val();
+                var clUId = $("#searchClUId").val();
+                var clSource = $("#searchClSource").val();
+                var searchClPlaceTime = $("#searchClPlaceTime").val();
                 var beginTime;
                 var endTime;
-                if (searchCPlaceTime != null){
-                    var beginTime = searchCPlaceTime.split(" - ")[0];
-                    var endTime = searchCPlaceTime.split(" - ")[1];
+                if (searchClPlaceTime != null && searchClPlaceTime != ""){
+                    var beginTime = searchClPlaceTime.split(" - ")[0];
+                    var endTime = searchClPlaceTime.split(" - ")[1];
                 }
                 //根据筛选条件查询
                 table.reload('tab', {
@@ -242,10 +243,10 @@
                     ,where: {
                         cName: cName
                         ,cTel: cTel
-                        ,cProject: cProject
-                        ,cEarnest: cEarnest
-                        ,cUId: cUId
-                        ,cSource: cSource
+                        ,clProject: clProject
+                        ,clEarnest: clEarnest
+                        ,clUId: clUId
+                        ,clSource: clSource
                         ,beginTime: beginTime
                         ,endTime: endTime
                     }
@@ -273,13 +274,13 @@
 						,{field: 'cSex', minWidth: 120, title: '性别', sort: true, align:'center'}
 						,{field: 'cAge', minWidth: 120, title: '年龄', align:'center'}
 						,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
-						,{field: 'cProject', minWidth: 120, title: '报名项目', align:'center'}
-						,{field: 'cPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
-						,{field: 'cRemark', minWidth: 120, title: '备注', align:'center'}
-						,{field: 'cEarnest', minWidth: 120, title: '定金', align:'center'}
+						,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
+						,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+						,{field: 'clRemark', minWidth: 120, title: '备注', align:'center'}
+						,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
 						,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
-						,{field: 'cSource', minWidth: 120, title: '来源', align:'center'}
-						,{field: 'cMessage', minWidth: 120, title: '症状信息', align:'center'}
+						,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
+						,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
 						,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
 						,{fixed: 'right', minWidth: 150, title: '操作', toolbar: '#barDemo', align:'center'}
 					]
@@ -322,13 +323,13 @@
 							}
 							var cAge = $(body).find("#cAge").val();
 							var cTel = $(body).find("#cTel").val();
-							var cProject = $(body).find("#cProject").val();
-							var cRemark = $(body).find("#cRemark").val();
-                            var cMessage = $(body).find("#cMessage").val();
-							var cEarnest = $(body).find("#cEarnest").val();
-							var cUId = $(body).find("#cUId").val();
-							var cSource = $(body).find("#cSource").val();
-							var cTypeId = $(body).find("#cTypeId").val();
+							var clProject = $(body).find("#clProject").val();
+							var clRemark = $(body).find("#clRemark").val();
+                            var clMessage = $(body).find("#clMessage").val();
+							var clEarnest = $(body).find("#clEarnest").val();
+							var clUId = $(body).find("#clUId").val();
+							var clSource = $(body).find("#clSource").val();
+							var clTypeId = $(body).find("#clTypeId").val();
 							if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
 								//声明格式是否正确
 								var verify = true;
@@ -353,16 +354,16 @@
 									return;
 								}
 								//验证定金格式
-								if(cEarnest != ''){
-									if(cEarnest < 0){
+								if(clEarnest != ''){
+									if(clEarnest < 0){
 										layer.msg("定金不能为负数");
 										verify = false;
 										return;
 									}
 								}
 								if(verify){
-									$.post("/customer/editCByCId?cId="+data.cId, {uId: uId, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cProject:cProject,
-											cRemark:cRemark, cMessage:cMessage, cEarnest:cEarnest, cUId:cUId, cSource:cSource, cTypeId:cTypeId},
+									$.post("/customer/editCByCId?cId="+data.cId, {uId: uId, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), clProject:clProject,
+											clRemark:clRemark, clMessage:clMessage, clEarnest:clEarnest, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
 										function (obj) {
 											layer.msg(obj.msg, {time: 500}, function () {
 												layer.close(ix);
@@ -384,19 +385,19 @@
 					var ix = layer.open({
 						type: 2, //层类型，iframe
 						title: '新增预约客户',
-						content: ['/appointmentsave?cId='+data.cId+'&cName='+data.cName+'&atType=普通预约'],
+						content: ['/appointmentsave?clId='+data.clId+'&cName='+data.cName+'&atType=普通预约'],
 						area: ['450px', '450px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
 							var body = layer.getChildFrame('body', index);
 							//获取值
-							var aCId = $(body).find("#aCId").val();
+							var aClId = $(body).find("#aClId").val();
 							var aTime = $(body).find("#aTime").val();
 							var aHId = $(body).find("#aHId").val();
 							var atType = $(body).find("#atType").val();
 							if (aTime != '') {
-								$.post("/appointment/saveAppointment", {uId:uId, aCId:aCId, aTime:aTime,
+								$.post("/appointment/saveAppointment", {uId:uId, aClId:aClId, aTime:aTime,
 										aHId:aHId, atType:atType},
 									function (obj) {
 										layer.msg(obj.msg, {time: 500}, function () {

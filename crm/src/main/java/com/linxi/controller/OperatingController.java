@@ -26,11 +26,11 @@ public class OperatingController {
     @Autowired
     private IOperatingService iOperatingService;
 
-    @GetMapping("queryOpByOpCId")
-    @ApiOperation(value = "根据客户编号查询操作记录")
+    @GetMapping("queryOpByClId")
+    @ApiOperation(value = "根据线索编号查询操作记录")
     @ResponseBody
-    public DataResult queryOpByOpCId(@ApiParam(value = "客户编号", required = true) Integer opCId){
-        List<Operating> operatings = iOperatingService.queryOpByOpCId(opCId);
+    public DataResult queryOpByClId(@ApiParam(value = "线索编号", required = true) Integer clId){
+        List<Operating> operatings = iOperatingService.queryOpByClId(clId);
         return new DataResult(0, "操作成功", 0, operatings);
     }
 

@@ -29,4 +29,7 @@ public interface FtypeMapper {
     //根据回访类型查询编号
     Integer queryFtIdByFtType(String ftType);
 
+    //查询所有回访类型
+    List<Ftype> queryFtype();
+
 }

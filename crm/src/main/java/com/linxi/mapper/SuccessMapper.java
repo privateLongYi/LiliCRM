@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface SuccessMapper {
 
-    //根据客户编号查询成交客户
-    List<Success> querySBySCId(Integer sCId);
+    //根据线索编号查询成交客户
+    List<Success> querySByClId(@Param("clId") Integer clId,
+                               @Param("page") Integer page,
+                               @Param("limit") Integer limit);
 
-    //根据客户编号查询成交客户总条数
-    Integer getTotalBySCId(Integer sCId);
+    //根据线索编号查询成交客户总条数
+    Integer getTotalByClId(Integer clId);
 
     //根据成交客户编号删除成交客户
     void delSBySId(Integer sId);
@@ -38,10 +40,12 @@ public interface SuccessMapper {
                             @Param("cName") String cName);
 
     //根据成交客户编号编辑支付金额
-    void editSPaysumBySId(@Param("sId") Integer sId, @Param("paySum") Integer paySum);
+    void editSPaysumBySId(@Param("sId") Integer sId,
+                          @Param("paySum") Integer paySum);
 
-    //根据客户编号查询总成交金额
-    Integer queryTotalMoneyByCId(@Param("cId") Integer cId, @Param("type") Integer type);
+    //根据线索编号查询总成交金额
+    Integer queryTotalMoneyByClId(@Param("clId") Integer cId,
+                                  @Param("type") Integer type);
 
     //根据用户编号和客户名称查询成交客户
     List<Success> querySCByUIdAndCName(@Param("rName") String rName,

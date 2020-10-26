@@ -23,6 +23,9 @@ public interface IPayrecordService {
     //根据成交客户编号查询支付总金额
     Integer queryPPaysumBySId(Integer sId);
 
+    //根据成交客户编号查询退款总金额
+    Integer queryRefundBySId(Integer sId);
+
     //根据筛选条件查询支付记录
     List<Payrecord> queryPByScreen(@Param("page") Integer page,
                                    @Param("limit") Integer limit,

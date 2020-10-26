@@ -40,17 +40,22 @@ public class SuccessController {
     private ICustomerService iCustomerService;
 
     @Autowired
+    private IClueService iClueService;
+
+    @Autowired
     private IUserService iUserService;
 
     @Autowired
     private IHospitalService iHospitalService;
 
-    @GetMapping("querySBySCId")
-    @ApiOperation(value = "根据客户编号查询成交客户")
+    @GetMapping("querySByClId")
+    @ApiOperation(value = "根据线索编号查询成交客户")
     @ResponseBody
-    public DataResult querySBySCId(@ApiParam(value = "客户编号", required = true) Integer sCId){
-        List<Success> successes = iSuccessService.querySBySCId(sCId);
-        Integer total = iSuccessService.getTotalBySCId(sCId);
+    public DataResult querySByClId(@ApiParam(value = "线索编号", required = true) Integer clId,
+                                   @ApiParam(value = "页码", required = true) Integer page,
+                                   @ApiParam(value = "显示条数", required = true) Integer limit){
+        List<Success> successes = iSuccessService.querySByClId(clId, (page - 1) * limit, limit);
+        Integer total = iSuccessService.getTotalByClId(clId);
         return new DataResult(0, "操作成功", total, successes);
     }
 
@@ -61,7 +66,7 @@ public class SuccessController {
                                 @ApiParam(value = "成交客户编号", required = true) Integer sId){
         //新增操作记录
         Operating operating = new Operating(sId, uId, "删除了成交客户");
-        iOperatingService.addOperatingRecord(operating);
+        iOperatingService.saveOperating(operating);
         //删除成交客户
         iSuccessService.delSBySId(sId);
         return new DataResult(0, "操作成功");
@@ -69,28 +74,31 @@ public class SuccessController {
 
     @GetMapping("querySBySId")
     @ApiOperation(value = "根据成交客户编号查询成交客户")
-    public String querySBySCId(@ApiParam(value = "成交客户编号", required = true) Integer sId, ModelMap map){
+    public String querySBySCId(@ApiParam(value = "成交客户编号", required = true) Integer sId,
+                               @ApiParam(value = "客户编号", required = true) Integer cId,
+                               ModelMap map){
         Success success = iSuccessService.querySBySId(sId);
         map.addAttribute("s", success);
+        map.addAttribute("cId", cId);
         return "success/successedit";
     }
 
     @PostMapping("editSBySId")
     @ApiOperation(value = "根据成交客户编号编辑成交客户")
     @ResponseBody
-    public DataResult querySBySCId(@ApiParam(value = "用户编号", required = true) Integer uId,
-                                   @ApiParam(value = "成交编号", required = true) Integer sId,
-                                   @ApiParam(value = "成交客户编号", required = true) Integer sCId,
-                                   @ApiParam(value = "门诊编号", required = true) Integer sHId,
-                                   @ApiParam(value = "成交信息", required = true) String sMessage,
-                                   @ApiParam(value = "总成交金额", required = true) Integer sSum,
-                                   @ApiParam(value = "总付款金额", required = true) Integer sPaysum,
-                                   @ApiParam(value = "成交备注", required = true) String sRemark){
+    public DataResult editSBySId(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                 @ApiParam(value = "用户编号", required = true) Integer cId,
+                                 @ApiParam(value = "成交编号", required = true) Integer sId,
+                                 @ApiParam(value = "成交客户编号", required = true) Integer sAId,
+                                 @ApiParam(value = "门诊编号", required = true) Integer sHId,
+                                 @ApiParam(value = "成交信息", required = true) String sMessage,
+                                 @ApiParam(value = "总成交金额", required = true) Integer sSum,
+                                 @ApiParam(value = "成交备注", required = true) String sRemark){
         //新增操作记录
-        Operating operating = new Operating(sCId, uId, "编辑了成交客户");
-        iOperatingService.addOperatingRecord(operating);
+        Operating operating = new Operating(cId, uId, "编辑了成交客户");
+        iOperatingService.saveOperating(operating);
         //编辑成交客户
-        Success success = new Success(sId, sCId, sHId, sMessage, sSum, sPaysum, sRemark);
+        Success success = new Success(sId, sAId, sHId, sMessage, sSum, null, sRemark);
         iSuccessService.editSBySId(success);
         return new DataResult(0, "编辑成功");
     }
@@ -99,20 +107,22 @@ public class SuccessController {
     @ApiOperation(value = "新增成交客户")
     @ResponseBody
     public DataResult saveSuccess(@ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
-                                  @ApiParam(name = "sCId", value = "客户编号", required = true) Integer sCId,
+                                  @ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                                  @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
+                                  @ApiParam(name = "sAId", value = "预约编号", required = true) Integer sAId,
                                   @ApiParam(name = "sHId", value = "门诊编号", required = true) Integer sHId,
                                   @ApiParam(name = "sMessage", value = "成交信息", required = true) String sMessage,
                                   @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
                                   @ApiParam(name = "sRemark", value = "备注", required = true) String sRemark){
         //添加操作记录
-        Operating operating = new Operating(sCId, uId, "添加了成交客户");
-        iOperatingService.addOperatingRecord(operating);
+        Operating operating = new Operating(cId, uId, "添加了成交客户");
+        iOperatingService.saveOperating(operating);
         //根据客户状态查询编号
-        Integer cTypeId = iCtypeService.queryCtypeByCtType("成交");
+        Integer clTypeId = iCtypeService.queryCtypeByCtType("成交");
         //改变客户状态为成交状态
-        iCustomerService.editCTypeIdByCId(sCId, cTypeId);
+        iClueService.editClTypeIdByClId(clId, clTypeId);
         //新增成交客户
-        Success success = new Success(null, sCId, sHId, sMessage, sSum, null, sRemark);
+        Success success = new Success(null, sAId, sHId, sMessage, sSum, null, sRemark);
         iSuccessService.saveSuccess(success);
         return new DataResult(0, "新增成功");
     }

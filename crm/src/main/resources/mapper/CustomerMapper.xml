@@ -13,24 +13,23 @@
     <result column="c_sex" jdbcType="VARCHAR" property="cSex" />
     <result column="c_age" jdbcType="INTEGER" property="cAge" />
     <result column="c_tel" jdbcType="VARCHAR" property="cTel" />
-    <result column="c_project" jdbcType="VARCHAR" property="cProject" />
-    <result column="c_place_time" jdbcType="TIMESTAMP" property="cPlaceTime" />
-    <result column="c_earnest" jdbcType="INTEGER" property="cEarnest" />
-    <result column="c_u_id" jdbcType="INTEGER" property="cUId" />
-    <result column="c_source" jdbcType="VARCHAR" property="cSource" />
-    <result column="c_type_id" jdbcType="INTEGER" property="cTypeId" />
-    <result column="c_remark" jdbcType="LONGVARCHAR" property="cRemark" />
-    <result column="c_message" jdbcType="LONGVARCHAR" property="cMessage" />
+    <result column="c_time" jdbcType="TIMESTAMP" property="cTime" />
   </resultMap>
 
   <!-- 高级筛选加分页查询客户 -->
   <select id="queryCScreen" resultMap="BaseResultMap">
-    SELECT c.*, u.u_name AS uName, ct.ct_type AS cType FROM customer c
-    LEFT JOIN `user` u ON c.c_u_id=u.u_id
-    LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
+    SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
+    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, u.u_name AS uName, cl.cl_source AS clSource,
+    cl.cl_message AS clMessage, ct.ct_type AS cType, a.a_id AS aId, h.h_id AS hId, h.h_name AS hName,
+    a.a_time AS aTime, u.u_id AS clUId FROM customer c
+    LEFT JOIN clue cl ON c.c_id=cl.cl_c_id
+    LEFT JOIN appointment a ON a.a_cl_id=cl.cl_id
+    LEFT JOIN hospital h ON a.a_h_id=h.h_id
+    LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
+    LEFT JOIN ctype ct ON cl.cl_type_id=ct.ct_id
     <where>
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
@@ -38,41 +37,45 @@
       <if test="cTel != null and cTel != ''">
         AND c.c_tel = #{cTel}
       </if>
-      <if test="cProject != null and cProject != ''">
-        AND c.c_project = #{cProject}
+      <if test="clProject != null and clProject != ''">
+        AND cl.cl_project = #{clProject}
       </if>
-      <if test="cEarnest != null and cEarnest == 0">
-        AND (c.c_earnest = 0 OR c.c_earnest IS NULL)
+      <if test="clEarnest != null and clEarnest == 0">
+        AND (cl.cl_earnest = 0 OR cl.cl_earnest IS NULL)
       </if>
-      <if test="cEarnest != null and cEarnest == 1">
-        AND c.c_earnest != 0
+      <if test="clEarnest != null and clEarnest == 1">
+        AND cl.cl_earnest != 0
       </if>
       <if test="beginTime != null and endTime != null">
-        AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>
-      <if test="cUId != null">
-        AND c.c_u_id = #{cUId}
+      <if test="clUId != null">
+        AND cl.cl_u_id = #{clUId}
       </if>
-      <if test="cSource != null and cSource != ''">
-        AND c.c_source = #{cSource}
+      <if test="clSource != null and clSource != ''">
+        AND cl.cl_source = #{clSource}
       </if>
-      <if test="cTypeId != null">
-        AND c.c_type_id = #{cTypeId}
+      <if test="clTypeId != null">
+        AND cl.cl_type_id = #{clTypeId}
       </if>
+      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     </where>
-    ORDER BY c_place_time DESC
+    ORDER BY cl_place_time DESC
     limit #{page}, #{limit}
   </select>
 
   <!-- 根据筛选条件查询客户总数 -->
   <select id="getTotalByScreen" resultType="Integer">
     SELECT COUNT(*) FROM customer c
-    LEFT JOIN `user` u ON c.c_u_id=u.u_id
-    LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
+    LEFT JOIN clue cl ON c.c_id=cl.cl_c_id
+    LEFT JOIN appointment a ON a.a_cl_id=cl.cl_id
+    LEFT JOIN hospital h ON a.a_h_id=h.h_id
+    LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
+    LEFT JOIN ctype ct ON cl.cl_type_id=ct.ct_id
     <where>
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
@@ -80,215 +83,149 @@
       <if test="cTel != null and cTel != ''">
         AND c.c_tel = #{cTel}
       </if>
-      <if test="cProject != null and cProject != ''">
-        AND c.c_project = #{cProject}
+      <if test="clProject != null and clProject != ''">
+        AND cl.cl_project = #{clProject}
       </if>
-      <if test="cEarnest != null and cEarnest == 0">
-        AND (c.c_earnest = 0 OR c.c_earnest IS NULL)
+      <if test="clEarnest != null and clEarnest == 0">
+        AND (cl.cl_earnest = 0 OR cl.cl_earnest IS NULL)
       </if>
-      <if test="cEarnest != null and cEarnest == 1">
-        AND c.c_earnest != 0
+      <if test="clEarnest != null and clEarnest == 1">
+        AND cl.cl_earnest != 0
       </if>
       <if test="beginTime != null and endTime != null">
-        AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>
-      <if test="cUId != null">
-        AND c.c_u_id = #{cUId}
+      <if test="clUId != null">
+        AND cl.cl_u_id = #{clUId}
       </if>
-      <if test="cSource != null and cSource != ''">
-        AND c.c_source = #{cSource}
+      <if test="clSource != null and clSource != ''">
+        AND cl.cl_source = #{clSource}
       </if>
-      <if test="cTypeId != null">
-        AND c.c_type_id = #{cTypeId}
+      <if test="clTypeId != null">
+        AND cl.cl_type_id = #{clTypeId}
       </if>
+      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     </where>
-  </select>
-
-  <!-- 根据客户类型 获得客户总数量 -->
-  <select id="getTotalByType" resultType="Integer">
-    SELECT COUNT(*) FROM customer  where c_type_id=#{cTypeId}
   </select>
 
   <!-- 新增客户 -->
   <insert id="saveCustomer">
-    INSERT INTO customer(c_name, c_sex, c_age, c_tel, c_project, c_place_time,
-    c_earnest, c_u_id, c_source, c_remark, c_message, c_type_id)
-    VALUES (#{cName}, #{cSex}, #{cAge}, #{cTel}, #{cProject}, NOW(), #{cEarnest},
-    #{cUId}, #{cSource}, #{cRemark}, #{cMessage}, #{cTypeId})
+    INSERT INTO customer(c_name, c_sex, c_age, c_tel, c_time)
+    VALUES (#{cName}, #{cSex}, #{cAge}, #{cTel}, NOW())
   </insert>
+
+  <!--查询最大的编号（新增客户的编号）-->
+  <select id="queryMaxCId" resultType="Integer">
+    SELECT MAX(c_id) FROM customer
+  </select>
 
   <!-- 根据编号删除客户 -->
   <delete id="delCByCId">
     DELETE FROM customer WHERE c_id = #{cId}
   </delete>
 
-  <!-- 根据编号查看客户 -->
+  <!-- 根据客户编号查看客户 -->
   <select id="queryCByCId" resultMap="BaseResultMap">
-    SELECT c.*, u.u_name AS uName, ct.ct_type AS cType FROM customer c
-    LEFT JOIN ctype ct ON c.c_type_id = ct_id
-    LEFT JOIN user u ON c.c_u_id = u.u_id WHERE c.c_id = #{cId}
+    SELECT c.*, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
+    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, cl_u_id AS clUId,
+    cl.cl_source AS clSource, cl.cl_message AS clMessage, u.u_name AS uName,
+    ct.ct_type AS cType, cl.cl_type_id AS clTypeId FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+    LEFT JOIN ctype ct ON cl.cl_type_id = ct_id
+    LEFT JOIN user u ON cl.cl_u_id = u.u_id WHERE c.c_id = #{cId}
+    AND cl.cl_invalid = 0
+  </select>
+
+  <!-- 根据线索编号查看客户 -->
+  <select id="queryCByClId" resultMap="BaseResultMap">
+    SELECT c.*, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
+    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, cl_u_id AS clUId,
+    cl.cl_source AS clSource, cl.cl_message AS clMessage, u.u_name AS uName,
+    ct.ct_type AS cType, cl.cl_type_id AS clTypeId FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+    LEFT JOIN ctype ct ON cl.cl_type_id = ct_id
+    LEFT JOIN user u ON cl.cl_u_id = u.u_id WHERE cl.cl_id = #{clId}
+    AND cl.cl_invalid = 0
   </select>
 
   <!-- 根据编号编辑客户 -->
   <update id="editCByCId">
     UPDATE customer SET c_name = #{cName}, c_sex = #{cSex}, c_age = #{cAge},
-    c_tel = #{cTel}, c_project = #{cProject}, c_earnest = #{cEarnest},
-    c_u_id = #{cUId}, c_source = #{cSource}, c_remark = #{cRemark},
-    c_message = #{cMessage}, c_type_id = #{cTypeId}
-    WHERE c_id = #{cId}
-  </update>
-
-  <!-- 根据编号编辑客户状态 -->
-  <update id="editCTypeIdByCId">
-    UPDATE customer SET c_type_id = #{cTypeId} WHERE c_id = #{cId}
+    c_tel = #{cTel} WHERE c_id = #{cId}
   </update>
 
   <!--根据用户编号和状态查询客户总条数-->
   <select id="getTotalCByUIdAndCTypeId" resultType="Integer">
-    SELECT COUNT(*) FROM customer
+    SELECT COUNT(*) FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
     <where>
-      c_u_id = #{uId}
-      <if test="cTypeId != null">
-        AND c_type_id = #{cTypeId}
+      cl_u_id = #{uId}
+      <if test="clTypeId != null">
+        AND cl_type_id = #{clTypeId}
       </if>
+      AND cl.cl_invalid = 0
     </where>
   </select>
 
   <!--根据客户名称或者客户电话查询客户-->
   <select id="queryCByCNameOrCTel" resultMap="BaseResultMap">
-    SELECT * FROM customer
+    SELECT c.c_id, cl.cl_id AS clId, c.c_name, c.c_tel, cl.cl_u_id AS clUId
+    FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
     <where>
       (c_name LIKE '%${key}%' OR c_tel LIKE '%${key}%')
       <if test="rName != '管理员'">
-        AND c_u_id = #{uId}
+        AND cl_u_id = #{uId}
       </if>
+      AND cl.cl_invalid = 0
     </where>
     limit 0,3
   </select>
 
-  <!-- 高级筛选加分页查询客户 -->
-  <select id="queryCAndHNameScreen" resultMap="BaseResultMap">
-    SELECT c.*, u.u_name AS uName, ct.ct_type AS cType, h.h_id AS hId,
-    h.h_name AS hName, a.a_time AS aTime FROM customer c
-    LEFT JOIN `user` u ON c.c_u_id=u.u_id
-    LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
-    LEFT JOIN appointment a ON c.c_id=a.a_c_id
-    LEFT JOIN hospital h ON a.a_h_id=h.h_id
-    <where>
-      <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
-      </if>
-      <if test="cName != null and cName != ''">
-        AND c.c_name LIKE '%${cName}%'
-      </if>
-      <if test="cTel != null and cTel != ''">
-        AND c.c_tel = #{cTel}
-      </if>
-      <if test="cProject != null and cProject != ''">
-        AND c.c_project = #{cProject}
-      </if>
-      <if test="cEarnest != null and cEarnest == 0">
-        AND (c.c_earnest = 0 OR c.c_earnest IS NULL)
-      </if>
-      <if test="cEarnest != null and cEarnest == 1">
-        AND c.c_earnest != 0
-      </if>
-      <if test="beginTime != null and endTime != null">
-        AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
-      </if>
-      <if test="cUId != null">
-        AND c.c_u_id = #{cUId}
-      </if>
-      <if test="cSource != null and cSource != ''">
-        AND c.c_source = #{cSource}
-      </if>
-      <if test="cTypeId != null">
-        AND c.c_type_id = #{cTypeId}
-      </if>
-    </where>
-    ORDER BY c_place_time DESC
-    limit #{page}, #{limit}
-  </select>
-
-  <!-- 根据筛选条件查询客户总数 -->
-  <select id="getTotalAndHNameByScreen" resultType="Integer">
-    SELECT COUNT(*) FROM customer c
-    LEFT JOIN `user` u ON c.c_u_id=u.u_id
-    LEFT JOIN ctype ct ON c.c_type_id=ct.ct_id
-    LEFT JOIN appointment a ON c.c_id=a.a_c_id
-    LEFT JOIN hospital h ON a.a_h_id=h.h_id
-    <where>
-      <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
-      </if>
-      <if test="cName != null and cName != ''">
-        AND c.c_name LIKE '%${cName}%'
-      </if>
-      <if test="cTel != null and cTel != ''">
-        AND c.c_tel = #{cTel}
-      </if>
-      <if test="cProject != null and cProject != ''">
-        AND c.c_project = #{cProject}
-      </if>
-      <if test="cEarnest != null and cEarnest == 0">
-        AND (c.c_earnest = 0 OR c.c_earnest IS NULL)
-      </if>
-      <if test="cEarnest != null and cEarnest == 1">
-        AND c.c_earnest != 0
-      </if>
-      <if test="beginTime != null and endTime != null">
-        AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  c_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
-      </if>
-      <if test="cUId != null">
-        AND c.c_u_id = #{cUId}
-      </if>
-      <if test="cSource != null and cSource != ''">
-        AND c.c_source = #{cSource}
-      </if>
-      <if test="cTypeId != null">
-        AND c.c_type_id = #{cTypeId}
-      </if>
-    </where>
-  </select>
-
   <!--根据用户编号和客户名称查询可成交客户-->
   <select id="queryCSCByUIdAndCName" resultMap="BaseResultMap">
-    SELECT c.c_id, c.c_name, h.h_id AS hId, h.h_name AS hName FROM customer c
-    LEFT JOIN `user` u ON c.c_u_id=u.u_id
-    LEFT JOIN appointment a ON c.c_id=a.a_c_id
+    SELECT c.c_id, c.c_name, h.h_id AS hId, h.h_name AS hName,
+    cl.cl_id AS clId, a.a_id AS aId FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+    LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
+    LEFT JOIN appointment a ON cl.cl_id=a.a_cl_id
     LEFT JOIN hospital h ON a.a_h_id=h.h_id
     <where>
       c.c_name LIKE '%${cName}%'
-      AND (c.c_type_id = 4 OR c.c_type_id = 7)
+      AND (cl.cl_type_id = 4 OR cl.cl_type_id = 7)
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
+      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
     </where>
     limit 0, 3
   </select>
 
   <!--根据用户编号和客户名称查询可预约客户-->
   <select id="queryCACByUIdAndCName" resultMap="BaseResultMap">
-    SELECT c.c_id, c.c_name FROM customer c
-    LEFT JOIN `user` u ON c.c_u_id=u.u_id
+    SELECT cl.cl_id AS clId, c.c_name FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+    LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
     <where>
       c.c_name LIKE '%${cName}%'
-      AND c.c_type_id = 3
+      AND cl.cl_type_id = 3
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
+      AND cl.cl_invalid = 0
     </where>
     limit 0, 3
   </select>
 
   <!--根据用户编号和起始时间和客户状态查询客户数量-->
   <select id="queryCByUIdAndTimeAndCTypeId" resultType="Integer">
-    SELECT COUNT(*) FROM customer WHERE c_u_id = #{uId} AND c_type_id = #{cTypeId}
-    AND <![CDATA[  c_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-    AND <![CDATA[  c_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    SELECT COUNT(*) FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+    WHERE cl_u_id = #{uId} AND cl_type_id = #{clTypeId}
+    AND cl.cl_invalid = 0
+    AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+    AND <![CDATA[  cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
   </select>
 
 </mapper>

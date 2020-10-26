@@ -13,6 +13,11 @@
   </resultMap>
 
   <!--查询回访类型-->
+  <select id="queryFtype" resultMap="BaseResultMap">
+    SELECT * FROM ftype
+  </select>
+
+  <!--查询回访类型-->
   <select id="queryFtypePage" resultMap="BaseResultMap">
     SELECT * FROM ftype limit #{page}, #{limit}
   </select>

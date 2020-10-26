@@ -3,10 +3,7 @@ package com.linxi.controller;
 import com.linxi.entity.Customer;
 import com.linxi.entity.Fail;
 import com.linxi.entity.Operating;
-import com.linxi.service.ICtypeService;
-import com.linxi.service.ICustomerService;
-import com.linxi.service.IFailService;
-import com.linxi.service.IOperatingService;
+import com.linxi.service.*;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,25 +36,32 @@ public class FailController {
     private ICtypeService iCtypeService;
 
     @Autowired
-    private ICustomerService iCustomerService;
+    private IAppointmentService iAppointmentService;
+
+    @Autowired
+    private IClueService iClueService;
 
     @PostMapping("saveFail")
     @ApiOperation(value = "新增未成交客户")
     @ResponseBody
     public DataResult saveFail(@ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
-                               @ApiParam(name = "flCId", value = "客户编号", required = true) Integer flCId,
+                               @ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                               @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
+                               @ApiParam(name = "flAId", value = "预约编号", required = true) Integer flAId,
                                @ApiParam(name = "flHId", value = "门诊编号", required = true) Integer flHId,
                                @ApiParam(name = "flCause", value = "未成交原因", required = true) String flCause){
         //添加操作记录
-        Operating operating = new Operating(flCId, uId, "添加了未成交客户");
-        iOperatingService.addOperatingRecord(operating);
+        Operating operating = new Operating(cId, uId, "添加了未成交客户");
+        iOperatingService.saveOperating(operating);
         //根据客户状态查询编号
-        Integer cTypeId = iCtypeService.queryCtypeByCtType("未成交");
-        //改变客户状态为未到店状态
-        iCustomerService.editCTypeIdByCId(flCId, cTypeId);
+        Integer clTypeId = iCtypeService.queryCtypeByCtType("未成交");
+        //改变客户状态为未成交状态
+        iClueService.editClTypeIdByClId(clId, clTypeId);
         //新增未成交客户
-        Fail fail = new Fail(null, flCId, flHId, flCause);
+        Fail fail = new Fail(null, flAId, flHId, flCause, 0);
         iFailService.saveFail(fail);
+        //根据预约编号编辑预约记录为失效
+        iAppointmentService.editAInvalidByAId(flAId);
         return new DataResult(0, "新增成功");
     }
 

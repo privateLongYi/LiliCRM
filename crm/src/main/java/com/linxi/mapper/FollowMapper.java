@@ -11,13 +11,15 @@ public interface FollowMapper {
     //新增客户跟进
     void saveFollow(Follow follow);
 
-    //根据客户编号查询所拥有的跟进类型
-    List<Follow> queryFtypeByFCId(Integer fCId);
+    //根据线索编号查询所拥有的跟进类型
+    List<Follow> queryFtypeByFClId(Integer fClId);
 
-    //根据跟进类型和客户编号查询最后一次跟进时间
-    String queryLastFTimeByFtypeAndFCId(@Param("cId") Integer cId, @Param("ftType") String ftType);
+    //根据跟进类型和线索编号查询最后一次跟进时间
+    String queryLastFTimeByFtypeAndFClId(@Param("clId") Integer clId,
+                                         @Param("ftType") String ftType);
 
-    //根据客户编号和跟进类型查询客户跟进
-    List<Follow> queryFByFtypeAndFCId(@Param("cId") Integer cId, @Param("ftType") String ftType);
+    //根据线索编号和跟进类型查询客户跟进
+    List<Follow> queryFByFtypeAndFClId(@Param("clId") Integer clId,
+                                       @Param("ftType") String ftType);
 
 }

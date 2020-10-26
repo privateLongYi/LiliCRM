@@ -5,6 +5,7 @@ import com.linxi.entity.Operating;
 import com.linxi.service.IFollowService;
 import com.linxi.service.IOperatingService;
 import com.linxi.util.DataResult;
+import com.linxi.vo.FollowVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author LongYi
@@ -38,45 +41,41 @@ public class FollowController {
     @ApiOperation(value = "新增客户跟进")
     @ResponseBody
     public DataResult queryFByFCId(@ApiParam(value = "用户编号", required = true) Integer uId,
-                                   @ApiParam(value = "客户编号", required = true) Integer fCId,
+                                   @ApiParam(value = "客户编号", required = true) Integer cId,
+                                   @ApiParam(value = "线索编号", required = true) Integer fClId,
+                                   @ApiParam(value = "负责人编号", required = true) Integer clUId,
                                    @ApiParam(value = "回访类型编号", required = true) Integer fTypeId,
                                    @ApiParam(value = "回访类型", required = true) String ftType,
                                    @ApiParam(value = "回访内容", required = true) String fContent){
         //新增操作记录
-        Operating operating = new Operating(fCId, uId, "新增了"+ftType);
-        iOperatingService.addOperatingRecord(operating);
-        Follow follow = new Follow(null, fCId, fTypeId, null, fContent);
+        Operating operating = new Operating(cId, uId, "新增了"+ftType);
+        iOperatingService.saveOperating(operating);
+        //新增跟进记录
+        Follow follow = new Follow(null, fClId, fTypeId, null, fContent, clUId);
         iFollowService.saveFollow(follow);
         return new DataResult(0, "新增成功");
     }
 
-    @GetMapping("queryFtypeByFCId")
-    @ApiOperation(value = "根据客户编号查询所拥有的跟进类型")
+    @GetMapping("queryFollowByFClId")
+    @ApiOperation(value = "根据线索编号查询跟进记录")
     @ResponseBody
-    public List<String> queryFtypeByFCId(@ApiParam(value = "客户编号", required = true) Integer cId){
-        ArrayList<String> strings = new ArrayList<>();
-        List<Follow> follows = iFollowService.queryFtypeByFCId(cId);
-        for (Follow f : follows){
-            strings.add(f.getfType());
+    public List<Object> queryFollowByFClId(@ApiParam(value = "线索编号", required = true) Integer clId){
+        List<Object> list = new ArrayList<>();
+        //根据线索编号查询所拥有的根据记录
+        List<Follow> ftTypes = iFollowService.queryFtypeByFClId(clId);
+        for (Follow f : ftTypes){
+            //根据跟进类型和线索编号查询最后一次跟进时间
+            String lastTime = iFollowService.queryLastFTimeByFtypeAndFClId(clId, f.getfType());
+            //根据线索编号查询客户跟进
+            List<Follow> follows = iFollowService.queryFByFtypeAndFClId(clId, f.getfType());
+            //声明跟进信息列表
+            List<String> objects = new ArrayList<>();
+            for (Follow follow : follows){
+                objects.add(follow.getfContent());
+            }
+            list.add(new FollowVo(Timestamp.valueOf(lastTime), f.getfType(), objects));
         }
-        return strings;
-    }
-
-    @GetMapping("queryLastFTimeByFtypeAndFCId")
-    @ApiOperation(value = "根据跟进类型和客户编号查询最后一次跟进时间")
-    @ResponseBody
-    public String queryLastFTimeByFtype(@ApiParam(value = "客户编号", required = true) Integer cId,
-                                           @ApiParam(value = "跟进类型", required = true) String ftType){
-        return iFollowService.queryLastFTimeByFtypeAndFCId(cId, ftType);
-    }
-
-    @GetMapping("queryFByFtypeAndFCId")
-    @ApiOperation(value = "根据客户编号查询客户跟进")
-    @ResponseBody
-    public DataResult queryFByFCId(@ApiParam(value = "客户编号", required = true) Integer fCId,
-                                   @ApiParam(value = "跟进类型", required = true) String ftType){
-        List<Follow> follows = iFollowService.queryFByFtypeAndFCId(fCId, ftType);
-        return new DataResult(0, "操作成功", 0, follows);
+        return list;
     }
 
 }

@@ -15,7 +15,8 @@
             <label class="layui-form-label">客户姓名</label>
             <div class="layui-input-block">
                 <input type="hidden" id="sId" th:value="${s.sId}">
-                <input type="hidden" id="sCId" th:value="${s.sCId}">
+                <input type="hidden" id="sAId" th:value="${s.sAId}">
+                <input type="hidden" id="cId" th:value="${cId}">
                 <input type="text" class="layui-input" id="cName"
                        th:value="${s.cName}" readonly>
             </div>
@@ -40,13 +41,6 @@
             <div class="layui-input-block">
                 <input type="text" class="layui-input" id="sSum"
                        autocomplete="off" th:value="${s.sSum}" >
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">客户支付金额</label>
-            <div class="layui-input-block">
-                <input type="text" class="layui-input" id="sPaysum"
-                       autocomplete="off" th:value="${s.sPaysum}" >
             </div>
         </div>
         <div class="layui-form-item">

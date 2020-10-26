@@ -22,4 +22,7 @@ public interface FailMapper {
                             @Param("rName") String rName,
                             @Param("cName") String cName);
 
+    //根据未成交编号编辑为失效
+    void editFlInvalidByFlId(Integer flId);
+
 }

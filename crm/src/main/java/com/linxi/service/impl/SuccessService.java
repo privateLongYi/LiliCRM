@@ -24,14 +24,14 @@ public class SuccessService implements ISuccessService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Success> querySBySCId(Integer sCId) {
-        return successMapper.querySBySCId(sCId);
+    public List<Success> querySByClId(Integer clId, Integer page, Integer limit) {
+        return successMapper.querySByClId(clId, page, limit);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getTotalBySCId(Integer sCId) {
-        return successMapper.getTotalBySCId(sCId);
+    public Integer getTotalByClId(Integer clId) {
+        return successMapper.getTotalByClId(clId);
     }
 
     @Override
@@ -74,8 +74,8 @@ public class SuccessService implements ISuccessService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer queryTotalMoneyByCId(Integer cId, Integer type) {
-        return successMapper.queryTotalMoneyByCId(cId, type);
+    public Integer queryTotalMoneyByClId(Integer clId, Integer type) {
+        return successMapper.queryTotalMoneyByClId(clId, type);
     }
 
     @Override

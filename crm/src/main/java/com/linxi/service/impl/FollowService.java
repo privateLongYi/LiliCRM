@@ -29,19 +29,20 @@ public class FollowService implements IFollowService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Follow> queryFtypeByFCId(Integer fCId) {
-        return followMapper.queryFtypeByFCId(fCId);
+    public List<Follow> queryFtypeByFClId(Integer fClId) {
+        return followMapper.queryFtypeByFClId(fClId);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public String queryLastFTimeByFtypeAndFCId(Integer cId, String ftType) {
-        return followMapper.queryLastFTimeByFtypeAndFCId(cId, ftType);
+    public String queryLastFTimeByFtypeAndFClId(Integer clId, String ftType) {
+        return followMapper.queryLastFTimeByFtypeAndFClId(clId, ftType);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Follow> queryFByFtypeAndFCId(Integer cId, String ftType) {
-        return followMapper.queryFByFtypeAndFCId(cId, ftType);
+    public List<Follow> queryFByFtypeAndFClId(Integer clId, String ftType) {
+        return followMapper.queryFByFtypeAndFClId(clId, ftType);
     }
+
 }

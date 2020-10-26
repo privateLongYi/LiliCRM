@@ -9,29 +9,35 @@
       This element was generated on Thu Aug 20 21:32:10 CST 2020.
     -->
     <id column="fl_id" jdbcType="INTEGER" property="flId" />
-    <result column="fl_c_id" jdbcType="INTEGER" property="flCId" />
+    <result column="fl_a_id" jdbcType="INTEGER" property="flAId" />
     <result column="fl_h_id" jdbcType="INTEGER" property="flHId" />
     <result column="fl_cause" jdbcType="LONGVARCHAR" property="flCause" />
+    <result column="fl_invalid" jdbcType="INTEGER" property="flInvalid" />
   </resultMap>
 
   <!--新增未成交客户-->
   <insert id="saveFail">
-    INSERT INTO fail(fl_c_id, fl_h_id, fl_cause) VALUES (#{flCId}, #{flHId}, #{flCause})
+    INSERT INTO fail(fl_a_id, fl_h_id, fl_cause, fl_invalid)
+    VALUES (#{flAId}, #{flHId}, #{flCause}, #{flInvalid})
   </insert>
 
   <!--根据客户名称查询未成交客户-->
   <select id="queryFailByCName" resultMap="BaseResultMap">
     SELECT fl.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId,
-    h.h_name AS hName FROM fail fl
-    LEFT JOIN customer c ON fl.fl_c_id=c.c_id
+    h.h_name AS hName, cl.cl_id AS clId, cl.cl_u_id AS clUId FROM fail fl
+    LEFT JOIN appointment a ON a.a_id=fl.fl_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON fl.fl_h_id=h.h_id
     <where>
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
+      AND cl.cl_invalid = 0 AND a.a_invalid = 1
+      AND fl.fl_invalid = 0
     </where>
     limit #{page}, #{limit}
   </select>
@@ -39,16 +45,25 @@
   <!--根据客户名称查询未成交客户总数-->
   <select id="getTotalByCName" resultType="Integer">
     SELECT COUNT(*) FROM fail fl
-    LEFT JOIN customer c ON fl.fl_c_id=c.c_id
+    LEFT JOIN appointment a ON a.a_id=fl.fl_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON fl.fl_h_id=h.h_id
     <where>
       <if test="rName != '管理员'">
-        AND c.c_u_id = #{uId}
+        AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
         AND c.c_name = #{cName}
       </if>
+      AND cl.cl_invalid = 0 AND a.a_invalid = 1
+      AND fl.fl_invalid = 0
     </where>
   </select>
+
+  <!--根据未成交编号编辑为失效-->
+  <update id="editFlInvalidByFlId">
+    UPDATE fail SET fl_invalid = 1 WHERE fl_id = #{flId}
+  </update>
 
 </mapper>

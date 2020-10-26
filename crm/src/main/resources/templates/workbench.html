@@ -126,25 +126,25 @@
                         </div>
                     </div>
                     <div class="layui-card-body">
-                        <a href="hello.html">
+                        <a th:href="@{/contact}">
                             <div class="css1">
                                 <span class="l_font">待联系客户</span>
                                 <span class="r_font" id="awaitContact"></span>
                             </div>
                         </a>
-                        <a href="hello.html">
+                        <a th:href="@{/appointment}">
                             <div class="css1">
                                 <span class="l_font">待预约客户</span>
                                 <span class="r_font" id="awaitAppoint"></span>
                             </div>
                         </a>
-                        <a href="hello.html">
+                        <a th:href="@{/arrive}">
                             <div class="css1">
                                 <span class="l_font">待到店客户</span>
                                 <span class="r_font" id="awaitArrive"></span>
                             </div>
                         </a>
-                        <a href="hello.html">
+                        <a href="">
                             <div class="css1">
                                 <span class="l_font">待处理客户</span>
                                 <span class="r_font">10</span>
@@ -220,12 +220,14 @@
             btn1: function (index, layero) {
                 var body = layer.getChildFrame('body', index);
                 //获取值
-                var sCId = $(body).find("#sCId").val();
+                var cId = $(body).find("#cId").val();
+                var clId = $(body).find("#clId").val();
+                var sAId = $(body).find("#sAId").val();
                 var sHId = $(body).find("#sHId").val();
                 var sMessage = $(body).find("#sMessage").val();
                 var sSum = $(body).find("#sSum").val();
                 var sRemark = $(body).find("#sRemark").val();
-                if (sCId != '' && sHId != '' && sSum != '' && sSum.trim() != '') {
+                if (sAId != '' && sHId != '' && sSum != '' && sSum.trim() != '') {
                     //声明格式是否正确
                     var verify = true;
                     //验证成交金额
@@ -237,7 +239,11 @@
                     if(verify) {
                         $.post("/success/saveSuccess", {
                                 uId: uId,
-                                sCId: sCId,
+                                cId: cId,
+                                clId: clId,
+                                sAId: sAId,
+                                clId: clId,
+                                sAId: sAId,
                                 sHId: sHId,
                                 sMessage: sMessage,
                                 sSum: sSum.trim(),
@@ -327,14 +333,15 @@
                 }
                 var cAge = $(body).find("#cAge").val();
                 var cTel = $(body).find("#cTel").val();
-                var cProject = $(body).find("#cProject").val();
-                var cRemark = $(body).find("#cRemark").val();
-                var cMessage = $(body).find("#cMessage").val();
-                var cEarnest = $(body).find("#cEarnest").val();
-                var cUId = $(body).find("#cUId").val();
-                var cSource = $(body).find("#cSource").val();
-                var cTypeId = $(body).find("#cTypeId").val();
-                if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
+                var clProject = $(body).find("#clProject").val();
+                var clRemark = $(body).find("#clRemark").val();
+                var clMessage = $(body).find("#clMessage").val();
+                var clEarnest = $(body).find("#clEarnest").val();
+                var clUId = $(body).find("#clUId").val();
+                var clSource = $(body).find("#clSource").val();
+                var clTypeId = $(body).find("#clTypeId").val();
+                var clPlaceTime = $(body).find("#clPlaceTime").val();
+                if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '' && clPlaceTime != '') {
                     //声明格式是否正确
                     var verify = true;
                     //验证姓名格式
@@ -358,8 +365,8 @@
                         return;
                     }
                     //验证定金格式
-                    if (cEarnest != '') {
-                        if (cEarnest < 0) {
+                    if (clEarnest != '') {
+                        if (clEarnest < 0) {
                             layer.msg("定金不能为负数");
                             verify = false;
                             return;
@@ -372,13 +379,14 @@
                                 cSex: cSex,
                                 cAge: cAge,
                                 cTel: cTel.trim(),
-                                cProject: cProject,
-                                cMessage: cMessage,
-                                cRemark: cRemark,
-                                cEarnest: cEarnest,
-                                cUId: cUId,
-                                cSource: cSource,
-                                cTypeId: cTypeId
+                                clProject: clProject,
+                                clMessage: clMessage,
+                                clRemark: clRemark,
+                                clEarnest: clEarnest,
+                                clUId: clUId,
+                                clSource: clSource,
+                                clTypeId: clTypeId,
+                                clPlaceTime:clPlaceTime
                             },
                             function (obj) {
                                 layer.msg(obj.msg, {time: 500}, function () {
@@ -410,12 +418,12 @@
             btn1: function (index, layero) {
                 var body = layer.getChildFrame('body', index);
                 //获取值
-                var aCId = $(body).find("#aCId").val();
+                var aClId = $(body).find("#aClId").val();
                 var aTime = $(body).find("#aTime").val();
                 var aHId = $(body).find("#aHId").val();
                 var atType = $(body).find("#atType").val();
                 if (aTime != '') {
-                    $.post("/appointment/saveAppointment", {uId:uId, aCId:aCId, aTime:aTime,
+                    $.post("/appointment/saveAppointment", {uId:uId, aClId:aClId, aTime:aTime,
                             aHId:aHId, atType:atType},
                         function (obj) {
                             layer.msg(obj.msg, {time: 500}, function () {

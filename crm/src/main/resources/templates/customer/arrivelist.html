@@ -17,65 +17,12 @@
 
 	<br>
 
-	<div class="layui-fluid">
-		<div class="layui-row">
-			<div class="layui-col-md4">
-				<label class="layui-form-label">姓名</label>
-				<div class="layui-inline">
-					<input class="layui-input" id="searchCName" autocomplete="off">
-				</div>
-			</div>
-			<div class="layui-col-md4">
-				<label class="layui-form-label">电话</label>
-				<div class="layui-inline">
-					<input class="layui-input" id="searchCTel" autocomplete="off">
-				</div>
-			</div>
-			<div class="layui-col-md4">
-				<label class="layui-form-label">报名项目</label>
-				<div class="layui-input-inline layui-form">
-					<select id="searchCProject">
-						<option value=""></option>
-						<option value="种植">种植</option>
-						<option value="矫正">矫正</option>
-						<option value="牙贴面">牙贴面</option>
-						<option value="牙齿治疗">牙齿治疗</option>
-					</select>
-				</div>
-			</div><br><br><br>
-			<div class="layui-col-md4">
-				<label class="layui-form-label">是否交定金</label>
-				<div class="layui-input-inline layui-form">
-					<input type="radio" name="searchCEarnest" value="1" title="是">
-					<input type="radio" name="searchCEarnest" value="0" title="否">
-					<input type="radio" name="searchCEarnest" value="2" title="全部">
-				</div>
-			</div>
-			<div class="layui-col-md4" id="principal">
-				<label class="layui-form-label">负责人</label>
-				<div class="layui-input-inline layui-form">
-					<select id="searchCUId">
-						<option value=""></option>
-					</select>
-				</div>
-			</div>
-			<div class="layui-col-md4">
-				<label class="layui-form-label">来源</label>
-				<div class="layui-inline">
-					<input class="layui-input" id="searchCSource" autocomplete="off">
-				</div>
-			</div><br><br><br>
-			<div class="layui-col-md8">
-				<label class="layui-form-label">报名时间</label>
-				<div class="layui-input-inline layui-form">
-					<input type="text" id="searchCPlaceTime" readonly
-						   autocomplete="off" class="layui-input" style="width: 300px;">
-				</div>
-			</div><br><br><br>
+	<div id="screen">
+		&nbsp;&nbsp;&nbsp;根据客户名称：
+		<div class="layui-inline">
+			<input class="layui-input" id="cName" autocomplete="off">
 		</div>
-		<div style="text-align: center;">
-			<button class="layui-btn" onclick="tableReload()">查询</button>
-		</div>
+		<button class="layui-btn" onclick="tableReload()">查询</button>
 	</div>
 
 	<!-- 数据表格 -->
@@ -104,42 +51,6 @@
             //从sessionStorage中获取用户编号和角色名称
             var uId = sessionStorage.getItem('uId');
             var rName = sessionStorage.getItem('rName');
-
-            //时间控件
-            laydate.render({
-                elem: '#searchCPlaceTime' //指定元素
-                ,type: 'datetime' //时间格式
-                ,trigger: 'click' //采用click弹出
-                ,range: true //开启左右面板范围选择
-            });
-
-            if (rName == "销售员"){
-                $("#searchCUId").attr("disabled", "disabled");
-            } else {
-                //获取角色为销售员的用户对象
-                $.get("/user/queryUserByRName", function (res){
-                    //定义负责人下拉框内容
-                    var html = "";
-                    $.each(res.data, function (index, item) {
-                        html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
-                    });
-                    $("#searchCUId").append(html);
-                    //append后必须重新渲染
-                    form.render('select');
-                })
-            }
-
-            //获取所有客户状态
-            $.get("/ctype/queryCtype", function (res){
-                //定义负责人下拉框内容
-                var html = "";
-                $.each(res.data, function (index, item) {
-                    html += "<option value='" + item.ctId + "'>" + item.ctType + "</option>";
-                });
-                $("#searchCTypeId").append(html);
-                //append后必须重新渲染
-                form.render('select');
-            });
 
 			/*//筛选条件
 			function screen(name, value, text){
@@ -216,38 +127,12 @@
             //表格重载
             function tableReload(){
                 //获取筛选条件
-                var cName = $("#searchCName").val();
-                var cTel = $("#searchCTel").val();
-                var cProject = $("#searchCProject").val();
-                var cEarnest;
-                if ($("[name=searchCEarnest]")[0].checked){
-                    cEarnest = $("[name=searchCEarnest]")[0].value;
-                } else if ($("[name=searchCEarnest]")[1].checked){
-                    cEarnest = $("[name=searchCEarnest]")[1].value;
-                } else if ($("[name=searchCEarnest]")[2].checked){
-                    cEarnest = $("[name=searchCEarnest]")[2].value;
-                }
-                var cUId = $("#searchCUId").val();
-                var cSource = $("#searchCSource").val();
-                var searchCPlaceTime = $("#searchCPlaceTime").val();
-                var beginTime;
-                var endTime;
-                if (searchCPlaceTime != null){
-                    var beginTime = searchCPlaceTime.split(" - ")[0];
-                    var endTime = searchCPlaceTime.split(" - ")[1];
-                }
+                var cName = $("#cName").val();
                 //根据筛选条件查询
                 table.reload('tab', {
-                    url: '/customer/queryCAndHNameScreen?uId='+uId+'&rName='+rName+'&ctType=未到店'
+                    url: '/arrive/queryAByCName?uId='+uId+'&rName='+rName
                     ,where: {
                         cName: cName
-                        ,cTel: cTel
-                        ,cProject: cProject
-                        ,cEarnest: cEarnest
-                        ,cUId: cUId
-                        ,cSource: cSource
-                        ,beginTime: beginTime
-                        ,endTime: endTime
                     }
                     ,page: {
                         curr: 1 //重新从第 1 页开始
@@ -258,7 +143,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/customer/queryCAndHNameScreen?uId='+uId+'&rName='+rName+'&ctType=未到店' //数据接口
+				,url: '/arrive/queryAByCName?uId='+uId+'&rName='+rName //数据接口
 				,title: '未到店客户表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -268,20 +153,10 @@
 				,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
 				,cols: [ //表头
 					[
-						{field: 'cId', minWidth: 120, title: 'ID', sort: true, align:'center'}
-						,{field: 'cName', minWidth: 120, title: '姓名', align:'center'}
-						,{field: 'cSex', minWidth: 120, title: '性别', sort: true, align:'center'}
-						,{field: 'cAge', minWidth: 120, title: '年龄', align:'center'}
-						,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
-						,{field: 'cProject', minWidth: 120, title: '报名项目', align:'center'}
-						,{field: 'cPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
-						,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
-						,{field: 'cRemark', minWidth: 120, title: '备注', align:'center'}
-						,{field: 'cEarnest', minWidth: 120, title: '定金', align:'center'}
-						,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
-						,{field: 'cSource', minWidth: 120, title: '来源', align:'center'}
-						,{field: 'cMessage', minWidth: 120, title: '症状信息', align:'center'}
-						,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
+                        {field: 'arId', minWidth: 120, title: 'ID', sort: true, align:'center'}
+                        ,{field: 'cName', minWidth: 120, title: '客户姓名', align:'center'}
+                        ,{field: 'hName', minWidth: 120, title: '未成交门诊', align:'center'}
+                        ,{field: 'arCause', minWidth: 120, title: '未成交原因', align:'center'}
 						,{fixed: 'right', minWidth: 150, title: '操作', toolbar: '#barDemo', align:'center'}
 					]
 				]
@@ -302,46 +177,50 @@
 			table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
 				var data = obj.data //获得当前行数据
 					,layEvent = obj.event; //获得 lay-event 对应的值
-				if(layEvent === 'reroute'){
-					//弹出改约页面
-					var ix = layer.open({
-						type: 2, //层类型，iframe
-						title: '新增改约记录',
-						content: ['/reroutesave?cId='+data.cId+
-						'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
-						'&aTime='+data.aTime],
-						area: ['450px', '450px'],
-						resize: false,
-						btn: '确定',
-						btn1: function (index, layero) {
-							var body = layer.getChildFrame('body', index);
-							//获取值
-							var reCId = $(body).find("#reCId").val();
-							var reHId = $(body).find("#reHId").val();
-							var reLastTime = $(body).find("#reLastTime").val();
-							var reTime = $(body).find("#reTime").val();
-							var reCause = $(body).find("#reCause").val();
-							if (reTime != '' && reCause != '' && reCause.trim() != '') {
-								$.post("/reroute/saveReroute", {uId:uId, reCId:reCId, reHId:reHId,
-										reLastTime:reLastTime, reTime:reTime, reCause:reCause.trim()},
-									function (obj) {
-										layer.msg(obj.msg, {time: 500}, function () {
-											layer.close(ix);
-											tableReload();
-										});
-									}
-								);
-							} else {
-								layer.msg('请输入带星号的必填项');
-							}
-						},
-						cancel: function(index, layero){
-							layer.close(index);
-						}
-					});
-				} else if(layEvent === 'appoint'){
+            	if(layEvent === 'reroute'){
+                    //弹出改约页面
+                    var ix = layer.open({
+                        type: 2, //层类型，iframe
+                        title: '新增改约记录',
+                        content: ['/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+'&arId='+data.arId+
+                        '&aId='+data.aId+'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
+                        '&aTime='+data.aTime],
+                        area: ['450px', '450px'],
+                        resize: false,
+                        btn: '确定',
+                        btn1: function (index, layero) {
+                            var body = layer.getChildFrame('body', index);
+                            //获取值
+                            var cId = $(body).find("#cId").val();
+                            var reClId = $(body).find("#reClId").val();
+                            var reUId = $(body).find("#reUId").val();
+                            var arId = $(body).find("#arId").val();
+                            var aId = $(body).find("#aId").val();
+                            var reHId = $(body).find("#reHId").val();
+                            var reLastTime = $(body).find("#reLastTime").val();
+                            var reTime = $(body).find("#reTime").val();
+                            var reCause = $(body).find("#reCause").val();
+                            if (reTime != '' && reCause != '' && reCause.trim() != '') {
+                                $.post("/reroute/saveReroute", {uId:uId, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
+                                        aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause},
+                                    function (obj) {
+                                        layer.msg(obj.msg, {time: 500}, function () {
+                                            layer.close(ix);
+                                            tableReload();
+                                        });
+                                    }
+                                );
+                            } else {
+                                layer.msg('请输入带星号的必填项');
+                            }
+                        },
+                        cancel: function(index, layero){
+                            layer.close(index);
+                        }
+                    });
+                } else if(layEvent === 'appoint'){
 					layer.confirm('确定更改为待预约状态？', {icon: 3, title:'提示'}, function(index){
-						$.get("/customer/editCTypeIdByCId", {cId:data.cId, cType:"待预约"},
+						$.get("/clue/editClTypeIdByClId", {clId:data.clId, aId:data.aId},
 							function (obj) {
 								layer.msg(obj.msg, {time: 500}, function () {
 									layer.close(ix);

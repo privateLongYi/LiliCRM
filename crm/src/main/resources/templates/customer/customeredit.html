@@ -53,19 +53,19 @@
                 &nbsp;&nbsp;报名项目
             </label>
             <div class="layui-input-inline layui-form">
-                <select id="cProject">
-                    <option value="种植" th:selected="${c.cProject == '种植'} ? true : false">种植</option>
-                    <option value="矫正" th:selected="${c.cProject == '矫正'} ? true : false">矫正</option>
-                    <option value="牙贴面" th:selected="${c.cProject == '牙贴面'} ? true : false">牙贴面</option>
-                    <option value="牙齿治疗" th:selected="${c.cProject == '牙齿治疗'} ? true : false">牙齿治疗</option>
+                <select id="clProject">
+                    <option value="种植" th:selected="${c.clProject == '种植'} ? true : false">种植</option>
+                    <option value="矫正" th:selected="${c.clProject == '矫正'} ? true : false">矫正</option>
+                    <option value="牙贴面" th:selected="${c.clProject == '牙贴面'} ? true : false">牙贴面</option>
+                    <option value="牙齿治疗" th:selected="${c.clProject == '牙齿治疗'} ? true : false">牙齿治疗</option>
                 </select>
             </div>
             <label class="layui-form-label" style="width: auto;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;定金
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="cEarnest" placeholder="请输入定金"
-                       autocomplete="off" class="layui-input" th:value="${c.cEarnest}">
+                <input type="text" id="clEarnest" placeholder="请输入定金"
+                       autocomplete="off" class="layui-input" th:value="${c.clEarnest}">
             </div>
         </div>
 
@@ -74,8 +74,8 @@
             <input type="hidden" id="page" th:value="${page}">
             <label class="layui-form-label" style="width: auto;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
-                <input type="hidden" id="uId" th:value="${c.cUId}">
-                <input type="hidden" id="cUId" th:value="${c.cUId}">
+                <input type="hidden" id="uId" th:value="${c.clUId}">
+                <input type="hidden" id="clUId" th:value="${c.clUId}">
             </label>
             <div class="layui-input-inline layui-form" id="admin">
                 <select id="salelist" lay-filter="change">
@@ -90,16 +90,16 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;来源
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="cSource" placeholder="请输入来源"
-                       autocomplete="off" class="layui-input" th:value="${c.cSource}">
+                <input type="text" id="clSource" placeholder="请输入来源"
+                       autocomplete="off" class="layui-input" th:value="${c.clSource}">
             </div>
             <label class="layui-form-label" style="width: auto;">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
             </label>
             <div class="layui-input-inline layui-form">
-                <input type="hidden" id="typeId" th:value="${c.cTypeId}">
+                <input type="hidden" id="typeId" th:value="${c.clTypeId}">
                 <input type="hidden" id="type" th:value="${c.cType}">
-                <input type="hidden" id="cTypeId" th:value="${c.cTypeId}">
+                <input type="hidden" id="clTypeId" th:value="${c.clTypeId}">
                 <input type="text" id="cType" readonly th:value="${c.cType}"
                        autocomplete="off" class="layui-input">
             </div>
@@ -111,8 +111,8 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注
             </label>
             <div class="layui-input-inline">
-                <textarea class="layui-textarea" id="cRemark"
-                          autocomplete="off" th:text="${c.cRemark}"></textarea>
+                <textarea class="layui-textarea" id="clRemark"
+                          autocomplete="off" th:text="${c.clRemark}"></textarea>
             </div>
             <div id="message">
                 <label class="layui-form-label" style="width: auto;">
@@ -120,8 +120,8 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;症状信息
                 </label>
                 <div class="layui-input-inline">
-                    <textarea class="layui-textarea" id="cMessage"
-                              autocomplete="off" th:text="${c.cMessage}"></textarea>
+                    <textarea class="layui-textarea" id="clMessage"
+                              autocomplete="off" th:text="${c.clMessage}"></textarea>
                 </div>
             </div>
         </div>
@@ -159,9 +159,9 @@
                     //定义负责人下拉框内容
                     var html = "";
                     //获取负责人编号
-                    var cUId = $("#cUId").val();
+                    var clUId = $("#clUId").val();
                     $.each(res.data, function (index, item) {
-                        if (cUId == item.uId) {
+                        if (clUId == item.uId) {
                             html += "<option value='" + item.uId + "' selected>" + item.uName + "</option>";
                         } else {
                             html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
@@ -172,21 +172,21 @@
                     form.render('select');
                 })
                 //客户状态赋值
-                if($("#cUId").val() != ""){
+                if($("#clUId").val() != ""){
                     //状态赋值
                     $("#cType").val($("#type").val());
-                    $("#cTypeId").val($("#typeId").val());
+                    $("#clTypeId").val($("#typeId").val());
                 }else{
                     //状态赋值
                     $("#cType").val("待分配");
-                    $("#cTypeId").val("1");
+                    $("#clTypeId").val("1");
                 }
                 //隐藏症状信息
                 $("#message").hide();
             }else if(page == "awaitcontact-awaitappoint") {
                 //状态赋值
                 $("#cType").val("待预约");
-                $("#cTypeId").val("3");
+                $("#clTypeId").val("3");
                 //禁用下拉框
                 $("#salelist").attr("disabled", "disabled");
                 //append后必须重新渲染
@@ -208,10 +208,10 @@
             $("#sale").addClass("layui-show");
             //赋值
             $("#saleman").val(uName);
-            $("#cUId").val(uId);
+            $("#clUId").val(uId);
             //状态赋值
             $("#cType").val($("#type").val());
-            $("#cTypeId").val($("#typeId").val());
+            $("#clTypeId").val($("#typeId").val());
 
             //获取从哪个页面过来的
             var page = $("#page").val();
@@ -224,9 +224,9 @@
                     //定义负责人下拉框内容
                     var html = "";
                     //获取负责人编号
-                    var cUId = $("#cUId").val();
+                    var clUId = $("#clUId").val();
                     $.each(res.data, function (index, item) {
-                        if (cUId == item.uId) {
+                        if (clUId == item.uId) {
                             html += "<option value='" + item.uId + "' selected>" + item.uName + "</option>";
                         } else {
                             html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
@@ -237,19 +237,19 @@
                     form.render('select');
                 })
                 //客户状态赋值
-                if($("#cUId").val() != ""){
+                if($("#clUId").val() != ""){
                     //状态赋值
                     $("#cType").val($("#type").val());
-                    $("#cTypeId").val($("#typeId").val());
+                    $("#clTypeId").val($("#typeId").val());
                 }else{
                     //状态赋值
                     $("#cType").val("待分配");
-                    $("#cTypeId").val("1");
+                    $("#clTypeId").val("1");
                 }
             }else if(page == "awaitcontact-awaitappoint") {
                 //状态赋值
                 $("#cType").val("待预约");
-                $("#cTypeId").val("3");
+                $("#clTypeId").val("3");
                 //禁用下拉框
                 $("#salelist").attr("disabled", "disabled");
                 //append后必须重新渲染
@@ -270,23 +270,23 @@
         //下拉框改变事件
         form.on('select(change)', function(data){
             //改变负责人编号
-            $("#cUId").val(data.value+"");
+            $("#clUId").val(data.value+"");
             //改变客户状态
-            if($("#cUId").val() != ""){
+            if($("#clUId").val() != ""){
                 //没有改变负责人
                 if(data.value == $("#uId").val()){
                     //状态赋值
                     $("#cType").val($("#type").val());
-                    $("#cTypeId").val($("#typeId").val());
+                    $("#clTypeId").val($("#typeId").val());
                 }else{
                     //状态赋值
                     $("#cType").val("待联系");
-                    $("#cTypeId").val("2");
+                    $("#clTypeId").val("2");
                 }
             }else{
                 //状态赋值
                 $("#cType").val("待分配");
-                $("#cTypeId").val("1");
+                $("#clTypeId").val("1");
             }
         });
 

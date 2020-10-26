@@ -19,7 +19,9 @@
   <select id="queryPByPaySId" resultMap="BaseResultMap">
     SELECT p.*, c.c_name AS cName, pa.pay_type AS payType FROM payrecord p
     LEFT JOIN success s ON p.pay_s_id = s.s_id
-    LEFT JOIN customer c ON s.s_c_id = c.c_id
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN paytype pa ON p.pay_type_id = pa.pay_id
     WHERE p.pay_s_id = #{paySId}
   </select>
@@ -37,8 +39,13 @@
 
   <!--根据成交客户编号查询支付总金额-->
   <select id="queryPPaysumBySId" resultType="Integer">
-    SELECT (SELECT SUM(pay_sum) FROM payrecord WHERE pay_s_id = #{sId} AND (pay_type_id = 1 OR pay_type_id = 2)) -
-    (SELECT SUM(pay_sum) FROM payrecord WHERE pay_s_id = #{sId} AND pay_type_id = 3)
+    SELECT SUM(pay_sum) FROM payrecord WHERE pay_s_id = #{sId}
+    AND (pay_type_id = 1 OR pay_type_id = 2)
+  </select>
+
+  <!--根据成交客户编号查询退款总金额-->
+  <select id="queryRefundBySId" resultType="Integer">
+    SELECT SUM(pay_sum) FROM payrecord WHERE pay_s_id = #{sId} AND pay_type_id = 3
   </select>
 
   <!--根据筛选条件查询支付记录-->
@@ -48,8 +55,10 @@
     INNER JOIN paytype pt ON p.pay_type_id=pt.pay_id
     INNER JOIN success s ON p.pay_s_id=s.s_id
     INNER JOIN hospital h ON s.s_h_id=h.h_id
-    INNER JOIN customer c ON s.s_c_id=c.c_id
-    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    INNER JOIN appointment a ON a.a_id=s.s_a_id
+    INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN customer c ON c.c_id=cl.cl_c_id
+    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
     <where>
       <if test="uId != null">
         AND u.u_id = #{uId}
@@ -64,6 +73,7 @@
         AND <![CDATA[  p.pay_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
         AND <![CDATA[  p.pay_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
       </if>
+      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid IS NULL)
     </where>
     ORDER BY p.pay_time DESC
     limit #{page}, #{limit}
@@ -75,8 +85,10 @@
     INNER JOIN paytype pt ON p.pay_type_id=pt.pay_id
     INNER JOIN success s ON p.pay_s_id=s.s_id
     INNER JOIN hospital h ON s.s_h_id=h.h_id
-    INNER JOIN customer c ON s.s_c_id=c.c_id
-    INNER JOIN `user` u ON c.c_u_id=u.u_id
+    INNER JOIN appointment a ON a.a_id=s.s_a_id
+    INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN customer c ON c.c_id=cl.cl_c_id
+    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
     <where>
       <if test="uId != null">
         AND u.u_id = #{uId}
@@ -91,6 +103,7 @@
         AND <![CDATA[  p.pay_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
         AND <![CDATA[  p.pay_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
       </if>
+      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid IS NULL)
     </where>
   </select>
 

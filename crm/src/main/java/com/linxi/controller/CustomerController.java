@@ -30,6 +30,9 @@ public class CustomerController {
     private ICustomerService iCustomerService;
 
     @Autowired
+    private IClueService iClueService;
+
+    @Autowired
     private IOperatingService iOperatingService;
 
     @Autowired
@@ -53,41 +56,47 @@ public class CustomerController {
                                    @ApiParam(name = "rName", value = "角色名称", required = true) String rName,
                                    @ApiParam(name = "cName", value = "姓名", required = false) String cName,
                                    @ApiParam(name = "cTel", value = "电话", required = false) String cTel,
-                                   @ApiParam(name = "cProject", value = "报名项目", required = false) String cProject,
-                                   @ApiParam(name = "cEarnest", value = "是否交定金", required = false) Integer cEarnest,
-                                   @ApiParam(name = "cUId", value = "负责人编号", required = false) Integer cUId,
-                                   @ApiParam(name = "cSource", value = "来源", required = false) String cSource,
-                                   @ApiParam(name = "cTypeId", value = "客户状态编号", required = false) Integer cTypeId,
+                                   @ApiParam(name = "clProject", value = "报名项目", required = false) String clProject,
+                                   @ApiParam(name = "clEarnest", value = "是否交定金", required = false) Integer clEarnest,
+                                   @ApiParam(name = "clUId", value = "负责人编号", required = false) Integer clUId,
+                                   @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
+                                   @ApiParam(name = "clTypeId", value = "客户状态编号", required = false) Integer clTypeId,
                                    @ApiParam(name = "ctType", value = "客户状态", required = false) String ctType,
                                    @ApiParam(name = "beginTime", value = "开始时间", required = false) String beginTime,
                                    @ApiParam(name = "endTime", value = "结束时间", required = false) String endTime){
-        if (cTypeId == null && ctType != null){
+        if (clTypeId == null && ctType != null){
             //根据客户状态查询编号
-            cTypeId = iCtypeService.queryCtypeByCtType(ctType);
+            clTypeId = iCtypeService.queryCtypeByCtType(ctType);
         }
         //根据筛选条件查询客户
-        List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+        List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
         //获取总条数
-        Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
+        Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
         return new DataResult(0, "操作成功", total, customeres);
     }
 
     @PostMapping("saveCustomer")
     @ApiOperation(value = "新增客户信息")
     @ResponseBody
-    public DataResult saveCustomer(@ApiParam(name = "uId", value = "操作用户编号", required = true) Integer uId,
-                                   @ApiParam(name = "cName", value = "姓名", required = true) String cName,
+    public DataResult saveCustomer(@ApiParam(name = "cName", value = "姓名", required = true) String cName,
                                    @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
                                    @ApiParam(name = "cAge", value = "年龄", required = false) Integer cAge,
                                    @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
-                                   @ApiParam(name = "cProject", value = "项目", required = true) String cProject,
-                                   @ApiParam(name = "cEarnest", value = "定金", required = false) Integer cEarnest,
-                                   @ApiParam(name = "cUId", value = "用户编号", required = true) Integer cUId,
-                                   @ApiParam(name = "cSource", value = "来源", required = false) String cSource,
-                                   @ApiParam(name = "cTypeId", value = "状态编号", required = true) Integer cTypeId,
-                                   @ApiParam(name = "cRemark", value = "备注", required = false) String cRemark){
-        Customer c = new Customer(null, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, null, cTypeId);
+                                   @ApiParam(name = "clProject", value = "报名项目", required = true) String clProject,
+                                   @ApiParam(name = "clPlaceTime", value = "报名时间", required = true) String clPlaceTime,
+                                   @ApiParam(name = "clEarnest", value = "定金", required = false) Integer clEarnest,
+                                   @ApiParam(name = "clUId", value = "用户编号", required = true) Integer clUId,
+                                   @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
+                                   @ApiParam(name = "clTypeId", value = "状态编号", required = true) Integer clTypeId,
+                                   @ApiParam(name = "clRemark", value = "备注", required = false) String clRemark){
+        //新增客户
+        Customer c = new Customer(null, cName, cSex, cAge, cTel, null);
         iCustomerService.saveCustomer(c);
+        //查询新增客户的编号
+        Integer cId = iCustomerService.queryMaxCId();
+        //新增线索
+        Clue clue = new Clue(null, cId, clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEarnest, clUId, clSource, null, clTypeId);
+        iClueService.saveClue(clue);
         return new DataResult(0, "新增成功");
     }
 
@@ -97,11 +106,13 @@ public class CustomerController {
     public DataResult delCByCId(@ApiParam(value = "客户编号", required = true) Integer cId,
                                 @ApiParam(value = "客户名称", required = true) String cName,
                                 @ApiParam(value = "用户编号", required = true) Integer uId){
-        //删除
+        //删除客户
         iCustomerService.delCByCId(cId);
+        //删除线索
+        iClueService.delClByClCId(cId);
         //新增操作记录
         Operating operating = new Operating(cId, uId, cName);
-        iOperatingService.addOperatingRecord(operating);
+        iOperatingService.saveOperating(operating);
         return new DataResult(0, "删除成功");
     }
 
@@ -125,79 +136,25 @@ public class CustomerController {
                                  @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
                                  @ApiParam(name = "cAge", value = "年龄", required = false) Integer cAge,
                                  @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
-                                 @ApiParam(name = "cProject", value = "项目", required = true) String cProject,
-                                 @ApiParam(name = "cEarnest", value = "定金", required = false) Integer cEarnest,
-                                 @ApiParam(name = "cUId", value = "用户编号", required = false) Integer cUId,
-                                 @ApiParam(name = "cSource", value = "来源", required = false) String cSource,
-                                 @ApiParam(name = "cTypeId", value = "状态", required = true) Integer cTypeId,
-                                 @ApiParam(name = "cRemark", value = "备注", required = false) String cRemark,
-                                 @ApiParam(name = "cMessage", value = "症状信息", required = false) String cMessage){
+                                 @ApiParam(name = "clProject", value = "项目", required = true) String clProject,
+                                 @ApiParam(name = "clEarnest", value = "定金", required = false) Integer clEarnest,
+                                 @ApiParam(name = "clUId", value = "用户编号", required = false) Integer clUId,
+                                 @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
+                                 @ApiParam(name = "clTypeId", value = "状态", required = true) Integer clTypeId,
+                                 @ApiParam(name = "clRemark", value = "备注", required = false) String clRemark,
+                                 @ApiParam(name = "clMessage", value = "症状信息", required = false) String clMessage){
         //创建客户
-        Customer c = new Customer(cId, cName, cSex, cAge, cTel, cProject, null, cRemark, cEarnest, cUId, cSource, cMessage, cTypeId);
+        Customer c = new Customer(cId, cName, cSex, cAge, cTel, null);
         //编辑客户
         iCustomerService.editCByCId(c);
+        //创建线索
+        Clue clue = new Clue(null, cId, clProject, null, clRemark, clEarnest, clUId, clSource, clMessage, clTypeId);
+        //编辑线索
+        iClueService.editClByCId(clue);
         //新增操作记录
         Operating operating = new Operating(cId, uId, cName);
-        iOperatingService.addOperatingRecord(operating);
+        iOperatingService.saveOperating(operating);
         return new DataResult(0, "编辑成功");
-    }
-
-    @GetMapping("detail")
-    @ApiOperation(value = "查询客户详情")
-    @ResponseBody
-    public Map<String, Object> detail(@ApiParam(value = "客户编号", required = true) Integer cId){
-        //声明集合
-        Map<String, Object> map = new HashMap<String, Object>();
-        //根据客户编号查询客户并加入集合
-        Customer c = iCustomerService.queryCByCId(cId);
-        map.put("customer", c);
-        //根据客户编号查询最近预约门诊
-        String hName = iAppointmentService.queryLastHNameByCId(cId);
-        if (hName == null){
-            map.put("hName", "");
-        } else {
-            map.put("hName", hName);
-        }
-        //根据客户编号查询成交金额
-        Integer successMoney = iSuccessService.queryTotalMoneyByCId(cId, 0);
-        if (successMoney == null){
-            map.put("successMoney", 0);
-        } else {
-            map.put("successMoney", successMoney);
-        }
-        //根据客户编号查询已交金额
-        Integer payMoney = iSuccessService.queryTotalMoneyByCId(cId, 1);
-        if (successMoney == null){
-            map.put("payMoney", 0);
-        } else {
-            map.put("payMoney", payMoney);
-        }
-        //待交金额
-        if (successMoney != null && payMoney != null){
-            map.put("waitMoney", successMoney-payMoney);
-        } else {
-            map.put("waitMoney", 0);
-        }
-        //最后修改时间
-        String s = iOperatingService.queryOpTimeByOpCId(cId);
-        if (s == null){
-            map.put("updateTime", "");
-        } else {
-            map.put("updateTime", s);
-        }
-        return map;
-    }
-
-    @GetMapping("editCTypeIdByCId")
-    @ApiOperation(value = "编辑客户状态")
-    @ResponseBody
-    public DataResult editCTypeIdByCId(@ApiParam(value = "编号", required = true) Integer cId,
-                                       @ApiParam(value = "客户状态", required = true) String cType){
-        //根据客户状态查询编号
-        Integer cTypeId = iCtypeService.queryCtypeByCtType(cType);
-        //编辑客户状态
-        iCustomerService.editCTypeIdByCId(cId, cTypeId);
-        return new DataResult(0, "操作成功");
     }
 
     @GetMapping("getTotalCByUIdAndCTypeId")
@@ -222,40 +179,12 @@ public class CustomerController {
         return new DataResult(0, "操作成功", 0, customers);
     }
 
-    @GetMapping("queryCAndHNameScreen")
-    @ApiOperation(value = "查询客户信息")
-    @ResponseBody
-    public DataResult queryCAndHNameScreen(@ApiParam(name = "page", value = "页码", required = true) Integer page,
-                                   @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit,
-                                   @ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
-                                   @ApiParam(name = "rName", value = "角色名称", required = true) String rName,
-                                   @ApiParam(name = "cName", value = "姓名", required = false) String cName,
-                                   @ApiParam(name = "cTel", value = "电话", required = false) String cTel,
-                                   @ApiParam(name = "cProject", value = "报名项目", required = false) String cProject,
-                                   @ApiParam(name = "cEarnest", value = "是否交定金", required = false) Integer cEarnest,
-                                   @ApiParam(name = "cUId", value = "负责人编号", required = false) Integer cUId,
-                                   @ApiParam(name = "cSource", value = "来源", required = false) String cSource,
-                                   @ApiParam(name = "cTypeId", value = "客户状态编号", required = false) Integer cTypeId,
-                                   @ApiParam(name = "ctType", value = "客户状态", required = false) String ctType,
-                                   @ApiParam(name = "beginTime", value = "开始时间", required = false) String beginTime,
-                                   @ApiParam(name = "endTime", value = "结束时间", required = false) String endTime){
-        if (cTypeId == null && ctType != null){
-            //根据客户状态查询编号
-            cTypeId = iCtypeService.queryCtypeByCtType(ctType);
-        }
-        //根据筛选条件查询客户
-        List<Customer> customeres = iCustomerService.queryCAndHNameScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
-        //获取总条数
-        Integer total = iCustomerService.getTotalAndHNameByScreen(uId, rName, cName, cTel, cProject, cEarnest, beginTime, endTime, cUId, cSource, cTypeId);
-        return new DataResult(0, "操作成功", total, customeres);
-    }
-
     @PostMapping("queryCSCByUIdAndCName")
     @ApiOperation(value = "根据用户编号和客户名称查询可成交客户")
     @ResponseBody
     public DataResult queryCSCByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
-                                           @ApiParam(value = "用户编号", required = true) Integer uId,
-                                           @ApiParam(value = "客户名称", required = true) String cName){
+                                            @ApiParam(value = "用户编号", required = true) Integer uId,
+                                            @ApiParam(value = "客户名称", required = true) String cName){
         List<Customer> customers = iCustomerService.queryCSCByUIdAndCName(rName, uId, cName);
         return new DataResult(0, "操作成功", 0, customers);
     }
@@ -281,6 +210,52 @@ public class CustomerController {
         Integer cTypeId = iCtypeService.queryCtypeByCtType(ctType);
         Integer total = iCustomerService.queryCByUIdAndTimeAndCTypeId(uId, cTypeId, beginTime, endTime);
         return new DataResult(0, "操作成功", 0, total);
+    }
+
+    @GetMapping("detail")
+    @ApiOperation(value = "查询客户详情")
+    @ResponseBody
+    public Map<String, Object> detail(@ApiParam(value = "客户编号", required = true) Integer clId){
+        //声明集合
+        Map<String, Object> map = new HashMap<String, Object>();
+        //根据客户编号查询客户并加入集合
+        Customer c = iCustomerService.queryCByClId(clId);
+        map.put("customer", c);
+        //根据客户编号查询最近预约门诊
+        String hName = iAppointmentService.queryLastHNameByClId(clId);
+        if (hName == null){
+            map.put("hName", "");
+        } else {
+            map.put("hName", hName);
+        }
+        //根据线索编号查询成交金额
+        Integer successMoney = iSuccessService.queryTotalMoneyByClId(clId, 0);
+        if (successMoney == null){
+            map.put("successMoney", 0);
+        } else {
+            map.put("successMoney", successMoney);
+        }
+        //根据线索编号查询已交金额
+        Integer payMoney = iSuccessService.queryTotalMoneyByClId(clId, 1);
+        if (successMoney == null){
+            map.put("payMoney", 0);
+        } else {
+            map.put("payMoney", payMoney);
+        }
+        //待交金额
+        if (successMoney != null && payMoney != null){
+            map.put("waitMoney", successMoney-payMoney);
+        } else {
+            map.put("waitMoney", 0);
+        }
+        //最后修改时间
+        String s = iOperatingService.queryOpTimeByClId(clId);
+        if (s == null){
+            map.put("updateTime", "");
+        } else {
+            map.put("updateTime", s);
+        }
+        return map;
     }
 
 }

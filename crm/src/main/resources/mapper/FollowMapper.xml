@@ -9,35 +9,36 @@
       This element was generated on Thu Aug 20 21:32:10 CST 2020.
     -->
     <id column="f_id" jdbcType="INTEGER" property="fId" />
-    <result column="f_c_id" jdbcType="INTEGER" property="fCId" />
+    <result column="f_cl_id" jdbcType="INTEGER" property="fClId" />
     <result column="f_type_id" jdbcType="INTEGER" property="fTypeId" />
     <result column="f_time" jdbcType="TIMESTAMP" property="fTime" />
     <result column="f_content" jdbcType="LONGVARCHAR" property="fContent" />
+    <result column="f_u_id" jdbcType="INTEGER" property="fUId" />
   </resultMap>
 
   <!--新增客户跟进-->
   <insert id="saveFollow">
-    INSERT INTO follow(f_c_id, f_type_id, f_time, f_content)
-    VALUES (#{fCId}, #{fTypeId}, now(), #{fContent})
+    INSERT INTO follow(f_cl_id, f_type_id, f_time, f_content, f_u_id)
+    VALUES (#{fClId}, #{fTypeId}, now(), #{fContent}, #{fUId})
   </insert>
 
-  <!--根据客户编号查询所拥有的跟进类型-->
-  <select id="queryFtypeByFCId" resultMap="BaseResultMap">
+  <!--根据线索编号查询所拥有的跟进类型-->
+  <select id="queryFtypeByFClId" resultMap="BaseResultMap">
     SELECT ft.ft_type AS fType FROM follow f INNER JOIN ftype ft ON f.f_type_id=ft.ft_id
-    WHERE f.f_c_id = #{cId} GROUP BY ft.ft_type
+    WHERE f.f_cl_id = #{clId} GROUP BY ft.ft_type
   </select>
 
-  <!--根据跟进类型和客户编号查询最后一次跟进时间-->
-  <select id="queryLastFTimeByFtypeAndFCId" resultType="String">
+  <!--根据跟进类型和线索编号查询最后一次跟进时间-->
+  <select id="queryLastFTimeByFtypeAndFClId" resultType="String">
     SELECT f.f_time FROM follow f INNER JOIN ftype ft ON f.f_type_id=ft.ft_id
-    WHERE ft.ft_type = #{ftType} AND f_c_id = #{cId} ORDER BY f.f_time DESC LIMIT 0,1
+    WHERE ft.ft_type = #{ftType} AND f_cl_id = #{clId} ORDER BY f.f_time DESC LIMIT 0,1
   </select>
 
-  <!--根据客户编号和跟进类型查询客户跟进-->
-  <select id="queryFByFtypeAndFCId" resultMap="BaseResultMap">
+  <!--根据线索编号和跟进类型查询客户跟进-->
+  <select id="queryFByFtypeAndFClId" resultMap="BaseResultMap">
     SELECT f.*, ft.ft_type AS fType FROM follow f
     LEFT JOIN ftype ft ON f.f_type_id = ft.ft_id
-    WHERE f.f_c_id = #{cId} AND ft.ft_type = #{ftType}
+    WHERE f.f_cl_id = #{clId} AND ft.ft_type = #{ftType}
     ORDER BY f.f_time DESC
   </select>
 
