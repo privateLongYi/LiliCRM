@@ -25,6 +25,8 @@ public class Clue implements Serializable {
 
     private Integer clTypeId;
 
+    private Integer clInvalid;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getClId() {
@@ -107,10 +109,18 @@ public class Clue implements Serializable {
         this.clTypeId = clTypeId;
     }
 
+    public Integer getClInvalid() {
+        return clInvalid;
+    }
+
+    public void setClInvalid(Integer clInvalid) {
+        this.clInvalid = clInvalid;
+    }
+
     public Clue() {
     }
 
-    public Clue(Integer clId, Integer clCId, String clProject, Timestamp clPlaceTime, String clRemark, Integer clEarnest, Integer clUId, String clSource, String clMessage, Integer clTypeId) {
+    public Clue(Integer clId, Integer clCId, String clProject, Timestamp clPlaceTime, String clRemark, Integer clEarnest, Integer clUId, String clSource, String clMessage, Integer clTypeId, Integer clInvalid) {
         this.clId = clId;
         this.clCId = clCId;
         this.clProject = clProject;
@@ -121,6 +131,7 @@ public class Clue implements Serializable {
         this.clSource = clSource;
         this.clMessage = clMessage;
         this.clTypeId = clTypeId;
+        this.clInvalid = clInvalid;
     }
 
     @Override
@@ -136,6 +147,7 @@ public class Clue implements Serializable {
                 ", clSource='" + clSource + '\'' +
                 ", clMessage='" + clMessage + '\'' +
                 ", clTypeId=" + clTypeId +
+                ", clInvalid=" + clInvalid +
                 '}';
     }
 }

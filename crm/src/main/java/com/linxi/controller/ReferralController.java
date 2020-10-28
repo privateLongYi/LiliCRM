@@ -69,7 +69,7 @@ public class ReferralController {
         //根据预约类型查询编号
         Integer aTypeId = iAtypeService.queryAByAType("转诊");
         //新增预约记录
-        Appointment appointment = new Appointment(null, clId, Timestamp.valueOf(aTime), rHId, aTypeId, clUId, 0);
+        Appointment appointment = new Appointment(null, clId, Timestamp.valueOf(aTime), rHId, aTypeId, 0);
         iAppointmentService.saveAppointment(appointment);
         //新增操作记录
         Operating operating = new Operating(cId, uId, "新增了转诊记录");
@@ -77,8 +77,8 @@ public class ReferralController {
         //新增转诊记录
         Referral referral = new Referral(null, rAId, rFailHId, rHId, rMessage, rCause);
         iReferralService.saveReferral(referral);
-        //根据未成交编号编辑为失效
-        iFailService.editFlInvalidByFlId(flId);
+        //根据预约编号编辑预约状态
+        iAppointmentService.editAStatusByAIdAndAStatus(rAId, 1);
         return new DataResult(0, "转诊成功");
     }
 

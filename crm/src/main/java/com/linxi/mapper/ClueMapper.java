@@ -14,7 +14,7 @@ public interface ClueMapper {
     //新增线索
     Integer saveClue(Clue cl);
 
-    //根据编号删除线索
+    //根据客户编号删除线索
     void delClByClCId(Integer clCId);
 
     //根据编号查询线索
@@ -26,5 +26,14 @@ public interface ClueMapper {
     //根据编号修改状态
     void editClTypeIdByClId(@Param("clId") Integer clId,
                             @Param("clTypeId") Integer clTypeId);
+
+    //根据客户编号查询线索
+    List<Clue> queryClByClCId(Integer clCId);
+
+    //根据编号更改线索为无效
+    void editInvalidByClId(Integer clId);
+
+    //查询最大的线索编号
+    Integer queryMaxClId();
 
 }

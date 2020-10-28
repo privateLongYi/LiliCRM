@@ -31,4 +31,13 @@ public interface IClueService {
     void editClTypeIdByClId(@Param("clId") Integer clId,
                             @Param("clTypeId") Integer clTypeId);
 
+    //根据客户编号查询线索
+    List<Clue> queryClByClCId(Integer clCId);
+
+    //根据编号更改线索为无效
+    void editInvalidByClId(Integer clId);
+
+    //查询最大的线索编号
+    Integer queryMaxClId();
+
 }

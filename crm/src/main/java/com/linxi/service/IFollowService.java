@@ -26,4 +26,7 @@ public interface IFollowService {
     List<Follow> queryFByFtypeAndFClId(@Param("clId") Integer clId,
                                        @Param("ftType") String ftType);
 
+    //根据线索编号查询跟进
+    List<Follow> queryFByFClId(Integer fClId);
+
 }

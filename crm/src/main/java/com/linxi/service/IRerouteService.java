@@ -26,4 +26,7 @@ public interface IRerouteService {
                             @Param("rName") String rName,
                             @Param("cName") String cName);
 
+    //根据线索编号查询改约
+    List<Reroute> queryReByReClId(Integer reClId);
+
 }

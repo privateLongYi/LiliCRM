@@ -31,7 +31,7 @@
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
-      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+      AND cl.cl_invalid = 0 AND a.a_status = 1
       AND ar.ar_invalid = 0
     </where>
     limit #{page}, #{limit}
@@ -51,7 +51,7 @@
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
-      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+      AND cl.cl_invalid = 0 AND a.a_status = 1
       AND ar.ar_invalid = 0
     </where>
   </select>
@@ -71,5 +71,10 @@
   <update id="editArInvalidByArId">
     UPDATE arrive SET ar_invalid = 1 WHERE ar_id = #{arId}
   </update>
+
+  <!--根据预约编号查询未到店-->
+  <select id="queryArByArAId" resultMap="BaseResultMap">
+    SELECT * FROM arrive WHERE ar_a_id = #{arAId}
+  </select>
 
 </mapper>

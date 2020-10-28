@@ -26,4 +26,7 @@ public interface IReferralService {
                             @Param("rName") String rName,
                             @Param("cName") String cName);
 
+    //根据预约编号查询转诊
+    List<Referral> queryRByRAId(Integer rAId);
+
 }

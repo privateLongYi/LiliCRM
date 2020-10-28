@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @Author LongYi
  * @create 2020/10/21 21:39
@@ -50,6 +52,23 @@ public class ClueService implements IClueService{
     @Override
     public void editClTypeIdByClId(Integer clId, Integer clTypeId) {
         clueMapper.editClTypeIdByClId(clId, clTypeId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Clue> queryClByClCId(Integer clCId) {
+        return clueMapper.queryClByClCId(clCId);
+    }
+
+    @Override
+    public void editInvalidByClId(Integer clId) {
+        clueMapper.editInvalidByClId(clId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryMaxClId() {
+        return clueMapper.queryMaxClId();
     }
 
 }

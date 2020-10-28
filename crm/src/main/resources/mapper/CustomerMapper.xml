@@ -20,6 +20,95 @@
   <select id="queryCScreen" resultMap="BaseResultMap">
     SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
     cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, u.u_name AS uName, cl.cl_source AS clSource,
+    cl.cl_message AS clMessage, ct.ct_type AS cType,
+    u.u_id AS clUId FROM customer c
+    LEFT JOIN clue cl ON c.c_id=cl.cl_c_id
+    LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
+    LEFT JOIN ctype ct ON cl.cl_type_id=ct.ct_id
+    <where>
+      <if test="rName != '管理员'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name LIKE '%${cName}%'
+      </if>
+      <if test="cTel != null and cTel != ''">
+        AND c.c_tel = #{cTel}
+      </if>
+      <if test="clProject != null and clProject != ''">
+        AND cl.cl_project = #{clProject}
+      </if>
+      <if test="clEarnest != null and clEarnest == 0">
+        AND (cl.cl_earnest = 0 OR cl.cl_earnest IS NULL)
+      </if>
+      <if test="clEarnest != null and clEarnest == 1">
+        AND cl.cl_earnest != 0
+      </if>
+      <if test="beginTime != null and endTime != null">
+        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+      </if>
+      <if test="clUId != null">
+        AND cl.cl_u_id = #{clUId}
+      </if>
+      <if test="clSource != null and clSource != ''">
+        AND cl.cl_source = #{clSource}
+      </if>
+      <if test="clTypeId != null">
+        AND cl.cl_type_id = #{clTypeId}
+      </if>
+      AND cl.cl_invalid = 0
+    </where>
+    ORDER BY cl_place_time DESC
+    limit #{page}, #{limit}
+  </select>
+
+  <!-- 根据筛选条件查询客户总数 -->
+  <select id="getTotalByScreen" resultType="Integer">
+    SELECT COUNT(*) FROM customer c
+    LEFT JOIN clue cl ON c.c_id=cl.cl_c_id
+    LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
+    LEFT JOIN ctype ct ON cl.cl_type_id=ct.ct_id
+    <where>
+      <if test="rName != '管理员'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name LIKE '%${cName}%'
+      </if>
+      <if test="cTel != null and cTel != ''">
+        AND c.c_tel = #{cTel}
+      </if>
+      <if test="clProject != null and clProject != ''">
+        AND cl.cl_project = #{clProject}
+      </if>
+      <if test="clEarnest != null and clEarnest == 0">
+        AND (cl.cl_earnest = 0 OR cl.cl_earnest IS NULL)
+      </if>
+      <if test="clEarnest != null and clEarnest == 1">
+        AND cl.cl_earnest != 0
+      </if>
+      <if test="beginTime != null and endTime != null">
+        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+      </if>
+      <if test="clUId != null">
+        AND cl.cl_u_id = #{clUId}
+      </if>
+      <if test="clSource != null and clSource != ''">
+        AND cl.cl_source = #{clSource}
+      </if>
+      <if test="clTypeId != null">
+        AND cl.cl_type_id = #{clTypeId}
+      </if>
+      AND cl.cl_invalid = 0
+    </where>
+  </select>
+
+  <!-- 高级筛选加分页查询客户 -->
+  <select id="queryAACScreen" resultMap="BaseResultMap">
+    SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
+    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, u.u_name AS uName, cl.cl_source AS clSource,
     cl.cl_message AS clMessage, ct.ct_type AS cType, a.a_id AS aId, h.h_id AS hId, h.h_name AS hName,
     a.a_time AS aTime, u.u_id AS clUId FROM customer c
     LEFT JOIN clue cl ON c.c_id=cl.cl_c_id
@@ -59,14 +148,14 @@
       <if test="clTypeId != null">
         AND cl.cl_type_id = #{clTypeId}
       </if>
-      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+      AND cl.cl_invalid = 0 AND a.a_status = 0
     </where>
     ORDER BY cl_place_time DESC
     limit #{page}, #{limit}
   </select>
 
   <!-- 根据筛选条件查询客户总数 -->
-  <select id="getTotalByScreen" resultType="Integer">
+  <select id="getAACTotalByScreen" resultType="Integer">
     SELECT COUNT(*) FROM customer c
     LEFT JOIN clue cl ON c.c_id=cl.cl_c_id
     LEFT JOIN appointment a ON a.a_cl_id=cl.cl_id
@@ -105,7 +194,7 @@
       <if test="clTypeId != null">
         AND cl.cl_type_id = #{clTypeId}
       </if>
-      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+      AND cl.cl_invalid = 0 AND a.a_status = 0
     </where>
   </select>
 
@@ -197,7 +286,7 @@
       <if test="rName != '管理员'">
         AND cl.cl_u_id = #{uId}
       </if>
-      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+      AND cl.cl_invalid = 0 AND a.a_status = 0
     </where>
     limit 0, 3
   </select>

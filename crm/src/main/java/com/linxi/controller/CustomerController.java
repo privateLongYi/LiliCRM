@@ -67,12 +67,26 @@ public class CustomerController {
         if (clTypeId == null && ctType != null){
             //根据客户状态查询编号
             clTypeId = iCtypeService.queryCtypeByCtType(ctType);
+            if (!ctType.equals("待到店")){
+                //根据筛选条件查询客户
+                List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
+                //获取总条数
+                Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
+                return new DataResult(0, "操作成功", total, customeres);
+            } else {
+                //根据筛选条件查询客户
+                List<Customer> customeres = iCustomerService.queryAACScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
+                //获取总条数
+                Integer total = iCustomerService.getAACTotalByScreen(uId, rName, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
+                return new DataResult(0, "操作成功", total, customeres);
+            }
+        } else {
+            //根据筛选条件查询客户
+            List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
+            //获取总条数
+            Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
+            return new DataResult(0, "操作成功", total, customeres);
         }
-        //根据筛选条件查询客户
-        List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
-        //获取总条数
-        Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
-        return new DataResult(0, "操作成功", total, customeres);
     }
 
     @PostMapping("saveCustomer")
@@ -95,7 +109,7 @@ public class CustomerController {
         //查询新增客户的编号
         Integer cId = iCustomerService.queryMaxCId();
         //新增线索
-        Clue clue = new Clue(null, cId, clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEarnest, clUId, clSource, null, clTypeId);
+        Clue clue = new Clue(null, cId, clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEarnest, clUId, clSource, null, clTypeId, 0);
         iClueService.saveClue(clue);
         return new DataResult(0, "新增成功");
     }
@@ -111,7 +125,7 @@ public class CustomerController {
         //删除线索
         iClueService.delClByClCId(cId);
         //新增操作记录
-        Operating operating = new Operating(cId, uId, cName);
+        Operating operating = new Operating(cId, uId, "删除了客户");
         iOperatingService.saveOperating(operating);
         return new DataResult(0, "删除成功");
     }
@@ -148,11 +162,11 @@ public class CustomerController {
         //编辑客户
         iCustomerService.editCByCId(c);
         //创建线索
-        Clue clue = new Clue(null, cId, clProject, null, clRemark, clEarnest, clUId, clSource, clMessage, clTypeId);
+        Clue clue = new Clue(null, cId, clProject, null, clRemark, clEarnest, clUId, clSource, clMessage, clTypeId, 0);
         //编辑线索
         iClueService.editClByCId(clue);
         //新增操作记录
-        Operating operating = new Operating(cId, uId, cName);
+        Operating operating = new Operating(cId, uId, "编辑了客户");
         iOperatingService.saveOperating(operating);
         return new DataResult(0, "编辑成功");
     }

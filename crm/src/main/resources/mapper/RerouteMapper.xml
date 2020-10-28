@@ -57,4 +57,9 @@
     </where>
   </select>
 
+  <!--根据线索编号查询改约-->
+  <select id="queryReByReClId" resultMap="BaseResultMap">
+    SELECT * FROM reroute WHERE re_cl_id = #{reClId}
+  </select>
+
 </mapper>

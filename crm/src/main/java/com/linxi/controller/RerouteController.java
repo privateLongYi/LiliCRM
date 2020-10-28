@@ -66,14 +66,14 @@ public class RerouteController {
         //根据预约类型查询编号
         Integer atId = iAtypeService.queryAByAType("改约");
         //新增预约记录
-        Appointment appointment = new Appointment(null, reClId, reTime, reHId, atId, reUId, 0);
+        Appointment appointment = new Appointment(null, reClId, reTime, reHId, atId, 0);
         iAppointmentService.saveAppointment(appointment);
         //查询待到店编号
         Integer ctId = iCtypeService.queryCtypeByCtType("待到店");
         //编辑客户状态
         iClueService.editClTypeIdByClId(reClId, ctId);
-        //根据预约编号编辑预约记录为失效
-        iAppointmentService.editAInvalidByAId(aId);
+        //根据预约编号编辑预约状态
+        iAppointmentService.editAStatusByAIdAndAStatus(aId, 1);
         //新增改约记录
         Reroute reroute = new Reroute(reClId, reHId, reLastTime, reTime, reCause, reUId);
         iRerouteService.saveReroute(reroute);

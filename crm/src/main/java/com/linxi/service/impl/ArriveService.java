@@ -48,4 +48,9 @@ public class ArriveService implements IArriveService{
         arriveMapper.editArInvalidByArId(arId);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Arrive> queryArByArAId(Integer arAId) {
+        return arriveMapper.queryArByArAId(arAId);
+    }
 }

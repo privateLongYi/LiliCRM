@@ -12,13 +12,12 @@
     <result column="fl_a_id" jdbcType="INTEGER" property="flAId" />
     <result column="fl_h_id" jdbcType="INTEGER" property="flHId" />
     <result column="fl_cause" jdbcType="LONGVARCHAR" property="flCause" />
-    <result column="fl_invalid" jdbcType="INTEGER" property="flInvalid" />
   </resultMap>
 
   <!--新增未成交客户-->
   <insert id="saveFail">
-    INSERT INTO fail(fl_a_id, fl_h_id, fl_cause, fl_invalid)
-    VALUES (#{flAId}, #{flHId}, #{flCause}, #{flInvalid})
+    INSERT INTO fail(fl_a_id, fl_h_id, fl_cause)
+    VALUES (#{flAId}, #{flHId}, #{flCause})
   </insert>
 
   <!--根据客户名称查询未成交客户-->
@@ -36,8 +35,7 @@
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
-      AND cl.cl_invalid = 0 AND a.a_invalid = 1
-      AND fl.fl_invalid = 0
+      AND cl.cl_invalid = 0 AND a.a_status = 3
     </where>
     limit #{page}, #{limit}
   </select>
@@ -56,14 +54,13 @@
       <if test="cName != null and cName != ''">
         AND c.c_name = #{cName}
       </if>
-      AND cl.cl_invalid = 0 AND a.a_invalid = 1
-      AND fl.fl_invalid = 0
+      AND cl.cl_invalid = 0 AND a.a_status = 3
     </where>
   </select>
 
-  <!--根据未成交编号编辑为失效-->
-  <update id="editFlInvalidByFlId">
-    UPDATE fail SET fl_invalid = 1 WHERE fl_id = #{flId}
-  </update>
+  <!--根据预约编号查询未成交-->
+  <select id="queryFlByFlAId" resultMap="BaseResultMap">
+    SELECT * FROM fail WHERE fl_a_id = #{flAId}
+  </select>
 
 </mapper>

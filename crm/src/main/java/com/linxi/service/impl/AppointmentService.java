@@ -67,7 +67,20 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public void editAInvalidByAId(Integer aId) {
-        appointmentMapper.editAInvalidByAId(aId);
+    public void editAStatusByAIdAndAStatus(Integer aId, Integer aStatus) {
+        appointmentMapper.editAStatusByAIdAndAStatus(aId, aStatus);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Appointment> queryAByAClId(Integer aClId) {
+        return appointmentMapper.queryAByAClId(aClId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryMaxAId() {
+        return appointmentMapper.queryMaxAId();
+    }
+
 }

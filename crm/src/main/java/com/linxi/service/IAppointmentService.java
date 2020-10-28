@@ -2,6 +2,7 @@ package com.linxi.service;
 
 import com.linxi.entity.Appointment;
 import io.swagger.models.auth.In;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -35,7 +36,14 @@ public interface IAppointmentService {
     //根据线索编号查询预约记录（详情）
     List<Appointment> queryAToDetail(Integer clId);
 
-    //根据预约编号编辑预约记录为失效
-    void editAInvalidByAId(Integer aId);
+    //根据编号和状态编辑预约状态
+    void editAStatusByAIdAndAStatus(@Param("aId") Integer aId,
+                                    @Param("aStatus") Integer aStatus);
+
+    //根据线索编号查询预约
+    List<Appointment> queryAByAClId(Integer aClId);
+
+    //查询最大的预约编号
+    Integer queryMaxAId();
 
 }

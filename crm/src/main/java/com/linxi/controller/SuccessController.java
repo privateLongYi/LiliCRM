@@ -37,7 +37,7 @@ public class SuccessController {
     private ICtypeService iCtypeService;
 
     @Autowired
-    private ICustomerService iCustomerService;
+    private IAppointmentService iAppointmentService;
 
     @Autowired
     private IClueService iClueService;
@@ -98,7 +98,7 @@ public class SuccessController {
         Operating operating = new Operating(cId, uId, "编辑了成交客户");
         iOperatingService.saveOperating(operating);
         //编辑成交客户
-        Success success = new Success(sId, sAId, sHId, sMessage, sSum, null, sRemark);
+        Success success = new Success(sId, sAId, sHId, sMessage, sSum, null, sRemark, 0);
         iSuccessService.editSBySId(success);
         return new DataResult(0, "编辑成功");
     }
@@ -122,8 +122,10 @@ public class SuccessController {
         //改变客户状态为成交状态
         iClueService.editClTypeIdByClId(clId, clTypeId);
         //新增成交客户
-        Success success = new Success(null, sAId, sHId, sMessage, sSum, null, sRemark);
+        Success success = new Success(null, sAId, sHId, sMessage, sSum, null, sRemark, 0);
         iSuccessService.saveSuccess(success);
+        //根据预约编号编辑预约状态
+        iAppointmentService.editAStatusByAIdAndAStatus(sAId, 2);
         return new DataResult(0, "新增成功");
     }
 

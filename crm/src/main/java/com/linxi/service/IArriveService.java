@@ -32,4 +32,7 @@ public interface IArriveService {
     //根据未到店编号编辑未到店客户为失效状态
     void editArInvalidByArId(Integer arId);
 
+    //根据预约编号查询未到店
+    List<Arrive> queryArByArAId(Integer arAId);
+
 }

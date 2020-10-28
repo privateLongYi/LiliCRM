@@ -82,4 +82,10 @@ public interface ISuccessService {
     List<Success> querySSumGruopByCProject(@Param("beginTime") String beginTime,
                                            @Param("endTime") String endTime);
 
+    //根据预约编号查询成交
+    List<Success> querySBySAId(Integer sAId);
+
+    //根据预约编号查询成交总金额
+    Integer querySSumBySAId(Integer sAId);
+
 }

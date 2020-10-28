@@ -35,7 +35,7 @@ public class AppointmentController {
     private ICtypeService iCtypeService;
 
     @Autowired
-    private ICustomerService iCustomerService;
+    private ISuccessService iSuccessService;
 
     @Autowired
     private IClueService iClueService;
@@ -68,8 +68,9 @@ public class AppointmentController {
                                  @ApiParam(value = "线索编号", required = true) Integer aClId,
                                  @ApiParam(value = "预约时间", required = true) String aTime,
                                  @ApiParam(value = "门诊编号", required = true) Integer aHId,
-                                 @ApiParam(value = "预约类型编号", required = true) Integer aTypeId){
-        Appointment appointment = new Appointment(aId, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, uId, 0);
+                                 @ApiParam(value = "预约类型编号", required = true) Integer aTypeId,
+                                 @ApiParam(value = "预约状态", required = true) Integer aStatus){
+        Appointment appointment = new Appointment(aId, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, aStatus);
         iAppointmentService.editAByAId(appointment);
         return new DataResult(0, "编辑成功");
     }
@@ -92,12 +93,12 @@ public class AppointmentController {
                                       @ApiParam(value = "预约类型", required = true) String atType){
         //根据客户状态查询编号
         Integer clTypeId = iCtypeService.queryCtypeByCtType("待到店");
-        //改变客户状态为未到店状态
+        //改变客户状态为待到店状态
         iClueService.editClTypeIdByClId(aClId, clTypeId);
         //根据预约类型查询编号
         Integer aTypeId = iAtypeService.queryAByAType(atType);
         //新增预约客户
-        Appointment appointment = new Appointment(null, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, uId, 0);
+        Appointment appointment = new Appointment(null, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, 0);
         iAppointmentService.saveAppointment(appointment);
         return new DataResult(0, "新增成功");
     }
@@ -106,7 +107,17 @@ public class AppointmentController {
     @ApiOperation(value = "根据线索编号查询预约记录（详情）")
     @ResponseBody
     public DataResult queryAToDetail(@ApiParam(value = "线索编号", required = true) Integer clId){
+        //根据线索编号查询预约
         List<Appointment> appointments = iAppointmentService.queryAToDetail(clId);
+        for (Appointment appointment : appointments){
+            //根据预约编号查询成交总金额
+            Integer sum = iSuccessService.querySSumBySAId(appointment.getaId());
+            if (sum != null) {
+                appointment.setsSum(sum);
+            } else {
+                appointment.setsSum(0);
+            }
+        }
         return new DataResult(0, "操作成功", 0, appointments);
     }
 

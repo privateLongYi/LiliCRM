@@ -29,8 +29,8 @@ public class OperatingService implements IOperatingService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Operating> queryOpByClId(Integer clId) {
-        return operatingMapper.queryOpByClId(clId);
+    public List<Operating> queryOpByCId(Integer cId) {
+        return operatingMapper.queryOpByCId(cId);
     }
 
     @Override

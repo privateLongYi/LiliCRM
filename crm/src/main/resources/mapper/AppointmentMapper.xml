@@ -13,13 +13,12 @@
     <result column="a_time" jdbcType="TIMESTAMP" property="aTime" />
     <result column="a_h_id" jdbcType="INTEGER" property="aHId" />
     <result column="a_type_id" jdbcType="INTEGER" property="aTypeId" />
-    <result column="a_u_id" jdbcType="INTEGER" property="aUId" />
-    <result column="a_invalid" jdbcType="INTEGER" property="aInvalid" />
+    <result column="a_status" jdbcType="INTEGER" property="aStatus" />
   </resultMap>
 
   <insert id="saveAppointment">
-   INSERT INTO appointment(a_cl_id, a_time, a_h_id, a_type_id, a_u_id, a_invalid)
-   VALUES(#{aClId}, #{aTime}, #{aHId}, #{aTypeId}, #{aUId}, #{aInvalid})
+   INSERT INTO appointment(a_cl_id, a_time, a_h_id, a_type_id, a_status)
+   VALUES(#{aClId}, #{aTime}, #{aHId}, #{aTypeId}, #{aStatus})
   </insert>
 
   <!--根据客户编号查询预约客户-->
@@ -64,19 +63,29 @@
 
   <!--根据客户编号查询预约记录（详情）-->
   <select id="queryAToDetail" resultMap="BaseResultMap">
-    SELECT a.a_time, at.at_type AS aType, cl.cl_project AS clProject, u.u_name AS uName,
-    cl.cl_earnest AS clEarnest, s.s_sum AS sSum FROM appointment a
+    SELECT a.a_time, a.a_id, at.at_type AS aType, cl.cl_project AS clProject, u.u_name AS uName,
+    cl.cl_earnest AS clEarnest FROM appointment a
     LEFT JOIN atype at ON a.a_type_id=at.at_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
-    LEFT JOIN success s ON s.s_a_id=a.a_id
-    WHERE cl.cl_id = #{clId} ORDER BY a.a_time DESC
+    WHERE cl.cl_id = #{clId}
+    ORDER BY a.a_time DESC
   </select>
 
-  <!--根据预约编号编辑预约记录为失效-->
-  <update id="editAInvalidByAId">
-    UPDATE appointment SET a_invalid = 1 WHERE a_id = #{aId}
+  <!--根据编号编辑预约记录-->
+  <update id="editAStatusByAIdAndAStatus">
+    UPDATE appointment SET a_status = #{aStatus} WHERE a_id = #{aId}
   </update>
+
+  <!--根据线索编号查询预约-->
+  <select id="queryAByAClId" resultMap="BaseResultMap">
+    SELECT * FROM appointment WHERE a_cl_id = #{aClId}
+  </select>
+
+  <!--查询最大的预约编号-->
+  <select id="queryMaxAId" resultType="Integer">
+    SELECT MAX(a_id) FROM appointment
+  </select>
 
 </mapper>

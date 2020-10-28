@@ -60,4 +60,9 @@
     </where>
   </select>
 
+  <!--根据预约编号查询转诊-->
+  <select id="queryRByRAId" resultMap="BaseResultMap">
+    SELECT * FROM referral WHERE r_a_id = #{rAId}
+  </select>
+
 </mapper>

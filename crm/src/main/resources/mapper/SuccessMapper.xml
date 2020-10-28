@@ -16,17 +16,17 @@
     <result column="s_time" jdbcType="TIMESTAMP" property="sTime" />
     <result column="s_message" jdbcType="LONGVARCHAR" property="sMessage" />
     <result column="s_remark" jdbcType="LONGVARCHAR" property="sRemark" />
+    <result column="s_whether" jdbcType="INTEGER" property="sWhether" />
   </resultMap>
 
-  <!--根据客户编号查询成交客户-->
+  <!--根据线索编号查询成交客户-->
   <select id="querySByClId" resultMap="BaseResultMap">
     SELECT s.*, c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hName FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON s.s_h_id = h.h_id
-    WHERE cl.cl_id = #{clId}
-    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+    WHERE cl.cl_id = #{clId} AND cl.cl_invalid = 0 AND a.a_status = 2
     ORDER BY s_time DESC
     limit #{page}, #{limit}
   </select>
@@ -38,8 +38,7 @@
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON s.s_h_id = h.h_id
-    WHERE cl.cl_id = #{clId}
-    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+    WHERE cl.cl_id = #{clId} AND cl.cl_invalid = 0 AND a.a_status = 2
   </select>
 
   <!--根据成交客户编号删除成交客户-->
@@ -65,18 +64,19 @@
 
   <!--新增成交客户-->
   <insert id="saveSuccess">
-    INSERT INTO success(s_a_id, s_h_id, s_message, s_sum, s_paysum, s_remark, s_time)
-    VALUES (#{sAId}, #{sHId}, #{sMessage}, #{sSum}, 0, #{sRemark}, now())
+    INSERT INTO success(s_a_id, s_h_id, s_message, s_sum, s_paysum, s_remark, s_time, s_whether)
+    VALUES (#{sAId}, #{sHId}, #{sMessage}, #{sSum}, 0, #{sRemark}, now(), #{sWhether})
   </insert>
 
   <!--根据客户名称查询成交客户-->
   <select id="querySByCName" resultMap="BaseResultMap">
-    SELECT s.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId,
+    SELECT s.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId, u.u_name AS uName,
     h.h_name AS hName, cl.cl_id AS clId, cl.cl_u_id AS clUId FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON s.s_h_id=h.h_id
+    LEFT JOIN `user` u ON u.u_id=cl.cl_u_id
     <where>
       <if test="rName != '管理员'">
         AND cl.cl_u_id = #{uId}
@@ -84,7 +84,7 @@
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
-      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+      AND cl.cl_invalid = 0 AND a.a_status = 2
     </where>
     limit #{page}, #{limit}
   </select>
@@ -103,7 +103,7 @@
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
-      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+      AND cl.cl_invalid = 0 AND a.a_status = 2
     </where>
   </select>
 
@@ -124,7 +124,7 @@
     FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
-    WHERE cl.cl_id = #{clId}
+    WHERE cl.cl_id = #{clId} AND a.a_status = 2 AND s.s_whether = 0
   </select>
 
   <!--根据用户编号和客户名称查询成交客户-->
@@ -139,7 +139,7 @@
       <if test="rName != '管理员'">
         AND cl.cl_u_id = #{uId}
       </if>
-      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+      AND cl.cl_invalid = 0 AND a.a_status = 2
     </where>
     limit 0, 3
   </select>
@@ -149,9 +149,8 @@
     SELECT COUNT(*) FROM success s
     INNER JOIN appointment a ON s.s_a_id=a.a_id
 	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
-    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
-    WHERE u.u_id = #{uId}
-    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+    WHERE cl.cl_u_id = #{uId}
+    AND cl.cl_invalid = 0 AND a.a_status = 2
     AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
   </select>
@@ -161,9 +160,8 @@
     SELECT SUM(s.s_sum) FROM success s
     INNER JOIN appointment a ON s.s_a_id=a.a_id
 	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
-    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
-    WHERE u.u_id = #{uId}
-    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+    WHERE cl.cl_u_id = #{uId}
+    AND cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
     AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
   </select>
@@ -173,9 +171,8 @@
     SELECT SUM(s.s_paysum) FROM success s
     INNER JOIN appointment a ON s.s_a_id=a.a_id
 	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
-    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
-    WHERE u.u_id = #{uId}
-    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+    WHERE cl.cl_u_id = #{uId}
+    AND cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
     AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
   </select>
@@ -189,7 +186,7 @@
     INNER JOIN hospital h ON s.s_h_id=h.h_id
     WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
-    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+    AND cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
     GROUP BY u.u_id
   </select>
 
@@ -198,11 +195,10 @@
     SELECT h.h_name AS hName, SUM(s.s_sum) AS totalSum FROM success s
     INNER JOIN appointment a ON s.s_a_id=a.a_id
 	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
-    INNER JOIN `user` u ON cl.cl_u_id=u.u_id
 	INNER JOIN hospital h ON s.s_h_id=h.h_id
     WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
-    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+    AND cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
     GROUP BY s.s_h_id
   </select>
 
@@ -213,8 +209,18 @@
 	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
     WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
-    AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid is NULL)
+    AND cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
     GROUP BY cl.cl_project
+  </select>
+
+  <!--根据预约编号查询成交-->
+  <select id="querySBySAId" resultMap="BaseResultMap">
+    SELECT * FROM success WHERE s_a_id = #{sAId}
+  </select>
+
+  <!--根据预约编号查询成交总金额-->
+  <select id="querySSumBySAId" resultType="Integer">
+    SELECT SUM(s_sum) FROM success WHERE s_a_id = #{sAId}
   </select>
 
 </mapper>

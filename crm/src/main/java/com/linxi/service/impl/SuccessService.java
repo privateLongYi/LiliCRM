@@ -120,4 +120,15 @@ public class SuccessService implements ISuccessService{
         return successMapper.querySSumGruopByCProject(beginTime, endTime);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Success> querySBySAId(Integer sAId) {
+        return successMapper.querySBySAId(sAId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer querySSumBySAId(Integer sAId) {
+        return successMapper.querySSumBySAId(sAId);
+    }
 }

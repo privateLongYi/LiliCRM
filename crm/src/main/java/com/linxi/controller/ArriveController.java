@@ -36,7 +36,7 @@ public class ArriveController {
     private ICtypeService iCtypeService;
 
     @Autowired
-    private ICustomerService iCustomerService;
+    private IAppointmentService iAppointmentService;
 
     @Autowired
     private IClueService iClueService;
@@ -73,6 +73,8 @@ public class ArriveController {
         //新增未到店客户
         Arrive arrive = new Arrive(null, arAId, arHId, arCause, 0);
         iArriveService.saveArrive(arrive);
+        //根据预约编号编辑预约状态
+        iAppointmentService.editAStatusByAIdAndAStatus(arAId, 1);
         return new DataResult(0, "新增成功");
     }
 

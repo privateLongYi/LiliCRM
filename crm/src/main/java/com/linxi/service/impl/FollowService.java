@@ -45,4 +45,9 @@ public class FollowService implements IFollowService{
         return followMapper.queryFByFtypeAndFClId(clId, ftType);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Follow> queryFByFClId(Integer fClId) {
+        return followMapper.queryFByFClId(fClId);
+    }
 }

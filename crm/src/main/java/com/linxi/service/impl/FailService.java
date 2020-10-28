@@ -39,8 +39,9 @@ public class FailService implements IFailService{
     }
 
     @Override
-    public void editFlInvalidByFlId(Integer flId) {
-        failMapper.editFlInvalidByFlId(flId);
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Fail> queryFlByFlAId(Integer flAId) {
+        return failMapper.queryFlByFlAId(flAId);
     }
 
 }

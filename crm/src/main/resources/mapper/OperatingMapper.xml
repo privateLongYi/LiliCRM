@@ -21,12 +21,11 @@
     VALUES (#{opCId}, #{opUId}, #{opName}, now());
   </insert>
 
-  <!--根据线索编号查询操作记录-->
-  <select id="queryOpByClId" resultMap="BaseResultMap">
+  <!--根据客户编号查询操作记录-->
+  <select id="queryOpByCId" resultMap="BaseResultMap">
     SELECT op.*, u.u_name AS uName FROM operating op
     LEFT JOIN user u ON op.op_u_id = u.u_id
-    LEFT JOIN clue cl ON cl.cl_u_id=u.u_id
-    WHERE cl.cl_id = #{clId}
+    WHERE op.op_c_id = #{cId}
     ORDER BY op.op_time DESC
   </select>
 

@@ -76,6 +76,8 @@ public class Success implements Serializable {
      */
     private Timestamp sTime;
 
+    private Integer sWhether;
+
     /**
      * 客户名称
      */
@@ -302,6 +304,14 @@ public class Success implements Serializable {
         this.sTime = sTime;
     }
 
+    public Integer getsWhether() {
+        return sWhether;
+    }
+
+    public void setsWhether(Integer sWhether) {
+        this.sWhether = sWhether;
+    }
+
     public Integer gethId() {
         return hId;
     }
@@ -361,7 +371,7 @@ public class Success implements Serializable {
     public Success() {
     }
 
-    public Success(Integer sId, Integer sAId, Integer sHId, String sMessage, Integer sSum, Integer sPaysum, String sRemark) {
+    public Success(Integer sId, Integer sAId, Integer sHId, String sMessage, Integer sSum, Integer sPaysum, String sRemark, Integer sWhether) {
         this.sId = sId;
         this.sAId = sAId;
         this.sHId = sHId;
@@ -369,5 +379,6 @@ public class Success implements Serializable {
         this.sSum = sSum;
         this.sPaysum = sPaysum;
         this.sRemark = sRemark;
+        this.sWhether = sWhether;
     }
 }

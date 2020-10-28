@@ -349,4 +349,11 @@ public class ViewController {
         return "dataStatistics/paydetail";
     }
 
+    @GetMapping("editPrincipal")
+    @ApiOperation(value = "变更负责人")
+    public String editPrincipal(@ApiParam(name = "cId", value = "客户编号", required = true) String cId, ModelMap map){
+        map.addAttribute("cId", cId);
+        return "customer/editPrincipal";
+    }
+
 }

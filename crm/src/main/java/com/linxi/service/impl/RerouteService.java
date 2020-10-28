@@ -37,4 +37,10 @@ public class RerouteService implements IRerouteService{
     public Integer getTotalByCName(Integer uId, String rName, String cName) {
         return rerouteMapper.getTotalByCName(uId, rName, cName);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Reroute> queryReByReClId(Integer reClId) {
+        return rerouteMapper.queryReByReClId(reClId);
+    }
 }

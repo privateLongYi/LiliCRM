@@ -42,4 +42,9 @@
     ORDER BY f.f_time DESC
   </select>
 
+  <!--根据线索编号查询跟进-->
+  <select id="queryFByFClId" resultMap="BaseResultMap">
+    SELECT * FROM follow WHERE f_cl_id = #{fClId}
+  </select>
+
 </mapper>

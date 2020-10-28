@@ -73,7 +73,7 @@
         AND <![CDATA[  p.pay_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
         AND <![CDATA[  p.pay_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
       </if>
-      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid IS NULL)
+      AND cl.cl_invalid = 0 AND a.a_status = 2
     </where>
     ORDER BY p.pay_time DESC
     limit #{page}, #{limit}
@@ -103,7 +103,7 @@
         AND <![CDATA[  p.pay_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
         AND <![CDATA[  p.pay_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
       </if>
-      AND cl.cl_invalid = 0 AND (a.a_invalid = 0 OR a.a_invalid IS NULL)
+      AND cl.cl_invalid = 0 AND a.a_status = 2
     </where>
   </select>
 

@@ -34,6 +34,18 @@ public class CustomerService implements ICustomerService{
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryAACScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String clProject, Integer clEarnest, String beginTime, String endTime, Integer clUId, String clSource, Integer clTypeId) {
+        return customerMapper.queryAACScreen(uId, rName, page, limit, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getAACTotalByScreen(Integer uId, String rName, String cName, String cTel, String clProject, Integer clEarnest, String beginTime, String endTime, Integer cUId, String clSource, Integer clTypeId) {
+        return customerMapper.getAACTotalByScreen(uId, rName, cName, cTel, clProject, clEarnest, beginTime, endTime, cUId, clSource, clTypeId);
+    }
+
+    @Override
     public void saveCustomer(Customer c) {
         customerMapper.saveCustomer(c);
     }

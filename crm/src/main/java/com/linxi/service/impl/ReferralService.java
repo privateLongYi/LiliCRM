@@ -37,4 +37,10 @@ public class ReferralService implements IReferralService{
     public Integer getTotalByCName(Integer uId, String rName, String cName) {
         return referralMapper.getTotalByCName(uId, rName, cName);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Referral> queryRByRAId(Integer rAId) {
+        return referralMapper.queryRByRAId(rAId);
+    }
 }

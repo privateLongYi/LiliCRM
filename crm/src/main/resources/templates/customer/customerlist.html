@@ -237,10 +237,7 @@
 			<div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
 		</script>
 
-		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-		</script>
+		<script type="text/html" id="barDemo"></script>
 
 		<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
 		<!--<script th:src="@{/layui/layui.all.js}"></script>-->
@@ -268,7 +265,14 @@
             if (rName == "销售员"){
                 $("#searchclUId").attr("disabled", "disabled");
                 form.render('select');
+                var operate = "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>" +
+							  "<a class='layui-btn layui-btn-danger layui-btn-xs' lay-event='del'>删除</a>";
+                $("#barDemo").html(operate);
             } else {
+                var operate = "<a class='layui-btn layui-btn-xs layui-btn-warm' lay-event='update'>变更负责人</a>" +
+							  "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>" +
+							  "<a class='layui-btn layui-btn-danger layui-btn-xs' lay-event='del'>删除</a>";
+                $("#barDemo").html(operate);
                 //获取角色为销售员的用户对象
                 $.get("/user/queryUserByRName", function (res){
                     //定义负责人下拉框内容
@@ -419,7 +423,7 @@
                 });
 
                 //操作记录
-                $.get("/operating/queryOpByClId", {clId:clId}, function (data) {
+                $.get("/operating/queryOpByCId", {cId:cId}, function (data) {
                     var html = "";
                     $.each(data.data, function (index, item) {
                         html += "<li class='layui-timeline-item'>" +
@@ -624,7 +628,7 @@
 						,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
 						,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
 						,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
-						,{fixed: 'right', minWidth: 120, title: '操作', toolbar: '#barDemo', align:'center'}
+						,{fixed: 'right', minWidth: 200, title: '操作', toolbar: '#barDemo', align:'center'}
 					]
 				]
 			});
@@ -689,7 +693,35 @@
 							layer.close(index);
 						}
 					});
-				}
+				} else if(layEvent === 'update'){
+                    layer.confirm('确定变更负责人吗？', {icon: 3, title:'提示'}, function(index){
+                        layer.open({
+                            type: 2, //层类型，iframe
+                            title: '变更负责人',
+                            content: ['/editPrincipal?cId='+data.cId],
+                            area: ['400px', '400px'],
+                            resize: false,
+                            btn: '确定',
+                            btn1: function (index, layero) {
+                                var body = layer.getChildFrame('body', index);
+                                //获取值
+                                var cId = $(body).find("#cId").val();
+                                var clUId = $(body).find("#clUId").val();
+                                $.get("/clue/editPrincipal", {uId: uId, cId:cId, clUId:clUId},
+                                    function (obj) {
+                                        layer.msg(obj.msg, {time: 500}, function () {
+                                            layer.close(index);
+                                            tableReload();
+                                        });
+                                    }
+                                );
+                            },
+                            cancel: function(index, layero){
+                                layer.close(index);
+                            }
+						})
+                    });
+                }
 
 			});
 

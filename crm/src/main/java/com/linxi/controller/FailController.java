@@ -58,10 +58,10 @@ public class FailController {
         //改变客户状态为未成交状态
         iClueService.editClTypeIdByClId(clId, clTypeId);
         //新增未成交客户
-        Fail fail = new Fail(null, flAId, flHId, flCause, 0);
+        Fail fail = new Fail(null, flAId, flHId, flCause);
         iFailService.saveFail(fail);
-        //根据预约编号编辑预约记录为失效
-        iAppointmentService.editAInvalidByAId(flAId);
+        //根据预约编号编辑预约状态
+        iAppointmentService.editAStatusByAIdAndAStatus(flAId, 3);
         return new DataResult(0, "新增成功");
     }
 

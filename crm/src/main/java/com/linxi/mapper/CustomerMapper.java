@@ -36,6 +36,34 @@ public interface CustomerMapper {
                              @Param("clSource") String clSource,
                              @Param("clTypeId") Integer clTypeId);
 
+    //高级筛选加分页查询客户
+    List<Customer> queryAACScreen(@Param("uId") Integer uId,
+                                  @Param("rName") String rName,
+                                  @Param("page") Integer page,
+                                  @Param("limit") Integer limit,
+                                  @Param("cName") String cName,
+                                  @Param("cTel") String cTel,
+                                  @Param("clProject") String clProject,
+                                  @Param("clEarnest") Integer clEarnest,
+                                  @Param("beginTime") String beginTime,
+                                  @Param("endTime") String endTime,
+                                  @Param("clUId") Integer clUId,
+                                  @Param("clSource") String clSource,
+                                  @Param("clTypeId") Integer clTypeId);
+
+    //获得客户总数量
+    Integer getAACTotalByScreen(@Param("uId") Integer uId,
+                                @Param("rName") String rName,
+                                @Param("cName") String cName,
+                                @Param("cTel") String cTel,
+                                @Param("clProject") String clProject,
+                                @Param("clEarnest") Integer clEarnest,
+                                @Param("beginTime") String beginTime,
+                                @Param("endTime") String endTime,
+                                @Param("clUId") Integer clUId,
+                                @Param("clSource") String clSource,
+                                @Param("clTypeId") Integer clTypeId);
+
     //新增客户
     void saveCustomer(Customer c);
 
