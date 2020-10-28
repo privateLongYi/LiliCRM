@@ -186,8 +186,7 @@
     INNER JOIN hospital h ON s.s_h_id=h.h_id
     WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
-    AND cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
-    GROUP BY u.u_id
+    AND a.a_status = 2 AND s.s_whether = 0 GROUP BY cl.cl_u_id
   </select>
 
   <!--根据门诊分组查询总成交额-->
