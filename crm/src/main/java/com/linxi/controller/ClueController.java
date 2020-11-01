@@ -53,6 +53,9 @@ public class ClueController {
     @Autowired
     private IFailService iFailService;
 
+    @Autowired
+    private IPayrecordService iPayrecordService;
+
     @GetMapping("getTotalByType")
     @ApiOperation(value = "根据客户类型获得有效线索总数量")
     @ResponseBody
@@ -168,6 +171,16 @@ public class ClueController {
                     Success s = new Success(null, aId, success.getsHId(), success.getsMessage(),
                             success.getsSum(), success.getsPaysum(), success.getsRemark(), 1);
                     iSuccessService.saveSuccess(s);
+                    //查询最新的成交编号（最大的成交编号）
+                    Integer sId = iSuccessService.queryMaxSId();
+                    //根据成交编号查询支付
+                    List<Payrecord> payrecords = iPayrecordService.queryPByPaySId(success.getsId());
+                    for (Payrecord payrecord : payrecords){
+                        //新增支付
+                        Payrecord p = new Payrecord(null, sId, payrecord.getPaySum(),
+                                payrecord.getPayTime(), payrecord.getPayTypeId());
+                        iPayrecordService.savePayrecord(p);
+                    }
                 }
             }
         }

@@ -306,6 +306,9 @@
     //弹出详情页面
     function goDetail(cId, clId, clUId) {
 
+        //隐藏搜索
+        $("#list").attr("style", "background-color: #383d49;height: auto; display: none;");
+
         //显示详情页面
         document.getElementById("detail").style.right = 0;
         document.getElementById("detail").style.top = document.scrollingElement.scrollTop + "px";
@@ -396,7 +399,7 @@
         });
 
         //操作记录
-        $.get("/operating/queryOpByClId", {clId:clId}, function (data) {
+        $.get("/operating/queryOpByCId", {cId:cId}, function (data) {
             var html = "";
             $.each(data.data, function (index, item) {
                 html += "<li class='layui-timeline-item'>" +

@@ -286,7 +286,7 @@
       <if test="rName != '管理员'">
         AND cl.cl_u_id = #{uId}
       </if>
-      AND cl.cl_invalid = 0 AND a.a_status = 0
+      AND cl.cl_invalid = 0 AND (a.a_status = 0 OR a.a_status = 2)
     </where>
     limit 0, 3
   </select>

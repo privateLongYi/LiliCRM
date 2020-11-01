@@ -131,4 +131,11 @@ public class SuccessService implements ISuccessService{
     public Integer querySSumBySAId(Integer sAId) {
         return successMapper.querySSumBySAId(sAId);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryMaxSId() {
+        return successMapper.queryMaxSId();
+    }
+
 }

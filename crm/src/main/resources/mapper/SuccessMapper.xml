@@ -124,7 +124,7 @@
     FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
-    WHERE cl.cl_id = #{clId} AND a.a_status = 2 AND s.s_whether = 0
+    WHERE cl.cl_id = #{clId}
   </select>
 
   <!--根据用户编号和客户名称查询成交客户-->
@@ -197,8 +197,7 @@
 	INNER JOIN hospital h ON s.s_h_id=h.h_id
     WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
-    AND cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
-    GROUP BY s.s_h_id
+    AND a.a_status = 2 AND s.s_whether = 0 GROUP BY s.s_h_id
   </select>
 
   <!--根据报名项目分组查询总成交额-->
@@ -208,8 +207,7 @@
 	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
     WHERE <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
     AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
-    AND cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
-    GROUP BY cl.cl_project
+    AND a.a_status = 2 AND s.s_whether = 0 GROUP BY cl.cl_project
   </select>
 
   <!--根据预约编号查询成交-->
@@ -220,6 +218,11 @@
   <!--根据预约编号查询成交总金额-->
   <select id="querySSumBySAId" resultType="Integer">
     SELECT SUM(s_sum) FROM success WHERE s_a_id = #{sAId}
+  </select>
+
+  <!--查询最大的成交编号-->
+  <select id="queryMaxSId" resultType="Integer">
+    SELECT MAX(s_id) FROM success
   </select>
 
 </mapper>

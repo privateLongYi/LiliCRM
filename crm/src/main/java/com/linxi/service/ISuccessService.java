@@ -88,4 +88,7 @@ public interface ISuccessService {
     //根据预约编号查询成交总金额
     Integer querySSumBySAId(Integer sAId);
 
+    //查询最大的成交编号
+    Integer queryMaxSId();
+
 }
