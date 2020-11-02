@@ -36,10 +36,9 @@
 				<div class="layui-input-inline layui-form">
 					<select id="searchClProject">
 						<option value=""></option>
-						<option value="种植">种植</option>
-						<option value="矫正">矫正</option>
-						<option value="牙贴面">牙贴面</option>
-						<option value="牙齿治疗">牙齿治疗</option>
+						<option value="种植">种植牙</option>
+						<option value="矫正">隐形矫正</option>
+						<option value="其他">其他</option>
 					</select>
 				</div>
 			</div><br><br><br>
@@ -274,19 +273,14 @@
 				,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
 				,cols: [ //表头
 					[
-						{field: 'cId', minWidth: 120, title: 'ID', sort: true, align:'center'}
-						,{field: 'cName', minWidth: 120, title: '姓名', align:'center'}
-						,{field: 'cSex', minWidth: 120, title: '性别', sort: true, align:'center'}
-						,{field: 'cAge', minWidth: 120, title: '年龄', align:'center'}
+						{field: 'cName', minWidth: 120, title: '姓名', align:'center'}
 						,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
 						,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
 						,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
-						,{field: 'clRemark', minWidth: 120, title: '备注', align:'center'}
-						,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
-						,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
-						,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
 						,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
-						,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
+                        ,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
+                        ,{field: 'aTime', minWidth: 120, title: '预约时间', align:'center'}
+                        ,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
 						,{fixed: 'right', minWidth: 240, title: '操作', toolbar: '#barDemo', align:'center'}
 					]
 				]

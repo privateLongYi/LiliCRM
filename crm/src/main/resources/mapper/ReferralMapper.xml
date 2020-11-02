@@ -32,7 +32,7 @@
     LEFT JOIN hospital h ON r.r_h_id=h.h_id
     LEFT JOIN hospital ho ON r.r_fail_h_id=ho.h_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
@@ -51,7 +51,7 @@
     LEFT JOIN hospital h ON r.r_h_id=h.h_id
     LEFT JOIN hospital ho ON r.r_fail_h_id=ho.h_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">

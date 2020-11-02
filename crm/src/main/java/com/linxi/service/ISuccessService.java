@@ -53,7 +53,13 @@ public interface ISuccessService {
     //根据用户编号和客户名称查询成交客户
     List<Success> querySCByUIdAndCName(@Param("rName") String rName,
                                        @Param("uId") Integer uId,
-                                       @Param("cName") String cName);
+                                       @Param("cName") String cName,
+                                       @Param("page") Integer page);
+
+    //根据用户编号和客户名称查询成交客户总条数
+    Integer getTotalSCByUIdAndCName(@Param("rName") String rName,
+                                    @Param("uId") Integer uId,
+                                    @Param("cName") String cName);
 
     //根据用户编号和起止时间查询成交总数
     Integer querySByUIdAndTime(@Param("uId") Integer uId,

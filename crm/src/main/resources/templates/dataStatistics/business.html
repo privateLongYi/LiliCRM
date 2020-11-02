@@ -28,13 +28,6 @@
 			<div class="layui-card-body layui-row">
 				<div class="layui-col-md6 layui-card">
 					<div class="layui-card-header">
-						<div style="float: right; margin-left: -20px; z-index: 99;" class="layui-inline">
-							<i class="layui-icon layui-icon-date" style="font-size: 20px;"></i>
-						</div>
-						<div style="float: right; margin-top: 7px;" class="layui-inline">
-							<input class="layui-input" id="sum" autocomplete="off" readonly
-								   style="height: 28px; width: 170px; font-size: 10px; cursor: pointer; margin-top: 0;">
-						</div>
 					</div>
 					<div class="layui-card-body" style="height: 300px;">
 						<div style="text-align: center; margin: 8px 0;font-size: 20px;">成交额统计</div>
@@ -79,37 +72,30 @@
     var begin = date.getFullYear()+"-"+eval(date.getMonth()+1)+"-01";
     var end = date.getFullYear()+"-"+eval(date.getMonth()+1)+"-"+date.getDate();
     var time = begin + " - " + end;
-    $("#sum").val(time);
     $("#statistics").val(time);
 
     //onload事件
     $(function () {
-        //成交额统计
-        sum("负责人", begin, end);
-        //统计图表
+        //统计
         statistics("负责人", begin, end);
     })
 
 	//统计单位下拉框改变事件
     form.on('select(change)', function(data){
-        //成交额统计
-		var sumDate = $("#sum").val();
-        var sumBegin = sumDate.substring(0, 10);
-        var sumEnd = sumDate.substring(13, 23);
-        sum(data.value, sumBegin, sumEnd);
-        //统计图表
-        var statisticsDate = $("#statistics").val();
-        var statisticsBegin = statisticsDate.substring(0, 10);
-        var statisticsEnd = statisticsDate.substring(13, 23);
-        statistics(data.value, statisticsBegin, statisticsEnd);
+        //统计
+        var date = $("#statistics").val();
+        var begin = date.substring(0, 10);
+        var end = date.substring(13, 23);
+        statistics(data.value, begin, end);
     })
 
-    //成交额统计
-    function sum(unit, begin, end) {
+    //统计图表
+	function statistics(unit, begin, end) {
+
         //执行一个 table 实例
         table.render({
             elem: '#tab'
-			,height: 238
+            ,height: 238
             ,page: true //开启分页
             ,limit: 4 //每页显示条数
             ,limits: [4] //自定义可选每页显示条数
@@ -123,25 +109,7 @@
                 ]
             ]
         });
-    }
 
-    //成交额时间控件
-    laydate.render({
-        elem: '#sum' //指定元素
-        ,trigger: 'click' //采用click弹出
-        ,range: true //范围选择
-        ,max: 0 //最大值为今天
-        ,btns: ['confirm'] //右下角显示按钮
-        ,done: function(value){ //控件选择完毕后的回调
-            var begin = value.substring(0, 10);
-            var end = value.substring(13, 23);
-            var unit = $("#unit").val();
-            statisticsSum(unit, begin, end);
-        }
-    });
-
-    //统计图表
-	function statistics(unit, begin, end) {
         //获取所有统计单位
 		var unites = [];
 		var sumes = [];

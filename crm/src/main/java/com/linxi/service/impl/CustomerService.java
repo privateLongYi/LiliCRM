@@ -86,20 +86,38 @@ public class CustomerService implements ICustomerService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryCByCNameOrCTel(String rName, Integer uId, String key) {
-        return customerMapper.queryCByCNameOrCTel(rName, uId, key);
+    public List<Customer> queryCByCNameOrCTel(String rName, Integer uId, String key, Integer page) {
+        return customerMapper.queryCByCNameOrCTel(rName, uId, key, page);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryCSCByUIdAndCName(String rName, Integer uId, String cName) {
-        return customerMapper.queryCSCByUIdAndCName(rName, uId, cName);
+    public Integer getTotalByCNameOrCTel(String rName, Integer uId, String key) {
+        return customerMapper.getTotalByCNameOrCTel(rName, uId, key);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryCACByUIdAndCName(String rName, Integer uId, String cName) {
-        return customerMapper.queryCACByUIdAndCName(rName, uId, cName);
+    public List<Customer> queryCSCByUIdAndCName(String rName, Integer uId, String cName, Integer page) {
+        return customerMapper.queryCSCByUIdAndCName(rName, uId, cName, page);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalCSCByUIdAndCName(String rName, Integer uId, String cName) {
+        return customerMapper.getTotalCSCByUIdAndCName(rName, uId, cName);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryCACByUIdAndCName(String rName, Integer uId, String cName, Integer page) {
+        return customerMapper.queryCACByUIdAndCName(rName, uId, cName, page);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalCACByUIdAndCName(String rName, Integer uId, String cName) {
+        return customerMapper.getTotalCACByUIdAndCName(rName, uId, cName);
     }
 
     @Override
@@ -107,4 +125,11 @@ public class CustomerService implements ICustomerService{
     public Integer queryCByUIdAndTimeAndCTypeId(Integer uId, Integer clTypeId, String beginTime, String endTime) {
         return customerMapper.queryCByUIdAndTimeAndCTypeId(uId, clTypeId, beginTime, endTime);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryAByUIdAndTime(Integer uId, String beginTime, String endTime) {
+        return customerMapper.queryAByUIdAndTime(uId, beginTime, endTime);
+    }
+
 }

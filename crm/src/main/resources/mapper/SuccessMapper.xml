@@ -78,7 +78,7 @@
     LEFT JOIN hospital h ON s.s_h_id=h.h_id
     LEFT JOIN `user` u ON u.u_id=cl.cl_u_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
@@ -86,6 +86,7 @@
       </if>
       AND cl.cl_invalid = 0 AND a.a_status = 2
     </where>
+    ORDER BY s.s_time DESC
     limit #{page}, #{limit}
   </select>
 
@@ -97,7 +98,7 @@
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON s.s_h_id=h.h_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
@@ -136,12 +137,28 @@
     <where>
       c.c_name LIKE '%${cName}%'
       AND cl.cl_type_id = 7
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       AND cl.cl_invalid = 0 AND a.a_status = 2
     </where>
-    limit 0, 3
+    limit #{page}, 4
+  </select>
+
+  <!--根据用户编号和客户名称查询成交客户总条数-->
+  <select id="getTotalSCByUIdAndCName" resultType="Integer">
+    SELECT COUNT(*) FROM success s
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
+    <where>
+      c.c_name LIKE '%${cName}%'
+      AND cl.cl_type_id = 7
+      <if test="rName != '管理员' and rName != '管理者'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      AND cl.cl_invalid = 0 AND a.a_status = 2
+    </where>
   </select>
 
   <!--根据用户编号和起止时间查询成交总数-->

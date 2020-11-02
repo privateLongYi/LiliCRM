@@ -89,22 +89,45 @@ public interface CustomerMapper {
     //根据客户名称或者客户电话查询客户
     List<Customer> queryCByCNameOrCTel(@Param("rName") String rName,
                                        @Param("uId") Integer uId,
-                                       @Param("key") String key);
+                                       @Param("key") String key,
+                                       @Param("page") Integer page);
+
+    //根据客户名称或者客户电话查询客户总条数
+    Integer getTotalByCNameOrCTel(@Param("rName") String rName,
+                                  @Param("uId") Integer uId,
+                                  @Param("key") String key);
 
     //根据用户编号和客户名称查询可成交客户
     List<Customer> queryCSCByUIdAndCName(@Param("rName") String rName,
                                          @Param("uId") Integer uId,
-                                         @Param("cName") String cName);
+                                         @Param("cName") String cName,
+                                         @Param("page") Integer page);
+
+    //根据用户编号和客户名称查询可成交客户总条数
+    Integer getTotalCSCByUIdAndCName(@Param("rName") String rName,
+                                            @Param("uId") Integer uId,
+                                            @Param("cName") String cName);
 
     //根据用户编号和客户名称查询可成交客户
     List<Customer> queryCACByUIdAndCName(@Param("rName") String rName,
                                          @Param("uId") Integer uId,
-                                         @Param("cName") String cName);
+                                         @Param("cName") String cName,
+                                         @Param("page") Integer page);
+
+    //根据用户编号和客户名称查询可成交客户总条数
+    Integer getTotalCACByUIdAndCName(@Param("rName") String rName,
+                                     @Param("uId") Integer uId,
+                                     @Param("cName") String cName);
 
     //根据用户编号和起始时间和客户状态查询客户数量
     Integer queryCByUIdAndTimeAndCTypeId(@Param("uId") Integer uId,
                                          @Param("clTypeId") Integer clTypeId,
                                          @Param("beginTime") String beginTime,
                                          @Param("endTime") String endTime);
+
+    //根据用户编号和起始时间查询预约数量
+    Integer queryAByUIdAndTime(@Param("uId") Integer uId,
+                               @Param("beginTime") String beginTime,
+                               @Param("endTime") String endTime);
 
 }

@@ -26,7 +26,7 @@
     LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
     LEFT JOIN ctype ct ON cl.cl_type_id=ct.ct_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
@@ -70,7 +70,7 @@
     LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
     LEFT JOIN ctype ct ON cl.cl_type_id=ct.ct_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
@@ -117,7 +117,7 @@
     LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
     LEFT JOIN ctype ct ON cl.cl_type_id=ct.ct_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
@@ -163,7 +163,7 @@
     LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
     LEFT JOIN ctype ct ON cl.cl_type_id=ct.ct_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
@@ -264,12 +264,25 @@
     LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
     <where>
       (c_name LIKE '%${key}%' OR c_tel LIKE '%${key}%')
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl_u_id = #{uId}
       </if>
       AND cl.cl_invalid = 0
     </where>
-    limit 0,3
+    limit #{page}, 4
+  </select>
+
+  <!--根据客户名称或者客户电话查询客户-->
+  <select id="getTotalByCNameOrCTel" resultType="Integer">
+    SELECT COUNT(*) FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+    <where>
+      (c_name LIKE '%${key}%' OR c_tel LIKE '%${key}%')
+      <if test="rName != '管理员' and rName != '管理者'">
+        AND cl_u_id = #{uId}
+      </if>
+      AND cl.cl_invalid = 0
+    </where>
   </select>
 
   <!--根据用户编号和客户名称查询可成交客户-->
@@ -283,12 +296,29 @@
     <where>
       c.c_name LIKE '%${cName}%'
       AND (cl.cl_type_id = 4 OR cl.cl_type_id = 7)
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       AND cl.cl_invalid = 0 AND (a.a_status = 0 OR a.a_status = 2)
     </where>
-    limit 0, 3
+    limit #{page}, 4
+  </select>
+
+  <!--根据用户编号和客户名称查询可成交客户总条数-->
+  <select id="getTotalCSCByUIdAndCName" resultType="Integer">
+    SELECT COUNT(*) FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+    LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
+    LEFT JOIN appointment a ON cl.cl_id=a.a_cl_id
+    LEFT JOIN hospital h ON a.a_h_id=h.h_id
+    <where>
+      c.c_name LIKE '%${cName}%'
+      AND (cl.cl_type_id = 4 OR cl.cl_type_id = 7)
+      <if test="rName != '管理员' and rName != '管理者'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      AND cl.cl_invalid = 0 AND (a.a_status = 0 OR a.a_status = 2)
+    </where>
   </select>
 
   <!--根据用户编号和客户名称查询可预约客户-->
@@ -299,22 +329,50 @@
     <where>
       c.c_name LIKE '%${cName}%'
       AND cl.cl_type_id = 3
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       AND cl.cl_invalid = 0
     </where>
-    limit 0, 3
+    limit #{page}, 4
+  </select>
+
+  <!--根据用户编号和客户名称查询可预约客户总条数-->
+  <select id="getTotalCACByUIdAndCName" resultType="Integer">
+    SELECT COUNT(*) FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+    LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
+    <where>
+      c.c_name LIKE '%${cName}%'
+      AND cl.cl_type_id = 3
+      <if test="rName != '管理员' and rName != '管理者'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      AND cl.cl_invalid = 0
+    </where>
   </select>
 
   <!--根据用户编号和起始时间和客户状态查询客户数量-->
   <select id="queryCByUIdAndTimeAndCTypeId" resultType="Integer">
     SELECT COUNT(*) FROM customer c
     LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
-    WHERE cl_u_id = #{uId} AND cl_type_id = #{clTypeId}
-    AND cl.cl_invalid = 0
-    AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-    AND <![CDATA[  cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    <where>
+      cl.cl_u_id = #{uId} AND cl.cl_type_id = #{clTypeId}
+      AND cl.cl_invalid = 0
+      <if test="beginTime != null and endTime != null">
+        AND <![CDATA[  cl.cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+        AND <![CDATA[  cl.cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      </if>
+    </where>
+    </select>
+
+  <!--根据用户编号和起始时间查询预约数量-->
+  <select id="queryAByUIdAndTime" resultType="Integer">
+    SELECT COUNT(*) FROM appointment a
+    INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    WHERE cl.cl_u_id = #{uId}
+    AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+    AND <![CDATA[  a.a_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
   </select>
 
 </mapper>

@@ -20,7 +20,18 @@
             <div class="layui-input-block">
                 <input type="hidden" id="aClId">
                 <input type="text" class="layui-input" autocomplete="off" id="cName">
-                <div id="list" style="height: auto; display: none; background-color: white;"></div>
+                <input type="hidden" id="page" value="1">
+                <input type="hidden" id="count">
+                <div id="list" style="height: auto; display: none; background-color: white;">
+                    <div id="data"></div>
+                    <div class='list' style='text-align: right;margin-top: -10px;'>
+                        <i onclick="previousPage()" class="layui-icon layui-icon-up" style="font-size: 15px;"></i>&nbsp;&nbsp;&nbsp;
+                        <i onclick="nextPage()" class="layui-icon layui-icon-down" style="font-size: 15px;"></i>
+                    </div>
+                    <div class='list' style='text-align: right;margin-top: -10px;' id='close'>
+                        <i onclick="hideList()" class="layui-icon layui-icon-close" style="font-size: 15px;"></i>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="layui-form-item">
@@ -57,30 +68,31 @@
     var uId = sessionStorage.getItem('uId');
     var rName = sessionStorage.getItem('rName');
 
-    //给搜索框添加input事件
-    $("#cName").on("input", function(){
-        var cName = $("#cName").val();
-        if(cName != ""){
-            //根据客户名称查询可预约客户
-            $.post("/customer/queryCACByUIdAndCName", {rName:rName, uId:uId, cName:cName}, function (data) {
+    //根据客户名称查询可预约客户
+    function getList(cName, page) {
+        if (cName != "") {
+            $.post("/customer/queryCACByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
                     html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].cName+"&quot;);'>"+data.data[i].cName+"</div>";
                 }
-                html += "<div class='list' style='text-align: right;margin-top: -10px;' id='close'>关闭</div>";
                 //赋值
-                $("#list").html(html);
-                //给关闭添加onclick事件
-                $("#close").on("click", function(){
-                    $("#list").attr("style", "background-color: white;height: auto; display: none;");
-                });
+                $("#data").html(html);
+                $("#count").val(data.count);
             });
             $("#list").attr("style", "background-color: white;height: auto; display: block;");
         }else{
             //赋值
-            $("#list").html("");
+            $("#data").html("");
             $("#list").attr("style", "background-color: white;height: auto; display: none;");
         }
+    }
+
+    //给搜索框添加input事件
+    $("#cName").on("input", function(){
+        var cName = $("#cName").val();
+        var page = $("#page").val();
+        getList(cName, page);
     });
 
     //给搜索框添加onfocus事件
@@ -97,6 +109,51 @@
         $("#cName").val(cName);
         //隐藏列表
         $("#list").attr("style", "background-color: white;height: auto; display: none;");
+    }
+
+    //上一页
+    function previousPage() {
+        //获取当前页码
+        var page = $("#page").val();
+        //获取总条数
+        var count = $("#count").val();
+        if (count != 0){
+            if (eval(page+"-"+1) <= 0){
+                layer.msg('已经是第一页');
+            } else {
+                var cName = $("#cName").val();
+                getList(cName, eval(page+"-"+1));
+                //给页码赋值
+                $("#page").val(eval(page+"-"+1));
+            }
+        } else {
+            layer.msg('没有数据');
+        }
+    }
+
+    //下一页
+    function nextPage() {
+        //获取当前页码
+        var page = $("#page").val();
+        //获取总条数
+        var count = $("#count").val();
+        if (count != 0){
+            if (eval(page+"+"+1) > count){
+                layer.msg('已经是最后一页');
+            } else {
+                var cName = $("#cName").val();
+                getList(cName, eval(page+"+"+1));
+                //给页码赋值
+                $("#page").val(eval(page+"+"+1));
+            }
+        } else {
+            layer.msg('没有数据');
+        }
+    }
+
+    //隐藏列表
+    function hideList() {
+        $("#list").attr("style", "background-color: #383d49;height: auto; display: none;");
     }
 
     //时间控件

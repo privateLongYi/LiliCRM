@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.crypto.Data;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -186,31 +187,73 @@ public class CustomerController {
     @PostMapping("queryCByCNameOrCTel")
     @ApiOperation(value = "根据客户名称或者客户电话查询客户")
     @ResponseBody
-    public DataResult queryCByCNameOrCTel(@ApiParam(value = "角色名称", required = true) String rName,
+    public Map<String, Object> queryCByCNameOrCTel(@ApiParam(value = "角色名称", required = true) String rName,
                                           @ApiParam(value = "用户编号", required = true) Integer uId,
-                                          @ApiParam(value = "关键字", required = true) String key){
-        List<Customer> customers = iCustomerService.queryCByCNameOrCTel(rName, uId, key);
-        return new DataResult(0, "操作成功", 0, customers);
+                                          @ApiParam(value = "关键字", required = true) String key,
+                                          @ApiParam(value = "当前页码", required = true) Integer page){
+        Map<String, Object> map = new HashMap<>();
+        List<Customer> customers = iCustomerService.queryCByCNameOrCTel(rName, uId, key, (page-1)*4);
+        Integer total = iCustomerService.getTotalByCNameOrCTel(rName, uId, key);
+        if (total == null){
+            total = 0;
+        } else {
+            if (total%4 != 0){
+                total = (total/4) + 1;
+            } else {
+                total = total/4;
+            }
+        }
+        map.put("data", customers);
+        map.put("count", total);
+        return map;
     }
 
     @PostMapping("queryCSCByUIdAndCName")
     @ApiOperation(value = "根据用户编号和客户名称查询可成交客户")
     @ResponseBody
-    public DataResult queryCSCByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
+    public Map<String, Object> queryCSCByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
                                             @ApiParam(value = "用户编号", required = true) Integer uId,
-                                            @ApiParam(value = "客户名称", required = true) String cName){
-        List<Customer> customers = iCustomerService.queryCSCByUIdAndCName(rName, uId, cName);
-        return new DataResult(0, "操作成功", 0, customers);
+                                            @ApiParam(value = "客户名称", required = true) String cName,
+                                            @ApiParam(value = "当前页码", required = true) Integer page){
+        Map<String, Object> map = new HashMap<>();
+        List<Customer> customers = iCustomerService.queryCSCByUIdAndCName(rName, uId, cName, (page-1)*4);
+        Integer total = iCustomerService.getTotalCSCByUIdAndCName(rName, uId, cName);
+        if (total == null){
+            total = 0;
+        } else {
+            if (total%4 != 0){
+                total = (total/4) + 1;
+            } else {
+                total = total/4;
+            }
+        }
+        map.put("data", customers);
+        map.put("count", total);
+        return map;
     }
 
     @PostMapping("queryCACByUIdAndCName")
     @ApiOperation(value = "根据用户编号和客户名称查询可成交客户")
     @ResponseBody
-    public DataResult queryCACByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
-                                            @ApiParam(value = "用户编号", required = true) Integer uId,
-                                            @ApiParam(value = "客户名称", required = true) String cName){
-        List<Customer> customers = iCustomerService.queryCACByUIdAndCName(rName, uId, cName);
-        return new DataResult(0, "操作成功", 0, customers);
+    public Map<String, Object> queryCACByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
+                                                     @ApiParam(value = "用户编号", required = true) Integer uId,
+                                                     @ApiParam(value = "客户名称", required = true) String cName,
+                                                     @ApiParam(value = "当前页码", required = true) Integer page){
+        Map<String, Object> map = new HashMap<>();
+        List<Customer> customers = iCustomerService.queryCACByUIdAndCName(rName, uId, cName, (page-1)*4);
+        Integer total = iCustomerService.getTotalCACByUIdAndCName(rName, uId, cName);
+        if (total == null){
+            total = 0;
+        } else {
+            if (total%4 != 0){
+                total = (total/4) + 1;
+            } else {
+                total = total/4;
+            }
+        }
+        map.put("data", customers);
+        map.put("count", total);
+        return map;
     }
 
     @GetMapping("queryCByUIdAndTimeAndCTypeId")
@@ -223,6 +266,17 @@ public class CustomerController {
         //根据客户状态查询编号
         Integer cTypeId = iCtypeService.queryCtypeByCtType(ctType);
         Integer total = iCustomerService.queryCByUIdAndTimeAndCTypeId(uId, cTypeId, beginTime, endTime);
+        return new DataResult(0, "操作成功", 0, total);
+    }
+
+    @GetMapping("queryAByUIdAndTime")
+    @ApiOperation(value = "根据用户编号和起始时间查询预约数量")
+    @ResponseBody
+    public DataResult queryAByUIdAndTime(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                         @ApiParam(value = "开始时间", required = true) String beginTime,
+                                         @ApiParam(value = "结束时间", required = true) String endTime){
+        //根据客户状态查询编号
+        Integer total = iCustomerService.queryAByUIdAndTime(uId, beginTime, endTime);
         return new DataResult(0, "操作成功", 0, total);
     }
 

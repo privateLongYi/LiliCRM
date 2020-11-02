@@ -80,8 +80,14 @@ public class SuccessService implements ISuccessService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Success> querySCByUIdAndCName(String rName, Integer uId, String cName) {
-        return successMapper.querySCByUIdAndCName(rName, uId, cName);
+    public List<Success> querySCByUIdAndCName(String rName, Integer uId, String cName, Integer page) {
+        return successMapper.querySCByUIdAndCName(rName, uId, cName, page);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalSCByUIdAndCName(String rName, Integer uId, String cName) {
+        return successMapper.getTotalSCByUIdAndCName(rName, uId, cName);
     }
 
     @Override

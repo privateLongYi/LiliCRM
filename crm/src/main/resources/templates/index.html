@@ -24,7 +24,18 @@
             <li class="layui-nav-item">
                 <input type="text" placeholder="请输入客户姓名/手机号" autocomplete="off" class="layui-input"
                        id="search" style="border: 0;background-color: #383d49;color: #bdbeb7;margin-top: 10px;">
-                <div id="list" style="background-color: #383d49;height: auto; display: none;"></div>
+                <input type="hidden" id="page" value="1">
+                <input type="hidden" id="count">
+                <div id="list" style="background-color: #383d49;height: auto; display: none;">
+                    <div id="data"></div>
+                    <div class='list' style='text-align: right;margin-top: -10px;'>
+                        <i onclick="previousPage()" class="layui-icon layui-icon-up" style="font-size: 15px;"></i>&nbsp;&nbsp;&nbsp;
+                        <i onclick="nextPage()" class="layui-icon layui-icon-down" style="font-size: 15px;"></i>
+                    </div>
+                    <div class='list' style='text-align: right;margin-top: -10px;' id='close'>
+                        <i onclick="hideList()" class="layui-icon layui-icon-close" style="font-size: 15px;"></i>
+                    </div>
+                </div>
             </li>
         </ul>
         <!--右侧导航-->
@@ -237,30 +248,31 @@
         }
     })
 
-    //给搜索框添加input事件
-    $("#search").on("input", function(){
-        var search = $("#search").val();
+    //根据客户名称或者客户电话查询客户
+    function getList(search, page){
         if(search != ""){
-            //根据客户名称或者客户电话查询客户
-            $.post("/customer/queryCByCNameOrCTel", {rName:rName, uId:uId, key:search}, function (data) {
+            $.post("/customer/queryCByCNameOrCTel", {rName:rName, uId:uId, key:search, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
                     html += "<div class='list' onclick='goDetail(&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].clUId+"&quot;);'>"+data.data[i].cName+"/"+data.data[i].cTel+"</div>";
                 }
-                html += "<div class='list' style='text-align: right;margin-top: -10px;' id='close'>关闭</div>";
                 //赋值
-                $("#list").html(html);
-                //给关闭添加onclick事件
-                $("#close").on("click", function(){
-                    $("#list").attr("style", "background-color: #383d49;height: auto; display: none;");
-                });
+                $("#data").html(html);
+                $("#count").val(data.count);
             });
             $("#list").attr("style", "background-color: #383d49;height: auto; display: block;");
         }else{
             //赋值
-            $("#list").html("");
+            $("#data").html("");
             $("#list").attr("style", "background-color: #383d49;height: auto; display: none;");
         }
+    }
+
+    //给搜索框添加input事件
+    $("#search").on("input", function () {
+        var search = $("#search").val();
+        var page = $("#page").val();
+        getList(search, page);
     });
 
     //给搜索框添加onfocus事件
@@ -270,6 +282,51 @@
             $("#list").attr("style", "background-color: #383d49;height: auto; display: block;");
         }
     });
+
+    //上一页
+    function previousPage() {
+        //获取当前页码
+        var page = $("#page").val();
+        //获取总条数
+        var count = $("#count").val();
+        if (count != 0){
+            if (eval(page+"-"+1) <= 0){
+                layer.msg('已经是第一页');
+            } else {
+                var search = $("#search").val();
+                getList(search, eval(page+"-"+1));
+                //给页码赋值
+                $("#page").val(eval(page+"-"+1));
+            }
+        } else {
+            layer.msg('没有数据');
+        }
+    }
+
+    //下一页
+    function nextPage() {
+        //获取当前页码
+        var page = $("#page").val();
+        //获取总条数
+        var count = $("#count").val();
+        if (count != 0){
+            if (eval(page+"+"+1) > count){
+                layer.msg('已经是最后一页');
+            } else {
+                var search = $("#search").val();
+                getList(search, eval(page+"+"+1));
+                //给页码赋值
+                $("#page").val(eval(page+"+"+1));
+            }
+        } else {
+            layer.msg('没有数据');
+        }
+    }
+
+    //隐藏列表
+    function hideList() {
+        $("#list").attr("style", "background-color: #383d49;height: auto; display: none;");
+    }
 
     //新增跟进记录
     function saveFollow() {

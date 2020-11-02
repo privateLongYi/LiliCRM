@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author LongYi
@@ -145,11 +147,25 @@ public class SuccessController {
     @PostMapping("querySCByUIdAndCName")
     @ApiOperation(value = "根据用户编号和客户名称查询成交客户")
     @ResponseBody
-    public DataResult querySCByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
-                                           @ApiParam(value = "用户编号", required = true) Integer uId,
-                                           @ApiParam(value = "客户名称", required = true) String cName){
-        List<Success> successes = iSuccessService.querySCByUIdAndCName(rName, uId, cName);
-        return new DataResult(0, "操作成功", 0, successes);
+    public Map<String, Object> querySCByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
+                                                    @ApiParam(value = "用户编号", required = true) Integer uId,
+                                                    @ApiParam(value = "客户名称", required = true) String cName,
+                                                    @ApiParam(value = "当前页码", required = true) Integer page){
+        Map<String, Object> map = new HashMap<>();
+        List<Success> successes = iSuccessService.querySCByUIdAndCName(rName, uId, cName, (page - 1) * 4);
+        Integer total = iSuccessService.getTotalSCByUIdAndCName(rName, uId, cName);
+        if (total == null){
+            total = 0;
+        } else {
+            if (total%4 != 0){
+                total = (total/4) + 1;
+            } else {
+                total = total/4;
+            }
+        }
+        map.put("data", successes);
+        map.put("count", total);
+        return map;
     }
 
     @GetMapping("querySByUIdAndTime")
@@ -239,10 +255,9 @@ public class SuccessController {
         } else {
             //所有报名项目
             List<String> projectes = new ArrayList<>();
-            projectes.add("种植");
-            projectes.add("矫正");
-            projectes.add("牙贴面");
-            projectes.add("牙齿治疗");
+            projectes.add("种植牙");
+            projectes.add("隐形矫正");
+            projectes.add("其他");
             //分组获取在起止时间内有成交额的报名项目
             List<Success> successes = iSuccessService.querySSumGruopByCProject(beginTime, endTime);
             for (String project : projectes){

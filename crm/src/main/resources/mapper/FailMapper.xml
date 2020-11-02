@@ -29,7 +29,7 @@
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON fl.fl_h_id=h.h_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
@@ -48,7 +48,7 @@
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN hospital h ON fl.fl_h_id=h.h_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">

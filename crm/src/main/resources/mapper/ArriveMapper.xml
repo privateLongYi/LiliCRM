@@ -25,7 +25,7 @@
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">
@@ -45,7 +45,7 @@
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     <where>
-      <if test="rName != '管理员'">
+      <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="cName != null and cName != ''">

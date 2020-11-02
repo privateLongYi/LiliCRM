@@ -117,13 +117,6 @@
                 <div class="layui-card" style="height: 29.75rem;">
                     <div class="layui-card-header">
                         <span style="font-size: 20px; font-weight: normal;">待办客资</span>
-                        <div style="float: right; margin-left: -20px; z-index: 99;" class="layui-inline">
-                            <i class="layui-icon layui-icon-date" style="font-size: 20px;"></i>
-                        </div>
-                        <div style="float: right; margin-top: 7px;" class="layui-inline">
-                            <input class="layui-input" id="await" autocomplete="off" readonly
-                                   style="height: 28px; width: 170px; font-size: 10px;">
-                        </div>
                     </div>
                     <div class="layui-card-body">
                         <a th:href="@{/contact}">
@@ -454,7 +447,7 @@
         //销售简报
         bulletin(begin, end);
         //待办客资
-        await(begin, end);
+        await();
     })
 
     //销售简报加载事件
@@ -474,8 +467,8 @@
             }
         );
         //查询待待到店总数并赋值
-        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
-            {uId:uId, ctType:'待到店', beginTime:begin, endTime:end},
+        $.get('/customer/queryAByUIdAndTime',
+            {uId:uId, beginTime:begin, endTime:end},
             function (data) {
                 $("#addAppoint").html(data.data);
             }
@@ -505,24 +498,24 @@
     }
 
     //待办客资加载事件
-    function await(begin, end) {
+    function await() {
         //查询待联系总数并赋值
         $.get('/customer/queryCByUIdAndTimeAndCTypeId',
-            {uId:uId, ctType:'待联系', beginTime:begin, endTime:end},
+            {uId:uId, ctType:'待联系'},
             function (data) {
                 $("#awaitContact").html(data.data);
             }
         );
         //查询待预约总数并赋值
         $.get('/customer/queryCByUIdAndTimeAndCTypeId',
-            {uId:uId, ctType:'待预约', beginTime:begin, endTime:end},
+            {uId:uId, ctType:'待预约'},
             function (data) {
                 $("#awaitAppoint").html(data.data);
             }
         );
         //查询待待到店总数并赋值
         $.get('/customer/queryCByUIdAndTimeAndCTypeId',
-            {uId:uId, ctType:'待到店', beginTime:begin, endTime:end},
+            {uId:uId, ctType:'待到店'},
             function (data) {
                 $("#awaitArrive").html(data.data);
             }
@@ -540,20 +533,6 @@
             var begin = value.substring(0, 10);
             var end = value.substring(13, 23);
             bulletin(begin, end);
-        }
-    });
-
-    //待办客资
-    laydate.render({
-        elem: '#await' //指定元素
-        ,trigger: 'click' //采用click弹出
-        ,range: true //范围选择
-        ,max: 0 //最大值为今天
-        ,btns: ['confirm'] //右下角显示按钮
-        ,done: function(value){ //控件选择完毕后的回调
-            var begin = value.substring(0, 10);
-            var end = value.substring(13, 23);
-            await(begin, end);
         }
     });
 
