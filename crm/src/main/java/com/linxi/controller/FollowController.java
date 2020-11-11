@@ -46,12 +46,13 @@ public class FollowController {
                                    @ApiParam(value = "负责人编号", required = true) Integer clUId,
                                    @ApiParam(value = "回访类型编号", required = true) Integer fTypeId,
                                    @ApiParam(value = "回访类型", required = true) String ftType,
-                                   @ApiParam(value = "回访内容", required = true) String fContent){
+                                   @ApiParam(value = "回访内容", required = true) String fContent,
+                                   @ApiParam(value = "回访时间", required = true) String fTime){
         //新增操作记录
         Operating operating = new Operating(cId, uId, "新增了"+ftType);
         iOperatingService.saveOperating(operating);
         //新增跟进记录
-        Follow follow = new Follow(null, fClId, fTypeId, null, fContent, clUId);
+        Follow follow = new Follow(null, fClId, fTypeId, Timestamp.valueOf(fTime), fContent, clUId);
         iFollowService.saveFollow(follow);
         return new DataResult(0, "新增成功");
     }

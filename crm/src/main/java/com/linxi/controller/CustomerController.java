@@ -11,12 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.Data;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Author LongYi
@@ -77,6 +74,14 @@ public class CustomerController {
             } else {
                 //根据筛选条件查询客户
                 List<Customer> customeres = iCustomerService.queryAACScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
+                //赋值预约状态（预约已过，预约未过）
+                for (Customer customer : customeres){
+                    if (new Timestamp(System.currentTimeMillis()).after(customer.getaTime())){
+                        customer.setIsDue("预约已过");
+                    } else {
+                        customer.setIsDue("预约未过");
+                    }
+                }
                 //获取总条数
                 Integer total = iCustomerService.getAACTotalByScreen(uId, rName, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
                 return new DataResult(0, "操作成功", total, customeres);
@@ -103,14 +108,15 @@ public class CustomerController {
                                    @ApiParam(name = "clUId", value = "用户编号", required = true) Integer clUId,
                                    @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
                                    @ApiParam(name = "clTypeId", value = "状态编号", required = true) Integer clTypeId,
-                                   @ApiParam(name = "clRemark", value = "备注", required = false) String clRemark){
+                                   @ApiParam(name = "clRemark", value = "备注", required = false) String clRemark,
+                                   @ApiParam(name = "clMessage", value = "症状信息", required = false) String clMessage){
         //新增客户
         Customer c = new Customer(null, cName, cSex, cAge, cTel, null);
         iCustomerService.saveCustomer(c);
         //查询新增客户的编号
         Integer cId = iCustomerService.queryMaxCId();
         //新增线索
-        Clue clue = new Clue(null, cId, clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEarnest, clUId, clSource, null, clTypeId, 0);
+        Clue clue = new Clue(null, cId, clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEarnest, null, clUId, clSource, clMessage, clTypeId, 0);
         iClueService.saveClue(clue);
         return new DataResult(0, "新增成功");
     }
@@ -163,7 +169,7 @@ public class CustomerController {
         //编辑客户
         iCustomerService.editCByCId(c);
         //创建线索
-        Clue clue = new Clue(null, cId, clProject, null, clRemark, clEarnest, clUId, clSource, clMessage, clTypeId, 0);
+        Clue clue = new Clue(null, cId, clProject, null, clRemark, clEarnest, null,  clUId, clSource, clMessage, clTypeId, 0);
         //编辑线索
         iClueService.editClByCId(clue);
         //新增操作记录

@@ -69,7 +69,7 @@ public class ReferralController {
         //根据预约类型查询编号
         Integer aTypeId = iAtypeService.queryAByAType("转诊");
         //新增预约记录
-        Appointment appointment = new Appointment(null, clId, Timestamp.valueOf(aTime), rHId, aTypeId, 0);
+        Appointment appointment = new Appointment(null, clId, Timestamp.valueOf(aTime), rHId, aTypeId, 0, null);
         iAppointmentService.saveAppointment(appointment);
         //新增操作记录
         Operating operating = new Operating(cId, uId, "新增了转诊记录");

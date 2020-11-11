@@ -51,13 +51,13 @@ public class PayrecordController {
     public DataResult savePayrecord(@ApiParam(value = "用户编号", required = true) Integer uId,
                                     @ApiParam(value = "成交客户编号", required = true) Integer paySId,
                                     @ApiParam(value = "支付金额", required = true) Integer paySum,
+                                    @ApiParam(value = "支付备注", required = true) String payRemark,
                                     @ApiParam(value = "支付类型编号", required = true) Integer payTypeId){
-        System.out.println("paySum:"+paySum);
         //新增操作记录
         Operating operating = new Operating(paySId, uId, "新增了支付记录");
         iOperatingService.saveOperating(operating);
         //新增支付记录
-        Payrecord payrecord = new Payrecord(null, paySId, paySum, null, payTypeId);
+        Payrecord payrecord = new Payrecord(null, paySId, paySum, null, payRemark, payTypeId);
         iPayrecordService.savePayrecord(payrecord);
         //根据成交客户编号查询支付总金额
         Integer paysum = iPayrecordService.queryPPaysumBySId(paySId);

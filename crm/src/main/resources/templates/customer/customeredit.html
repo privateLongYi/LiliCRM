@@ -54,10 +54,9 @@
             </label>
             <div class="layui-input-inline layui-form">
                 <select id="clProject">
-                    <option value="种植" th:selected="${c.clProject == '种植'} ? true : false">种植</option>
-                    <option value="矫正" th:selected="${c.clProject == '矫正'} ? true : false">矫正</option>
-                    <option value="牙贴面" th:selected="${c.clProject == '牙贴面'} ? true : false">牙贴面</option>
-                    <option value="牙齿治疗" th:selected="${c.clProject == '牙齿治疗'} ? true : false">牙齿治疗</option>
+                    <option value="种植牙" th:selected="${c.clProject == '种植牙'} ? true : false">种植牙</option>
+                    <option value="隐形矫正" th:selected="${c.clProject == '隐形矫正'} ? true : false">隐形矫正</option>
+                    <option value="其他" th:selected="${c.clProject == '其他'} ? true : false">其他</option>
                 </select>
             </div>
             <label class="layui-form-label" style="width: auto;">
@@ -114,15 +113,13 @@
                 <textarea class="layui-textarea" id="clRemark"
                           autocomplete="off" th:text="${c.clRemark}"></textarea>
             </div>
-            <div id="message">
-                <label class="layui-form-label" style="width: auto;">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;症状信息
-                </label>
-                <div class="layui-input-inline">
-                    <textarea class="layui-textarea" id="clMessage"
-                              autocomplete="off" th:text="${c.clMessage}"></textarea>
-                </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;症状信息
+            </label>
+            <div class="layui-input-inline">
+                <textarea class="layui-textarea" id="clMessage"
+                          autocomplete="off" th:text="${c.clMessage}"></textarea>
             </div>
         </div>
 
@@ -181,8 +178,6 @@
                     $("#cType").val("待分配");
                     $("#clTypeId").val("1");
                 }
-                //隐藏症状信息
-                $("#message").hide();
             }else if(page == "awaitcontact-awaitappoint") {
                 //状态赋值
                 $("#cType").val("待预约");
@@ -217,8 +212,6 @@
             var page = $("#page").val();
 
             if(page == "customer") {
-                //隐藏症状信息
-                $("#message").hide();
                 //获取角色为销售员的用户对象
                 $.get("/user/queryUserByRName", function (res) {
                     //定义负责人下拉框内容

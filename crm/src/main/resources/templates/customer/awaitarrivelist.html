@@ -36,8 +36,8 @@
 				<div class="layui-input-inline layui-form">
 					<select id="searchClProject">
 						<option value=""></option>
-						<option value="种植">种植牙</option>
-						<option value="矫正">隐形矫正</option>
+						<option value="种植牙">种植牙</option>
+						<option value="隐形矫正">隐形矫正</option>
 						<option value="其他">其他</option>
 					</select>
 				</div>
@@ -65,9 +65,9 @@
 				</div>
 			</div><br><br><br>
 			<div class="layui-col-md8">
-				<label class="layui-form-label">报名时间</label>
+				<label class="layui-form-label">预约时间</label>
 				<div class="layui-input-inline layui-form">
-					<input type="text" id="searchClPlaceTime" readonly
+					<input type="text" id="searchATime" readonly
 						   autocomplete="off" class="layui-input" style="width: 300px;">
 				</div>
 			</div><br><br><br>
@@ -91,6 +91,15 @@
 			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="success">成交</a>
 		</script>
 
+		<!--改变预约状态颜色-->
+		<script type="text/html" id="isDue">
+			{{#  if(d.isDue === '预约已过'){ }}
+				<span style="color: #FF0000;">{{ d.isDue }}</span>
+			{{#  } else { }}
+				{{ d.isDue }}
+			{{#  } }}
+		</script>
+
 		<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
 		<!--<script th:src="@{/layui/layui.js}"></script>-->
 		<script>
@@ -108,16 +117,18 @@
 
             //时间控件
             laydate.render({
-                elem: '#searchClPlaceTime' //指定元素
+                elem: '#searchATime' //指定元素
                 ,type: 'datetime' //时间格式
                 ,trigger: 'click' //采用click弹出
                 ,range: true //开启左右面板范围选择
             });
 
             if (rName == "销售员"){
+                saleTable();
                 $("#searchClUId").attr("disabled", "disabled");
                 form.render('select');
             } else {
+                adminTable();
                 //获取角色为销售员的用户对象
                 $.get("/user/queryUserByRName", function (res){
                     //定义负责人下拉框内容
@@ -234,12 +245,12 @@
                 }
                 var clUId = $("#searchClUId").val();
                 var clSource = $("#searchClSource").val();
-                var searchClPlaceTime = $("#searchClPlaceTime").val();
-                var beginTime;
-                var endTime;
-                if (searchClPlaceTime != null && searchClPlaceTime != ""){
-                    var beginTime = searchClPlaceTime.split(" - ")[0];
-                    var endTime = searchClPlaceTime.split(" - ")[1];
+                var searchATime = $("#searchATime").val();
+                var beginTime = null;
+                var endTime = null;
+                if (searchATime != null && searchATime != ""){
+                    var beginTime = searchATime.split(" - ")[0];
+                    var endTime = searchATime.split(" - ")[1];
                 }
                 //根据筛选条件查询
                 table.reload('tab', {
@@ -260,31 +271,82 @@
                 });
             }
 
-			//执行一个 table 实例
-			table.render({
-				elem: '#tab'
-				,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店' //数据接口
-				,title: '待到店客户表' //表格名称
-				,id: 'tab' //表格id
-				,page: true //开启分页
-				,limit: 10 //每页显示条数
-				,limits: [10, 20, 50, 100] //自定义可选每页显示条数
-				,toolbar: '#toolbarDemo' //刷新、增加工具栏
-				,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
-				,cols: [ //表头
-					[
-						{field: 'cName', minWidth: 120, title: '姓名', align:'center'}
-						,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
-						,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
-						,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
-						,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
-                        ,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
-                        ,{field: 'aTime', minWidth: 120, title: '预约时间', align:'center'}
-                        ,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
-						,{fixed: 'right', minWidth: 240, title: '操作', toolbar: '#barDemo', align:'center'}
-					]
-				]
-			});
+            //执行一个 table 实例
+            function adminTable() {
+                table.render({
+                    elem: '#tab'
+                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店' //数据接口
+                    ,title: '待到店客户表' //表格名称
+                    ,id: 'tab' //表格id
+                    ,page: true //开启分页
+                    ,limit: 10 //每页显示条数
+                    ,limits: [10, 20, 50, 100] //自定义可选每页显示条数
+                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
+                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,cols: [ //表头
+                        [
+                            {field: 'cName', minWidth: 120, title: '姓名', align:'center'}
+                            ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
+                            ,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
+                            ,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
+                            ,{field: 'aTime', minWidth: 200, title: '预约时间', align:'center'}
+                            ,{field: 'isDue', minWidth: 200, title: '预约状态', align: 'center'
+                            	,templet: function (data) {
+									if (data.isDue == "预约已过") {
+										return "<span style='color: #FF0000;'>" + data.isDue + "</span>"
+									} else {
+										return data.isDue
+									}
+								}
+                        	}
+                            ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
+                            ,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
+                            ,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
+                            ,{field: 'clEarnestDetail', minWidth: 120, title: '定金详情', align:'center'}
+                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+                            ,{fixed: 'right', minWidth: 240, title: '操作', toolbar: '#barDemo', align:'center'}
+                        ]
+                    ]
+                });
+            }
+
+            //执行一个 table 实例
+            function saleTable() {
+                table.render({
+                    elem: '#tab'
+                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店' //数据接口
+                    ,title: '待到店客户表' //表格名称
+                    ,id: 'tab' //表格id
+                    ,page: true //开启分页
+                    ,limit: 10 //每页显示条数
+                    ,limits: [10, 20, 50, 100] //自定义可选每页显示条数
+                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
+                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,cols: [ //表头
+                        [
+                            {field: 'cName', minWidth: 120, title: '姓名', align:'center'}
+                            ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
+                            ,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
+                            ,{field: 'aTime', minWidth: 200, title: '预约时间', align:'center'}
+                            ,{field: 'isDue', minWidth: 200, title: '预约状态', align:'center'
+								,templet:function (data){
+									if (data.isDue == "预约已过"){
+                                    	return "<span style='color: #FF0000;'>"+data.isDue+"</span>"
+									} else {
+                                        return data.isDue
+									}
+                            	}
+                            }
+                            ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
+                            ,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
+                            ,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
+                            ,{field: 'clEarnestDetail', minWidth: 120, title: '定金详情', align:'center'}
+                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+                            ,{fixed: 'right', minWidth: 240, title: '操作', toolbar: '#barDemo', align:'center'}
+                        ]
+                    ]
+                });
+            }
 
 			//监听头工具栏事件
 			table.on('toolbar(test)', function(obj){

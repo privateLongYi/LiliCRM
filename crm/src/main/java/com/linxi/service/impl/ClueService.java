@@ -71,4 +71,9 @@ public class ClueService implements IClueService{
         return clueMapper.queryMaxClId();
     }
 
+    @Override
+    public void editClByClId(Integer clId, Integer clEarnest, String clEarnestDetail) {
+        clueMapper.editClByClId(clId, clEarnest, clEarnestDetail);
+    }
+
 }

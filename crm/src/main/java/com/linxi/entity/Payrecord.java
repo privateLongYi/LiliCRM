@@ -49,6 +49,8 @@ public class Payrecord implements Serializable {
      */
     private Integer payTypeId;
 
+    private String payRemark;
+
     /**
      * 客户名称
      */
@@ -202,6 +204,14 @@ public class Payrecord implements Serializable {
         this.payTypeId = payTypeId;
     }
 
+    public String getPayRemark() {
+        return payRemark;
+    }
+
+    public void setPayRemark(String payRemark) {
+        this.payRemark = payRemark;
+    }
+
     public String getcName() {
         return cName;
     }
@@ -242,11 +252,12 @@ public class Payrecord implements Serializable {
         this.hName = hName;
     }
 
-    public Payrecord(Integer payId, Integer paySId, Integer paySum, Timestamp payTime, Integer payTypeId) {
+    public Payrecord(Integer payId, Integer paySId, Integer paySum, Timestamp payTime, String payRemark, Integer payTypeId) {
         this.payId = payId;
         this.paySId = paySId;
         this.paySum = paySum;
         this.payTime = payTime;
+        this.payRemark = payRemark;
         this.payTypeId = payTypeId;
     }
 

@@ -10,8 +10,9 @@
     -->
     <id column="pay_id" jdbcType="INTEGER" property="payId" />
     <result column="pay_s_id" jdbcType="INTEGER" property="paySId" />
-    <result column="pay_sum" jdbcType="VARCHAR" property="paySum" />
+    <result column="pay_sum" jdbcType="INTEGER" property="paySum" />
     <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="pay_remark" jdbcType="VARCHAR" property="payRemark" />
     <result column="pay_type_id" jdbcType="INTEGER" property="payTypeId" />
   </resultMap>
 
@@ -23,7 +24,7 @@
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     LEFT JOIN paytype pa ON p.pay_type_id = pa.pay_id
-    WHERE p.pay_s_id = #{paySId}
+    WHERE p.pay_s_id = #{paySId} ORDER BY p.pay_time DESC
   </select>
 
   <!--根据成交客户编号查询支付记录-->
@@ -33,8 +34,8 @@
 
   <!--新增支付记录-->
   <insert id="savePayrecord">
-    INSERT INTO payrecord(pay_s_id, pay_sum, pay_time, pay_type_id)
-    VALUES (#{paySId}, #{paySum}, now(), #{payTypeId})
+    INSERT INTO payrecord(pay_s_id, pay_sum, pay_time, pay_remark, pay_type_id)
+    VALUES (#{paySId}, #{paySum}, now(), #{payRemark}, #{payTypeId})
   </insert>
 
   <!--根据成交客户编号查询支付总金额-->

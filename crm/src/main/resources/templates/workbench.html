@@ -28,6 +28,16 @@
             color: #4f7afd;
         }
         input:hover{cursor: pointer;}
+        body .demo-class .layui-layer-btn .layui-layer-btn1{
+            border-color: #1E9FFF;
+            background-color: #1E9FFF;
+            color: #fff;
+        }
+        body .demo-class .layui-layer-btn .layui-layer-btn2{
+            border-color: #1E9FFF;
+            background-color: #1E9FFF;
+            color: #fff;
+        }
     </style>
 </head>
 <body bgcolor="#F0F0F0" style='overflow:scroll;overflow-x:hidden'>
@@ -37,21 +47,29 @@
 
         <!--快捷按钮-->
         <div class="layui-card layui-row" style="height: 100px;">
-            <div id="success" class="layui-col-md3" align="center" style="margin-top: 5px; cursor: pointer;">
-                <div><img height="65px" width="65px" th:src="@{/images/success.png}"></div>
-                <span>新增成交</span>
+            <div class="layui-col-md3" align="center" style="margin-top: 5px;">
+                <div id="insert" style="width: 65px; height: 65px; cursor: pointer;">
+                    <img height="65px" width="65px" th:src="@{/images/insert.png}">
+                </div>
+                新增客户
             </div>
-            <div id="refund" class="layui-col-md3" align="center" style="margin-top: 5px; cursor: pointer;">
-                <div><img height="65px" width="65px" th:src="@{/images/refund.png}"></div>
-                <span>客户退款</span>
+            <div class="layui-col-md3" align="center" style="margin-top: 5px;">
+                <div id="appoint" style="width: 65px; height: 65px; cursor: pointer;">
+                    <img height="65px" width="65px" th:src="@{/images/appoint.png}">
+                </div>
+                新增预约
             </div>
-            <div id="insert" class="layui-col-md3" align="center" style="margin-top: 8px; cursor: pointer;">
-                <div><img height="65px" width="65px" th:src="@{/images/insert.png}"></div>
-                <span>新增客户</span>
+            <div class="layui-col-md3" align="center" style="margin-top: 5px;">
+                <div id="success" style="width: 65px; height: 65px; cursor: pointer;">
+                    <img height="65px" width="65px" th:src="@{/images/success.png}">
+                </div>
+                新增成交
             </div>
-            <div id="appoint" class="layui-col-md3" align="center" style="margin-top: 5px; cursor: pointer;">
-                <div><img height="65px" width="65px" th:src="@{/images/appoint.png}"></div>
-                <span>新增预约</span>
+            <div class="layui-col-md3" align="center" style="margin-top: 5px;">
+                <div id="refund" style="width: 65px; height: 65px; cursor: pointer;">
+                    <img height="65px" width="65px" th:src="@{/images/refund.png}">
+                </div>
+                客户退款
             </div>
         </div>
 
@@ -131,16 +149,10 @@
                                 <span class="r_font" id="awaitAppoint"></span>
                             </div>
                         </a>
-                        <a th:href="@{/arrive}">
+                        <a th:href="@{/awaitarrive}">
                             <div class="css1">
                                 <span class="l_font">待到店客户</span>
                                 <span class="r_font" id="awaitArrive"></span>
-                            </div>
-                        </a>
-                        <a href="">
-                            <div class="css1">
-                                <span class="l_font">待处理客户</span>
-                                <span class="r_font">10</span>
                             </div>
                         </a>
                     </div>
@@ -219,15 +231,38 @@
                 var sHId = $(body).find("#sHId").val();
                 var sMessage = $(body).find("#sMessage").val();
                 var sSum = $(body).find("#sSum").val();
+                var sPaysum = $(body).find("#sPaysum").val();
                 var sRemark = $(body).find("#sRemark").val();
-                if (sAId != '' && sHId != '' && sSum != '' && sSum.trim() != '') {
+                if (sAId != '' && sHId != '' && sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '') {
                     //声明格式是否正确
                     var verify = true;
                     //验证成交金额
+                    if (isNaN(sSum)){
+                        layer.msg("成交金额格式错误");
+                        verify = false;
+                        return;
+                    }
                     if(sSum <= 0){
                         layer.msg("成交金额不能小于等于零");
                         verify = false;
                         return;
+                    }
+                    //验证支付金额
+                    if (isNaN(sPaysum)){
+                        layer.msg("支付金额格式错误");
+                        verify = false;
+                        return;
+                    }
+                    if(sPaysum <= 0){
+                        layer.msg("成交金额不能小于等于零");
+                        verify = false;
+                        return;
+                    } else {
+                        if(parseFloat(sPaysum) > parseFloat(sSum)){
+                            layer.msg("支付金额不能大于成交金额");
+                            verify = false;
+                            return;
+                        }
                     }
                     if(verify) {
                         $.post("/success/saveSuccess", {
@@ -240,11 +275,13 @@
                                 sHId: sHId,
                                 sMessage: sMessage,
                                 sSum: sSum.trim(),
+                                sPaysum: sPaysum.trim(),
                                 sRemark: sRemark
                             },
                             function (obj) {
                                 layer.msg(obj.msg, {time: 500}, function () {
                                     layer.close(index);
+                                    location.reload();
                                 });
                             }
                         );
@@ -300,10 +337,117 @@
             },
             cancel: function(index, layero){
                 layer.close(index);
-                location.reload();
             }
         });
     });
+
+    //保存客户
+    function saveCustomer(index) {
+        var body = layer.getChildFrame('body', index);
+        //获取值
+        var cName = $(body).find("#cName").val();
+        var cSex = null;
+        if ($(body).find("[name=cSex]")[0].checked) {
+            cSex = $(body).find("[name=cSex]")[0].value;
+        } else {
+            cSex = $(body).find("[name=cSex]")[1].value;
+        }
+        var cAge = $(body).find("#cAge").val();
+        var cTel = $(body).find("#cTel").val();
+        var clProject = $(body).find("#clProject").val();
+        var clRemark = $(body).find("#clRemark").val();
+        var clMessage = $(body).find("#clMessage").val();
+        var clEarnest = $(body).find("#clEarnest").val();
+        var clUId = $(body).find("#clUId").val();
+        var clSource = $(body).find("#clSource").val();
+        var clTypeId = $(body).find("#clTypeId").val();
+        var clPlaceTime = $(body).find("#clPlaceTime").val();
+        if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '' && clPlaceTime != '') {
+            //声明格式是否正确
+            var verify = true;
+            //验证姓名格式
+            if (cName.length > 6) {
+                layer.msg("姓名长度不能大于6位");
+                verify = false;
+                return;
+            }
+            //验证年龄格式
+            if (cAge != '') {
+                if (cAge <= 0 || cAge >= 150) {
+                    layer.msg("年龄必须大于0小于150");
+                    verify = false;
+                    return;
+                }
+            }
+            //验证电话格式
+            if (!(/^1[3456789]\d{9}$/.test(cTel))) {
+                layer.msg("手机号码格式错误");
+                verify = false;
+                return;
+            }
+            //验证定金格式
+            if (clEarnest != '') {
+                if (clEarnest < 0) {
+                    layer.msg("定金不能为负数");
+                    verify = false;
+                    return;
+                }
+            }
+            if (verify) {
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    url: "/customer/saveCustomer",
+                    data: {
+                        uId: uId,
+                        cName: cName.trim(),
+                        cSex: cSex,
+                        cAge: cAge,
+                        cTel: cTel.trim(),
+                        clProject: clProject,
+                        clMessage: clMessage,
+                        clRemark: clRemark,
+                        clEarnest: clEarnest,
+                        clUId: clUId,
+                        clSource: clSource,
+                        clTypeId: clTypeId,
+                        clPlaceTime: clPlaceTime
+                    },
+                    success: function (obj) {
+                        layer.close(index);
+                    }
+                });
+            }
+        } else {
+            layer.msg('请输入带星号的必填项');
+        }
+    }
+
+    //保存预约
+    function saveAppoint(index) {
+        var body = layer.getChildFrame('body', index);
+        //获取值
+        var aClId = $(body).find("#aClId").val();
+        var aTime = $(body).find("#aTime").val();
+        var aHId = $(body).find("#aHId").val();
+        var atType = $(body).find("#atType").val();
+        if (aTime != '') {
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: "/appointment/saveAppointment",
+                data: {
+                    uId: uId, aClId: aClId, aTime: aTime,
+                    aHId: aHId, atType: atType
+                },
+                success: function (obj) {
+                    layer.close(index);
+                }
+            });
+        } else {
+            layer.msg('请输入预约时间');
+        }
+    }
 
     //新增客户
     $("#insert").click(function () {
@@ -311,87 +455,136 @@
             type: 2, //层类型，iframe
             title: '新增客户',
             content: ['/customer/customersave'],
-            area: ['1000px', '450px'],
+            area: ['1000px', '500px'],
+            skin: 'demo-class',
             resize: false,
-            btn: '确定',
+            btn: ['继续预约', '确定新增'],
             btn1: function (index, layero) {
-                var body = layer.getChildFrame('body', index);
-                //获取值
-                var cName = $(body).find("#cName").val();
-                var cSex = null;
-                if ($(body).find("[name=cSex]")[0].checked) {
-                    cSex = $(body).find("[name=cSex]")[0].value;
-                } else {
-                    cSex = $(body).find("[name=cSex]")[1].value;
-                }
-                var cAge = $(body).find("#cAge").val();
-                var cTel = $(body).find("#cTel").val();
-                var clProject = $(body).find("#clProject").val();
-                var clRemark = $(body).find("#clRemark").val();
-                var clMessage = $(body).find("#clMessage").val();
-                var clEarnest = $(body).find("#clEarnest").val();
-                var clUId = $(body).find("#clUId").val();
-                var clSource = $(body).find("#clSource").val();
-                var clTypeId = $(body).find("#clTypeId").val();
-                var clPlaceTime = $(body).find("#clPlaceTime").val();
-                if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '' && clPlaceTime != '') {
-                    //声明格式是否正确
-                    var verify = true;
-                    //验证姓名格式
-                    if (cName.length > 6) {
-                        layer.msg("姓名长度不能大于6位");
-                        verify = false;
-                        return;
-                    }
-                    //验证年龄格式
-                    if (cAge != '') {
-                        if (cAge <= 0 || cAge >= 150) {
-                            layer.msg("年龄必须大于0小于150");
-                            verify = false;
-                            return;
-                        }
-                    }
-                    //验证电话格式
-                    if (!(/^1[3456789]\d{9}$/.test(cTel))) {
-                        layer.msg("手机号码格式错误");
-                        verify = false;
-                        return;
-                    }
-                    //验证定金格式
-                    if (clEarnest != '') {
-                        if (clEarnest < 0) {
-                            layer.msg("定金不能为负数");
-                            verify = false;
-                            return;
-                        }
-                    }
-                    if (verify) {
-                        $.post("/customer/saveCustomer", {
-                                uId: uId,
-                                cName: cName.trim(),
-                                cSex: cSex,
-                                cAge: cAge,
-                                cTel: cTel.trim(),
-                                clProject: clProject,
-                                clMessage: clMessage,
-                                clRemark: clRemark,
-                                clEarnest: clEarnest,
-                                clUId: clUId,
-                                clSource: clSource,
-                                clTypeId: clTypeId,
-                                clPlaceTime:clPlaceTime
+                saveCustomer(index);
+                //获取最新的线索
+                $.ajax({
+                    type: "GET",
+                    async: false,
+                    url: "/clue/queryNewClue",
+                    success: function (data) {
+                        //弹出预约页面
+                        layer.open({
+                            type: 2, //层类型，iframe
+                            title: '新增预约',
+                            content: ['/appointmentsave?clId='+data.data.clId+'&cName='+data.data.cName+'&atType=普通预约'],
+                            area: ['450px', '450px'],
+                            skin: 'demo-class',
+                            resize: false,
+                            btn: ['继续成交', '确定预约'],
+                            btn1: function (index, layero) {
+                                saveAppoint(index);
+                                //获取最大的编号
+                                $.ajax({
+                                    type: "GET",
+                                    async: false,
+                                    url: "/appointment/queryNewAppoint",
+                                    success: function (data2) {
+                                        //弹出成交页面
+                                        layer.open({
+                                            type: 2, //层类型，iframe
+                                            title: '新增成交客户',
+                                            content: ['/successsave?cId='+data2.data.cId+'&clId='+data2.data.clId+
+                                            '&sAId='+data2.data.aId+'&cName='+data2.data.cName+'&hId='+data2.data.aHId+
+                                            '&hName='+data2.data.hName],
+                                            area: ['500px', '450px'],
+                                            resize: false,
+                                            btn: '确定',
+                                            btn1: function (index, layero) {
+                                                var body = layer.getChildFrame('body', index);
+                                                //获取值
+                                                var cId = $(body).find("#clId").val();
+                                                var clId = $(body).find("#clId").val();
+                                                var sAId = $(body).find("#sAId").val();
+                                                var sHId = $(body).find("#sHId").val();
+                                                var sMessage = $(body).find("#sMessage").val();
+                                                var sSum = $(body).find("#sSum").val();
+                                                var sPaysum = $(body).find("#sPaysum").val();
+                                                var sRemark = $(body).find("#sRemark").val();
+                                                if (sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '') {
+                                                    //声明格式是否正确
+                                                    var verify = true;
+                                                    //验证成交金额
+                                                    if (isNaN(sSum)){
+                                                        layer.msg("成交金额格式错误");
+                                                        verify = false;
+                                                        return;
+                                                    }
+                                                    if(sSum <= 0){
+                                                        layer.msg("成交金额不能小于等于零");
+                                                        verify = false;
+                                                        return;
+                                                    }
+                                                    //验证支付金额
+                                                    if (isNaN(sPaysum)){
+                                                        layer.msg("支付金额格式错误");
+                                                        verify = false;
+                                                        return;
+                                                    }
+                                                    if(sPaysum <= 0){
+                                                        layer.msg("成交金额不能小于等于零");
+                                                        verify = false;
+                                                        return;
+                                                    } else {
+                                                        if(parseFloat(sPaysum) > parseFloat(sSum)){
+                                                            layer.msg("支付金额不能大于成交金额");
+                                                            verify = false;
+                                                            return;
+                                                        }
+                                                    }
+                                                    if(verify) {
+                                                        $.ajax({
+                                                            type: "POST",
+                                                            async: false,
+                                                            url: "/success/saveSuccess",
+                                                            data: {
+                                                                uId: uId,
+                                                                cId: cId,
+                                                                clId: clId,
+                                                                sAId: sAId,
+                                                                sHId: sHId,
+                                                                sMessage: sMessage,
+                                                                sSum: sSum.trim(),
+                                                                sPaysum: sPaysum.trim(),
+                                                                sRemark: sRemark
+                                                            },
+                                                            success: function (obj) {
+                                                                layer.msg(obj.msg, {time: 500}, function () {
+                                                                    layer.close(index);
+                                                                    location.reload();
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                } else {
+                                                    layer.msg('请填写带星号的必填项');
+                                                }
+                                            },
+                                            cancel: function(index, layero){
+                                                layer.close(index);
+                                            }
+                                        });
+                                    }
+                                })
                             },
-                            function (obj) {
-                                layer.msg(obj.msg, {time: 500}, function () {
-                                    layer.close(index);
-                                    location.reload();
-                                });
+                            btn2: function (index, layero) {
+                                saveAppoint(index);
+                                location.reload();
+                            },
+                            cancel: function(index, layero){
+                                layer.close(index);
                             }
-                        );
+                        });
                     }
-                } else {
-                    layer.msg('请输入带星号的必填项');
-                }
+                })
+            },
+            btn2: function (index, layero) {
+                saveCustomer(index);
+                location.reload();
             },
             cancel: function (index, layero) {
                 layer.close(index);
@@ -406,28 +599,107 @@
             title: '新增预约客户',
             content: ['/indexGoAppointSave'],
             area: ['450px', '450px'],
+            skin: 'demo-class',
             resize: false,
-            btn: '确定',
+            btn: ['继续成交', '确定预约'],
             btn1: function (index, layero) {
-                var body = layer.getChildFrame('body', index);
-                //获取值
-                var aClId = $(body).find("#aClId").val();
-                var aTime = $(body).find("#aTime").val();
-                var aHId = $(body).find("#aHId").val();
-                var atType = $(body).find("#atType").val();
-                if (aTime != '') {
-                    $.post("/appointment/saveAppointment", {uId:uId, aClId:aClId, aTime:aTime,
-                            aHId:aHId, atType:atType},
-                        function (obj) {
-                            layer.msg(obj.msg, {time: 500}, function () {
+                saveAppoint(index);
+                //获取最大的编号
+                $.ajax({
+                    type: "GET",
+                    async: false,
+                    url: "/appointment/queryNewAppoint",
+                    success: function (data) {
+                        //弹出成交页面
+                        layer.open({
+                            type: 2, //层类型，iframe
+                            title: '新增成交客户',
+                            content: ['/successsave?cId=' + data.data.cId + '&clId=' + data.data.clId +
+                            '&sAId=' + data.data.aId + '&cName=' + data.data.cName + '&hId=' + data.data.aHId +
+                            '&hName=' + data.data.hName],
+                            area: ['500px', '450px'],
+                            resize: false,
+                            btn: '确定',
+                            btn1: function (index, layero) {
+                                var body = layer.getChildFrame('body', index);
+                                //获取值
+                                var cId = $(body).find("#clId").val();
+                                var clId = $(body).find("#clId").val();
+                                var sAId = $(body).find("#sAId").val();
+                                var sHId = $(body).find("#sHId").val();
+                                var sMessage = $(body).find("#sMessage").val();
+                                var sSum = $(body).find("#sSum").val();
+                                var sPaysum = $(body).find("#sPaysum").val();
+                                var sRemark = $(body).find("#sRemark").val();
+                                if (sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '') {
+                                    //声明格式是否正确
+                                    var verify = true;
+                                    //验证成交金额
+                                    if (isNaN(sSum)) {
+                                        layer.msg("成交金额格式错误");
+                                        verify = false;
+                                        return;
+                                    }
+                                    if (sSum <= 0) {
+                                        layer.msg("成交金额不能小于等于零");
+                                        verify = false;
+                                        return;
+                                    }
+                                    //验证支付金额
+                                    if (isNaN(sPaysum)) {
+                                        layer.msg("支付金额格式错误");
+                                        verify = false;
+                                        return;
+                                    }
+                                    if (sPaysum <= 0) {
+                                        layer.msg("成交金额不能小于等于零");
+                                        verify = false;
+                                        return;
+                                    } else {
+                                        if (parseFloat(sPaysum) > parseFloat(sSum)) {
+                                            layer.msg("支付金额不能大于成交金额");
+                                            verify = false;
+                                            return;
+                                        }
+                                    }
+                                    if (verify) {
+                                        $.ajax({
+                                            type: "POST",
+                                            async: false,
+                                            url: "/success/saveSuccess",
+                                            data: {
+                                                uId: uId,
+                                                cId: cId,
+                                                clId: clId,
+                                                sAId: sAId,
+                                                sHId: sHId,
+                                                sMessage: sMessage,
+                                                sSum: sSum.trim(),
+                                                sPaysum: sPaysum.trim(),
+                                                sRemark: sRemark
+                                            },
+                                            success: function (obj) {
+                                                layer.msg(obj.msg, {time: 500}, function () {
+                                                    layer.close(index);
+                                                    location.reload();
+                                                });
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    layer.msg('请填写带星号的必填项');
+                                }
+                            },
+                            cancel: function (index, layero) {
                                 layer.close(index);
-                                location.reload();
-                            });
-                        }
-                    );
-                } else {
-                    layer.msg('请输入预约时间');
-                }
+                            }
+                        });
+                    }
+                })
+            },
+            btn2: function (index, layero) {
+                saveAppoint(index);
+                location.reload();
             },
             cancel: function(index, layero){
                 layer.close(index);

@@ -19,7 +19,8 @@
   <!-- 高级筛选加分页查询客户 -->
   <select id="queryCScreen" resultMap="BaseResultMap">
     SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
-    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, u.u_name AS uName, cl.cl_source AS clSource,
+    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, cl.cl_earnest_detail AS clEarnestDetail,
+    u.u_name AS uName, cl.cl_source AS clSource,
     cl.cl_message AS clMessage, ct.ct_type AS cType,
     u.u_id AS clUId FROM customer c
     LEFT JOIN clue cl ON c.c_id=cl.cl_c_id
@@ -44,7 +45,7 @@
       <if test="clEarnest != null and clEarnest == 1">
         AND cl.cl_earnest != 0
       </if>
-      <if test="beginTime != null and endTime != null">
+      <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
         AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
         AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>
@@ -88,7 +89,7 @@
       <if test="clEarnest != null and clEarnest == 1">
         AND cl.cl_earnest != 0
       </if>
-      <if test="beginTime != null and endTime != null">
+      <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
         AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
         AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>
@@ -108,7 +109,8 @@
   <!-- 高级筛选加分页查询客户 -->
   <select id="queryAACScreen" resultMap="BaseResultMap">
     SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
-    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, u.u_name AS uName, cl.cl_source AS clSource,
+    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, cl.cl_earnest_detail AS clEarnestDetail,
+    u.u_name AS uName, cl.cl_source AS clSource,
     cl.cl_message AS clMessage, ct.ct_type AS cType, a.a_id AS aId, h.h_id AS hId, h.h_name AS hName,
     a.a_time AS aTime, u.u_id AS clUId FROM customer c
     LEFT JOIN clue cl ON c.c_id=cl.cl_c_id
@@ -135,9 +137,9 @@
       <if test="clEarnest != null and clEarnest == 1">
         AND cl.cl_earnest != 0
       </if>
-      <if test="beginTime != null and endTime != null">
-        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+      <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+        AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  a.a_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>
       <if test="clUId != null">
         AND cl.cl_u_id = #{clUId}
@@ -150,7 +152,7 @@
       </if>
       AND cl.cl_invalid = 0 AND a.a_status = 0
     </where>
-    ORDER BY cl_place_time DESC
+    ORDER BY a.a_time DESC
     limit #{page}, #{limit}
   </select>
 
@@ -181,7 +183,7 @@
       <if test="clEarnest != null and clEarnest == 1">
         AND cl.cl_earnest != 0
       </if>
-      <if test="beginTime != null and endTime != null">
+      <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
         AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
         AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
       </if>

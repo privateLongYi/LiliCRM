@@ -75,7 +75,7 @@
 					title: '新增客户跟进',
 					content: ['/followsave?cId='+data.cId+'&clId='+data.clId+
                     '&clUId='+data.clUId+'&cName='+data.cName+'&ftType='+ftType],
-					area: ['450px', '350px'],
+					area: ['450px', '450px'],
 					resize: false,
 					btn: '确定',
 					btn1: function (index, layero) {
@@ -85,9 +85,10 @@
 						var fClId = $(body).find("#fClId").val();
                         var clUId = $(body).find("#clUId").val();
 						var fTypeId = $(body).find("#fTypeId").val();
+                        var fTime = $(body).find("#fTime").val();
 						var fContent = $(body).find("#fContent").val();
 						if (fContent != '' && fContent.trim() != '') {
-							$.post("/follow/saveFollow", {uId:uId, cId:cId, fClId:fClId,
+							$.post("/follow/saveFollow", {uId:uId, cId:cId, fClId:fClId, fTime:fTime,
                                     clUId:clUId, fTypeId:fTypeId, ftType:ftType, fContent:fContent},
 								function (obj) {
 									layer.msg(obj.msg, {time: 500}, function () {
@@ -144,9 +145,9 @@
 				var data = obj.data //获得当前行数据
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'feedback'){
-					saveFollow(data, "未成交门诊反馈");
+					saveFollow(data, "门诊反馈");
 				} else if(layEvent === 'callback'){
-					saveFollow(data, "未成交客户回访");
+					saveFollow(data, "客户回访");
 				} else if(layEvent === 'referral'){
 					//弹出转诊页面
 					var ix = layer.open({

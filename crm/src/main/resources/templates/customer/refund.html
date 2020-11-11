@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>退定金</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">所退金额</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="clId" th:value="${clId}">
+                <input type="text" class="layui-input" id="money">
+            </div>
+        </div>
+    </form>
+
+</div>
+<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
+<!--<script th:src="@{/layui/layui.js}"></script>-->
+<script>
+    //加载form、laydate
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+            ,laydate = layui.laydate
+            ,$ = layui.jquery
+            ,layer = layui.layer;
+
+    });
+
+</script>
+</body>
+</html>

@@ -21,8 +21,15 @@
         <div class="layui-form-item">
             <label class="layui-form-label">支付金额</label>
             <div class="layui-input-block">
-                <input type="number" class="layui-input" id="paySum"
+                <input type="hidden" id="wk" th:value="${wk}">
+                <input type="text" class="layui-input" id="paySum"
                        placeholder="请输入支付金额" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">支付备注</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="payRemark" autocomplete="off"></textarea>
             </div>
         </div>
         <div class="layui-form-item">

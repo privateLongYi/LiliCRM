@@ -74,7 +74,7 @@
 					title: '新增客户跟进',
 					content: ['/followsave?cId='+data.cId+'&clId='+data.clId+
 					'&clUId='+data.clUId+'&cName='+data.cName+'&ftType='+ftType],
-					area: ['450px', '350px'],
+					area: ['450px', '450px'],
 					resize: false,
 					btn: '确定',
 					btn1: function (index, layero) {
@@ -84,9 +84,10 @@
 						var fClId = $(body).find("#fClId").val();
 						var clUId = $(body).find("#clUId").val();
 						var fTypeId = $(body).find("#fTypeId").val();
+                        var fTime = $(body).find("#fTime").val();
 						var fContent = $(body).find("#fContent").val();
 						if (fContent != '' && fContent.trim() != '') {
-							$.post("/follow/saveFollow", {uId:uId, cId:cId, fClId:fClId,
+							$.post("/follow/saveFollow", {uId:uId, cId:cId, fClId:fClId, fTime:fTime,
 									clUId:clUId, fTypeId:fTypeId, ftType:ftType, fContent:fContent},
 								function (obj) {
 									layer.msg(obj.msg, {time: 500}, function () {
@@ -209,7 +210,7 @@
 						} else if(data.length > 1){
 							layer.msg('只能同时操作一个');
 						} else {
-							saveFollow(data[0], "成交门诊反馈");
+							saveFollow(data[0], "门诊反馈");
 						}
 						break;
 					case 'callback':
@@ -218,7 +219,7 @@
 						} else if(data.length > 1){
 							layer.msg('只能同时操作一个');
 						} else {
-							saveFollow(data[0], "成交客户回访");
+							saveFollow(data[0], "客户回访");
 						}
 						break;
 					case 'gathering':
@@ -227,38 +228,50 @@
 						} else if(data.length > 1){
 							layer.msg('只能同时操作一个');
 						} else {
-							//弹出收款页面
-							var ix = layer.open({
-								type: 2, //层类型，iframe
-								title: '新增支付记录',
-								content: ['/payrecordsave?cId='+data[0].sId+'&cName='+data[0].cName],
-								area: ['400px', '300px'],
-								resize: false,
-								btn: '确定',
-								btn1: function (index, layero) {
-									var body = layer.getChildFrame('body', index);
-									//获取值
-									var paySId = $(body).find("#paySId").val();
-									var paySum = $(body).find("#paySum").val();
-									var payTypeId = $(body).find("#payTypeId").val();
-									if (paySum != '' && paySum.trim() != '') {
-										$.post("/payrecord/savePayrecord",
-											{uId: uId, paySId: paySId, paySum: paySum, payTypeId: payTypeId},
-											function (obj) {
-												layer.msg(obj.msg, {time: 500}, function () {
-													layer.close(ix);
-													tableReload();
-												});
-											}
-										);
-									} else {
-										layer.msg('请填写支付金额');
-									}
-								},
-								cancel: function(index, layero){
-									layer.close(index);
-								}
-							});
+						    if (parseFloat(data[0].sSum) == parseFloat(data[0].sPaysum)){
+                                layer.msg('该客户全款已付全款');
+							} else {
+						        //尾款
+								var wk = eval(data[0].sSum + "-" + data[0].sPaysum);
+                                //弹出收款页面
+                                var ix = layer.open({
+                                    type: 2, //层类型，iframe
+                                    title: '新增支付记录',
+                                    content: ['/payrecordsave?cId='+data[0].sId+'&cName='+data[0].cName+'&wk='+wk],
+                                    area: ['500px', '500px'],
+                                    resize: false,
+                                    btn: '确定',
+                                    btn1: function (index, layero) {
+                                        var body = layer.getChildFrame('body', index);
+                                        //获取值
+                                        var paySId = $(body).find("#paySId").val();
+                                        var wk = $(body).find("#wk").val();
+                                        var paySum = $(body).find("#paySum").val();
+                                        var payRemark = $(body).find("#payRemark").val();
+                                        var payTypeId = $(body).find("#payTypeId").val();
+                                        if (paySum != '' && paySum.trim() != '') {
+                                            if (parseFloat(wk) < parseFloat(paySum)){
+												layer.msg("支付金额不能大于尾款，尾款为"+wk);
+											} else {
+												$.post("/payrecord/savePayrecord",
+													{uId: uId, paySId: paySId, paySum: paySum, payRemark:payRemark, payTypeId: payTypeId},
+													function (obj) {
+														layer.msg(obj.msg, {time: 500}, function () {
+															layer.close(ix);
+															tableReload();
+														});
+													}
+												);
+                                            }
+                                        } else {
+                                            layer.msg('请填写支付金额');
+                                        }
+                                    },
+                                    cancel: function (index, layero) {
+                                        layer.close(index);
+                                    }
+                                });
+                            }
 						}
 						break;
 					case 'save':
@@ -268,7 +281,7 @@
 							layer.msg('只能同时操作一个');
 						} else {
 							//弹出成交页面
-							var ix = layer.open({
+							layer.open({
 								type: 2, //层类型，iframe
 								title: '新增成交客户',
 								content: ['/successsave?cId='+data[0].cId+'&clId='+data[0].clId+
@@ -291,10 +304,32 @@
 										//声明格式是否正确
 										var verify = true;
 										//验证成交金额
+										if (isNaN(sSum)){
+                                            layer.msg("成交金额格式错误");
+                                            verify = false;
+                                            return;
+										}
 										if(sSum <= 0){
 											layer.msg("成交金额不能小于等于零");
 											verify = false;
 											return;
+										}
+                                        //验证支付金额
+                                        if (isNaN(sPaysum)){
+                                            layer.msg("支付金额格式错误");
+                                            verify = false;
+                                            return;
+                                        }
+                                        if(sPaysum <= 0){
+                                            layer.msg("成交金额不能小于等于零");
+                                            verify = false;
+                                            return;
+                                        } else {
+                                            if(parseFloat(sPaysum) > parseFloat(sSum)){
+                                                layer.msg("支付金额不能大于成交金额");
+                                                verify = false;
+                                                return;
+                                            }
 										}
 										if(verify) {
 											$.post("/success/saveSuccess", {
@@ -310,7 +345,7 @@
 												},
 												function (obj) {
 													layer.msg(obj.msg, {time: 500}, function () {
-														layer.close(ix);
+														layer.close(index);
 														tableReload();
 													});
 												}
@@ -351,11 +386,12 @@
 								,url: '/payrecord/queryPByPaySId?paySId=' + data.sId
 								,cols: [
 									[
-										{field: 'payId', minWidth: 120, title: 'ID', sort: true}
-										,{field: 'cName', minWidth: 120, title: '客户名称'}
-										,{field: 'paySum', minWidth: 120, title: '支付金额', sort: true}
-										,{field: 'payTime', minWidth: 200, title: '支付时间', sort: true}
-										,{field: 'payType', minWidth: 120, title: '支付类型'}
+										{field: 'payId', minWidth: 120, title: 'ID', sort: true, align:'center'}
+										,{field: 'cName', minWidth: 120, title: '客户名称', align:'center'}
+										,{field: 'paySum', minWidth: 120, title: '支付金额', sort: true, align:'center'}
+										,{field: 'payTime', minWidth: 200, title: '支付时间', sort: true, align:'center'}
+                                        ,{field: 'payRemark', minWidth: 200, title: '支付备注', align:'center'}
+										,{field: 'payType', minWidth: 120, title: '支付类型', align:'center'}
 									]
 								]
 							});

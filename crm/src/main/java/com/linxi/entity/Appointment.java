@@ -51,6 +51,8 @@ public class Appointment implements Serializable {
 
     private Integer aStatus;
 
+    private Timestamp aCreateTime;
+
     /**
      * 客户名称
      */
@@ -85,6 +87,16 @@ public class Appointment implements Serializable {
      * 成交总金额
      */
     private Integer sSum;
+
+    /**
+     * 客户编号
+     */
+    private Integer cId;
+
+    /**
+     * 线索编号
+     */
+    private Integer clId;
 
     private static final long serialVersionUID = 1L;
 
@@ -216,6 +228,14 @@ public class Appointment implements Serializable {
         this.aStatus = aStatus;
     }
 
+    public Timestamp getaCreateTime() {
+        return aCreateTime;
+    }
+
+    public void setaCreateTime(Timestamp aCreateTime) {
+        this.aCreateTime = aCreateTime;
+    }
+
     public String getcName() {
         return cName;
     }
@@ -272,15 +292,32 @@ public class Appointment implements Serializable {
         this.sSum = sSum;
     }
 
+    public Integer getcId() {
+        return cId;
+    }
+
+    public void setcId(Integer cId) {
+        this.cId = cId;
+    }
+
+    public Integer getClId() {
+        return clId;
+    }
+
+    public void setClId(Integer clId) {
+        this.clId = clId;
+    }
+
     public Appointment() {
     }
 
-    public Appointment(Integer aId, Integer aClId, Timestamp aTime, Integer aHId, Integer aTypeId, Integer aStatus) {
+    public Appointment(Integer aId, Integer aClId, Timestamp aTime, Integer aHId, Integer aTypeId, Integer aStatus, Timestamp aCreateTime) {
         this.aId = aId;
         this.aClId = aClId;
         this.aTime = aTime;
         this.aHId = aHId;
         this.aTypeId = aTypeId;
         this.aStatus = aStatus;
+        this.aCreateTime = aCreateTime;
     }
 }

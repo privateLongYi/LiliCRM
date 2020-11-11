@@ -36,8 +36,8 @@
 				<div class="layui-input-inline layui-form">
 					<select id="searchClProject">
 						<option value=""></option>
-						<option value="种植">种植牙</option>
-						<option value="矫正">隐形矫正</option>
+						<option value="种植牙">种植牙</option>
+						<option value="隐形矫正">隐形矫正</option>
 						<option value="其他">其他</option>
 					</select>
 				</div>
@@ -113,9 +113,11 @@
             });
 
             if (rName == "销售员"){
+                saleTable();
                 $("#searchClUId").attr("disabled", "disabled");
                 form.render('select');
             } else {
+                adminTable();
                 //获取角色为销售员的用户对象
                 $.get("/user/queryUserByRName", function (res){
                     //定义负责人下拉框内容
@@ -230,8 +232,8 @@
                 var clUId = $("#searchClUId").val();
                 var clSource = $("#searchClSource").val();
                 var searchClPlaceTime = $("#searchClPlaceTime").val();
-                var beginTime;
-                var endTime;
+                var beginTime = null;
+                var endTime = null;
                 if (searchClPlaceTime != null && searchClPlaceTime != ""){
                     var beginTime = searchClPlaceTime.split(" - ")[0];
                     var endTime = searchClPlaceTime.split(" - ")[1];
@@ -255,33 +257,60 @@
                 });
             }
 
-			//执行一个 table 实例
-			table.render({
-				elem: '#tab'
-				,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待预约' //数据接口
-				,title: '待预约客户表' //表格名称
-				,id: 'tab' //表格id
-				,page: true //开启分页
-				,limit: 10 //每页显示条数
-				,limits: [10, 20, 50, 100] //自定义可选每页显示条数
-				,toolbar: '#toolbarDemo' //刷新、增加工具栏
-				,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
-				,cols: [ //表头
-					[
-						{field: 'cName', minWidth: 120, title: '姓名', align:'center'}
-						,{field: 'cSex', minWidth: 120, title: '性别', sort: true, align:'center'}
-						,{field: 'cAge', minWidth: 120, title: '年龄', align:'center'}
-						,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
-						,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
-						,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
-						,{field: 'clRemark', minWidth: 120, title: '备注', align:'center'}
-						,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
-						,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
-						,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
-						,{fixed: 'right', minWidth: 150, title: '操作', toolbar: '#barDemo', align:'center'}
-					]
-				]
-			});
+            //执行一个 table 实例
+            function adminTable() {
+                table.render({
+                    elem: '#tab'
+                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待预约' //数据接口
+                    ,title: '待预约客户表' //表格名称
+                    ,id: 'tab' //表格id
+                    ,page: true //开启分页
+                    ,limit: 10 //每页显示条数
+                    ,limits: [10, 20, 50, 100] //自定义可选每页显示条数
+                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
+                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,cols: [ //表头
+                        [
+                            {field: 'cName', minWidth: 120, title: '姓名', align:'center'}
+                            ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
+                            ,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
+                            ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
+                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+                            ,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
+                            ,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
+                            ,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
+                            ,{fixed: 'right', minWidth: 150, title: '操作', toolbar: '#barDemo', align:'center'}
+                        ]
+                    ]
+                });
+            }
+
+            //执行一个 table 实例
+            function saleTable() {
+                table.render({
+                    elem: '#tab'
+                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待预约' //数据接口
+                    ,title: '待预约客户表' //表格名称
+                    ,id: 'tab' //表格id
+                    ,page: true //开启分页
+                    ,limit: 10 //每页显示条数
+                    ,limits: [10, 20, 50, 100] //自定义可选每页显示条数
+                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
+                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,cols: [ //表头
+                        [
+                            {field: 'cName', minWidth: 120, title: '姓名', align:'center'}
+                            ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
+                            ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
+                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+                            ,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
+                            ,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
+                            ,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
+                            ,{fixed: 'right', minWidth: 150, title: '操作', toolbar: '#barDemo', align:'center'}
+                        ]
+                    ]
+                });
+            }
 
 			//监听头工具栏事件
 			table.on('toolbar(test)', function(obj){
@@ -378,9 +407,9 @@
 					});
 				} else if(layEvent === 'appoint'){
 					//弹出预约页面
-					var ix = layer.open({
+					layer.open({
 						type: 2, //层类型，iframe
-						title: '新增预约客户',
+						title: '新增预约',
 						content: ['/appointmentsave?clId='+data.clId+'&cName='+data.cName+'&atType=普通预约'],
 						area: ['450px', '450px'],
 						resize: false,
@@ -397,7 +426,7 @@
 										aHId:aHId, atType:atType},
 									function (obj) {
 										layer.msg(obj.msg, {time: 500}, function () {
-											layer.close(ix);
+											layer.close(index);
 											tableReload();
 										});
 									}

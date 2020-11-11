@@ -70,7 +70,7 @@ public class AppointmentController {
                                  @ApiParam(value = "门诊编号", required = true) Integer aHId,
                                  @ApiParam(value = "预约类型编号", required = true) Integer aTypeId,
                                  @ApiParam(value = "预约状态", required = true) Integer aStatus){
-        Appointment appointment = new Appointment(aId, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, aStatus);
+        Appointment appointment = new Appointment(aId, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, aStatus, null);
         iAppointmentService.editAByAId(appointment);
         return new DataResult(0, "编辑成功");
     }
@@ -98,7 +98,7 @@ public class AppointmentController {
         //根据预约类型查询编号
         Integer aTypeId = iAtypeService.queryAByAType(atType);
         //新增预约客户
-        Appointment appointment = new Appointment(null, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, 0);
+        Appointment appointment = new Appointment(null, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, 0, null);
         iAppointmentService.saveAppointment(appointment);
         return new DataResult(0, "新增成功");
     }
@@ -109,16 +109,18 @@ public class AppointmentController {
     public DataResult queryAToDetail(@ApiParam(value = "线索编号", required = true) Integer clId){
         //根据线索编号查询预约
         List<Appointment> appointments = iAppointmentService.queryAToDetail(clId);
-        for (Appointment appointment : appointments){
-            //根据预约编号查询成交总金额
-            Integer sum = iSuccessService.querySSumBySAId(appointment.getaId());
-            if (sum != null) {
-                appointment.setsSum(sum);
-            } else {
-                appointment.setsSum(0);
-            }
-        }
         return new DataResult(0, "操作成功", 0, appointments);
+    }
+
+    @GetMapping("queryNewAppoint")
+    @ApiOperation(value = "获取最新的预约")
+    @ResponseBody
+    public DataResult queryNewAppoint(){
+        //获取最大的预约编号
+        Integer aId = iAppointmentService.queryMaxAId();
+        //根据预约编号查询预约
+        Appointment appointment = iAppointmentService.queryAByAId(aId);
+        return new DataResult(0, "操作成功", 0, appointment);
     }
 
 }

@@ -21,14 +21,20 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">回访类型</label>
+            <label class="layui-form-label">跟进类型</label>
             <div class="layui-input-block">
                 <input type="hidden" id="fTypeId" th:value="${ftId}">
                 <input type="text" id="ftType" class="layui-input" th:value="${ftType}" readonly>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">回访内容</label>
+            <label class="layui-form-label">跟进时间</label>
+            <div class="layui-input-block">
+                <input type="text" id="fTime" class="layui-input" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">跟进内容</label>
             <div class="layui-input-block">
                 <textarea class="layui-textarea" id="fContent" autocomplete="off"></textarea>
             </div>
@@ -40,13 +46,20 @@
 <!--<script th:src="@{/layui/layui.js}"></script>-->
 <script>
     //加载form、laydate
-    layui.use(['form', 'laydate'], function(){
-        var form = layui.form
-            ,laydate = layui.laydate
-            ,$ = layui.jquery
-            ,layer = layui.layer;
+    var form = layui.form
+        ,laydate = layui.laydate
+        ,$ = layui.jquery
+        ,layer = layui.layer;
 
+    //时间控件
+    laydate.render({
+        elem: '#fTime' //指定元素
+        ,type: 'datetime' //时间格式
+        ,trigger: 'click' //采用click弹出
+        ,value: new Date() //默认时间
+        ,btns: ['now', 'confirm'] //工具按钮
     });
+
 
 </script>
 </body>

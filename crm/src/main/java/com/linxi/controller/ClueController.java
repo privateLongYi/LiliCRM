@@ -96,8 +96,8 @@ public class ClueController {
 
             //新增线索
             Clue cl = new Clue(null, clue.getClCId(), clue.getClProject(), clue.getClPlaceTime(),
-                    clue.getClRemark(), clue.getClEarnest(), clUId, clue.getClSource(),
-                    clue.getClMessage(), clue.getClTypeId(), 0);
+                    clue.getClRemark(), clue.getClEarnest(), clue.getClEarnestDetail(),
+                    clUId, clue.getClSource(), clue.getClMessage(), clue.getClTypeId(), 0);
             iClueService.saveClue(cl);
 
             //改变之前的线索为无效
@@ -130,7 +130,8 @@ public class ClueController {
 
                 //新增预约记录
                 Appointment a = new Appointment(null, clId, appointment.getaTime(),
-                        appointment.getaHId(), appointment.getaTypeId(), appointment.getaStatus());
+                        appointment.getaHId(), appointment.getaTypeId(),
+                        appointment.getaStatus(), appointment.getaCreateTime());
                 iAppointmentService.saveAppointment(a);
 
                 //查询最新的预约编号（最大的预约编号）
@@ -178,13 +179,39 @@ public class ClueController {
                     for (Payrecord payrecord : payrecords){
                         //新增支付
                         Payrecord p = new Payrecord(null, sId, payrecord.getPaySum(),
-                                payrecord.getPayTime(), payrecord.getPayTypeId());
+                                payrecord.getPayTime(), payrecord.getPayRemark(),
+                                payrecord.getPayTypeId());
                         iPayrecordService.savePayrecord(p);
                     }
                 }
             }
         }
         return new DataResult(0, "操作成功");
+    }
+
+    @GetMapping("refund")
+    @ApiOperation(value = "根据线索编号编辑定金和定金详情(退定金)")
+    @ResponseBody
+    public DataResult refund(@ApiParam(value = "操作用户编号", required = true) Integer uId,
+                                   @ApiParam(value = "编号", required = true) Integer clId,
+                                   @ApiParam(value = "定金", required = true) Integer clEarnest){
+        //根据编号查询线索
+        Clue clue = iClueService.queryClByClId(clId);
+        String clEarnestDetail = "定金" + clue.getClEarnest() + ",已退" + clEarnest;
+        clEarnest = clue.getClEarnest() - clEarnest;
+        iClueService.editClByClId(clId, clEarnest, clEarnestDetail);
+        return new DataResult(0, "操作成功");
+    }
+
+    @GetMapping("queryNewClue")
+    @ApiOperation(value = "获取最新的线索")
+    @ResponseBody
+    public DataResult queryNewClue(){
+        //获取最大的线索编号
+        Integer clId = iClueService.queryMaxClId();
+        //根据线索编号获取客户名称
+        Clue clue = iClueService.queryClByClId(clId);
+        return new DataResult(0, "操作成功", 0, clue);
     }
 
 }

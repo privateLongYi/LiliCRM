@@ -17,6 +17,8 @@ public class Clue implements Serializable {
 
     private Integer clEarnest;
 
+    private String clEarnestDetail;
+
     private Integer clUId;
 
     private String clSource;
@@ -26,6 +28,11 @@ public class Clue implements Serializable {
     private Integer clTypeId;
 
     private Integer clInvalid;
+
+    /**
+     * 客户姓名
+     */
+    private String cName;
 
     private static final long serialVersionUID = 1L;
 
@@ -77,6 +84,14 @@ public class Clue implements Serializable {
         this.clEarnest = clEarnest;
     }
 
+    public String getClEarnestDetail() {
+        return clEarnestDetail;
+    }
+
+    public void setClEarnestDetail(String clEarnestDetail) {
+        this.clEarnestDetail = clEarnestDetail;
+    }
+
     public Integer getClUId() {
         return clUId;
     }
@@ -117,16 +132,25 @@ public class Clue implements Serializable {
         this.clInvalid = clInvalid;
     }
 
+    public String getcName() {
+        return cName;
+    }
+
+    public void setcName(String cName) {
+        this.cName = cName;
+    }
+
     public Clue() {
     }
 
-    public Clue(Integer clId, Integer clCId, String clProject, Timestamp clPlaceTime, String clRemark, Integer clEarnest, Integer clUId, String clSource, String clMessage, Integer clTypeId, Integer clInvalid) {
+    public Clue(Integer clId, Integer clCId, String clProject, Timestamp clPlaceTime, String clRemark, Integer clEarnest, String clEarnestDetail, Integer clUId, String clSource, String clMessage, Integer clTypeId, Integer clInvalid) {
         this.clId = clId;
         this.clCId = clCId;
         this.clProject = clProject;
         this.clPlaceTime = clPlaceTime;
         this.clRemark = clRemark;
         this.clEarnest = clEarnest;
+        this.clEarnestDetail = clEarnestDetail;
         this.clUId = clUId;
         this.clSource = clSource;
         this.clMessage = clMessage;
@@ -143,6 +167,7 @@ public class Clue implements Serializable {
                 ", clPlaceTime=" + clPlaceTime +
                 ", clRemark='" + clRemark + '\'' +
                 ", clEarnest=" + clEarnest +
+                ", clEarnestDetail=" + clEarnestDetail +
                 ", clUId=" + clUId +
                 ", clSource='" + clSource + '\'' +
                 ", clMessage='" + clMessage + '\'' +

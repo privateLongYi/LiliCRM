@@ -40,4 +40,9 @@ public interface IClueService {
     //查询最大的线索编号
     Integer queryMaxClId();
 
+    //根据线索编号编辑定金和定金详情
+    void editClByClId(@Param("clId") Integer clId,
+                      @Param("clEarnest") Integer clEarnest,
+                      @Param("clEarnestDetail") String clEarnestDetail);
+
 }

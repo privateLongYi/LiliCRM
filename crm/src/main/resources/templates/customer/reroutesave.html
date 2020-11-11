@@ -25,8 +25,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">门诊名称</label>
             <div class="layui-input-block">
-                <input type="hidden" id="reHId" th:value="${hId}">
-                <input type="text" class="layui-input" th:value="${hName}" readonly>
+                <input type="hidden" id="hName" th:value="${hName}">
+                <select id="reHId"></select>
             </div>
         </div>
         <div class="layui-form-item">
@@ -68,6 +68,24 @@
             ,type: 'datetime' //时间格式
             ,trigger: 'click' //采用click弹出
         });
+
+        //获取所有门诊
+        $.get("/hospital/queryHospital", function (res) {
+            //定义负责人下拉框内容
+            var html = "";
+            //获取负责人编号
+            var hName = $("#hName").val();
+            $.each(res.data, function (index, item) {
+                if (hName == item.hName) {
+                    html += "<option value='" + item.hId + "' selected>" + item.hName + "</option>";
+                } else {
+                    html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
+                }
+            });
+            $("#reHId").append(html);
+            //append后必须重新渲染
+            form.render('select');
+        })
 
     });
 

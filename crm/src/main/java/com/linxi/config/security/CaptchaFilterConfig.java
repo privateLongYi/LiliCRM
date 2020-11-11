@@ -33,7 +33,7 @@ public class CaptchaFilterConfig implements Filter {
     @Autowired
     private SessionRegistry sessionRegistry;
 
-    @Value("true")
+    @Value("false")
     private Boolean captchaEnable;
 
     @Override
@@ -106,7 +106,7 @@ public class CaptchaFilterConfig implements Filter {
             }
 
             //从session中获取生成的验证码
-            String verifyCode = session.getAttribute("verifyCode").toString();
+            /*String verifyCode = session.getAttribute("verifyCode").toString();
 
             if (captchaEnable && !verifyCode.toLowerCase().equals(request.getParameter("captcha").toLowerCase())) {
                 String dataString = "{\"code\":\"400\",\"msg\":\"验证码错误\"}";
@@ -136,7 +136,7 @@ public class CaptchaFilterConfig implements Filter {
                 out.flush();
                 out.close();
                 return;
-            }
+            }*/
         }
 
         filterChain.doFilter(servletRequest, servletResponse);

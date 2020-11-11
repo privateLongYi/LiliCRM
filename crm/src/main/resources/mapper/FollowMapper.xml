@@ -19,7 +19,7 @@
   <!--新增客户跟进-->
   <insert id="saveFollow">
     INSERT INTO follow(f_cl_id, f_type_id, f_time, f_content, f_u_id)
-    VALUES (#{fClId}, #{fTypeId}, now(), #{fContent}, #{fUId})
+    VALUES (#{fClId}, #{fTypeId}, #{fTime}, #{fContent}, #{fUId})
   </insert>
 
   <!--根据线索编号查询所拥有的跟进类型-->

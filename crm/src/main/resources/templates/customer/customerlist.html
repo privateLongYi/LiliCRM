@@ -40,8 +40,8 @@
 				<div class="layui-input-inline layui-form">
 					<select id="searchclProject">
 						<option value=""></option>
-						<option value="种植">种植牙</option>
-						<option value="矫正">隐形矫正</option>
+						<option value="种植牙">种植牙</option>
+						<option value="隐形矫正">隐形矫正</option>
 						<option value="其他">其他</option>
 					</select>
 				</div>
@@ -94,7 +94,7 @@
 
 	<!--详情页面-->
 	<div id="detail" style="position:absolute; z-index:999999; top:0; right:-100%;
-		transition:all linear 0.5s; width: 900px; height: 580px;background-color:white;
+		transition:all linear 0.5s; width: 1050px; height: 580px;background-color:white;
 		border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px;margin-top: 2px;">
 
 		<div style="float: left; margin: 5px;">
@@ -160,9 +160,8 @@
 				<!--左侧选项卡、预约记录-->
 				<div class="layui-col-md8">
 					<!--选项卡-->
-					<div class="layui-card" style="height: 265px;">
-						<div style="height: 330px;">
-							<div class="layui-tab">
+					<div class="layui-card" style="height: 255px;">
+						<div class="layui-tab">
 								<ul class="layui-tab-title">
 									<li class="layui-this">基本信息</li>
 									<li>操作记录</li>
@@ -183,7 +182,7 @@
 										</div>
 									</div>
 									<!--操作记录-->
-									<div class="layui-tab-item" style="height: 200px;overflow-y: auto;">
+									<div class="layui-tab-item" style="height: 190px;overflow-y: auto;">
 										<ul class="layui-timeline" id="operating"></ul>
 									</div>
 									<!--成交记录-->
@@ -193,20 +192,25 @@
 									</div>
 								</div>
 							</div>
-						</div>
 					</div>
 					<!--预约记录-->
-					<div style="height: 145px;overflow-y: auto;">
+					<div style="height: 155px;overflow-y: auto;">
 						<ul class="layui-timeline" id="appoint"></ul>
 					</div>
 				</div>
 				<!--右侧跟进-->
 				<div class="layui-col-md4">
-					<div class="layui-card" style="height: 430px;overflow-y: auto;">
+					<div class="layui-card" style="height: 420px;overflow-y: auto;">
 						<!--表单-->
-						<div style="border:1px solid #f2f2f2;height: 230px;">
+						<div style="border:1px solid #f2f2f2;height: 280px;">
 							<div class="layui-form layui-form-item" style="margin: 15px 15px 0 15px;">
-								<select id="followSel" lay-filter="followSel"></select>
+								<div class="layui-input-inline layui-form">
+									<input type="radio" name="followInput" value="1" title="门诊反馈" checked>
+									<input type="radio" name="followInput" value="2" title="客户回访">
+								</div>
+								<br><br><br>
+								<input class="layui-input" id="fTime" autocomplete="off"
+									   placeholder="跟进时间" readonly>
 							</div>
 							<div class="layui-form-item layui-form-text" style="margin-top: 15px; margin-left: 15px; margin-right: 15px;">
 								<input type="hidden" id="cId">
@@ -233,7 +237,7 @@
 
 		<script type="text/html" id="toolbarDemo">
 			<div class="layui-inline" lay-event="refresh"><i class="layui-icon layui-icon-refresh-1"></i></div>
-			<div class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
+			<div class='layui-inline' lay-event='add'><i class='layui-icon layui-icon-add-1'></i></div>
 		</script>
 
 		<script type="text/html" id="barDemo"></script>
@@ -262,14 +266,18 @@
             });
 
             if (rName == "销售员"){
+                saleTable();
                 $("#searchclUId").attr("disabled", "disabled");
                 form.render('select');
                 var operate = "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>" +
+							  "<a class='layui-btn layui-btn-normal layui-btn-xs' lay-event='refund'>退定金</a>" +
 							  "<a class='layui-btn layui-btn-danger layui-btn-xs' lay-event='del'>删除</a>";
                 $("#barDemo").html(operate);
             } else {
+                adminTable();
                 var operate = "<a class='layui-btn layui-btn-xs layui-btn-warm' lay-event='update'>变更负责人</a>" +
 							  "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>" +
+                    "<a class='layui-btn layui-btn-normal layui-btn-xs' lay-event='refund'>退定金</a>" +
 							  "<a class='layui-btn layui-btn-danger layui-btn-xs' lay-event='del'>删除</a>";
                 $("#barDemo").html(operate);
                 //获取角色为销售员的用户对象
@@ -297,6 +305,15 @@
                 form.render('select');
             })
 
+            //时间控件
+            laydate.render({
+                elem: '#fTime' //指定元素
+                ,type: 'datetime' //时间格式
+                ,trigger: 'click' //采用click弹出
+                ,value: new Date() //默认时间
+                ,btns: ['now', 'confirm'] //工具按钮
+            });
+
             //新增跟进记录
             function saveFollow() {
                 //客户编号
@@ -305,19 +322,32 @@
                 var clId = $("#clId").val();
                 //负责人编号
                 var clUId = $("#clUId").val();
-                //回访类型编号
-                var fTypeId = $("#followSel").val();
-                //回访类型
-                var ftType = $("#followSel [value="+fTypeId+"]").text();
+                var fTypeId;
+                var ftType;
+                //跟进类型编号、跟进类型
+                if ($("[name=followInput]")[0].checked){
+                    fTypeId = $("[name=followInput]")[0].value;
+                    ftType = $("[name=followInput]")[0].title;
+                } else if ($("[name=followInput]")[1].checked){
+                    fTypeId = $("[name=followInput]")[1].value;
+                    ftType = $("[name=followInput]")[1].title;
+                }
                 //跟进内容
                 var fContent = $("#content").val();
+                //跟进时间
+                var fTime = $("#fTime").val();
                 //新增跟进内容
                 $.post("/follow/saveFollow"
                     ,{uId:uId, cId:cId, fClId:clId, fTypeId:fTypeId, clUId:clUId,
-                        ftType:ftType, fContent:fContent}
+                        ftType:ftType, fContent:fContent, fTime: fTime}
                     ,function (data) {
                         layer.msg(data.msg, {time: 500}, function () {
                             $("#content").val("");
+                            var time = new Date();
+                            var fTime = time.getFullYear()+"-"+eval(time.getMonth()+"+"+1)+"-"+
+                                time.getDate()+" "+time.getHours()+":"+
+                                time.getMinutes()+":"+time.getSeconds();
+                            $("#fTime").val(fTime);
                             goDetail(cId, clId, clUId);
                         });
                     }
@@ -406,17 +436,20 @@
                     var html = "";
                     $.each(data.data, function (index, item) {
                         html += "<li class='layui-timeline-item'>" +
-                            "<i class='layui-icon layui-timeline-axis'>&#xe63f;</i>" +
-                            "<div class='layui-timeline-content layui-text'>" +
-                            "<div class='layui-card' style='background-color: aliceblue;'>" +
-                            "<div><span style='font-size: 20px;'>"+item.aTime+"【"+item.aType+"】</span></div>" +
-                            "<div style='margin-top: 5px;'>预约项目："+item.clProject+"</div>" +
-                            "<div style='margin-top: 5px;'>预约人："+item.uName+"</div>" +
-                            "<div style='margin-top: 5px;'>预交金额："+item.clEarnest+"</div>" +
-                            "<div style='margin-top: 5px;'>成交金额："+item.sSum+"</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</li>";
+									"<i class='layui-icon layui-timeline-axis'>&#xe63f;</i>" +
+									"<div class='layui-timeline-content layui-text'>" +
+										"<div class='layui-card' style='background-color: aliceblue;'>" +
+											"<div><span style='font-size: 20px;'>"+item.aTime+"【"+item.aType+"】</span></div>" +
+											"<div style='margin-top: 5px;'>预约项目："+item.clProject+"</div>" +
+											"<div style='margin-top: 5px;'>预约人："+item.uName+"</div>" +
+											"<div style='margin-top: 5px;'>预交金额："+item.clEarnest+"</div>" +
+											"<div style='margin-top: 5px;'>" +
+												"<div style='text-align: left'>预约门诊："+item.hName+"</div>" +
+												"<div style='text-align: right'>创建时间："+item.aCreateTime+"</div>" +
+											"</div"+
+										"</div>" +
+									"</div>" +
+								"</li>";
                     });
                     $("#appoint").html(html);
                 });
@@ -505,8 +538,8 @@
                 var clSource = $("#searchclSource").val();
                 var clTypeId = $("#searchClTypeId").val();
                 var searchclPlaceTime = $("#searchclPlaceTime").val();
-                var beginTime;
-                var endTime;
+                var beginTime = null;
+                var endTime = null;
                 if (searchclPlaceTime != null && searchclPlaceTime != ""){
                     var beginTime = searchclPlaceTime.split(" - ")[0];
                     var endTime = searchclPlaceTime.split(" - ")[1];
@@ -600,32 +633,63 @@
 			}
 
 			//执行一个 table 实例
-			table.render({
-				elem: '#tab'
-				,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName //数据接口
-				,title: '客户信息表' //表格名称
-				,id: 'tab' //表格id
-				,page: true //开启分页
-				,limit: 10 //每页显示条数
-				,limits: [10, 20, 50, 100] //自定义可选每页显示条数
-				,toolbar: '#toolbarDemo' //刷新、增加工具栏
-				,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
-				,cols: [ //表头
-					[
-						{field: 'cName', minWidth: 120, title: '姓名', align:'center'
-							,templet: '<div><a href="javascript:goDetail({{d.cId}}, {{d.clId}}, {{d.clUId}});" class="layui-table-link">{{d.cName}}</a></div>'
-						}
-						,{field: 'cAge', minWidth: 120, title: '年龄', align:'center'}
-						,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
-						,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
-						,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
-						,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
-						,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
-						,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
-						,{fixed: 'right', minWidth: 200, title: '操作', toolbar: '#barDemo', align:'center'}
-					]
-				]
-			});
+			function adminTable() {
+                table.render({
+                    elem: '#tab'
+                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName //数据接口
+                    ,title: '客户信息表' //表格名称
+                    ,id: 'tab' //表格id
+                    ,page: true //开启分页
+                    ,limit: 10 //每页显示条数
+                    ,limits: [10, 20, 50, 100] //自定义可选每页显示条数
+                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
+                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,cols: [ //表头
+                        [
+                            {field: 'cName', minWidth: 120, title: '姓名', align:'center'
+                                ,templet: '<div><a href="javascript:goDetail({{d.cId}}, {{d.clId}}, {{d.clUId}});" class="layui-table-link">{{d.cName}}</a></div>'
+                            }
+                            ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
+                            ,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
+                            ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
+                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+                            ,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
+                            ,{field: 'clEarnestDetail', minWidth: 120, title: '定金详情', align:'center'}
+                            ,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
+                            ,{fixed: 'right', minWidth: 200, title: '操作', toolbar: '#barDemo', align:'center'}
+                        ]
+                    ]
+                });
+            }
+
+            //执行一个 table 实例
+            function saleTable() {
+                table.render({
+                    elem: '#tab'
+                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName //数据接口
+                    ,title: '客户信息表' //表格名称
+                    ,id: 'tab' //表格id
+                    ,page: true //开启分页
+                    ,limit: 10 //每页显示条数
+                    ,limits: [10, 20, 50, 100] //自定义可选每页显示条数
+                    ,toolbar: '#toolbarDemo' //刷新、增加工具栏
+                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,cols: [ //表头
+                        [
+                            {field: 'cName', minWidth: 120, title: '姓名', align:'center'
+                                ,templet: '<div><a href="javascript:goDetail({{d.cId}}, {{d.clId}}, {{d.clUId}});" class="layui-table-link">{{d.cName}}</a></div>'
+                            }
+                            ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
+                            ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
+                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+                            ,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
+                            ,{field: 'clEarnestDetail', minWidth: 120, title: '定金详情', align:'center'}
+                            ,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
+                            ,{fixed: 'right', minWidth: 200, title: '操作', toolbar: '#barDemo', align:'center'}
+                        ]
+                    ]
+                });
+            }
 
 			//监听头工具栏事件
 			table.on('toolbar(test)', function(obj){
@@ -638,7 +702,7 @@
 							type: 2, //层类型，iframe
 							title: '新增客户',
 							content: ['/customer/customersave'],
-							area: ['1000px', '450px'],
+							area: ['1000px', '500px'],
 							resize: false,
 							btn: '确定',
 							btn1: function (index, layero) {
@@ -715,6 +779,44 @@
                             }
 						})
                     });
+                } else if(layEvent === 'refund'){
+				    if (data.clEarnest == null || data.clEarnest == ""){
+						layer.msg("该客户没付定金");
+					} else {
+                        layer.open({
+                            type: 2, //层类型，iframe
+                            title: '退定金',
+                            content: ['/refund?clId=' + data.clId],
+                            area: ['400px', '400px'],
+                            resize: false,
+                            btn: '确定',
+                            btn1: function (index, layero) {
+                                var body = layer.getChildFrame('body', index);
+                                //获取值
+                                var clId = $(body).find("#clId").val();
+                                var money = $(body).find("#money").val();
+                                if (money != "" && money != null){
+                                    if (0 <= money && money <= data.clEarnest){
+                                        $.get("/clue/refund", {uId: uId, clId: clId, clEarnest: money},
+                                            function (obj) {
+                                                layer.msg(obj.msg, {time: 500}, function () {
+                                                    layer.close(index);
+                                                    tableReload();
+                                                });
+                                            }
+                                        );
+									} else {
+                                        layer.msg("所退金额必须大于零小于定金，定金为"+data.clEarnest);
+									}
+								} else {
+                                    layer.msg("所退金额不能为空");
+								}
+                            },
+                            cancel: function (index, layero) {
+                                layer.close(index);
+                            }
+                        })
+                    }
                 }
 
 			});

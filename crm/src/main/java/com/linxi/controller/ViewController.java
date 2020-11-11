@@ -287,9 +287,11 @@ public class ViewController {
     @ApiOperation(value = "新增支付记录")
     public String payrecordsave(@ApiParam(name = "cId", value = "成交客户编号", required = true) Integer cId,
                                 @ApiParam(name = "cName", value = "成交客户名称", required = true) String cName,
+                                @ApiParam(name = "wk", value = "尾款", required = true) String wk,
                                 ModelMap map){
         map.addAttribute("cId", cId);
         map.addAttribute("cName", cName);
+        map.addAttribute("wk", wk);
         return "customer/payrecordsave";
     }
 
@@ -354,6 +356,14 @@ public class ViewController {
     public String editPrincipal(@ApiParam(name = "cId", value = "客户编号", required = true) String cId, ModelMap map){
         map.addAttribute("cId", cId);
         return "customer/editPrincipal";
+    }
+
+    @GetMapping("refund")
+    @ApiOperation(value = "退定金")
+    public String refund(@ApiParam(name = "clId", value = "线索编号", required = true) String clId,
+                         ModelMap map){
+        map.addAttribute("clId", clId);
+        return "customer/refund";
     }
 
 }

@@ -38,14 +38,6 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">验证码</label>
-            <div class="layui-input-inline">
-                <input type="text" id="captcha" name="captcha" placeholder="请输入验证码"
-                       class="layui-input" style="float: left;width: 52%;" autocomplete="off">
-                <img id="captchaImg" th:src="@{/getVerifyCodeImage}" onclick="changeCode()"/>
-            </div>
-        </div>
-        <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn admin-button" lay-submit="" lay-filter="login">登录</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
@@ -74,10 +66,6 @@
         // 进行登录操作
         form.on('submit(login)', function (data) {
             data = data.field;
-            if (data.captcha == '') {
-                layer.msg('请输入验证码');
-                return false;
-            }
             if (data.username == '') {
                 layer.msg('用户名不能为空');
                 return false;
@@ -88,8 +76,7 @@
             }
             $.post("login", {
                 "username": data.username,
-                "password": data.password,
-                "captcha": data.captcha
+                "password": data.password
             }, function (data) {
                 layui.use('layer', function () {
                     var layer = layui.layer;

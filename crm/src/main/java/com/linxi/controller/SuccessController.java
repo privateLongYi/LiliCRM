@@ -50,6 +50,12 @@ public class SuccessController {
     @Autowired
     private IHospitalService iHospitalService;
 
+    @Autowired
+    private IPayrecordService iPayrecordService;
+
+    @Autowired
+    private IPaytypeService iPaytypeService;
+
     @GetMapping("querySByClId")
     @ApiOperation(value = "根据线索编号查询成交客户")
     @ResponseBody
@@ -115,6 +121,7 @@ public class SuccessController {
                                   @ApiParam(name = "sHId", value = "门诊编号", required = true) Integer sHId,
                                   @ApiParam(name = "sMessage", value = "成交信息", required = true) String sMessage,
                                   @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
+                                  @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
                                   @ApiParam(name = "sRemark", value = "备注", required = true) String sRemark){
         //添加操作记录
         Operating operating = new Operating(cId, uId, "添加了成交客户");
@@ -124,10 +131,19 @@ public class SuccessController {
         //改变客户状态为成交状态
         iClueService.editClTypeIdByClId(clId, clTypeId);
         //新增成交客户
-        Success success = new Success(null, sAId, sHId, sMessage, sSum, null, sRemark, 0);
+        Success success = new Success(null, sAId, sHId, sMessage, sSum, sPaysum, sRemark, 0);
         iSuccessService.saveSuccess(success);
         //根据预约编号编辑预约状态
         iAppointmentService.editAStatusByAIdAndAStatus(sAId, 2);
+        if (sPaysum != 0){
+            //查询最大的成交编号
+            Integer sId = iSuccessService.queryMaxSId();
+            //查询支付类型为退款的编号
+            Integer payId = iPaytypeService.queryPByPayType("退款");
+            //新增支付记录
+            Payrecord payrecord = new Payrecord(null, sId, sPaysum, null, null, payId);
+            iPayrecordService.savePayrecord(payrecord);
+        }
         return new DataResult(0, "新增成功");
     }
 

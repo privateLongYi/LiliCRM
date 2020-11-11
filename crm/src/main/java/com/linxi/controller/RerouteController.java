@@ -66,7 +66,7 @@ public class RerouteController {
         //根据预约类型查询编号
         Integer atId = iAtypeService.queryAByAType("改约");
         //新增预约记录
-        Appointment appointment = new Appointment(null, reClId, reTime, reHId, atId, 0);
+        Appointment appointment = new Appointment(null, reClId, reTime, reHId, atId, 0, null);
         iAppointmentService.saveAppointment(appointment);
         //查询待到店编号
         Integer ctId = iCtypeService.queryCtypeByCtType("待到店");
