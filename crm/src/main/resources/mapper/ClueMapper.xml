@@ -7,8 +7,7 @@
     <result column="cl_c_id" jdbcType="INTEGER" property="clCId" />
     <result column="cl_project" jdbcType="VARCHAR" property="clProject" />
     <result column="cl_place_time" jdbcType="TIMESTAMP" property="clPlaceTime" />
-    <result column="cl_earnest" jdbcType="INTEGER" property="clEarnest" />
-    <result column="cl_earnest_detail" jdbcType="VARCHAR" property="clEarnestDetail" />
+    <result column="cl_entry_fee" jdbcType="INTEGER" property="clEntryFee" />
     <result column="cl_u_id" jdbcType="INTEGER" property="clUId" />
     <result column="cl_source" jdbcType="VARCHAR" property="clSource" />
     <result column="cl_type_id" jdbcType="INTEGER" property="clTypeId" />
@@ -24,9 +23,9 @@
 
   <!-- 新增线索 -->
   <insert id="saveClue">
-    INSERT INTO clue(cl_c_id, cl_project, cl_place_time, cl_earnest, cl_earnest_detail,
+    INSERT INTO clue(cl_c_id, cl_project, cl_place_time, cl_entry_fee, cl_earnest_detail,
      cl_u_id, cl_source, cl_remark, cl_message, cl_type_id, cl_invalid)
-    VALUES (#{clCId}, #{clProject}, #{clPlaceTime}, #{clEarnest}, #{clEarnestDetail},
+    VALUES (#{clCId}, #{clProject}, #{clPlaceTime}, #{clEntryFee},
     #{clUId}, #{clSource}, #{clRemark}, #{clMessage}, #{clTypeId}, 0)
   </insert>
 
@@ -37,7 +36,7 @@
 
   <!-- 根据编号编辑线索 -->
   <update id="editClByCId">
-    UPDATE clue SET cl_project = #{clProject}, cl_earnest = #{clEarnest},
+    UPDATE clue SET cl_project = #{clProject}, cl_entry_fee = #{clEntryFee},
     cl_u_id = #{clUId}, cl_source = #{clSource}, cl_remark = #{clRemark},
     cl_message = #{clMessage}, cl_type_id = #{clTypeId}
     WHERE cl_c_id = #{clCId}
@@ -72,8 +71,12 @@
 
   <!--根据线索编号编辑定金和定金详情-->
   <update id="editClByClId">
-    UPDATE clue SET cl_earnest = #{clEarnest}, cl_earnest_detail = #{clEarnestDetail}
-    WHERE cl_id = #{clId}
+    UPDATE clue SET cl_entry_fee = #{clEntryFee} WHERE cl_id = #{clId}
+  </update>
+
+  <!--根据线索编号编辑负责人编号-->
+  <update id="editClUIdByClId">
+    UPDATE clue SET cl_u_id = #{clUId}, cl_type_id = 2 WHERE cl_id = #{clId}
   </update>
 
 </mapper>

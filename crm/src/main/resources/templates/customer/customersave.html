@@ -71,10 +71,10 @@
         <br />
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;定金
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;报名费
             </label>
             <div class="layui-input-inline">
-                <input type="number" id="clEarnest" placeholder="请输入定金"
+                <input type="number" id="clEntryFee" placeholder="请输入报名费"
                        autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label" style="width: auto;">
@@ -142,6 +142,7 @@
         //从sessionStorage中获取用户编号和用户名
         var uId = sessionStorage.getItem('uId');
         var uName = sessionStorage.getItem('uName');
+        var rName = sessionStorage.getItem('rName');
 
         //时间控件
         laydate.render({
@@ -150,7 +151,7 @@
             ,trigger: 'click' //采用click弹出
         });
 
-        if(uId == 1){
+        if(rName != "销售员"){
 
             //管理员登录，隐藏负责人文本框，显示负责人下拉框
             $("#admin").addClass("layui-show");

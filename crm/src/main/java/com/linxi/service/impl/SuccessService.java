@@ -57,19 +57,19 @@ public class SuccessService implements ISuccessService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Success> querySByCName(Integer page, Integer limit, Integer uId, String rName, String cName) {
-        return successMapper.querySByCName(page, limit, uId, rName, cName);
+    public List<Success> querySByScreen(Integer page, Integer limit, Integer uId, String rName, String cName, String cTel, Integer sHId, Integer queryUId, String beginTime, String endTime, Integer export) {
+        return successMapper.querySByScreen(page, limit, uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, export);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getTotalByCName(Integer uId, String rName, String cName) {
-        return successMapper.getTotalByCName(uId, rName, cName);
+    public Integer getTotalByScreen(Integer uId, String rName, String cName, String cTel, Integer sHId, Integer queryUId, String beginTime, String endTime) {
+        return successMapper.getTotalByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime);
     }
 
     @Override
-    public void editSPaysumBySId(Integer sId, Integer paySum) {
-        successMapper.editSPaysumBySId(sId, paySum);
+    public void editMoneyBySId(Integer sId, Integer sSum, Integer sPaySum) {
+        successMapper.editMoneyBySId(sId, sSum, sPaySum);
     }
 
     @Override
@@ -92,20 +92,20 @@ public class SuccessService implements ISuccessService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer querySByUIdAndTime(Integer uId, String beginTime, String endTime) {
-        return successMapper.querySByUIdAndTime(uId, beginTime, endTime);
+    public List<Success> querySByTime(Integer page, Integer limit, Integer uId, String rName, String beginTime, String endTime) {
+        return successMapper.querySByTime(page, limit, uId, rName, beginTime, endTime);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer querySSumByUIdAndTime(Integer uId, String beginTime, String endTime) {
-        return successMapper.querySSumByUIdAndTime(uId, beginTime, endTime);
+    public Integer getTotalByTime(Integer uId, String rName, String beginTime, String endTime) {
+        return successMapper.getTotalByTime(uId, rName, beginTime, endTime);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer querySPaysumByUIdAndTime(Integer uId, String beginTime, String endTime) {
-        return successMapper.querySPaysumByUIdAndTime(uId, beginTime, endTime);
+    public Integer queryMoneyByTime(Integer uId, String rName, String beginTime, String endTime, Integer type) {
+        return successMapper.queryMoneyByTime(uId, rName, beginTime, endTime, type);
     }
 
     @Override
@@ -142,6 +142,18 @@ public class SuccessService implements ISuccessService{
     @Transactional(propagation = Propagation.SUPPORTS)
     public Integer queryMaxSId() {
         return successMapper.queryMaxSId();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryMoneyByScreen(Integer uId, String rName, String cName, String cTel, Integer sHId, Integer queryUId, String beginTime, String endTime, Integer type) {
+        return successMapper.queryMoneyByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, type);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Success> queryRefundByScreen(Integer uId, String rName, String cName, String cTel, Integer sHId, Integer queryUId, String beginTime, String endTime) {
+        return successMapper.queryRefundByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime);
     }
 
 }

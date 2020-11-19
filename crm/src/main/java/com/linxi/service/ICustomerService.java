@@ -20,12 +20,13 @@ public interface ICustomerService {
                                 @Param("cName") String cName,
                                 @Param("cTel") String cTel,
                                 @Param("clProject") String clProject,
-                                @Param("clEarnest") Integer clEarnest,
+                                @Param("clEntryFee") String clEntryFee,
                                 @Param("beginTime") String beginTime,
                                 @Param("endTime") String endTime,
                                 @Param("clUId") Integer clUId,
                                 @Param("clSource") String clSource,
-                                @Param("clTypeId") Integer clTypeId);
+                                @Param("clTypeId") Integer clTypeId,
+                                @Param("export") Integer export);
 
     //获得客户总数量
     Integer getTotalByScreen(@Param("uId") Integer uId,
@@ -33,7 +34,7 @@ public interface ICustomerService {
                              @Param("cName") String cName,
                              @Param("cTel") String cTel,
                              @Param("clProject") String clProject,
-                             @Param("clEarnest") Integer clEarnest,
+                             @Param("clEntryFee") String clEntryFee,
                              @Param("beginTime") String beginTime,
                              @Param("endTime") String endTime,
                              @Param("clUId") Integer clUId,
@@ -48,12 +49,13 @@ public interface ICustomerService {
                                 @Param("cName") String cName,
                                 @Param("cTel") String cTel,
                                 @Param("clProject") String clProject,
-                                @Param("clEarnest") Integer clEarnest,
+                                @Param("clEntryFee") String clEntryFee,
                                 @Param("beginTime") String beginTime,
                                 @Param("endTime") String endTime,
                                 @Param("clUId") Integer clUId,
                                 @Param("clSource") String clSource,
-                                @Param("clTypeId") Integer clTypeId);
+                                @Param("clTypeId") Integer clTypeId,
+                                @Param("export") Integer export);
 
     //获得客户总数量
     Integer getAACTotalByScreen(@Param("uId") Integer uId,
@@ -61,7 +63,7 @@ public interface ICustomerService {
                              @Param("cName") String cName,
                              @Param("cTel") String cTel,
                              @Param("clProject") String clProject,
-                             @Param("clEarnest") Integer clEarnest,
+                             @Param("clEntryFee") String clEntryFee,
                              @Param("beginTime") String beginTime,
                              @Param("endTime") String endTime,
                              @Param("clUId") Integer clUId,
@@ -125,13 +127,55 @@ public interface ICustomerService {
 
     //根据用户编号和起始时间和客户状态查询客户数量
     Integer queryCByUIdAndTimeAndCTypeId(@Param("uId") Integer uId,
+                                         @Param("rName") String rName,
                                          @Param("clTypeId") Integer clTypeId,
                                          @Param("beginTime") String beginTime,
                                          @Param("endTime") String endTime);
 
-    //根据用户编号和起始时间查询预约数量
-    Integer queryAByUIdAndTime(@Param("uId") Integer uId,
-                               @Param("beginTime") String beginTime,
-                               @Param("endTime") String endTime);
+    //根据用户编号和起始时间查询客户
+    List<Customer> queryCByTime(@Param("page") Integer page,
+                                @Param("limit") Integer limit,
+                                @Param("uId") Integer uId,
+                                @Param("rName") String rName,
+                                @Param("beginTime") String beginTime,
+                                @Param("endTime") String endTime);
+
+    //根据用户编号和起始时间查询客户数量
+    Integer getTotalByTime(@Param("uId") Integer uId,
+                           @Param("rName") String rName,
+                           @Param("beginTime") String beginTime,
+                           @Param("endTime") String endTime);
+
+    //根据用户编号和起始时间查询预约客户
+    List<Customer> queryAByTime(@Param("page") Integer page,
+                                @Param("limit") Integer limit,
+                                @Param("uId") Integer uId,
+                                @Param("rName") String rName,
+                                @Param("beginTime") String beginTime,
+                                @Param("endTime") String endTime);
+
+    //根据用户编号和起始时间查询预约客户数量
+    Integer getTotalAByTime(@Param("uId") Integer uId,
+                            @Param("rName") String rName,
+                            @Param("beginTime") String beginTime,
+                            @Param("endTime") String endTime);
+
+    //根据用户编号和起始时间查询未成交和成交客户
+    List<Customer> queryArriveByTime(@Param("page") Integer page,
+                                     @Param("limit") Integer limit,
+                                     @Param("uId") Integer uId,
+                                     @Param("rName") String rName,
+                                     @Param("beginTime") String beginTime,
+                                     @Param("endTime") String endTime);
+
+    //根据用户编号和起始时间查询未成交和成交客户数量
+    Integer getTotalArriveByTime(@Param("uId") Integer uId,
+                                 @Param("rName") String rName,
+                                 @Param("beginTime") String beginTime,
+                                 @Param("endTime") String endTime);
+
+    //根据姓名和电话查询客户
+    List<Customer> queryCByCNameAndCTel(@Param("cName") String cName,
+                                        @Param("cTel") String cTel);
 
 }

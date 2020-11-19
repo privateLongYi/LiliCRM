@@ -37,7 +37,9 @@
       </if>
       AND cl.cl_invalid = 0 AND a.a_status = 3
     </where>
-    limit #{page}, #{limit}
+    <if test="export == 0">
+      limit #{page}, #{limit}
+    </if>
   </select>
 
   <!--根据客户名称查询未成交客户总数-->

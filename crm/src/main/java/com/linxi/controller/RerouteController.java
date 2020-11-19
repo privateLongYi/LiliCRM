@@ -91,8 +91,9 @@ public class RerouteController {
                                     @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit,
                                     @ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
                                     @ApiParam(name = "rName", value = "角色名称", required = true) String rName,
-                                    @ApiParam(name = "cName", value = "客户名称", required = true) String cName){
-        List<Reroute> reroutes = iRerouteService.queryRByCName((page-1)*limit, limit, uId, rName, cName);
+                                    @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
+                                    @ApiParam(name = "export", value = "是否导出", required = true) Integer export){
+        List<Reroute> reroutes = iRerouteService.queryRByCName((page-1)*limit, limit, uId, rName, cName, export);
         Integer total = iRerouteService.getTotalByCName(uId, rName, cName);
         return new DataResult(0, "操作成功", total, reroutes);
     }

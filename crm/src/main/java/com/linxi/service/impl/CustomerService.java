@@ -23,26 +23,26 @@ public class CustomerService implements ICustomerService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryCScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String clProject, Integer clEarnest, String beginTime, String endTime, Integer clUId, String clSource, Integer clTypeId) {
-        return customerMapper.queryCScreen(uId, rName, page, limit, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
+    public List<Customer> queryCScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String clProject, String clEntryFee, String beginTime, String endTime, Integer clUId, String clSource, Integer clTypeId, Integer export) {
+        return customerMapper.queryCScreen(uId, rName, page, limit, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getTotalByScreen(Integer uId, String rName, String cName, String cTel, String clProject, Integer clEarnest, String beginTime, String endTime, Integer cUId, String clSource, Integer clTypeId) {
-        return customerMapper.getTotalByScreen(uId, rName, cName, cTel, clProject, clEarnest, beginTime, endTime, cUId, clSource, clTypeId);
+    public Integer getTotalByScreen(Integer uId, String rName, String cName, String cTel, String clProject, String clEntryFee, String beginTime, String endTime, Integer cUId, String clSource, Integer clTypeId) {
+        return customerMapper.getTotalByScreen(uId, rName, cName, cTel, clProject, clEntryFee, beginTime, endTime, cUId, clSource, clTypeId);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryAACScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String clProject, Integer clEarnest, String beginTime, String endTime, Integer clUId, String clSource, Integer clTypeId) {
-        return customerMapper.queryAACScreen(uId, rName, page, limit, cName, cTel, clProject, clEarnest, beginTime, endTime, clUId, clSource, clTypeId);
+    public List<Customer> queryAACScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String clProject, String clEntryFee, String beginTime, String endTime, Integer clUId, String clSource, Integer clTypeId, Integer export) {
+        return customerMapper.queryAACScreen(uId, rName, page, limit, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getAACTotalByScreen(Integer uId, String rName, String cName, String cTel, String clProject, Integer clEarnest, String beginTime, String endTime, Integer cUId, String clSource, Integer clTypeId) {
-        return customerMapper.getAACTotalByScreen(uId, rName, cName, cTel, clProject, clEarnest, beginTime, endTime, cUId, clSource, clTypeId);
+    public Integer getAACTotalByScreen(Integer uId, String rName, String cName, String cTel, String clProject, String clEntryFee, String beginTime, String endTime, Integer cUId, String clSource, Integer clTypeId) {
+        return customerMapper.getAACTotalByScreen(uId, rName, cName, cTel, clProject, clEntryFee, beginTime, endTime, cUId, clSource, clTypeId);
     }
 
     @Override
@@ -122,14 +122,50 @@ public class CustomerService implements ICustomerService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer queryCByUIdAndTimeAndCTypeId(Integer uId, Integer clTypeId, String beginTime, String endTime) {
-        return customerMapper.queryCByUIdAndTimeAndCTypeId(uId, clTypeId, beginTime, endTime);
+    public Integer queryCByUIdAndTimeAndCTypeId(Integer uId, String rName, Integer cTypeId, String beginTime, String endTime) {
+        return customerMapper.queryCByUIdAndTimeAndCTypeId(uId, rName, cTypeId, beginTime, endTime);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer queryAByUIdAndTime(Integer uId, String beginTime, String endTime) {
-        return customerMapper.queryAByUIdAndTime(uId, beginTime, endTime);
+    public List<Customer> queryCByTime(Integer page, Integer limit, Integer uId, String rName, String beginTime, String endTime) {
+        return customerMapper.queryCByTime(page, limit, uId, rName, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalByTime(Integer uId, String rName, String beginTime, String endTime) {
+        return customerMapper.getTotalByTime(uId, rName, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryAByTime(Integer page, Integer limit, Integer uId, String rName, String beginTime, String endTime) {
+        return customerMapper.queryAByTime(page, limit, uId, rName, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalAByTime(Integer uId, String rName, String beginTime, String endTime) {
+        return customerMapper.getTotalByTime(uId, rName, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryArriveByTime(Integer page, Integer limit, Integer uId, String rName, String beginTime, String endTime) {
+        return customerMapper.queryArriveByTime(page, limit, uId, rName, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalArriveByTime(Integer uId, String rName, String beginTime, String endTime) {
+        return customerMapper.getTotalArriveByTime(uId, rName, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryCByCNameAndCTel(String cName, String cTel) {
+        return customerMapper.queryCByCNameAndCTel(cName, cTel);
     }
 
 }

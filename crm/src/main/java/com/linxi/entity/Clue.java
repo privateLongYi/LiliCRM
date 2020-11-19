@@ -15,9 +15,7 @@ public class Clue implements Serializable {
 
     private String clRemark;
 
-    private Integer clEarnest;
-
-    private String clEarnestDetail;
+    private String clEntryFee;
 
     private Integer clUId;
 
@@ -76,20 +74,12 @@ public class Clue implements Serializable {
         this.clRemark = clRemark;
     }
 
-    public Integer getClEarnest() {
-        return clEarnest;
+    public String getClEntryFee() {
+        return clEntryFee;
     }
 
-    public void setClEarnest(Integer clEarnest) {
-        this.clEarnest = clEarnest;
-    }
-
-    public String getClEarnestDetail() {
-        return clEarnestDetail;
-    }
-
-    public void setClEarnestDetail(String clEarnestDetail) {
-        this.clEarnestDetail = clEarnestDetail;
+    public void setClEntryFee(String clEntryFee) {
+        this.clEntryFee = clEntryFee;
     }
 
     public Integer getClUId() {
@@ -143,14 +133,13 @@ public class Clue implements Serializable {
     public Clue() {
     }
 
-    public Clue(Integer clId, Integer clCId, String clProject, Timestamp clPlaceTime, String clRemark, Integer clEarnest, String clEarnestDetail, Integer clUId, String clSource, String clMessage, Integer clTypeId, Integer clInvalid) {
+    public Clue(Integer clId, Integer clCId, String clProject, Timestamp clPlaceTime, String clRemark, String clEntryFee, Integer clUId, String clSource, String clMessage, Integer clTypeId, Integer clInvalid) {
         this.clId = clId;
         this.clCId = clCId;
         this.clProject = clProject;
         this.clPlaceTime = clPlaceTime;
         this.clRemark = clRemark;
-        this.clEarnest = clEarnest;
-        this.clEarnestDetail = clEarnestDetail;
+        this.clEntryFee = clEntryFee;
         this.clUId = clUId;
         this.clSource = clSource;
         this.clMessage = clMessage;
@@ -166,8 +155,7 @@ public class Clue implements Serializable {
                 ", clProject='" + clProject + '\'' +
                 ", clPlaceTime=" + clPlaceTime +
                 ", clRemark='" + clRemark + '\'' +
-                ", clEarnest=" + clEarnest +
-                ", clEarnestDetail=" + clEarnestDetail +
+                ", clEntryFee=" + clEntryFee +
                 ", clUId=" + clUId +
                 ", clSource='" + clSource + '\'' +
                 ", clMessage='" + clMessage + '\'' +

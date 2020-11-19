@@ -19,7 +19,7 @@
   <!-- 高级筛选加分页查询客户 -->
   <select id="queryCScreen" resultMap="BaseResultMap">
     SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
-    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, cl.cl_earnest_detail AS clEarnestDetail,
+    cl.cl_remark AS clRemark, cl.cl_entry_fee AS clEntryFee,
     u.u_name AS uName, cl.cl_source AS clSource,
     cl.cl_message AS clMessage, ct.ct_type AS cType,
     u.u_id AS clUId FROM customer c
@@ -39,10 +39,10 @@
       <if test="clProject != null and clProject != ''">
         AND cl.cl_project = #{clProject}
       </if>
-      <if test="clEarnest != null and clEarnest == 0">
+      <if test="clEntryFee != null and clEntryFee == '0'">
         AND (cl.cl_earnest = 0 OR cl.cl_earnest IS NULL)
       </if>
-      <if test="clEarnest != null and clEarnest == 1">
+      <if test="clEntryFee != null and clEntryFee == '1'">
         AND cl.cl_earnest != 0
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
@@ -61,7 +61,9 @@
       AND cl.cl_invalid = 0
     </where>
     ORDER BY cl_place_time DESC
-    limit #{page}, #{limit}
+    <if test="export == 0">
+      limit #{page}, #{limit}
+    </if>
   </select>
 
   <!-- 根据筛选条件查询客户总数 -->
@@ -83,10 +85,10 @@
       <if test="clProject != null and clProject != ''">
         AND cl.cl_project = #{clProject}
       </if>
-      <if test="clEarnest != null and clEarnest == 0">
+      <if test="clEntryFee != null and clEntryFee == '0'">
         AND (cl.cl_earnest = 0 OR cl.cl_earnest IS NULL)
       </if>
-      <if test="clEarnest != null and clEarnest == 1">
+      <if test="clEntryFee != null and clEntryFee == '1'">
         AND cl.cl_earnest != 0
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
@@ -109,7 +111,7 @@
   <!-- 高级筛选加分页查询客户 -->
   <select id="queryAACScreen" resultMap="BaseResultMap">
     SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
-    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, cl.cl_earnest_detail AS clEarnestDetail,
+    cl.cl_remark AS clRemark, cl.cl_entry_fee AS clEntryFee,
     u.u_name AS uName, cl.cl_source AS clSource,
     cl.cl_message AS clMessage, ct.ct_type AS cType, a.a_id AS aId, h.h_id AS hId, h.h_name AS hName,
     a.a_time AS aTime, u.u_id AS clUId FROM customer c
@@ -131,10 +133,10 @@
       <if test="clProject != null and clProject != ''">
         AND cl.cl_project = #{clProject}
       </if>
-      <if test="clEarnest != null and clEarnest == 0">
+      <if test="clEntryFee != null and clEntryFee == '0'">
         AND (cl.cl_earnest = 0 OR cl.cl_earnest IS NULL)
       </if>
-      <if test="clEarnest != null and clEarnest == 1">
+      <if test="clEntryFee != null and clEntryFee == '1'">
         AND cl.cl_earnest != 0
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
@@ -153,7 +155,9 @@
       AND cl.cl_invalid = 0 AND a.a_status = 0
     </where>
     ORDER BY a.a_time DESC
-    limit #{page}, #{limit}
+    <if test="export == 0">
+      limit #{page}, #{limit}
+    </if>
   </select>
 
   <!-- 根据筛选条件查询客户总数 -->
@@ -177,10 +181,10 @@
       <if test="clProject != null and clProject != ''">
         AND cl.cl_project = #{clProject}
       </if>
-      <if test="clEarnest != null and clEarnest == 0">
+      <if test="clEntryFee != null and clEntryFee == '0'">
         AND (cl.cl_earnest = 0 OR cl.cl_earnest IS NULL)
       </if>
-      <if test="clEarnest != null and clEarnest == 1">
+      <if test="clEntryFee != null and clEntryFee == '1'">
         AND cl.cl_earnest != 0
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
@@ -219,7 +223,7 @@
   <!-- 根据客户编号查看客户 -->
   <select id="queryCByCId" resultMap="BaseResultMap">
     SELECT c.*, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
-    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, cl_u_id AS clUId,
+    cl.cl_remark AS clRemark, cl.cl_entry_fee AS clEntryFee, cl_u_id AS clUId,
     cl.cl_source AS clSource, cl.cl_message AS clMessage, u.u_name AS uName,
     ct.ct_type AS cType, cl.cl_type_id AS clTypeId FROM customer c
     LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
@@ -231,7 +235,7 @@
   <!-- 根据线索编号查看客户 -->
   <select id="queryCByClId" resultMap="BaseResultMap">
     SELECT c.*, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
-    cl.cl_remark AS clRemark, cl.cl_earnest AS clEarnest, cl_u_id AS clUId,
+    cl.cl_remark AS clRemark, cl.cl_entry_fee AS clEntryFee, cl_u_id AS clUId,
     cl.cl_source AS clSource, cl.cl_message AS clMessage, u.u_name AS uName,
     ct.ct_type AS cType, cl.cl_type_id AS clTypeId FROM customer c
     LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
@@ -359,22 +363,126 @@
     SELECT COUNT(*) FROM customer c
     LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
     <where>
-      cl.cl_u_id = #{uId} AND cl.cl_type_id = #{clTypeId}
-      AND cl.cl_invalid = 0
+      cl.cl_invalid = 0 AND cl.cl_type_id = #{clTypeId}
+      <if test="rName == '销售员'">
+        AND cl.cl_u_id = #{uId}
+      </if>
       <if test="beginTime != null and endTime != null">
         AND <![CDATA[  cl.cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
         AND <![CDATA[  cl.cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
       </if>
     </where>
-    </select>
+  </select>
 
-  <!--根据用户编号和起始时间查询预约数量-->
-  <select id="queryAByUIdAndTime" resultType="Integer">
+  <!--根据用户编号和起始时间查询客户-->
+  <select id="queryCByTime" resultMap="BaseResultMap">
+    SELECT c.c_name, c.c_tel, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
+    cl.cl_entry_fee AS clEntryFee, cl.cl_message AS clMessage FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+    <where>
+      cl.cl_invalid = 0
+      <if test="rName == '销售员'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      <if test="beginTime != null and endTime != null">
+        AND <![CDATA[  cl.cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+        AND <![CDATA[  cl.cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      </if>
+    </where>
+    limit #{page}, #{limit}
+  </select>
+
+  <!--根据用户编号和起始时间查询客户数量-->
+  <select id="getTotalByTime" resultType="Integer">
+    SELECT COUNT(*) FROM customer c
+    LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
+    <where>
+      cl.cl_invalid = 0
+      <if test="rName == '销售员'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      <if test="beginTime != null and endTime != null">
+        AND <![CDATA[  cl.cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+        AND <![CDATA[  cl.cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      </if>
+    </where>
+  </select>
+
+  <!--根据用户编号和起始时间查询预约-->
+  <select id="queryAByTime" resultMap="BaseResultMap">
+    SELECT c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hName, a.a_time AS aTime
+    FROM appointment a
+    INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN customer c ON c.c_id=cl.cl_c_id
+    INNER JOIN hospital h ON h.h_id=a.a_h_id
+    <where>
+      <if test="rName == '销售员'">
+        cl.cl_u_id = #{uId}
+      </if>
+      AND cl.cl_invalid = 0
+      AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  a.a_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    </where>
+    limit #{page}, #{limit}
+  </select>
+
+  <!--根据用户编号和起始时间查询预约客户数量-->
+  <select id="getTotalAByTime" resultType="Integer">
     SELECT COUNT(*) FROM appointment a
     INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
-    WHERE cl.cl_u_id = #{uId}
-    AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-    AND <![CDATA[  a.a_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    INNER JOIN customer c ON c.c_id=cl.cl_c_id
+    INNER JOIN hospital h ON h.h_id=a.a_h_id
+    <where>
+      <if test="rName == '销售员'">
+        cl.cl_u_id = #{uId}
+      </if>
+      AND cl.cl_invalid = 0
+      AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  a.a_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    </where>
+  </select>
+
+  <!--根据姓名和电话查询客户-->
+  <select id="queryCByCNameAndCTel" resultMap="BaseResultMap">
+    SELECT * FROM customer WHERE c_name = #{cName} AND c_tel = #{cTel}
+  </select>
+
+  <!--根据用户编号和起始时间查询预约-->
+  <select id="queryArriveByTime" resultMap="BaseResultMap">
+    SELECT c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hName, a.a_time AS aTime,
+    ct.ct_type AS cType FROM appointment a
+    INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN customer c ON c.c_id=cl.cl_c_id
+    INNER JOIN hospital h ON h.h_id=a.a_h_id
+    INNER JOIN ctype ct ON ct.ct_id=cl.cl_type_id
+    <where>
+      <if test="rName == '销售员'">
+        cl.cl_u_id = #{uId}
+      </if>
+      AND cl.cl_invalid = 0
+      AND (cl.cl_type_id = 6 OR cl.cl_type_id = 7)
+      AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  a.a_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    </where>
+    limit #{page}, #{limit}
+  </select>
+
+  <!--根据用户编号和起始时间查询预约客户数量-->
+  <select id="getTotalArriveByTime" resultType="Integer">
+    SELECT COUNT(*) FROM appointment a
+    INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN customer c ON c.c_id=cl.cl_c_id
+    INNER JOIN hospital h ON h.h_id=a.a_h_id
+    INNER JOIN ctype ct ON ct.ct_id=cl.cl_type_id
+    <where>
+      <if test="rName == '销售员'">
+        cl.cl_u_id = #{uId}
+      </if>
+      AND cl.cl_invalid = 0
+      AND (cl.cl_type_id = 6 OR cl.cl_type_id = 7)
+      AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  a.a_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    </where>
   </select>
 
 </mapper>

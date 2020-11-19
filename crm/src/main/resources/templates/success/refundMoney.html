@@ -12,22 +12,30 @@
     <br />
     <form class="layui-form" lay-filter="form">
         <div class="layui-form-item">
-            <label class="layui-form-label">成交客户名称</label>
+            <label class="layui-form-label">客户姓名</label>
             <div class="layui-input-block">
                 <input type="hidden" id="paySId" th:value="${sId}">
                 <input type="text" class="layui-input" th:value="${cName}" readonly>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">支付金额</label>
+            <label class="layui-form-label">成交退款金额</label>
             <div class="layui-input-block">
-                <input type="hidden" id="wk" th:value="${wk}">
-                <input type="text" class="layui-input" id="paySum"
-                       placeholder="请输入支付金额" autocomplete="off">
+                <input type="hidden" id="sSum" th:value="${sSum}">
+                <input type="text" class="layui-input" id="refundsSum" value="0"
+                       placeholder="请输入成交退款金额" autocomplete="off">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">支付备注</label>
+            <label class="layui-form-label">支付退款金额</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="sPaysum" th:value="${sPaysum}">
+                <input type="text" class="layui-input" id="refundsPaysum"
+                       placeholder="请输入支付退款金额" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
             <div class="layui-input-block">
                 <textarea class="layui-textarea" id="payRemark" autocomplete="off"></textarea>
             </div>
@@ -35,7 +43,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">支付类型</label>
             <div class="layui-input-block">
-                <select id="payTypeId"></select>
+                <input type="hidden" id="payTypeId" value="3">
+                <input type="text" class="layui-input" value="退款" readonly>
             </div>
         </div>
     </form>
@@ -50,20 +59,6 @@
             ,laydate = layui.laydate
             ,$ = layui.jquery
             ,layer = layui.layer;
-
-        //获取所有支付类型
-        $.get("/paytype/queryAllPaytype", function (res){
-            //定义负责人下拉框内容
-            var html = "";
-            $.each(res.data, function (index, item) {
-                if (item.payType != '退款') {
-                    html += "<option value='" + item.payId + "'>" + item.payType + "</option>";
-                }
-            });
-            $("#payTypeId").append(html);
-            //append后必须重新渲染
-            form.render('select');
-        })
 
     });
 

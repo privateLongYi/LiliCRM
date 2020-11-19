@@ -52,78 +52,6 @@
             var uId = sessionStorage.getItem('uId');
             var rName = sessionStorage.getItem('rName');
 
-			/*//筛选条件
-			function screen(name, value, text){
-                    //判断是否是报名时间
-                    var condition;
-                    if(name == "cPlaceTime"){
-                        condition = "#beginTime";
-					}else{
-                        condition = "#"+name;
-					}
-                    //判断是否存在该条件
-                    if($(condition).val() == undefined){
-                        //新增节点
-                        var div = document.createElement("div");
-                        div.setAttribute('id', 'div'+name);
-                        div.setAttribute('class', 'layui-input-inline');
-                        var innerHTML = "<div class='layui-form-mid layui-word-aux'>"+
-                            				"&nbsp;&nbsp;&nbsp;";
-                        if(name == "cName"){
-                            innerHTML += "姓名：";
-                        }else if(name == "cTel"){
-                            innerHTML += "电话：";
-                        }else if(name == "cProject"){
-                            innerHTML += "报名项目：";
-                        }else if(name == "cEarnest"){
-                            innerHTML += "是否交定金：";
-                        }else if(name == "cSource"){
-                            innerHTML += "来源：";
-                        }else if(name == "cUId"){
-                            innerHTML += "负责人：";
-                        }else if(name == "cPlaceTime"){
-                            innerHTML += "报名时间：";
-                        }
-                        if(name == "cPlaceTime"){
-                            var beginTime = value.split(" - ")[0];
-                            var endTime = value.split(" - ")[1];
-                            innerHTML += "<span id='span"+name+"'>"+text+"</span>"+
-                                "<input type='hidden' id='beginTime' value='"+beginTime+"'>"+
-                                "<input type='hidden' id='endTime' value='"+endTime+"'>"+
-                                "</div>"+
-                                "<div class='layui-input-inline' style='cursor: pointer; padding: 10px 0px;'>"+
-                                "<i class='layui-icon layui-icon-close' id='close"+name+"'></i>"+
-                                "</div>";
-                        }else{
-                            innerHTML += "<span id='span"+name+"'>"+text+"</span>"+
-                                "<input type='hidden' id='"+name+"' value='"+value+"'>"+
-                                "</div>"+
-                                "<div class='layui-input-inline' style='cursor: pointer; padding: 12px 0px;'>"+
-                                "<i class='layui-icon layui-icon-close' id='close"+name+"'></i>"+
-                                "</div>";
-                        }
-                        div.innerHTML = innerHTML;
-                        document.getElementById("list").appendChild(div);
-                        //关闭事件（移除节点）
-                        $("#close"+name).click(function(){
-                            list.removeChild(document.getElementById("div"+name));
-                            //根据筛选条件查询客户
-                            tableReload();
-                        });
-                    }else{
-                        //改变已有的值
-                        $("#span"+name).html(text);
-                        if(name != "cPlaceTime"){
-							$("#"+name).val(value);
-                        }else{
-                            var beginTime = value.split(" - ")[0];
-                            var endTime = value.split(" - ")[1];
-                            $("#beginTime").val(beginTime);
-                            $("#endTime").val(endTime);
-						}
-                    }
-                }*/
-
             //表格重载
             function tableReload(){
                 //获取筛选条件
@@ -248,7 +176,7 @@
 						var cName = $(body).find("#cName").val();
 						var cTel = $(body).find("#cTel").val();
 						var cProject = $(body).find("#cProject").val();
-						//给是否交定金赋值
+						//给是否交报名费赋值
 						var cEarnest;
 						var cEarnestText;
 						if($(body).find("[name=cEarnest]")[0].checked){

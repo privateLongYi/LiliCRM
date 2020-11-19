@@ -38,7 +38,10 @@ public interface ClueMapper {
 
     //根据线索编号编辑定金和定金详情
     void editClByClId(@Param("clId") Integer clId,
-                      @Param("clEarnest") Integer clEarnest,
-                      @Param("clEarnestDetail") String clEarnestDetail);
+                      @Param("clEntryFee") String clEntryFee);
+
+    //根据线索编号编辑负责人编号
+    void editClUIdByClId(@Param("clId") Integer clId,
+                         @Param("clUId") Integer clUId);
 
 }

@@ -28,8 +28,8 @@ public class ReferralService implements IReferralService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Referral> queryRByCName(Integer page, Integer limit, Integer uId, String rName, String cName) {
-        return referralMapper.queryRByCName(page, limit, uId, rName, cName);
+    public List<Referral> queryRByCName(Integer page, Integer limit, Integer uId, String rName, String cName, Integer export) {
+        return referralMapper.queryRByCName(page, limit, uId, rName, cName, export);
     }
 
     @Override

@@ -28,6 +28,7 @@
             color: #4f7afd;
         }
         input:hover{cursor: pointer;}
+        a:hover{cursor: pointer;}
         body .demo-class .layui-layer-btn .layui-layer-btn1{
             border-color: #1E9FFF;
             background-color: #1E9FFF;
@@ -38,6 +39,17 @@
             background-color: #1E9FFF;
             color: #fff;
         }
+        body .font-topdiv{
+            font-size: 10px;
+            color: #969799;
+        }
+        body .font-div{
+            font-size: 28px;
+        }
+        body .font-bottomdiv{
+            font-size: 12px;
+            color: #666;
+        }
     </style>
 </head>
 <body bgcolor="#F0F0F0" style='overflow:scroll;overflow-x:hidden'>
@@ -46,27 +58,63 @@
     <div class="layui-fluid">
 
         <!--快捷按钮-->
-        <div class="layui-card layui-row" style="height: 100px;">
+        <div class="layui-card layui-row" style="height: 100px;" id="admin">
+            <div class="layui-col-md1">&nbsp;</div>
+            <div class="layui-col-md2" align="center" style="margin-top: 5px;">
+                <div name="insert" style="width: 65px; height: 65px; cursor: pointer;">
+                    <img height="65px" width="65px" th:src="@{/images/insert.png}">
+                </div>
+                新增客户
+            </div>
+            <div class="layui-col-md2" align="center" style="margin-top: 5px;">
+                <div name="appoint" style="width: 65px; height: 65px; cursor: pointer;">
+                    <img height="65px" width="65px" th:src="@{/images/appoint.png}">
+                </div>
+                新增预约
+            </div>
+            <div class="layui-col-md2" align="center" style="margin-top: 5px;">
+                <div name="success" style="width: 65px; height: 65px; cursor: pointer;">
+                    <img height="65px" width="65px" th:src="@{/images/success.png}">
+                </div>
+                新增成交
+            </div>
+            <div class="layui-col-md2" align="center" style="margin-top: 5px;">
+                <div name="refund" style="width: 65px; height: 65px; cursor: pointer;">
+                    <img height="65px" width="65px" th:src="@{/images/refund.png}">
+                </div>
+                客户退款
+            </div>
+            <div class="layui-col-md2" align="center" style="margin-top: 5px;">
+                <div id="allot" style="width: 65px; height: 65px; cursor: pointer;">
+                    <img height="65px" width="65px" th:src="@{/images/refund.png}">
+                </div>
+                分配客户
+            </div>
+            <div class="layui-col-md1">&nbsp;</div>
+        </div>
+
+        <!--快捷按钮-->
+        <div class="layui-card layui-row" style="height: 100px;" id="sale">
             <div class="layui-col-md3" align="center" style="margin-top: 5px;">
-                <div id="insert" style="width: 65px; height: 65px; cursor: pointer;">
+                <div name="insert" style="width: 65px; height: 65px; cursor: pointer;">
                     <img height="65px" width="65px" th:src="@{/images/insert.png}">
                 </div>
                 新增客户
             </div>
             <div class="layui-col-md3" align="center" style="margin-top: 5px;">
-                <div id="appoint" style="width: 65px; height: 65px; cursor: pointer;">
+                <div name="appoint" style="width: 65px; height: 65px; cursor: pointer;">
                     <img height="65px" width="65px" th:src="@{/images/appoint.png}">
                 </div>
                 新增预约
             </div>
             <div class="layui-col-md3" align="center" style="margin-top: 5px;">
-                <div id="success" style="width: 65px; height: 65px; cursor: pointer;">
+                <div name="success" style="width: 65px; height: 65px; cursor: pointer;">
                     <img height="65px" width="65px" th:src="@{/images/success.png}">
                 </div>
                 新增成交
             </div>
             <div class="layui-col-md3" align="center" style="margin-top: 5px;">
-                <div id="refund" style="width: 65px; height: 65px; cursor: pointer;">
+                <div name="refund" style="width: 65px; height: 65px; cursor: pointer;">
                     <img height="65px" width="65px" th:src="@{/images/refund.png}">
                 </div>
                 客户退款
@@ -86,7 +134,77 @@
                 </div>
             </div>
             <div class="layui-card-body layui-row">
-                <!--新增-->
+                <div class="layui-row" style="height: 221.25px;">
+                    <div class="layui-col-md6">
+                        <div style="margin-top: 15px; margin-bottom: 15px; margin-left: 25px; border-right: solid 1px #DDDDEE; height: 206.25px;">
+                            <div class="layui-row">
+                                <div class="layui-col-md6" style="height: 75px;">
+                                    <div><span class="font-topdiv">新增客户数</span></div>
+                                    <div><a href="javascript:insert();"><span class="font-div" id="insert"></span></a></div>
+                                    <div><span class="font-bottomdiv"></span></div>
+                                </div>
+                                <div class="layui-col-md6" style="height: 75px;">
+                                    <div><span  class="font-topdiv">预约客户数</span></div>
+                                    <div><a href="javascript:appoint();"><span class="font-div" id="appoint"></span></a></div>
+                                    <div><span class="font-bottomdiv"></span></div>
+                                </div>
+                                <div class="layui-col-md6" style="height: 75px; margin-top: 20px;">
+                                    <div><span class="font-topdiv">成交客户数</span></div>
+                                    <div><a href="javascript:success();"><span class="font-div" id="success"></span></a></div>
+                                    <div><span class="font-bottomdiv"></span></div>
+                                </div>
+                                <div class="layui-col-md6" style="height: 75px; margin-top: 20px;">
+                                    <div><span class="font-topdiv">客户成交率</span></div>
+                                    <div><a href="javascript:arrive();"><span class="font-div" id="percent"></span></a></div>
+                                    <div><span class="font-bottomdiv"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6">
+                        <div style="margin-top: 15px; margin-bottom: 15px; margin-left: 25px; border-right: solid 1px #DDDDEE; height: 206.25px;">
+                            <div class="layui-row">
+                                <div class="layui-col-md6" style="height: 75px;">
+                                    <div><span class="font-topdiv">客户成交金额</span></div>
+                                    <div><a href="javascript:success();"><span class="font-div" id="successMoney"></span></a></div>
+                                    <div><span class="font-bottomdiv"></span></div>
+                                </div>
+                                <div class="layui-col-md6" style="height: 75px;">
+                                    <div><span class="font-topdiv">平均客单价</span></div>
+                                    <div><a href="javascript:success();"><span class="font-div" id="acup"></span></a></div>
+                                    <div><span class="font-bottomdiv"></span></div>
+                                </div>
+                                <div class="layui-col-md6" style="height: 75px; margin-top: 20px;">
+                                    <div><span class="font-topdiv">客户实收金额</span></div>
+                                    <div><a href="javascript:success();"><span class="font-div" id="payMoney"></span></a></div>
+                                    <div><span class="font-bottomdiv"></span></div>
+                                </div>
+                                <div class="layui-col-md6" style="height: 75px; margin-top: 20px;">
+                                    <div><span class="font-topdiv">客户待收金额</span></div>
+                                    <div><a href="javascript:success();"><span class="font-div" id="awaitMoney"></span></a></div>
+                                    <div><span class="font-bottomdiv"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--销售简报-->
+        <!--<div class="layui-card">
+            <div class="layui-card-header">
+                <span style="font-size: 20px; font-weight: normal;">销售简报</span>
+                <div style="float: right; margin-left: -20px; z-index: 99;" class="layui-inline">
+                    <i class="layui-icon layui-icon-date" style="font-size: 20px;"></i>
+                </div>
+                <div style="float: right; margin-top: 7px;" class="layui-inline">
+                    <input class="layui-input" id="bulletin" autocomplete="off" readonly
+                           style="height: 28px; width: 170px; font-size: 10px;">
+                </div>
+            </div>
+            <div class="layui-card-body layui-row">
+                &lt;!&ndash;新增&ndash;&gt;
                 <div class="layui-col-md4">
                     <span class="indexFont">新增</span>
                     <div class="layui-row">
@@ -108,7 +226,7 @@
                         </div>
                     </div>
                 </div>
-                <!--成交-->
+                &lt;!&ndash;成交&ndash;&gt;
                 <div class="layui-col-md4">
                     <span style="font-size: 20px; font-weight: normal;">成交</span>
                     <div class="layui-row">
@@ -127,7 +245,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <!--分块功能区-->
         <div class="layui-row layui-col-space10" style="background-color:#F0F0F0 ;">
@@ -213,133 +331,12 @@
     var uId = sessionStorage.getItem('uId');
     var rName = sessionStorage.getItem('rName');
 
-    //新增成交
-    $("#success").click(function () {
-        layer.open({
-            type: 2, //层类型，iframe
-            title: '新增成交',
-            content: ['/indexGoSuccessSave'],
-            area: ['500px', '450px'],
-            resize: false,
-            btn: '确定',
-            btn1: function (index, layero) {
-                var body = layer.getChildFrame('body', index);
-                //获取值
-                var cId = $(body).find("#cId").val();
-                var clId = $(body).find("#clId").val();
-                var sAId = $(body).find("#sAId").val();
-                var sHId = $(body).find("#sHId").val();
-                var sMessage = $(body).find("#sMessage").val();
-                var sSum = $(body).find("#sSum").val();
-                var sPaysum = $(body).find("#sPaysum").val();
-                var sRemark = $(body).find("#sRemark").val();
-                if (sAId != '' && sHId != '' && sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '') {
-                    //声明格式是否正确
-                    var verify = true;
-                    //验证成交金额
-                    if (isNaN(sSum)){
-                        layer.msg("成交金额格式错误");
-                        verify = false;
-                        return;
-                    }
-                    if(sSum <= 0){
-                        layer.msg("成交金额不能小于等于零");
-                        verify = false;
-                        return;
-                    }
-                    //验证支付金额
-                    if (isNaN(sPaysum)){
-                        layer.msg("支付金额格式错误");
-                        verify = false;
-                        return;
-                    }
-                    if(sPaysum <= 0){
-                        layer.msg("成交金额不能小于等于零");
-                        verify = false;
-                        return;
-                    } else {
-                        if(parseFloat(sPaysum) > parseFloat(sSum)){
-                            layer.msg("支付金额不能大于成交金额");
-                            verify = false;
-                            return;
-                        }
-                    }
-                    if(verify) {
-                        $.post("/success/saveSuccess", {
-                                uId: uId,
-                                cId: cId,
-                                clId: clId,
-                                sAId: sAId,
-                                clId: clId,
-                                sAId: sAId,
-                                sHId: sHId,
-                                sMessage: sMessage,
-                                sSum: sSum.trim(),
-                                sPaysum: sPaysum.trim(),
-                                sRemark: sRemark
-                            },
-                            function (obj) {
-                                layer.msg(obj.msg, {time: 500}, function () {
-                                    layer.close(index);
-                                    location.reload();
-                                });
-                            }
-                        );
-                    }
-                } else {
-                    layer.msg('请填写带星号的必填项');
-                }
-            },
-            cancel: function(index, layero){
-                layer.close(index);
-            }
-        });
-    });
-
-    //客户退款
-    $("#refund").click(function () {
-        layer.open({
-            type: 2, //层类型，iframe
-            title: '客户退款',
-            content: ['/indexGoPayrecordSave'],
-            area: ['500px', '450px'],
-            resize: false,
-            btn: '确定',
-            btn1: function (index, layero) {
-                var body = layer.getChildFrame('body', index);
-                //获取值
-                var paySId = $(body).find("#paySId").val();
-                var paySum = $(body).find("#paySum").val();
-                var payTypeId = $(body).find("#payTypeId").val();
-                if (paySId != '' && paySum != '' && paySum.trim() != '') {
-                    //声明格式是否正确
-                    var verify = true;
-                    //验证成交金额
-                    if(paySum <= 0){
-                        layer.msg("退款金额不能小于等于零");
-                        verify = false;
-                        return;
-                    }
-                    if(verify) {
-                        $.post("/payrecord/savePayrecord",
-                            {uId: uId, paySId: paySId, paySum: paySum, payTypeId: payTypeId},
-                            function (obj) {
-                                layer.msg(obj.msg, {time: 500}, function () {
-                                    layer.close(index);
-                                    location.reload();
-                                });
-                            }
-                        );
-                    }
-                } else {
-                    layer.msg('请填写带星号的必填项');
-                }
-            },
-            cancel: function(index, layero){
-                layer.close(index);
-            }
-        });
-    });
+    //隐藏快捷
+    if (rName == '销售员'){
+        $("#admin").hide();
+    } else {
+        $("#sale").hide();
+    }
 
     //保存客户
     function saveCustomer(index) {
@@ -357,7 +354,7 @@
         var clProject = $(body).find("#clProject").val();
         var clRemark = $(body).find("#clRemark").val();
         var clMessage = $(body).find("#clMessage").val();
-        var clEarnest = $(body).find("#clEarnest").val();
+        var clEntryFee = $(body).find("#clEntryFee").val();
         var clUId = $(body).find("#clUId").val();
         var clSource = $(body).find("#clSource").val();
         var clTypeId = $(body).find("#clTypeId").val();
@@ -366,32 +363,24 @@
             //声明格式是否正确
             var verify = true;
             //验证姓名格式
-            if (cName.length > 6) {
-                layer.msg("姓名长度不能大于6位");
+            if(cName.length > 20){
+                layer.msg("姓名长度不能大于20位");
                 verify = false;
                 return;
             }
             //验证年龄格式
-            if (cAge != '') {
-                if (cAge <= 0 || cAge >= 150) {
-                    layer.msg("年龄必须大于0小于150");
+            if(cAge != ''){
+                if(isNaN(cAge) || cAge <= 0 || cAge >= 150){
+                    layer.msg("年龄必须是大于0小于150的数值");
                     verify = false;
                     return;
                 }
             }
             //验证电话格式
-            if (!(/^1[3456789]\d{9}$/.test(cTel))) {
+            if(!(/^1[3456789]\d{9}$/.test(cTel))){
                 layer.msg("手机号码格式错误");
                 verify = false;
                 return;
-            }
-            //验证定金格式
-            if (clEarnest != '') {
-                if (clEarnest < 0) {
-                    layer.msg("定金不能为负数");
-                    verify = false;
-                    return;
-                }
             }
             if (verify) {
                 $.ajax({
@@ -407,7 +396,7 @@
                         clProject: clProject,
                         clMessage: clMessage,
                         clRemark: clRemark,
-                        clEarnest: clEarnest,
+                        clEntryFee: clEntryFee,
                         clUId: clUId,
                         clSource: clSource,
                         clTypeId: clTypeId,
@@ -450,7 +439,7 @@
     }
 
     //新增客户
-    $("#insert").click(function () {
+    $("[name=insert]").click(function () {
         layer.open({
             type: 2, //层类型，iframe
             title: '新增客户',
@@ -509,24 +498,14 @@
                                                     //声明格式是否正确
                                                     var verify = true;
                                                     //验证成交金额
-                                                    if (isNaN(sSum)){
-                                                        layer.msg("成交金额格式错误");
-                                                        verify = false;
-                                                        return;
-                                                    }
-                                                    if(sSum <= 0){
-                                                        layer.msg("成交金额不能小于等于零");
+                                                    if (isNaN(sSum) || sSum <= 0){
+                                                        layer.msg("成交金额必须是大于零的数值");
                                                         verify = false;
                                                         return;
                                                     }
                                                     //验证支付金额
-                                                    if (isNaN(sPaysum)){
-                                                        layer.msg("支付金额格式错误");
-                                                        verify = false;
-                                                        return;
-                                                    }
-                                                    if(sPaysum <= 0){
-                                                        layer.msg("成交金额不能小于等于零");
+                                                    if (isNaN(sPaysum) || sPaysum <= 0){
+                                                        layer.msg("支付金额必须是大于零的数值");
                                                         verify = false;
                                                         return;
                                                     } else {
@@ -593,7 +572,7 @@
     });
     
     //新增预约
-    $("#appoint").click(function () {
+    $("[name=appoint]").click(function () {
         layer.open({
             type: 2, //层类型，iframe
             title: '新增预约客户',
@@ -635,24 +614,14 @@
                                     //声明格式是否正确
                                     var verify = true;
                                     //验证成交金额
-                                    if (isNaN(sSum)) {
-                                        layer.msg("成交金额格式错误");
-                                        verify = false;
-                                        return;
-                                    }
-                                    if (sSum <= 0) {
-                                        layer.msg("成交金额不能小于等于零");
+                                    if (isNaN(sSum) || sSum <= 0) {
+                                        layer.msg("成交金额必须是大于零的数值");
                                         verify = false;
                                         return;
                                     }
                                     //验证支付金额
-                                    if (isNaN(sPaysum)) {
-                                        layer.msg("支付金额格式错误");
-                                        verify = false;
-                                        return;
-                                    }
-                                    if (sPaysum <= 0) {
-                                        layer.msg("成交金额不能小于等于零");
+                                    if (isNaN(sPaysum) || sPaysum <= 0) {
+                                        layer.msg("支付金额必须是大于零的数值");
                                         verify = false;
                                         return;
                                     } else {
@@ -707,6 +676,169 @@
         });
     });
 
+    //新增成交
+    $("[name=success]").click(function () {
+        layer.open({
+            type: 2, //层类型，iframe
+            title: '新增成交',
+            content: ['/indexGoSuccessSave'],
+            area: ['500px', '450px'],
+            resize: false,
+            btn: '确定',
+            btn1: function (index, layero) {
+                var body = layer.getChildFrame('body', index);
+                //获取值
+                var cId = $(body).find("#cId").val();
+                var clId = $(body).find("#clId").val();
+                var sAId = $(body).find("#sAId").val();
+                var sHId = $(body).find("#sHId").val();
+                var sMessage = $(body).find("#sMessage").val();
+                var sSum = $(body).find("#sSum").val();
+                var sPaysum = $(body).find("#sPaysum").val();
+                var sRemark = $(body).find("#sRemark").val();
+                if (sAId != '' && sHId != '' && sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '') {
+                    //声明格式是否正确
+                    var verify = true;
+                    //验证成交金额
+                    if (isNaN(sSum) || sSum <= 0){
+                        layer.msg("成交金额必须是大于零的数值");
+                        verify = false;
+                        return;
+                    }
+                    //验证支付金额
+                    if (isNaN(sPaysum) || sPaysum <= 0){
+                        layer.msg("支付金额必须是大于零的数值");
+                        verify = false;
+                        return;
+                    } else {
+                        if(parseFloat(sPaysum) > parseFloat(sSum)){
+                            layer.msg("支付金额不能大于成交金额");
+                            verify = false;
+                            return;
+                        }
+                    }
+                    if(verify) {
+                        $.post("/success/saveSuccess", {
+                                uId: uId,
+                                cId: cId,
+                                clId: clId,
+                                sAId: sAId,
+                                clId: clId,
+                                sAId: sAId,
+                                sHId: sHId,
+                                sMessage: sMessage,
+                                sSum: sSum.trim(),
+                                sPaysum: sPaysum.trim(),
+                                sRemark: sRemark
+                            },
+                            function (obj) {
+                                layer.msg(obj.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    location.reload();
+                                });
+                            }
+                        );
+                    }
+                } else {
+                    layer.msg('请填写带星号的必填项');
+                }
+            },
+            cancel: function(index, layero){
+                layer.close(index);
+            }
+        });
+    });
+
+    //客户退款
+    $("[name=refund]").click(function () {
+        layer.open({
+            type: 2, //层类型，iframe
+            title: '客户退款',
+            content: ['/indexGoPayrecordSave'],
+            area: ['500px', '450px'],
+            resize: false,
+            btn: '确定',
+            btn1: function (index, layero) {
+                var body = layer.getChildFrame('body', index);
+                //获取值
+                var paySId = $(body).find("#paySId").val();
+                var sSum = $(body).find("#sSum").val();
+                var sPaysum = $(body).find("#sPaysum").val();
+                var refundsSum = $(body).find("#refundsSum").val();
+                var payRemark = $(body).find("#payRemark").val();
+                var refundsPaysum = $(body).find("#refundsPaysum").val();
+                var payTypeId = $(body).find("#payTypeId").val();
+                if (paySId != '' && refundsSum != '' && refundsSum.trim() != '' && refundsPaysum != '' && refundsPaysum.trim() != '') {
+                    //声明格式是否正确
+                    var verify = true;
+                    //验证成交退款金额
+                    if(!isNaN(refundsSum) || refundsSum >= 0){
+                        if (parseFloat(refundsSum) > parseFloat(sSum)){
+                            layer.msg("成交退款金额不能大于成交金额，成交金额为" + sSum);
+                            verify = false;
+                            return;
+                        } else {
+                            refundsSum = eval(sSum + "-" + refundsSum);
+                        }
+                    } else {
+                        layer.msg("成交退款金额必须是大于等于零的数值");
+                        verify = false;
+                        return;
+                    }
+                    //退款金额
+                    var paySum;
+                    //验证支付退款金额
+                    if(!isNaN(refundsPaysum) || refundsPaysum >= 0){
+                        if (parseFloat(refundsPaysum) > parseFloat(sPaysum)){
+                            layer.msg("成交退款金额不能大于成交金额，成交金额为" + sPaysum);
+                            verify = false;
+                            return;
+                        } else {
+                            paySum = refundsPaysum;
+                            refundsPaysum = eval(sPaysum + "-" + refundsPaysum);
+                        }
+                    } else {
+                        layer.msg("成交退款金额必须是大于等于零的数值");
+                        verify = false;
+                        return;
+                    }
+                    if(verify) {
+                        $.get("/success/refundMoney",
+                            {uId: uId, paySId: paySId, refundsSum: refundsSum,
+                                refundsPaysum:refundsPaysum, payRemark:payRemark,
+                                payTypeId: payTypeId, paySum:paySum},
+                            function (obj) {
+                                layer.msg(obj.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    location.reload();
+                                });
+                            }
+                        );
+                    }
+                } else {
+                    layer.msg('请填写带星号的必填项');
+                }
+            },
+            cancel: function(index, layero){
+                layer.close(index);
+            }
+        });
+    });
+
+    //分配客户
+    $("#allot").click(function () {
+        layer.open({
+            type: 2, //层类型，iframe
+            title: '分配客户',
+            content: ['/indexGoEditClue'],
+            area: ['1000px', '500px'],
+            resize: false,
+            cancel: function(index, layero){
+                layer.close(index);
+            }
+        });
+    });
+
     //给筛选条件赋值（默认本月）
     var date = new Date();
     var begin = date.getFullYear()+"-"+eval(date.getMonth()+1)+"-01";
@@ -724,72 +856,39 @@
 
     //销售简报加载事件
     function bulletin(begin, end) {
-        //查询待联系总数并赋值
-        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
-            {uId:uId, ctType:'待联系', beginTime:begin, endTime:end},
+        //销售简报查询并赋值
+        $.get('/customer/bulletin', {uId:uId, rName:rName, beginTime:begin, endTime:end},
             function (data) {
-                $("#addAwaitContact").html(data.data);
-            }
-        );
-        //查询待预约总数并赋值
-        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
-            {uId:uId, ctType:'待预约', beginTime:begin, endTime:end},
-            function (data) {
-                $("#addAwaitAppoint").html(data.data);
-            }
-        );
-        //查询待待到店总数并赋值
-        $.get('/customer/queryAByUIdAndTime',
-            {uId:uId, beginTime:begin, endTime:end},
-            function (data) {
-                $("#addAppoint").html(data.data);
-            }
-        );
-        //查询成交总数并赋值
-        $.get('/success/querySByUIdAndTime',
-            {uId:uId, beginTime:begin, endTime:end},
-            function (data) {
-                $("#addSuccess").html(data.data);
-                $("#total").html(data.data);
-            }
-        );
-        //查询成交总金额并赋值
-        $.get('/success/querySSumByUIdAndTime',
-            {uId:uId, beginTime:begin, endTime:end},
-            function (data) {
-                $("#totalMoney").html(data.data);
-            }
-        );
-        //查询成交收款总金额并赋值
-        $.get('/success/querySPaysumByUIdAndTime',
-            {uId:uId, beginTime:begin, endTime:end},
-            function (data) {
-                $("#payMoney").html(data.data);
+                //新增客户数
+                $("#insert").html(data.insert);
+                //预约客户数
+                $("#appoint").html(data.appoint);
+                //成交客户数
+                $("#success").html(data.success);
+                //客户成交率
+                $("#percent").html(data.percent);
+                //客户成交金额
+                $("#successMoney").html(data.successMoney);
+                //平均客单价
+                $("#acup").html(data.acup);
+                //客户实收金额
+                $("#payMoney").html(data.payMoney);
+                //客户待收金额
+                $("#awaitMoney").html(data.awaitMoney);
             }
         );
     }
 
     //待办客资加载事件
     function await() {
-        //查询待联系总数并赋值
-        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
-            {uId:uId, ctType:'待联系'},
+        $.get('/customer/await', {uId:uId, rName:rName},
             function (data) {
-                $("#awaitContact").html(data.data);
-            }
-        );
-        //查询待预约总数并赋值
-        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
-            {uId:uId, ctType:'待预约'},
-            function (data) {
-                $("#awaitAppoint").html(data.data);
-            }
-        );
-        //查询待待到店总数并赋值
-        $.get('/customer/queryCByUIdAndTimeAndCTypeId',
-            {uId:uId, ctType:'待到店'},
-            function (data) {
-                $("#awaitArrive").html(data.data);
+                //待联系客户
+                $("#awaitContact").html(data.awaitContact);
+                //待预约客户
+                $("#awaitAppoint").html(data.awaitAppoint);
+                //待到店客户
+                $("#awaitArrive").html(data.awaitArrive);
             }
         );
     }
@@ -826,61 +925,73 @@
         ,btns: ['confirm'] //右下角显示按钮
     });
 
-    /*
-    //根据用户编号和状态查询待联系客户总条数
-    $.get("/customer/getTotalCByUIdAndCTypeId?uId="+uId+"&ctType=待联系", function (data){
-        //赋值
-        $("#awaitcontact").html(data);
-    });
+    //查询起止时间内新增客户
+    function insert() {
+        var value = $("#bulletin").val();
+        var begin = value.substring(0, 10);
+        var end = value.substring(13, 23);
+        layer.open({
+            type: 2, //层类型，iframe
+            title: '新增客户列表',
+            content: ['/indexGoSaveCList?beginTime='+begin+'&endTime='+end],
+            area: ['1000px', '550px'],
+            resize: false,
+            cancel: function(index, layero){
+                layer.close(index);
+            }
+        });
+    }
 
-    //根据用户编号和状态查询待预约客户总条数
-    $.get("/customer/getTotalCByUIdAndCTypeId?uId="+uId+"&ctType=待预约", function (data){
-        //赋值
-        $("#awaitappoint").html(data);
-    });
+    //查询起止时间内预约客户
+    function appoint() {
+        var value = $("#bulletin").val();
+        var begin = value.substring(0, 10);
+        var end = value.substring(13, 23);
+        layer.open({
+            type: 2, //层类型，iframe
+            title: '预约客户列表',
+            content: ['/indexGoSaveAList?beginTime='+begin+'&endTime='+end],
+            area: ['1000px', '550px'],
+            resize: false,
+            cancel: function(index, layero){
+                layer.close(index);
+            }
+        });
+    }
 
-    //根据用户编号和状态查询待预约客户总条数
-    $.get("/customer/getTotalCByUIdAndCTypeId?uId="+uId+"&ctType=待到店", function (data){
-        //赋值
-        $("#awaitarrive").html(data);
-    });
+    //查询起止时间内成交客户
+    function success() {
+        var value = $("#bulletin").val();
+        var begin = value.substring(0, 10);
+        var end = value.substring(13, 23);
+        layer.open({
+            type: 2, //层类型，iframe
+            title: '成交客户列表',
+            content: ['/indexGoSaveSList?beginTime='+begin+'&endTime='+end],
+            area: ['1000px', '550px'],
+            resize: false,
+            cancel: function(index, layero){
+                layer.close(index);
+            }
+        });
+    }
 
-    //根据用户编号和状态查询未成交客户总条数
-    $.get("/customer/getTotalCByUIdAndCTypeId?uId="+uId+"&ctType=未成交", function (data){
-        //赋值
-        $("#fail").html(data);
-    });
-
-    //根据用户编号和状态查询成交客户总条数
-    $.get("/customer/getTotalCByUIdAndCTypeId?uId="+uId+"&ctType=成交", function (data){
-        //赋值
-        $("#success").html(data);
-    });
-
-    //获取客户到店率
-    $.get("/statistics/arrivePercent?uId="+uId, function (data) {
-        //赋值
-        $(".layui-bg-red").attr("lay-percent", data);
-        element.init();
-        element.progress('arrive', data);
-    });
-
-    //获取到店成交率
-    $.get("/statistics/successPercent?uId="+uId, function (data) {
-        //赋值
-        $(".layui-bg-green").attr("lay-percent", data);
-        element.init();
-        element.progress('success', data);
-    });
-
-    //获取目标业绩完成度
-    $.get("/statistics/performance?uId="+uId, function (data) {
-        //赋值
-        $(".layui-bg-blue").attr("lay-percent", data);
-        element.init();
-        element.progress('performance', data);
-    });
-*/
+    //查询起止时间内未成交和成交客户
+    function arrive() {
+        var value = $("#bulletin").val();
+        var begin = value.substring(0, 10);
+        var end = value.substring(13, 23);
+        layer.open({
+            type: 2, //层类型，iframe
+            title: '已到店客户列表',
+            content: ['/indexGoSaveArriveList?beginTime='+begin+'&endTime='+end],
+            area: ['1000px', '550px'],
+            resize: false,
+            cancel: function(index, layero){
+                layer.close(index);
+            }
+        });
+    }
 
 </script>
 

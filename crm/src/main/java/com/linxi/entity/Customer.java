@@ -67,14 +67,9 @@ public class Customer implements Serializable {
     private String clRemark;
 
     /**
-     * 定金
+     * 报名费
      */
-    private Integer clEarnest;
-
-    /**
-     * 定金
-     */
-    private String clEarnestDetail;
+    private String clEntryFee;
 
     /**
      * 负责人编号
@@ -296,20 +291,12 @@ public class Customer implements Serializable {
         this.clRemark = clRemark;
     }
 
-    public Integer getClEarnest() {
-        return clEarnest;
+    public String getClEntryFee() {
+        return clEntryFee;
     }
 
-    public void setClEarnest(Integer clEarnest) {
-        this.clEarnest = clEarnest;
-    }
-
-    public String getClEarnestDetail() {
-        return clEarnestDetail;
-    }
-
-    public void setClEarnestDetail(String clEarnestDetail) {
-        this.clEarnestDetail = clEarnestDetail;
+    public void setClEntryFee(String clEntryFee) {
+        this.clEntryFee = clEntryFee;
     }
 
     public Integer getClUId() {

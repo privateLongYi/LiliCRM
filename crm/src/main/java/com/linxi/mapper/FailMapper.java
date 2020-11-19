@@ -15,7 +15,8 @@ public interface FailMapper {
                                 @Param("limit") Integer limit,
                                 @Param("uId") Integer uId,
                                 @Param("rName") String rName,
-                                @Param("cName") String cName);
+                                @Param("cName") String cName,
+                                @Param("export") Integer export);
 
     //根据客户名称查询未成交客户总数
     Integer getTotalByCName(@Param("uId") Integer uId,

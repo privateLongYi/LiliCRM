@@ -139,7 +139,7 @@ public class SuccessController {
             //查询最大的成交编号
             Integer sId = iSuccessService.queryMaxSId();
             //查询支付类型为退款的编号
-            Integer payId = iPaytypeService.queryPByPayType("退款");
+            Integer payId = iPaytypeService.queryPByPayType("首次缴费");
             //新增支付记录
             Payrecord payrecord = new Payrecord(null, sId, sPaysum, null, null, payId);
             iPayrecordService.savePayrecord(payrecord);
@@ -147,16 +147,22 @@ public class SuccessController {
         return new DataResult(0, "新增成功");
     }
 
-    @GetMapping("querySByCName")
-    @ApiOperation(value = "根据客户名称查询成交客户")
+    @GetMapping("querySByScreen")
+    @ApiOperation(value = "根据筛选条件查询成交客户")
     @ResponseBody
-    public DataResult querySByCName(@ApiParam(name = "page", value = "页码", required = true) Integer page,
-                                       @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit,
-                                       @ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
-                                       @ApiParam(name = "rName", value = "角色名称", required = true) String rName,
-                                       @ApiParam(name = "cName", value = "客户名称", required = true) String cName){
-        List<Success> fails = iSuccessService.querySByCName((page-1)*limit, limit, uId, rName, cName);
-        Integer total = iSuccessService.getTotalByCName(uId, rName, cName);
+    public DataResult querySByScreen(@ApiParam(name = "page", value = "页码", required = true) Integer page,
+                                     @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit,
+                                     @ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
+                                     @ApiParam(name = "rName", value = "角色名称", required = true) String rName,
+                                     @ApiParam(name = "cName", value = "客户名字", required = true) String cName,
+                                     @ApiParam(name = "cTel", value = "客户电话", required = true) String cTel,
+                                     @ApiParam(name = "sHId", value = "成交门诊编号", required = true) Integer sHId,
+                                     @ApiParam(name = "queryUId", value = "用户编号", required = true) Integer queryUId,
+                                     @ApiParam(name = "beginTime", value = "开始时间", required = true) String beginTime,
+                                     @ApiParam(name = "endTime", value = "结束时间", required = true) String endTime,
+                                     @ApiParam(name = "export", value = "是否导出", required = true) Integer export){
+        List<Success> fails = iSuccessService.querySByScreen((page-1)*limit, limit, uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, export);
+        Integer total = iSuccessService.getTotalByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime);
         return new DataResult(0, "操作成功", total, fails);
     }
 
@@ -182,44 +188,6 @@ public class SuccessController {
         map.put("data", successes);
         map.put("count", total);
         return map;
-    }
-
-    @GetMapping("querySByUIdAndTime")
-    @ApiOperation(value = "根据用户编号和起止时间查询成交总数")
-    @ResponseBody
-    public DataResult querySByUIdAndTime(@ApiParam(value = "用户编号", required = true) Integer uId,
-                                         @ApiParam(value = "开始时间", required = true) String beginTime,
-                                         @ApiParam(value = "结束时间", required = true) String endTime){
-        Integer total = iSuccessService.querySByUIdAndTime(uId, beginTime, endTime);
-        return new DataResult(0, "操作成功", 0, total);
-    }
-
-    @GetMapping("querySSumByUIdAndTime")
-    @ApiOperation(value = "根据用户编号和起止时间查询成交总金额")
-    @ResponseBody
-    public DataResult querySSumByUIdAndTime(@ApiParam(value = "用户编号", required = true) Integer uId,
-                                            @ApiParam(value = "开始时间", required = true) String beginTime,
-                                            @ApiParam(value = "结束时间", required = true) String endTime){
-        Integer total = iSuccessService.querySSumByUIdAndTime(uId, beginTime, endTime);
-        if (total == null){
-            return new DataResult(0, "操作成功", 0, 0);
-        } else {
-            return new DataResult(0, "操作成功", 0, total);
-        }
-    }
-
-    @GetMapping("querySPaysumByUIdAndTime")
-    @ApiOperation(value = "根据用户编号和起止时间查询收款总金额")
-    @ResponseBody
-    public DataResult querySPaysumByUIdAndTime(@ApiParam(value = "用户编号", required = true) Integer uId,
-                                               @ApiParam(value = "开始时间", required = true) String beginTime,
-                                               @ApiParam(value = "结束时间", required = true) String endTime){
-        Integer total = iSuccessService.querySPaysumByUIdAndTime(uId, beginTime, endTime);
-        if (total == null){
-            return new DataResult(0, "操作成功", 0, 0);
-        } else {
-            return new DataResult(0, "操作成功", 0, total);
-        }
     }
 
     @GetMapping("getGruopByUNameSSum")
@@ -302,6 +270,92 @@ public class SuccessController {
             }
             return new DataResult(0, "操作成功", list.size(), newList);
         }
+    }
+
+    @GetMapping("refundMoney")
+    @ApiOperation(value = "退款")
+    @ResponseBody
+    public DataResult refundMoney(@ApiParam(value = "操作用户编号", required = true) Integer uId,
+                                  @ApiParam(value = "成交客户编号", required = true) Integer paySId,
+                                  @ApiParam(value = "成交退款金额", required = true) Integer refundsSum,
+                                  @ApiParam(value = "支付退款金额", required = true) Integer refundsPaysum,
+                                  @ApiParam(value = "备注", required = false) String payRemark,
+                                  @ApiParam(value = "支付类型", required = true) Integer payTypeId,
+                                  @ApiParam(value = "退款金额", required = true) Integer paySum){
+        //根据成交编号编辑成交金额和支付金额
+        iSuccessService.editMoneyBySId(paySId, refundsSum, refundsPaysum);
+        if (refundsSum != 0){
+            //拼接备注
+            payRemark = payRemark + "(扣除成交金额" + paySum + ")";
+        }
+        //新增支付记录
+        Payrecord payrecord = new Payrecord(null, paySId, paySum, null, payRemark, payTypeId);
+        iPayrecordService.savePayrecord(payrecord);
+        return new DataResult(0, "操作成功");
+    }
+
+    @GetMapping("querySDetailByScreen")
+    @ApiOperation(value = "根据筛选条件查询成交明细")
+    @ResponseBody
+    public Map<String, Object> querySDetailByScreen(@ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
+                                           @ApiParam(name = "rName", value = "角色名称", required = true) String rName,
+                                           @ApiParam(name = "cName", value = "客户名字", required = true) String cName,
+                                           @ApiParam(name = "cTel", value = "客户电话", required = true) String cTel,
+                                           @ApiParam(name = "sHId", value = "成交门诊编号", required = true) Integer sHId,
+                                           @ApiParam(name = "queryUId", value = "用户编号", required = true) Integer queryUId,
+                                           @ApiParam(name = "beginTime", value = "开始时间", required = true) String beginTime,
+                                           @ApiParam(name = "endTime", value = "结束时间", required = true) String endTime){
+        Map<String, Object> map = new HashMap<>();
+        //根据筛选条件查询成交总数
+        Integer total = iSuccessService.getTotalByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime);
+        if (total == null){
+            total = 0;
+        }
+        map.put("count", total);
+        //根据筛选条件查询成交金额
+        Integer sSum = iSuccessService.queryMoneyByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, 0);
+        if (sSum == null){
+            sSum = 0;
+        }
+        map.put("sSum", sSum);
+        //根据筛选条件查询支付金额
+        Integer sPaysum = iSuccessService.queryMoneyByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, 1);
+        if (sPaysum == null){
+            sPaysum = 0;
+        }
+        map.put("sPaysum", sPaysum);
+        //待收金额
+        Integer awaitMoney = sSum - sPaysum;
+        map.put("awaitMoney", awaitMoney);
+        //根据筛选条件分组查询退款总金额
+        List<Success> successes = iSuccessService.queryRefundByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime);
+        //退款总数
+        Integer refundCount = 0;
+        //退款总金额
+        Integer refundMoney = 0;
+        if (successes != null){
+            refundCount = successes.size();
+            for (Success success : successes){
+                refundMoney += success.getRefund();
+            }
+        }
+        map.put("refundCount", refundCount);
+        map.put("refundMoney", refundMoney);
+        return map;
+    }
+
+    @GetMapping("querySByTime")
+    @ApiOperation(value = "根据起止时间查询成交")
+    @ResponseBody
+    public DataResult queryAByTime(@ApiParam(value = "页码", required = true) Integer page,
+                                   @ApiParam(value = "显示条数", required = true) Integer limit,
+                                   @ApiParam(value = "用户编号", required = true) Integer uId,
+                                   @ApiParam(value = "角色名称", required = true) String rName,
+                                   @ApiParam(value = "开始时间", required = true) String beginTime,
+                                   @ApiParam(value = "结束时间", required = true) String endTime) {
+        List<Success> successes = iSuccessService.querySByTime((page - 1) * limit, limit, uId, rName, beginTime, endTime);
+        Integer total = iSuccessService.getTotalByTime(uId, rName, beginTime, endTime);
+        return new DataResult(0, "操作成功", total, successes);
     }
 
 }

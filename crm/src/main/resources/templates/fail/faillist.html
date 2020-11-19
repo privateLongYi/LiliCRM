@@ -10,11 +10,12 @@
 	<br>
 
 	<div id="screen">
-		&nbsp;&nbsp;&nbsp;根据客户名称：
+		&nbsp;&nbsp;&nbsp;根据姓名：
 		<div class="layui-inline">
 			<input class="layui-input" id="cName" autocomplete="off">
 		</div>
-		<button class="layui-btn search">搜索</button>
+		<button class="layui-btn search">查询</button>
+		<button class="layui-btn" onclick="exportDataByScreen()">导出</button>
 	</div>
 
 	<!-- 数据表格 -->
@@ -31,15 +32,14 @@
 		</script>
 
 		<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
-		<!--<script th:src="@{/layui/layui.js}"></script>-->
+
+		<script th:src="@{/js/detail.js}"></script>
+
 
 		<script>
 
-            var laydate = layui.laydate //日期
-				,laypage = layui.laypage //分页
-				,layer = layui.layer //弹层
+            var layer = layui.layer //弹层
 				,table = layui.table //表格
-				,upload = layui.upload //上传
 				,element = layui.element //元素操作
 				,$ = layui.jquery //jQuery
 
@@ -67,6 +67,24 @@
 					}
 				});
 			}
+
+            //导出数据
+            function exportDataByScreen(){
+                //获取姓名
+                var cName = $("#cName").val();
+                //根据筛选条件查询
+                $.ajax({
+                    url: '/fail/queryFailByCName?uId='+uId+'&rName='+
+                    rName+'&cName='+cName+'&page=1&limit=10&export=1',
+                    type: 'get',
+                    async: false,
+                    dataType: 'json',
+                    success: function (res) {
+                        //使用table.exportFile()导出数据
+                        table.exportFile('tab', res.data, 'xls');
+                    }
+                });
+            }
 
 			//新增客户跟进
 			function saveFollow(data, ftType){
@@ -110,19 +128,20 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/fail/queryFailByCName?uId='+uId+'&rName='+rName //数据接口
-				,title: '未成交客户表' //表格名称
+				,url: '/fail/queryFailByCName?uId='+uId+'&rName='+rName+'&export=0' //数据接口
+				,title: '未成交客户' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
 				,limit: 10 //每页显示条数
 				,limits: [10, 20, 50, 100] //自定义可选每页显示条数
 				,toolbar: '#toolbarDemo' //刷新、增加工具栏
-				,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+				,defaultToolbar: ['filter'] //筛选工具栏
 				,cols: [ //表头
 					[
-						{field: 'flId', minWidth: 120, title: '编号', sort: true, align:'center'}
-						,{field: 'cName', minWidth: 120, title: '客户姓名', align:'center'}
-						,{field: 'hName', minWidth: 200, title: '门诊名称', align:'center'}
+                        {field: 'cName', minWidth: 120, title: '姓名', align:'center'
+                            ,templet: '<div><a href="javascript:goDetail({{d.cId}}, {{d.clId}}, {{d.clUId}});" class="layui-table-link">{{d.cName}}</a></div>'
+                        }
+                        ,{field: 'hName', minWidth: 200, title: '门诊', align:'center'}
 						,{field: 'flCause', minWidth: 200, title: '未成交原因', align:'center'}
 						,{fixed: 'right', minWidth: 240, align:'center', toolbar: '#barDemo'}
 					]

@@ -27,21 +27,33 @@ public interface SuccessMapper {
     //新增成交客户
     void saveSuccess(Success success);
 
-    //根据客户名称查询未成交客户
-    List<Success> querySByCName(@Param("page") Integer page,
-                                @Param("limit") Integer limit,
-                                @Param("uId") Integer uId,
-                                @Param("rName") String rName,
-                                @Param("cName") String cName);
+    //根据筛选条件查询成交客户
+    List<Success> querySByScreen(@Param("page") Integer page,
+                                 @Param("limit") Integer limit,
+                                 @Param("uId") Integer uId,
+                                 @Param("rName") String rName,
+                                 @Param("cName") String cName,
+                                 @Param("cTel") String cTel,
+                                 @Param("sHId") Integer sHId,
+                                 @Param("queryUId") Integer queryUId,
+                                 @Param("beginTime") String beginTime,
+                                 @Param("endTime") String endTime,
+                                 @Param("export") Integer export);
 
-    //根据客户名称查询未成交客户总数
-    Integer getTotalByCName(@Param("uId") Integer uId,
-                            @Param("rName") String rName,
-                            @Param("cName") String cName);
+    //根据筛选条件查询成交客户总数
+    Integer getTotalByScreen(@Param("uId") Integer uId,
+                             @Param("rName") String rName,
+                             @Param("cName") String cName,
+                             @Param("cTel") String cTel,
+                             @Param("sHId") Integer sHId,
+                             @Param("queryUId") Integer queryUId,
+                             @Param("beginTime") String beginTime,
+                             @Param("endTime") String endTime);
 
-    //根据成交客户编号编辑支付金额
-    void editSPaysumBySId(@Param("sId") Integer sId,
-                          @Param("paySum") Integer paySum);
+    //根据成交客户编号编辑成交金额和支付金额
+    void editMoneyBySId(@Param("sId") Integer sId,
+                        @Param("sSum") Integer sSum,
+                        @Param("sPaysum") Integer sPaysum);
 
     //根据线索编号查询总成交金额
     Integer queryTotalMoneyByClId(@Param("clId") Integer cId,
@@ -58,20 +70,26 @@ public interface SuccessMapper {
                                     @Param("uId") Integer uId,
                                     @Param("cName") String cName);
 
-    //根据用户编号和起止时间查询成交总数
-    Integer querySByUIdAndTime(@Param("uId") Integer uId,
+    //根据用户编号和起止时间查询成交
+    List<Success> querySByTime(@Param("page") Integer page,
+                               @Param("limit") Integer limit,
+                               @Param("uId") Integer uId,
+                               @Param("rName") String rName,
                                @Param("beginTime") String beginTime,
                                @Param("endTime") String endTime);
 
-    //根据用户编号和起止时间查询成交总金额
-    Integer querySSumByUIdAndTime(@Param("uId") Integer uId,
-                                  @Param("beginTime") String beginTime,
-                                  @Param("endTime") String endTime);
+    //根据用户编号和起止时间查询成交数量
+    Integer getTotalByTime(@Param("uId") Integer uId,
+                           @Param("rName") String rName,
+                           @Param("beginTime") String beginTime,
+                           @Param("endTime") String endTime);
 
-    //根据用户编号和起止时间查询收款总金额
-    Integer querySPaysumByUIdAndTime(@Param("uId") Integer uId,
-                                     @Param("beginTime") String beginTime,
-                                     @Param("endTime") String endTime);
+    //根据用户编号和起止时间查询成交总金额/支付总金额
+    Integer queryMoneyByTime(@Param("uId") Integer uId,
+                             @Param("rName") String rName,
+                             @Param("beginTime") String beginTime,
+                             @Param("endTime") String endTime,
+                             @Param("type") Integer type);
 
     //根据门诊分组查询总成交额
     List<Success> querySSumGruopByHId(@Param("beginTime") String beginTime,
@@ -93,5 +111,26 @@ public interface SuccessMapper {
 
     //查询最大的成交编号
     Integer queryMaxSId();
+
+    //根据筛选条件查询成交金额或支付金额
+    Integer queryMoneyByScreen(@Param("uId") Integer uId,
+                               @Param("rName") String rName,
+                               @Param("cName") String cName,
+                               @Param("cTel") String cTel,
+                               @Param("sHId") Integer sHId,
+                               @Param("queryUId") Integer queryUId,
+                               @Param("beginTime") String beginTime,
+                               @Param("endTime") String endTime,
+                               @Param("type") Integer type);
+
+    //根据筛选条件分组查询退款总金额
+    List<Success> queryRefundByScreen(@Param("uId") Integer uId,
+                                      @Param("rName") String rName,
+                                      @Param("cName") String cName,
+                                      @Param("cTel") String cTel,
+                                      @Param("sHId") Integer sHId,
+                                      @Param("queryUId") Integer queryUId,
+                                      @Param("beginTime") String beginTime,
+                                      @Param("endTime") String endTime);
 
 }

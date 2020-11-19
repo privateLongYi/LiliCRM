@@ -72,8 +72,13 @@ public class ClueService implements IClueService{
     }
 
     @Override
-    public void editClByClId(Integer clId, Integer clEarnest, String clEarnestDetail) {
-        clueMapper.editClByClId(clId, clEarnest, clEarnestDetail);
+    public void editClByClId(Integer clId, String clEntryFee) {
+        clueMapper.editClByClId(clId, clEntryFee);
+    }
+
+    @Override
+    public void editClUIdByClId(Integer clId, Integer clUId) {
+        clueMapper.editClUIdByClId(clId, clUId);
     }
 
 }

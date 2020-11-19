@@ -17,7 +17,7 @@
     <form class="layui-form" lay-filter="form">
         <div class="layui-form-item">
             <label class="layui-form-label">
-                <span style="color: red;">*&nbsp;</span>客户名称
+                <span style="color: red;">*&nbsp;</span>客户姓名
             </label>
             <div class="layui-input-block">
                 <input type="hidden" id="paySId">
@@ -38,17 +38,34 @@
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">
-                <span style="color: red;">*&nbsp;</span>支付金额
+                <span style="color: red;">*&nbsp;</span>成交退款金额
             </label>
             <div class="layui-input-block">
-                <input type="number" class="layui-input" id="paySum"
-                       placeholder="请输入支付金额" autocomplete="off">
+                <input type="hidden" id="sSum">
+                <input type="text" class="layui-input" id="refundsSum" value="0"
+                       placeholder="请输入成交退款金额" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>支付退款金额
+            </label>
+            <div class="layui-input-block">
+                <input type="hidden" id="sPaysum">
+                <input type="text" class="layui-input" id="refundsPaysum"
+                       placeholder="请输入支付退款金额" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="payRemark" autocomplete="off"></textarea>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">支付类型</label>
             <div class="layui-input-block">
-                <input type="hidden" id="payTypeId">
+                <input type="hidden" id="payTypeId" value="3">
                 <input type="text" class="layui-input" value="退款" readonly>
             </div>
         </div>
@@ -74,7 +91,7 @@
             $.post("/success/querySCByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
-                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].sId+"&quot;,&quot;"+data.data[i].cName+"&quot;);'>"+data.data[i].cName+"</div>";
+                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].sId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].sSum+"&quot;,&quot;"+data.data[i].sPaysum+"&quot;);'>"+data.data[i].cName+"</div>";
                 }
                 //赋值
                 $("#data").html(html);
@@ -104,9 +121,11 @@
     });
 
     //赋值
-    function assign(sId, cName) {
+    function assign(sId, cName, sSum, sPaysum) {
         $("#paySId").val(sId);
         $("#cName").val(cName);
+        $("#sSum").val(sSum);
+        $("#sPaysum").val(sPaysum);
         //隐藏列表
         $("#list").attr("style", "background-color: white;height: auto; display: none;");
     }

@@ -38,7 +38,9 @@
         AND c.c_name LIKE '%${cName}%'
       </if>
     </where>
-    limit #{page}, #{limit}
+    <if test="export == 0">
+      limit #{page}, #{limit}
+    </if>
   </select>
 
   <!--根据客户名称查询改约客户总数-->

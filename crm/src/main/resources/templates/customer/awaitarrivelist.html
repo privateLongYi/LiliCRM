@@ -43,11 +43,11 @@
 				</div>
 			</div><br><br><br>
 			<div class="layui-col-md4">
-				<label class="layui-form-label">是否交定金</label>
+				<label class="layui-form-label">报名费</label>
 				<div class="layui-input-inline layui-form">
-					<input type="radio" name="searchClEarnest" value="0" title="否">
-					<input type="radio" name="searchClEarnest" value="1" title="是">
-					<input type="radio" name="searchClEarnest" value="2" title="全部">
+					<input type="radio" name="searchclEntryFee" value="0" title="否">
+					<input type="radio" name="searchclEntryFee" value="1" title="是">
+					<input type="radio" name="searchclEntryFee" value="2" title="全部" checked>
 				</div>
 			</div>
 			<div class="layui-col-md4" id="principal">
@@ -74,6 +74,7 @@
 		</div>
 		<div style="text-align: center;">
 			<button class="layui-btn" onclick="tableReload()">查询</button>
+			<button class="layui-btn" onclick="exportDataByScreen()">导出</button>
 		</div>
 	</div>
 
@@ -91,17 +92,10 @@
 			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="success">成交</a>
 		</script>
 
-		<!--改变预约状态颜色-->
-		<script type="text/html" id="isDue">
-			{{#  if(d.isDue === '预约已过'){ }}
-				<span style="color: #FF0000;">{{ d.isDue }}</span>
-			{{#  } else { }}
-				{{ d.isDue }}
-			{{#  } }}
-		</script>
-
 		<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
-		<!--<script th:src="@{/layui/layui.js}"></script>-->
+
+		<script th:src="@{/js/detail.js}"></script>
+
 		<script>
 
             var layer = layui.layer //弹层
@@ -154,94 +148,19 @@
                 form.render('select');
             });
 
-			/*
-
-			//筛选条件
-			function screen(name, value, text){
-				//判断是否是报名时间
-				var condition;
-				if(name == "cPlaceTime"){
-					condition = "#beginTime";
-				}else{
-					condition = "#"+name;
-				}
-				//判断是否存在该条件
-				if($(condition).val() == undefined){
-					//新增节点
-					var div = document.createElement("div");
-					div.setAttribute('id', 'div'+name);
-					div.setAttribute('class', 'layui-input-inline');
-					var innerHTML = "<div class='layui-form-mid layui-word-aux'>"+
-										"&nbsp;&nbsp;&nbsp;";
-					if(name == "cName"){
-						innerHTML += "姓名：";
-					}else if(name == "cTel"){
-						innerHTML += "电话：";
-					}else if(name == "cProject"){
-						innerHTML += "报名项目：";
-					}else if(name == "cEarnest"){
-						innerHTML += "是否交定金：";
-					}else if(name == "cSource"){
-						innerHTML += "来源：";
-					}else if(name == "cUId"){
-						innerHTML += "负责人：";
-					}else if(name == "cPlaceTime"){
-						innerHTML += "报名时间：";
-					}
-					if(name == "cPlaceTime"){
-						var beginTime = value.split(" - ")[0];
-						var endTime = value.split(" - ")[1];
-						innerHTML += "<span id='span"+name+"'>"+text+"</span>"+
-							"<input type='hidden' id='beginTime' value='"+beginTime+"'>"+
-							"<input type='hidden' id='endTime' value='"+endTime+"'>"+
-							"</div>"+
-							"<div class='layui-input-inline' style='cursor: pointer; padding: 10px 0px;'>"+
-							"<i class='layui-icon layui-icon-close' id='close"+name+"'></i>"+
-							"</div>";
-					}else{
-						innerHTML += "<span id='span"+name+"'>"+text+"</span>"+
-							"<input type='hidden' id='"+name+"' value='"+value+"'>"+
-							"</div>"+
-							"<div class='layui-input-inline' style='cursor: pointer; padding: 12px 0px;'>"+
-							"<i class='layui-icon layui-icon-close' id='close"+name+"'></i>"+
-							"</div>";
-					}
-					div.innerHTML = innerHTML;
-					document.getElementById("list").appendChild(div);
-					//关闭事件（移除节点）
-					$("#close"+name).click(function(){
-						list.removeChild(document.getElementById("div"+name));
-						//根据筛选条件查询客户
-						tableReload();
-					});
-				}else{
-					//改变已有的值
-					$("#span"+name).html(text);
-					if(name != "cPlaceTime"){
-						$("#"+name).val(value);
-					}else{
-						var beginTime = value.split(" - ")[0];
-						var endTime = value.split(" - ")[1];
-						$("#beginTime").val(beginTime);
-						$("#endTime").val(endTime);
-					}
-				}
-			}
-*/
-
             //表格重载
             function tableReload(){
                 //获取筛选条件
                 var cName = $("#searchCName").val();
                 var cTel = $("#searchCTel").val();
                 var clProject = $("#searchClProject").val();
-                var clEarnest;
-                if ($("[name=searchClEarnest]")[0].checked){
-                    clEarnest = $("[name=searchClEarnest]")[0].value;
-                } else if ($("[name=searchClEarnest]")[1].checked){
-                    clEarnest = $("[name=searchClEarnest]")[1].value;
-                } else if ($("[name=searchClEarnest]")[2].checked){
-                    clEarnest = $("[name=searchClEarnest]")[2].value;
+                var clEntryFee;
+                if ($("[name=searchclEntryFee]")[0].checked){
+                    clEntryFee = $("[name=searchclEntryFee]")[0].value;
+                } else if ($("[name=searchclEntryFee]")[1].checked){
+                    clEntryFee = $("[name=searchclEntryFee]")[1].value;
+                } else if ($("[name=searchclEntryFee]")[2].checked){
+                    clEntryFee = $("[name=searchclEntryFee]")[2].value;
                 }
                 var clUId = $("#searchClUId").val();
                 var clSource = $("#searchClSource").val();
@@ -254,12 +173,12 @@
                 }
                 //根据筛选条件查询
                 table.reload('tab', {
-                    url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'
+                    url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'+'&export=0'
                     ,where: {
                         cName: cName
                         ,cTel: cTel
                         ,clProject: clProject
-                        ,clEarnest: clEarnest
+                        ,clEntryFee: clEntryFee
                         ,clUId: clUId
                         ,clSource: clSource
                         ,beginTime: beginTime
@@ -271,21 +190,72 @@
                 });
             }
 
+            //导出数据
+            function exportDataByScreen(){
+                //获取筛选条件
+                var cName = $("#searchCName").val();
+                var cTel = $("#searchCTel").val();
+                var clProject = $("#searchclProject").val();
+                var clEntryFee;
+                if ($("[name=searchclEntryFee]")[0].checked){
+                    clEntryFee = $("[name=searchclEntryFee]")[0].value;
+                } else if ($("[name=searchclEntryFee]")[1].checked){
+                    clEntryFee = $("[name=searchclEntryFee]")[1].value;
+                } else if ($("[name=searchclEntryFee]")[2].checked){
+                    clEntryFee = $("[name=searchclEntryFee]")[2].value;
+                }
+                var clUId = $("#searchclUId").val();
+                var clSource = $("#searchclSource").val();
+                var searchATime = $("#searchATime").val();
+                var beginTime = "";
+                var endTime = "";
+                if (searchATime != null && searchATime != ""){
+                    beginTime = searchATime.split(" - ")[0];
+                    endTime = searchATime.split(" - ")[1];
+                }
+                //根据筛选条件查询
+                $.ajax({
+                    url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店',
+                    type: 'get',
+                    data: {
+                        cName: cName
+                        ,cTel: cTel
+                        ,clProject: clProject
+                        ,clEntryFee: clEntryFee
+                        ,clUId: clUId
+                        ,clSource: clSource
+                        ,beginTime: beginTime
+                        ,endTime: endTime
+                        ,export: 1
+                        ,page: 1
+                        ,limit: 10
+                    },
+                    async: false,
+                    dataType: 'json',
+                    success: function (res) {
+                        //使用table.exportFile()导出数据
+                        table.exportFile('tab', res.data, 'xls');
+                    }
+                });
+            }
+
             //执行一个 table 实例
             function adminTable() {
                 table.render({
                     elem: '#tab'
-                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店' //数据接口
-                    ,title: '待到店客户表' //表格名称
+                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'+'&export=0' //数据接口
+                    ,title: '待到店客户' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
                     ,limit: 10 //每页显示条数
                     ,limits: [10, 20, 50, 100] //自定义可选每页显示条数
                     ,toolbar: '#toolbarDemo' //刷新、增加工具栏
-                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,defaultToolbar: ['filter'] //筛选工具栏
                     ,cols: [ //表头
                         [
-                            {field: 'cName', minWidth: 120, title: '姓名', align:'center'}
+                            {field: 'cName', minWidth: 120, title: '姓名', align:'center'
+                                ,templet: '<div><a href="javascript:goDetail({{d.cId}}, {{d.clId}}, {{d.clUId}});" class="layui-table-link">{{d.cName}}</a></div>'
+                            }
                             ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
                             ,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
                             ,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
@@ -301,8 +271,8 @@
                         	}
                             ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
                             ,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
-                            ,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
-                            ,{field: 'clEarnestDetail', minWidth: 120, title: '定金详情', align:'center'}
+                            ,{field: 'clEntryFee', minWidth: 120, title: '报名费', align:'center'}
+                            ,{field: 'clEntryFeeDetail', minWidth: 120, title: '报名费详情', align:'center'}
                             ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
                             ,{fixed: 'right', minWidth: 240, title: '操作', toolbar: '#barDemo', align:'center'}
                         ]
@@ -314,17 +284,19 @@
             function saleTable() {
                 table.render({
                     elem: '#tab'
-                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店' //数据接口
-                    ,title: '待到店客户表' //表格名称
+                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'+'&export=0' //数据接口
+                    ,title: '待到店客户' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
                     ,limit: 10 //每页显示条数
                     ,limits: [10, 20, 50, 100] //自定义可选每页显示条数
                     ,toolbar: '#toolbarDemo' //刷新、增加工具栏
-                    ,defaultToolbar: ['filter', 'exports', 'print'] //筛选、导出、打印工具栏
+                    ,defaultToolbar: ['filter'] //筛选工具栏
                     ,cols: [ //表头
                         [
-                            {field: 'cName', minWidth: 120, title: '姓名', align:'center'}
+                            {field: 'cName', minWidth: 120, title: '姓名', align:'center'
+                                ,templet: '<div><a href="javascript:goDetail({{d.cId}}, {{d.clId}}, {{d.clUId}});" class="layui-table-link">{{d.cName}}</a></div>'
+                            }
                             ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
                             ,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
                             ,{field: 'aTime', minWidth: 200, title: '预约时间', align:'center'}
@@ -339,8 +311,8 @@
                             }
                             ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
                             ,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
-                            ,{field: 'clEarnest', minWidth: 120, title: '定金', align:'center'}
-                            ,{field: 'clEarnestDetail', minWidth: 120, title: '定金详情', align:'center'}
+                            ,{field: 'clEntryFee', minWidth: 120, title: '报名费', align:'center'}
+                            ,{field: 'clEntryFeeDetail', minWidth: 120, title: '报名费详情', align:'center'}
                             ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
                             ,{fixed: 'right', minWidth: 240, title: '操作', toolbar: '#barDemo', align:'center'}
                         ]
@@ -499,8 +471,8 @@
 								//声明格式是否正确
 								var verify = true;
 								//验证成交金额
-								if(sSum <= 0){
-									layer.msg("成交金额不能小于等于零");
+								if(isNaN(sSum) || sSum <= 0){
+									layer.msg("成交金额必须是大于零的数值");
 									verify = false;
 									return;
 								}
@@ -533,73 +505,6 @@
 					});
 				}
 			});
-
-			/*
-
-			//弹出高级筛选列表
-			$("#screen").click(function(){
-				layer.open({
-					type: 2, //层类型，iframe
-					title: '高级筛选',
-					content: ['screen?cType=待到店'],
-					area: ['1000px', '420px'],
-					resize: false,
-					btn: '确定',
-					btn1: function(index, layero){
-						var body = layer.getChildFrame('body', index);
-						//获取筛选值
-						var cName = $(body).find("#cName").val();
-						var cTel = $(body).find("#cTel").val();
-						var cProject = $(body).find("#cProject").val();
-						//给是否交定金赋值
-						var cEarnest;
-						var cEarnestText;
-						if($(body).find("[name=cEarnest]")[0].checked){
-							cEarnest = $(body).find("[name=cEarnest]")[0].value;
-							cEarnestText = $(body).find("[name=cEarnest]")[0].title;
-						}
-						if($(body).find("[name=cEarnest]")[1].checked){
-							cEarnest = $(body).find("[name=cEarnest]")[1].value;
-							cEarnestText = $(body).find("[name=cEarnest]")[1].title;
-						}
-						var cUId = $(body).find("#cUId").val();
-						var cSource = $(body).find("#cSource").val();
-						var cPlaceTime = $(body).find("#cPlaceTime").val();
-						//新增筛选条件或者修改
-						if(cName != ''){
-							screen("cName", cName.trim(), cName.trim());
-						}
-						if(cTel != ''){
-							screen("cTel", cTel.trim(), cTel.trim());
-						}
-						if(cProject != ''){
-							var cProjectText = $(body).find("#cProject [value="+cProject+"]").text();
-							screen("cProject", cProject, cProjectText);
-						}
-						if(cEarnest != undefined){
-							screen("cEarnest", cEarnest, cEarnestText);
-						}
-						if(cUId != ''){
-							var cUIdText = $(body).find("#cUId [value="+cUId+"]").text();
-							screen("cUId", cUId, cUIdText);
-						}
-						if(cSource != ''){
-							screen("cSource", cSource.trim(), cSource.trim());
-						}
-						if(cPlaceTime != ''){
-							screen("cPlaceTime", cPlaceTime, cPlaceTime);
-						}
-						//关闭弹出框
-						layer.close(layer.index);
-						//根据筛选条件查询客户
-						tableReload();
-					},
-					cancel: function(layero,index){
-						layer.close(layer.index);
-					}
-				});
-			});
-*/
 
 		</script>
 

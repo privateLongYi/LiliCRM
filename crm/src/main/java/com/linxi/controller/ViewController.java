@@ -285,11 +285,11 @@ public class ViewController {
 
     @GetMapping("payrecordsave")
     @ApiOperation(value = "新增支付记录")
-    public String payrecordsave(@ApiParam(name = "cId", value = "成交客户编号", required = true) Integer cId,
+    public String payrecordsave(@ApiParam(name = "sId", value = "成交客户编号", required = true) Integer sId,
                                 @ApiParam(name = "cName", value = "成交客户名称", required = true) String cName,
                                 @ApiParam(name = "wk", value = "尾款", required = true) String wk,
                                 ModelMap map){
-        map.addAttribute("cId", cId);
+        map.addAttribute("sId", sId);
         map.addAttribute("cName", cName);
         map.addAttribute("wk", wk);
         return "customer/payrecordsave";
@@ -364,6 +364,66 @@ public class ViewController {
                          ModelMap map){
         map.addAttribute("clId", clId);
         return "customer/refund";
+    }
+
+    @GetMapping("refundMoney")
+    @ApiOperation(value = "退款")
+    public String refundMoney(@ApiParam(name = "sId", value = "成交客户编号", required = true) Integer sId,
+                              @ApiParam(name = "cName", value = "成交客户姓名", required = true) String cName,
+                              @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
+                              @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
+                              ModelMap map){
+        map.addAttribute("sId", sId);
+        map.addAttribute("cName", cName);
+        map.addAttribute("sSum", sSum);
+        map.addAttribute("sPaysum", sPaysum);
+        return "success/refundMoney";
+    }
+
+    @GetMapping("indexGoEditClue")
+    @ApiOperation(value = "去分配客户页面")
+    public String indexGoEditClue(){
+        return "customer/indexGoEditClue";
+    }
+
+    @GetMapping("indexGoSaveCList")
+    @ApiOperation(value = "去新增客户列表")
+    public String indexGoSaveCList(@ApiParam(name = "beginTime", value = "开始时间", required = true) String beginTime,
+                                   @ApiParam(name = "endTime", value = "结束时间", required = true) String endTime,
+                                   ModelMap map){
+        map.addAttribute("beginTime", beginTime);
+        map.addAttribute("endTime", endTime);
+        return "customer/indexGoSaveCList";
+    }
+
+    @GetMapping("indexGoSaveAList")
+    @ApiOperation(value = "去预约客户列表")
+    public String indexGoSaveAList(@ApiParam(name = "beginTime", value = "开始时间", required = true) String beginTime,
+                                   @ApiParam(name = "endTime", value = "结束时间", required = true) String endTime,
+                                   ModelMap map){
+        map.addAttribute("beginTime", beginTime);
+        map.addAttribute("endTime", endTime);
+        return "customer/indexGoSaveAList";
+    }
+
+    @GetMapping("indexGoSaveSList")
+    @ApiOperation(value = "去成交客户列表")
+    public String indexGoSaveSList(@ApiParam(name = "beginTime", value = "开始时间", required = true) String beginTime,
+                                   @ApiParam(name = "endTime", value = "结束时间", required = true) String endTime,
+                                   ModelMap map){
+        map.addAttribute("beginTime", beginTime);
+        map.addAttribute("endTime", endTime);
+        return "customer/indexGoSaveSList";
+    }
+
+    @GetMapping("indexGoSaveArriveList")
+    @ApiOperation(value = "去已到店客户列表")
+    public String indexGoSaveArriveList(@ApiParam(name = "beginTime", value = "开始时间", required = true) String beginTime,
+                                        @ApiParam(name = "endTime", value = "结束时间", required = true) String endTime,
+                                        ModelMap map){
+        map.addAttribute("beginTime", beginTime);
+        map.addAttribute("endTime", endTime);
+        return "customer/indexGoSaveArriveList";
     }
 
 }

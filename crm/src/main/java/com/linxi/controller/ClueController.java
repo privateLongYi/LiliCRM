@@ -96,7 +96,7 @@ public class ClueController {
 
             //新增线索
             Clue cl = new Clue(null, clue.getClCId(), clue.getClProject(), clue.getClPlaceTime(),
-                    clue.getClRemark(), clue.getClEarnest(), clue.getClEarnestDetail(),
+                    clue.getClRemark(), clue.getClEntryFee(),
                     clUId, clue.getClSource(), clue.getClMessage(), clue.getClTypeId(), 0);
             iClueService.saveClue(cl);
 
@@ -189,17 +189,13 @@ public class ClueController {
         return new DataResult(0, "操作成功");
     }
 
-    @GetMapping("refund")
-    @ApiOperation(value = "根据线索编号编辑定金和定金详情(退定金)")
+    @GetMapping("editClByClId")
+    @ApiOperation(value = "根据线索编号编辑报名费")
     @ResponseBody
-    public DataResult refund(@ApiParam(value = "操作用户编号", required = true) Integer uId,
+    public DataResult editClByClId(@ApiParam(value = "操作用户编号", required = true) Integer uId,
                                    @ApiParam(value = "编号", required = true) Integer clId,
-                                   @ApiParam(value = "定金", required = true) Integer clEarnest){
-        //根据编号查询线索
-        Clue clue = iClueService.queryClByClId(clId);
-        String clEarnestDetail = "定金" + clue.getClEarnest() + ",已退" + clEarnest;
-        clEarnest = clue.getClEarnest() - clEarnest;
-        iClueService.editClByClId(clId, clEarnest, clEarnestDetail);
+                                   @ApiParam(value = "报名费", required = true) String clEntryFee){
+        iClueService.editClByClId(clId, clEntryFee);
         return new DataResult(0, "操作成功");
     }
 
@@ -212,6 +208,21 @@ public class ClueController {
         //根据线索编号获取客户名称
         Clue clue = iClueService.queryClByClId(clId);
         return new DataResult(0, "操作成功", 0, clue);
+    }
+
+    @GetMapping("allot")
+    @ApiOperation(value = "根据线索编号编辑负责人编号(分配客户)")
+    @ResponseBody
+    public DataResult allot(@ApiParam(value = "操作用户编号", required = true) Integer uId,
+                            @ApiParam(value = "负责人编号", required = true) Integer clUId,
+                            @ApiParam(value = "编号集合", required = true) String param){
+        //处理参数获取负责人编号数组
+        String[] split = param.split(",");
+        for (String s : split){
+            //根据线索编号编辑负责人编号
+            iClueService.editClUIdByClId(Integer.parseInt(s), clUId);
+        }
+        return new DataResult(0, "操作成功");
     }
 
 }

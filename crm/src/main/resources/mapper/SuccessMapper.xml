@@ -68,10 +68,10 @@
     VALUES (#{sAId}, #{sHId}, #{sMessage}, #{sSum}, #{sPaysum}, #{sRemark}, now(), #{sWhether})
   </insert>
 
-  <!--根据客户名称查询成交客户-->
-  <select id="querySByCName" resultMap="BaseResultMap">
+  <!--根据筛选条件查询成交客户-->
+  <select id="querySByScreen" resultMap="BaseResultMap">
     SELECT s.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId, u.u_name AS uName,
-    h.h_name AS hName, cl.cl_id AS clId, cl.cl_u_id AS clUId FROM success s
+    h.h_name AS hName, cl.cl_id AS clId, cl.cl_u_id AS clUId, c.c_tel AS cTel FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
@@ -84,14 +84,29 @@
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
+      <if test="cTel != null and cTel != ''">
+        AND c.c_tel = #{cTel}
+      </if>
+      <if test="sHId != null and sHId != ''">
+        AND s.s_h_id = #{sHId}
+      </if>
+      <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+        AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  s.s_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+      </if>
+      <if test="queryUId != null and queryUId != ''">
+        AND cl.cl_u_id = #{queryUId}
+      </if>
       AND cl.cl_invalid = 0 AND a.a_status = 2
     </where>
     ORDER BY s.s_time DESC
-    limit #{page}, #{limit}
+    <if test="export == 0">
+      limit #{page}, #{limit}
+    </if>
   </select>
 
   <!--根据客户名称查询成交客户总数-->
-  <select id="getTotalByCName" resultType="Integer">
+  <select id="getTotalByScreen" resultType="Integer">
     SELECT COUNT(*) FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
@@ -104,13 +119,33 @@
       <if test="cName != null and cName != ''">
         AND c.c_name LIKE '%${cName}%'
       </if>
+      <if test="cTel != null and cTel != ''">
+        AND c.c_tel = #{cTel}
+      </if>
+      <if test="sHId != null and sHId != ''">
+        AND s.s_h_id = #{sHId}
+      </if>
+      <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+        AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  s.s_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+      </if>
+      <if test="queryUId != null and queryUId != ''">
+        AND cl.cl_u_id = #{queryUId}
+      </if>
       AND cl.cl_invalid = 0 AND a.a_status = 2
     </where>
   </select>
 
-  <!--根据成交客户编号编辑支付金额-->
-  <update id="editSPaysumBySId">
-    UPDATE success SET s_paysum = #{paySum} WHERE s_id = #{sId}
+  <!--根据成交客户编号编辑成交金额和支付金额-->
+  <update id="editMoneyBySId">
+    UPDATE success
+    <set>
+      <if test="sSum != null">
+        s_sum = #{sSum},
+      </if>
+      s_paysum = #{sPaysum}
+    </set>
+    WHERE s_id = #{sId}
   </update>
 
   <!--根据线索编号查询成交金额-->
@@ -130,7 +165,7 @@
 
   <!--根据用户编号和客户名称查询成交客户-->
   <select id="querySCByUIdAndCName" resultMap="BaseResultMap">
-    SELECT s.s_id, c.c_name AS cName FROM success s
+    SELECT s.s_id, c.c_name AS cName, s.s_sum, s.s_paysum FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
@@ -161,37 +196,62 @@
     </where>
   </select>
 
+  <!--根据用户编号和起止时间查询成交-->
+  <select id="querySByTime" resultMap="BaseResultMap">
+    SELECT c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hName,
+    s.s_time, s.s_sum, s.s_paysum, (s.s_sum-s.s_paysum) AS awaitMoney FROM success s
+    INNER JOIN appointment a ON s.s_a_id=a.a_id
+    INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN customer c ON c.c_id=cl.cl_c_id
+    INNER JOIN hospital h ON h.h_id=s.s_h_id
+    <where>
+      <if test="rName == '销售员'">
+        cl.cl_u_id = #{uId} AND
+      </if>
+      cl.cl_invalid = 0 AND a.a_status = 2
+      AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    </where>
+    limit #{page}, #{limit}
+  </select>
+
   <!--根据用户编号和起止时间查询成交总数-->
-  <select id="querySByUIdAndTime" resultType="Integer">
+  <select id="getTotalByTime" resultType="Integer">
     SELECT COUNT(*) FROM success s
     INNER JOIN appointment a ON s.s_a_id=a.a_id
-	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
-    WHERE cl.cl_u_id = #{uId}
-    AND cl.cl_invalid = 0 AND a.a_status = 2
-    AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
+    INNER JOIN customer c ON c.c_id=cl.cl_c_id
+    INNER JOIN hospital h ON h.h_id=s.s_h_id
+    <where>
+      <if test="rName == '销售员'">
+        cl.cl_u_id = #{uId} AND
+      </if>
+      cl.cl_invalid = 0 AND a.a_status = 2
+      AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    </where>
   </select>
 
-  <!--根据用户编号和起止时间查询成交总金额-->
-  <select id="querySSumByUIdAndTime" resultType="Integer">
-    SELECT SUM(s.s_sum) FROM success s
+  <!--根据用户编号和起止时间查询成交总金额/支付总金额-->
+  <select id="queryMoneyByTime" resultType="Integer">
+    SELECT
+    <if test="type ==0">
+      SUM(s.s_sum)
+    </if>
+    <if test="type ==1">
+      SUM(s.s_paysum)
+    </if>
+    FROM success s
     INNER JOIN appointment a ON s.s_a_id=a.a_id
 	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
-    WHERE cl.cl_u_id = #{uId}
-    AND cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
-    AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
-  </select>
-
-  <!--根据用户编号和起止时间查询收款总金额-->
-  <select id="querySPaysumByUIdAndTime" resultType="Integer">
-    SELECT SUM(s.s_paysum) FROM success s
-    INNER JOIN appointment a ON s.s_a_id=a.a_id
-	INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
-    WHERE cl.cl_u_id = #{uId}
-    AND cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
-    AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-    AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    <where>
+      <if test="rName == '销售员'">
+        cl.cl_u_id = #{uId} AND
+      </if>
+      cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
+      AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+    </where>
   </select>
 
   <!--根据用户分组查询总成交额-->
@@ -241,5 +301,77 @@
   <select id="queryMaxSId" resultType="Integer">
     SELECT MAX(s_id) FROM success
   </select>
+
+  <!--根据筛选条件查询成交金额或支付金额-->
+  <select id="queryMoneyByScreen" resultType="Integer">
+    SELECT
+    <if test="type == 0">
+      SUM(s_sum)
+    </if>
+    <if test="type == 1">
+      SUM(s_paysum)
+    </if>
+    FROM success s
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
+    LEFT JOIN hospital h ON s.s_h_id=h.h_id
+    <where>
+      <if test="rName != '管理员' and rName != '管理者'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name LIKE '%${cName}%'
+      </if>
+      <if test="cTel != null and cTel != ''">
+        AND c.c_tel = #{cTel}
+      </if>
+      <if test="sHId != null and sHId != ''">
+        AND s.s_h_id = #{sHId}
+      </if>
+      <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+        AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  s.s_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+      </if>
+      <if test="queryUId != null and queryUId != ''">
+        AND cl.cl_u_id = #{queryUId}
+      </if>
+      AND cl.cl_invalid = 0 AND a.a_status = 2
+    </where>
+  </select>
+
+  <!--根据筛选条件分组查询退款总金额-->
+  <select id="queryRefundByScreen" resultMap="BaseResultMap">
+    SELECT c.c_name, SUM(p.pay_sum) AS refund FROM payrecord p
+	LEFT JOIN success s ON s.s_id=p.pay_s_id
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
+    LEFT JOIN hospital h ON s.s_h_id=h.h_id
+    <where>
+      <if test="rName != '管理员' and rName != '管理者'">
+        AND cl.cl_u_id = #{uId}
+      </if>
+      <if test="cName != null and cName != ''">
+        AND c.c_name LIKE '%${cName}%'
+      </if>
+      <if test="cTel != null and cTel != ''">
+        AND c.c_tel = #{cTel}
+      </if>
+      <if test="sHId != null and sHId != ''">
+        AND s.s_h_id = #{sHId}
+      </if>
+      <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+        AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  s.s_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+      </if>
+      <if test="queryUId != null and queryUId != ''">
+        AND cl.cl_u_id = #{queryUId}
+      </if>
+      AND cl.cl_invalid = 0 AND a.a_status = 2 AND p.pay_type_id = 3
+    </where>
+	GROUP BY s.s_id
+  </select>
+
 
 </mapper>

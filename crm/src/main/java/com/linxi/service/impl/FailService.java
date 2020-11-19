@@ -28,8 +28,8 @@ public class FailService implements IFailService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Fail> queryFailByCName(Integer page, Integer limit, Integer uId, String rName, String cName) {
-        return failMapper.queryFailByCName(page, limit, uId, rName, cName);
+    public List<Fail> queryFailByCName(Integer page, Integer limit, Integer uId, String rName, String cName, Integer export) {
+        return failMapper.queryFailByCName(page, limit, uId, rName, cName, export);
     }
 
     @Override

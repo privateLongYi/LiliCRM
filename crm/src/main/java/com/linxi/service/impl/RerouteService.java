@@ -28,8 +28,8 @@ public class RerouteService implements IRerouteService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Reroute> queryRByCName(Integer page, Integer limit, Integer uId, String rName, String cName) {
-        return rerouteMapper.queryRByCName(page, limit, uId, rName, cName);
+    public List<Reroute> queryRByCName(Integer page, Integer limit, Integer uId, String rName, String cName, Integer export) {
+        return rerouteMapper.queryRByCName(page, limit, uId, rName, cName, export);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class PayrecordController {
             refund = 0;
         }
         //根据成交客户编号编辑支付金额
-        iSuccessService.editSPaysumBySId(paySId, (paysum-refund));
+        iSuccessService.editMoneyBySId(paySId, null, (paysum-refund));
         return new DataResult(0, "新增成功");
     }
 
