@@ -1,6 +1,6 @@
 package com.linxi.controller;
 
-import com.linxi.entity.Appointment;
+import com.linxi.entity.*;
 import com.linxi.service.*;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
@@ -35,13 +35,19 @@ public class AppointmentController {
     private ICtypeService iCtypeService;
 
     @Autowired
-    private ISuccessService iSuccessService;
+    private IOperatingService iOperatingService;
 
     @Autowired
     private IClueService iClueService;
 
     @Autowired
     private IAtypeService iAtypeService;
+
+    @Autowired
+    private ICustomerService iCustomerService;
+
+    @Autowired
+    private IHospitalService iHospitalService;
 
     @GetMapping("queryAByACId")
     @ApiOperation(value = "根据客户编号查询预约客户")
@@ -60,33 +66,11 @@ public class AppointmentController {
         return "appointment/appointmentedit";
     }
 
-    @PostMapping("editAByAId")
-    @ApiOperation(value = "根据编号编辑预约客户")
-    @ResponseBody
-    public DataResult editAByAId(@ApiParam(value = "用户编号", required = true) Integer uId,
-                                 @ApiParam(value = "编号", required = true) Integer aId,
-                                 @ApiParam(value = "线索编号", required = true) Integer aClId,
-                                 @ApiParam(value = "预约时间", required = true) String aTime,
-                                 @ApiParam(value = "门诊编号", required = true) Integer aHId,
-                                 @ApiParam(value = "预约类型编号", required = true) Integer aTypeId,
-                                 @ApiParam(value = "预约状态", required = true) Integer aStatus){
-        Appointment appointment = new Appointment(aId, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, aStatus, null);
-        iAppointmentService.editAByAId(appointment);
-        return new DataResult(0, "编辑成功");
-    }
-
-    @GetMapping("delAByAId")
-    @ApiOperation(value = "根据编号编辑预约客户")
-    @ResponseBody
-    public DataResult delAByAId(@ApiParam(value = "编号", required = true) Integer aId){
-        iAppointmentService.delAByAId(aId);
-        return new DataResult(0, "删除成功");
-    }
-
     @PostMapping("saveAppointment")
     @ApiOperation(value = "新增预约客户")
     @ResponseBody
     public DataResult saveAppointment(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                      @ApiParam(value = "用户姓名", required = true) String uName,
                                       @ApiParam(value = "线索编号", required = true) Integer aClId,
                                       @ApiParam(value = "预约时间", required = true) String aTime,
                                       @ApiParam(value = "门诊编号", required = true) Integer aHId,
@@ -100,7 +84,14 @@ public class AppointmentController {
         //新增预约客户
         Appointment appointment = new Appointment(null, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, 0, null);
         iAppointmentService.saveAppointment(appointment);
-        return new DataResult(0, "新增成功");
+        //根据线索编号查询客户
+        Customer customer = iCustomerService.queryCByClId(aClId);
+        //根据门诊编号查询门诊
+        Hospital hospital = iHospitalService.queryHByHId(aHId);
+        //新增操作记录
+        Operating operating = new Operating(customer.getcId(), uId, "预约", uName + "为" + customer.getcName() + "预约了" + hospital.gethName());
+        iOperatingService.saveOperating(operating);
+        return new DataResult(0, "预约成功");
     }
 
     @GetMapping("queryAToDetail")
@@ -121,6 +112,69 @@ public class AppointmentController {
         //根据预约编号查询预约
         Appointment appointment = iAppointmentService.queryAByAId(aId);
         return new DataResult(0, "操作成功", 0, appointment);
+    }
+
+    @PostMapping("saveCAndA")
+    @ApiOperation(value = "新增客户信息和预约信息")
+    @ResponseBody
+    public DataResult saveCustomer(@ApiParam(name = "uId", value = "操作用户编号", required = true) Integer uId,
+                                   @ApiParam(name = "uName", value = "操作用户姓名", required = true) String uName,
+                                   @ApiParam(name = "cName", value = "姓名", required = true) String cName,
+                                   @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
+                                   @ApiParam(name = "cAge", value = "年龄", required = false) Integer cAge,
+                                   @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
+                                   @ApiParam(name = "clProject", value = "报名项目", required = true) String clProject,
+                                   @ApiParam(name = "clPlaceTime", value = "报名时间", required = true) String clPlaceTime,
+                                   @ApiParam(name = "clEntryFee", value = "报名费", required = false) String clEntryFee,
+                                   @ApiParam(name = "clUId", value = "用户编号", required = true) Integer clUId,
+                                   @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
+                                   @ApiParam(name = "clTypeId", value = "状态编号", required = true) Integer clTypeId,
+                                   @ApiParam(name = "clRemark", value = "备注", required = false) String clRemark,
+                                   @ApiParam(name = "clMessage", value = "症状信息", required = false) String clMessage,
+                                   @ApiParam(name = "aTime", value = "预约时间", required = false) String aTime,
+                                   @ApiParam(name = "aHId", value = "预约门诊编号", required = false) Integer aHId,
+                                   @ApiParam(name = "atType", value = "预约类型", required = false) String atType) {
+        //创建客户
+        Customer c = new Customer(null, cName, cSex, cAge, cTel, null);
+        //根据姓名查询客户
+        List<Customer> customers1 = iCustomerService.queryCByCName(cName);
+        if (customers1.size() != 0) {
+            String s = customers1.get(0).getcName();
+            if (s.contains("(")){
+                String substring = s.substring(s.indexOf("(") + 1, s.indexOf(")"));
+                Integer num = Integer.parseInt(substring) + 1;
+                String number = "(" + num + ")";
+                c.setcName(c.getcName() + number);
+            } else {
+                String number = "(1)";
+                c.setcName(c.getcName() + number);
+            }
+        }
+        //新增客户
+        iCustomerService.saveCustomer(c);
+        //新增线索
+        Clue clue = new Clue(null, c.getcId(), clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
+        iClueService.saveClue(clue);
+        //新增操作记录
+        Operating operating = new Operating(c.getcId(), uId, "新增", uName + "添加了客户" + cName);
+        iOperatingService.saveOperating(operating);
+        //根据客户状态查询编号
+        Integer clTypeId2 = iCtypeService.queryCtypeByCtType("待到店");
+        //改变客户状态为待到店状态
+        iClueService.editClTypeIdByClId(clue.getClId(), clTypeId2);
+        //根据预约类型查询编号
+        Integer aTypeId = iAtypeService.queryAByAType(atType);
+        //新增预约客户
+        Appointment appointment = new Appointment(null, clue.getClId(), Timestamp.valueOf(aTime), aHId, aTypeId, 0, null);
+        iAppointmentService.saveAppointment(appointment);
+        //根据线索编号查询客户
+        Customer customer = iCustomerService.queryCByClId(clue.getClId());
+        //根据门诊编号查询门诊
+        Hospital hospital = iHospitalService.queryHByHId(aHId);
+        //新增操作记录
+        Operating operating2 = new Operating(customer.getcId(), uId, "预约", uName + "为" + customer.getcName() + "预约了" + hospital.gethName());
+        iOperatingService.saveOperating(operating2);
+        return new DataResult(0, "新增成功");
     }
 
 }

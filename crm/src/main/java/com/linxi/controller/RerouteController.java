@@ -1,6 +1,7 @@
 package com.linxi.controller;
 
 import com.linxi.entity.Appointment;
+import com.linxi.entity.Hospital;
 import com.linxi.entity.Operating;
 import com.linxi.entity.Reroute;
 import com.linxi.service.*;
@@ -45,26 +46,39 @@ public class RerouteController {
     @Autowired
     private IClueService iClueService;
 
-    @Autowired ICtypeService iCtypeService;
+    @Autowired
+    private ICtypeService iCtypeService;
+
+    @Autowired
+    private IHospitalService iHospitalService;
+
+    @Autowired
+    private IFailService iFailService;
 
     @PostMapping("saveReroute")
     @ApiOperation(value = "新增改约记录")
     @ResponseBody
     public DataResult saveReroute(@ApiParam(name = "uId", value = "操作用户编号", required = true) Integer uId,
+                                  @ApiParam(name = "uName", value = "操作用户姓名", required = true) String uName,
+                                  @ApiParam(name = "cName", value = "客户姓名", required = true) String cName,
                                   @ApiParam(name = "reUId", value = "负责人编号", required = true) Integer reUId,
                                   @ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
                                   @ApiParam(name = "aId", value = "预约编号", required = true) Integer aId,
                                   @ApiParam(name = "reClId", value = "线索编号", required = true) Integer reClId,
-                                  @ApiParam(name = "arId", value = "未到店编号", required = true) Integer arId,
                                   @ApiParam(name = "reHId", value = "门诊编号", required = true) Integer reHId,
                                   @ApiParam(name = "reLastTime", value = "上次预约时间", required = true) Timestamp reLastTime,
                                   @ApiParam(name = "reTime", value = "本次预约时间", required = true) Timestamp reTime,
-                                  @ApiParam(name = "reCause", value = "改约原因", required = true) String reCause){
+                                  @ApiParam(name = "reCause", value = "改约原因", required = true) String reCause,
+                                  @ApiParam(name = "flId", value = "未成交编号", required = true) Integer flId){
+        //根据门诊编号查询门诊
+        Hospital hospital = iHospitalService.queryHByHId(reHId);
         //新增操作记录
-        Operating operating = new Operating(cId, uId, "改约了客户");
+        Operating operating = new Operating(cId, uId, "改约", uName + "重新为客户" + cName + "预约了门诊（" + hospital.gethName() + "/" + reTime + "）");
         iOperatingService.saveOperating(operating);
         //根据预约类型查询编号
         Integer atId = iAtypeService.queryAByAType("改约");
+        //编辑预约状态为失效
+        iAppointmentService.editAStatusByAIdAndAStatus(aId, -1);
         //新增预约记录
         Appointment appointment = new Appointment(null, reClId, reTime, reHId, atId, 0, null);
         iAppointmentService.saveAppointment(appointment);
@@ -77,9 +91,9 @@ public class RerouteController {
         //新增改约记录
         Reroute reroute = new Reroute(reClId, reHId, reLastTime, reTime, reCause, reUId);
         iRerouteService.saveReroute(reroute);
-        //根据未到店编号编辑未到店客户为失效
-        if(arId != null){
-            iArriveService.editArInvalidByArId(arId);
+        //根据编号删除未成交记录
+        if (flId != null){
+            iFailService.delFlByFlId(flId);
         }
         return new DataResult(0, "新增成功");
     }

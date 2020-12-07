@@ -44,4 +44,9 @@ public class FailService implements IFailService{
         return failMapper.queryFlByFlAId(flAId);
     }
 
+    @Override
+    public void delFlByFlId(Integer flId) {
+        failMapper.delFlByFlId(flId);
+    }
+
 }

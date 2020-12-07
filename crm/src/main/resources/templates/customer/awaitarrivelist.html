@@ -86,10 +86,7 @@
 		</script>
 
 		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="arrive">未到店</a>
-			<a class="layui-btn layui-btn-xs" lay-event="appoint">改约</a>
-			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="fail">未成交</a>
-			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="success">成交</a>
+			<a class="layui-btn layui-btn-xs" lay-event="dispose">处理</a>
 		</script>
 
 		<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
@@ -107,6 +104,7 @@
 
             //从sessionStorage中获取用户编号和角色名称
             var uId = sessionStorage.getItem('uId');
+            var uName = sessionStorage.getItem('uName');
             var rName = sessionStorage.getItem('rName');
 
             //时间控件
@@ -260,7 +258,7 @@
                             ,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
                             ,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
                             ,{field: 'aTime', minWidth: 200, title: '预约时间', align:'center'}
-                            ,{field: 'isDue', minWidth: 200, title: '预约状态', align: 'center'
+                            ,{field: 'isDue', minWidth: 200, title: '预约状态', align: 'center', sort: true
                             	,templet: function (data) {
 									if (data.isDue == "预约已过") {
 										return "<span style='color: #FF0000;'>" + data.isDue + "</span>"
@@ -272,9 +270,8 @@
                             ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
                             ,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
                             ,{field: 'clEntryFee', minWidth: 120, title: '报名费', align:'center'}
-                            ,{field: 'clEntryFeeDetail', minWidth: 120, title: '报名费详情', align:'center'}
                             ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
-                            ,{fixed: 'right', minWidth: 240, title: '操作', toolbar: '#barDemo', align:'center'}
+                            ,{fixed: 'right', minWidth: 90, title: '操作', toolbar: '#barDemo', align:'center'}
                         ]
                     ]
                 });
@@ -300,7 +297,7 @@
                             ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
                             ,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
                             ,{field: 'aTime', minWidth: 200, title: '预约时间', align:'center'}
-                            ,{field: 'isDue', minWidth: 200, title: '预约状态', align:'center'
+                            ,{field: 'isDue', minWidth: 200, title: '预约状态', align:'center', sort: true
 								,templet:function (data){
 									if (data.isDue == "预约已过"){
                                     	return "<span style='color: #FF0000;'>"+data.isDue+"</span>"
@@ -312,9 +309,8 @@
                             ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
                             ,{field: 'clMessage', minWidth: 120, title: '症状信息', align:'center'}
                             ,{field: 'clEntryFee', minWidth: 120, title: '报名费', align:'center'}
-                            ,{field: 'clEntryFeeDetail', minWidth: 120, title: '报名费详情', align:'center'}
                             ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
-                            ,{fixed: 'right', minWidth: 240, title: '操作', toolbar: '#barDemo', align:'center'}
+                            ,{fixed: 'right', minWidth: 90, title: '操作', toolbar: '#barDemo', align:'center'}
                         ]
                     ]
                 });
@@ -335,9 +331,9 @@
 			table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
 				var data = obj.data //获得当前行数据
 					,layEvent = obj.event; //获得 lay-event 对应的值
-				if(layEvent === 'arrive'){
+				/*if(layEvent === 'arrive'){
 					//弹出未到店页面
-					var ix = layer.open({
+					layer.open({
 						type: 2, //层类型，iframe
 						title: '新增未到店客户',
 						content: ['/arrivesave?cId='+data.cId+'&clId='+data.clId+'&aId='+data.aId+
@@ -373,7 +369,7 @@
 					});
 				} else if(layEvent === 'appoint'){
 					//弹出改约页面
-					var ix = layer.open({
+					layer.open({
 						type: 2, //层类型，iframe
 						title: '新增改约记录',
 						content: ['/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+
@@ -386,6 +382,7 @@
 							var body = layer.getChildFrame('body', index);
 							//获取值
 							var cId = $(body).find("#cId").val();
+                            var cName = $(body).find("#cName").val();
                             var reClId = $(body).find("#reClId").val();
                             var reUId = $(body).find("#reUId").val();
                             var aId = $(body).find("#aId").val();
@@ -394,11 +391,11 @@
 							var reTime = $(body).find("#reTime").val();
 							var reCause = $(body).find("#reCause").val();
 							if (reTime != '' && reCause != '' && reCause.trim() != '') {
-								$.post("/reroute/saveReroute", {uId:uId, cId:cId, reClId:reClId, reUId:reUId,
+								$.post("/reroute/saveReroute", {uId:uId, uName:uName, cName:cName, cId:cId, reClId:reClId, reUId:reUId,
 										aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause},
 									function (obj) {
 										layer.msg(obj.msg, {time: 500}, function () {
-											layer.close(ix);
+											layer.close(index);
 											tableReload();
 										});
 									}
@@ -413,7 +410,7 @@
 					});
 				} else if(layEvent === 'fail'){
 					//弹出未成交页面
-					var ix = layer.open({
+					layer.open({
 						type: 2, //层类型，iframe
 						title: '新增未成交客户',
 						content: ['/failsave?cId='+data.cId+'&clId='+data.clId+'&aId='+data.aId+
@@ -425,16 +422,17 @@
 							var body = layer.getChildFrame('body', index);
 							//获取值
                             var cId = $(body).find("#cId").val();
+                            var cName = $(body).find("#cName").val();
                             var clId = $(body).find("#clId").val();
 							var flAId = $(body).find("#flAId").val();
 							var flHId = $(body).find("#flHId").val();
 							var flCause = $(body).find("#flCause").val();
 							if (flCause != '' && flCause.trim() != '') {
-								$.post("/fail/saveFail", {uId:uId, cId:cId, clId:clId,
+								$.post("/fail/saveFail", {uId:uId, uName:uName, cName:cName, cId:cId, clId:clId,
 										flAId:flAId, flHId:flHId, flCause:flCause.trim()},
 									function (obj) {
 										layer.msg(obj.msg, {time: 500}, function () {
-											layer.close(ix);
+											layer.close(index);
 											tableReload();
 										});
 									}
@@ -449,7 +447,7 @@
 					});
 				} else if(layEvent === 'success'){
 					//弹出成交页面
-					var ix = layer.open({
+					layer.open({
 						type: 2, //层类型，iframe
 						title: '新增成交客户',
 						content: ['/successsave?cId='+data.cId+'&clId='+data.clId+'&sAId='+data.aId+
@@ -461,11 +459,13 @@
 							var body = layer.getChildFrame('body', index);
 							//获取值
                             var cId = $(body).find("#cId").val();
+                            var cName = $(body).find("#cName").val();
                             var clId = $(body).find("#clId").val();
 							var sAId = $(body).find("#sAId").val();
 							var sHId = $(body).find("#sHId").val();
 							var sMessage = $(body).find("#sMessage").val();
 							var sSum = $(body).find("#sSum").val();
+                            var sPaysum = $(body).find("#sPaysum").val();
 							var sRemark = $(body).find("#sRemark").val();
 							if (sSum != '' && sSum.trim() != '') {
 								//声明格式是否正确
@@ -476,20 +476,29 @@
 									verify = false;
 									return;
 								}
+                                //验证支付金额
+                                if(isNaN(sPaysum) || sPaysum <= 0 || parseFloat(sPaysum) > parseFloat(sSum)){
+                                    layer.msg("支付金额必须是大于零小于成交金额的数值");
+                                    verify = false;
+                                    return;
+                                }
 								if(verify) {
 									$.post("/success/saveSuccess", {
 											uId: uId,
+                                            uName:uName,
+											cName:cName,
                                             cId: cId,
                                             clId: clId,
 											sAId: sAId,
 											sHId: sHId,
 											sMessage: sMessage,
 											sSum: sSum.trim(),
+                                            sPaysum: sPaysum.trim(),
 											sRemark: sRemark
 										},
 										function (obj) {
 											layer.msg(obj.msg, {time: 500}, function () {
-												layer.close(ix);
+												layer.close(index);
 												tableReload();
 											});
 										}
@@ -503,7 +512,20 @@
 							layer.close(index);
 						}
 					});
-				}
+				}*/
+                if(layEvent === 'dispose') {
+                    //弹出处理页面
+                    layer.open({
+                        type: 2, //层类型，iframe
+                        title: '处理',
+                        content: ['/dispose?cId='+data.cId+'&clId='+data.clId+'&aId='+data.aId+'&aTime='+data.aTime+
+                        '&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+'&reUId='+data.clUId+'&clEntryFee='+data.clEntryFee],
+                        area: ['550px', '550px'],
+                        end: function(){
+                            tableReload();
+                        }
+                    });
+                }
 			});
 
 		</script>

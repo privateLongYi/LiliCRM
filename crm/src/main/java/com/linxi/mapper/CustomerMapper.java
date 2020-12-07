@@ -67,7 +67,7 @@ public interface CustomerMapper {
                                 @Param("clTypeId") Integer clTypeId);
 
     //新增客户
-    void saveCustomer(Customer c);
+    Integer saveCustomer(Customer c);
 
     //查询最大的编号（新增客户的编号）
     Integer queryMaxCId();
@@ -173,5 +173,20 @@ public interface CustomerMapper {
     //根据姓名和电话查询客户
     List<Customer> queryCByCNameAndCTel(@Param("cName") String cName,
                                         @Param("cTel") String cTel);
+
+    //根据姓名查询客户
+    List<Customer> queryCByCName(@Param("cName") String cName);
+
+    //根据用户编号和起始时间查询未成交客户数量
+    Integer getTotalFCByTime(@Param("uId") Integer uId,
+                           @Param("rName") String rName,
+                           @Param("beginTime") String beginTime,
+                           @Param("endTime") String endTime);
+
+    //根据用户编号和起始时间查询成交客户数量
+    Integer getTotalSCByTime(@Param("uId") Integer uId,
+                             @Param("rName") String rName,
+                             @Param("beginTime") String beginTime,
+                             @Param("endTime") String endTime);
 
 }

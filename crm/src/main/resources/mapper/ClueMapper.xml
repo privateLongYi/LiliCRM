@@ -22,11 +22,11 @@
   </select>
 
   <!-- 新增线索 -->
-  <insert id="saveClue">
-    INSERT INTO clue(cl_c_id, cl_project, cl_place_time, cl_entry_fee, cl_earnest_detail,
+  <insert id="saveClue" useGeneratedKeys="true" keyProperty="clId">
+    INSERT INTO clue(cl_c_id, cl_project, cl_place_time, cl_entry_fee,
      cl_u_id, cl_source, cl_remark, cl_message, cl_type_id, cl_invalid)
     VALUES (#{clCId}, #{clProject}, #{clPlaceTime}, #{clEntryFee},
-    #{clUId}, #{clSource}, #{clRemark}, #{clMessage}, #{clTypeId}, 0)
+    #{clUId}, #{clSource}, #{clRemark}, #{clMessage}, #{clTypeId}, #{clInvalid})
   </insert>
 
   <!-- 根据编号删除线索 -->
@@ -37,7 +37,7 @@
   <!-- 根据编号编辑线索 -->
   <update id="editClByCId">
     UPDATE clue SET cl_project = #{clProject}, cl_entry_fee = #{clEntryFee},
-    cl_u_id = #{clUId}, cl_source = #{clSource}, cl_remark = #{clRemark},
+    cl_source = #{clSource}, cl_remark = #{clRemark},
     cl_message = #{clMessage}, cl_type_id = #{clTypeId}
     WHERE cl_c_id = #{clCId}
   </update>

@@ -156,4 +156,10 @@ public class SuccessService implements ISuccessService{
         return successMapper.queryRefundByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryRefundByClId(Integer clId) {
+        return successMapper.queryRefundByClId(clId);
+    }
+
 }

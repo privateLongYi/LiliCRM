@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>待到店处理</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <br />
+    <form class="layui-form" lay-filter="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户状态</label>
+            <div class="layui-input-block">
+                <input type="radio" name="status" value="arrive" title="未到店" lay-filter="change" checked>
+                <input type="radio" name="status" value="reroute" title="改约" lay-filter="change">
+                <input type="radio" name="status" value="fail" title="未成交" lay-filter="change">
+                <input type="radio" name="status" value="success" title="成交" lay-filter="change">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户姓名</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="cId" th:value="${cId}">
+                <input type="hidden" id="clId" th:value="${clId}">
+                <input type="hidden" id="aId" th:value="${aId}">
+                <input type="text" class="layui-input" id="cName" th:value="${cName}" readonly>
+            </div>
+        </div>
+        <!--未到店-->
+        <div id="arrive">
+            <div class="layui-form-item">
+                <label class="layui-form-label">门诊名称</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" th:value="${hName}" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">未到店原因</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" id="arCause" autocomplete="off"></textarea>
+                </div>
+            </div>
+        </div>
+        <!--改约-->
+        <div id="reroute" style="display: none;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">门诊名称</label>
+                <div class="layui-input-block">
+                    <input type="hidden" id="hName" th:value="${hName}">
+                    <input type="hidden" id="reUId" th:value="${reUId}">
+                    <select id="reHId"></select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">上次预约时间</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input"
+                           id="reLastTime" th:value="${aTime}" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">本次预约时间</label>
+                <div class="layui-input-block">
+                    <input type="text" id="reTime" readonly placeholder="请输入本次预约时间"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">改约原因</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" id="reCause" autocomplete="off"></textarea>
+                </div>
+            </div>
+        </div>
+        <!--未成交-->
+        <div id="fail" style="display: none;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">门诊名称</label>
+                <div class="layui-input-block">
+                    <input type="hidden" id="flHId" th:value="${hId}">
+                    <input type="text" class="layui-input" th:value="${hName}" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">未成交原因</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" id="flCause" autocomplete="off"></textarea>
+                </div>
+            </div>
+        </div>
+        <!--成交-->
+        <div id="success" style="display: none;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">门诊名称</label>
+                <div class="layui-input-block">
+                    <input type="hidden" id="sHId" th:value="${hId}">
+                    <input type="text" class="layui-input" th:value="${hName}" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">门诊反馈</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" id="feedback" autocomplete="off"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item" id="clEntryFee">
+                <label class="layui-form-label">抵扣报名费</label>
+                <div class="layui-input-block">
+                    <input type="hidden" id="isDeduction" th:value="${isDeduction}">
+                    <input type="radio" name="clEntryFee" value="0" title="否" checked>
+                    <input type="radio" name="clEntryFee" value="1" title="是">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span style="color: red;">*&nbsp;</span>成交金额
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" placeholder="请输入成交金额"
+                           autocomplete="off" id="sSum">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span style="color: red;">*&nbsp;</span>支付金额
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" placeholder="请输入支付金额"
+                           autocomplete="off" id="sPaysum">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" id="sRemark" autocomplete="off"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="text-align: center;">
+                <input type="hidden" id="action" value="/customer/arrive">
+                <button class="layui-btn" lay-submit="" lay-filter="login">确认保存</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
+
+<script>
+
+    var laydate = layui.laydate
+        ,$ = layui.jquery
+        ,layer = layui.layer
+        ,form = layui.form
+        ,element = layui.element
+
+    //从sessionStorage中获取用户编号和角色名称
+    var uId = sessionStorage.getItem('uId');
+    var uName = sessionStorage.getItem('uName');
+    var rName = sessionStorage.getItem('rName');
+
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#reTime' //指定元素
+        ,type: 'datetime' //时间格式
+        ,trigger: 'click' //采用click弹出
+    });
+
+    //隐藏抵扣报名费
+    if ($("#isDeduction").val() == 0){
+        $("#clEntryFee").hide();
+    }
+
+    //获取所有门诊
+    $.get("/hospital/queryHospital", function (res) {
+        //定义负责人下拉框内容
+        var html = "";
+        //获取负责人编号
+        var hName = $("#hName").val();
+        $.each(res.data, function (index, item) {
+            if (hName == item.hName) {
+                html += "<option value='" + item.hId + "' selected>" + item.hName + "</option>";
+            } else {
+                html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
+            }
+        });
+        $("#reHId").append(html);
+        //append后必须重新渲染
+        form.render('select');
+    })
+
+    form.on("radio(change)", function (data) {
+        var status = data.value;
+        if (status == "arrive") {
+            //显示和隐藏
+            $("#arrive").show();
+            $("#reroute").hide();
+            $("#fail").hide();
+            $("#success").hide();
+            //改变提交地址
+            $("#action").val("/customer/arrive")
+        } else if (status == "reroute") {
+            //显示和隐藏
+            $("#arrive").hide();
+            $("#reroute").show();
+            $("#fail").hide();
+            $("#success").hide();
+            //改变提交地址
+            $("#action").val("/reroute/saveReroute")
+        } else if (status == "fail") {
+            //显示和隐藏
+            $("#arrive").hide();
+            $("#reroute").hide();
+            $("#fail").show();
+            $("#success").hide();
+            //改变提交地址
+            $("#action").val("/fail/saveFail")
+        } else if (status == "success") {
+            //显示和隐藏
+            $("#arrive").hide();
+            $("#reroute").hide();
+            $("#fail").hide();
+            $("#success").show();
+            //改变提交地址
+            $("#action").val("/success/saveSuccess")
+        }
+    });
+
+    form.on('submit(login)', function (data) {
+        data = data.field;
+        //获取值
+        var status = data.status;
+        var cId = $("#cId").val();
+        var clId = $("#clId").val();
+        var cName = $("#cName").val();
+        var action = $("#action").val();
+        if (status == "arrive") {
+            //获取值
+            var aId = $("#aId").val();
+            var arCause = $("#arCause").val();
+            if (arCause != ""){
+                $.post(action, {uId:uId, uName:uName, cId:cId, cName:cName,
+                         clId:clId, aId:aId, cause:arCause},
+                    function (obj) {
+                        layer.msg(obj.msg, {time: 500}, function () {
+                            parent.layer.closeAll();
+                        });
+                    }
+                )
+            } else {
+                layer.msg("请填写未到店原因")
+            }
+        } else if (status == "reroute") {
+            //获取值
+            var aId = $("#aId").val();
+            var reUId = $("#reUId").val();
+            var reHId = $("#reHId").val();
+            var reLastTime = $("#reLastTime").val();
+            var reTime = $("#reTime").val();
+            var reCause = $("#reCause").val();
+            if (reTime != '' && reCause != ''){
+                $.post(action, {uId:uId, uName:uName, cId:cId, cName:cName,
+                        reClId:clId, reUId:reUId, aId:aId, reHId:reHId, reLastTime:reLastTime,
+                        reTime:reTime, reCause:reCause},
+                    function (obj) {
+                        layer.msg(obj.msg, {time: 500}, function () {
+                            parent.layer.closeAll();
+                        });
+                    }
+                )
+            } else {
+                layer.msg("请填写带星号的必填项")
+            }
+        } else if (status == "fail") {
+            //获取值
+            var flAId = $("#aId").val();
+            var flHId = $("#flHId").val();
+            var flCause = $("#flCause").val();
+            if (flCause != "") {
+                $.post(action, {
+                        uId: uId, uName: uName, cId: cId, cName: cName,
+                        clId: clId, flAId: flAId, flHId: flHId, flCause: flCause
+                    },
+                    function (obj) {
+                        layer.msg(obj.msg, {time: 500}, function () {
+                            parent.layer.closeAll();
+                        });
+                    }
+                )
+            } else {
+                layer.msg("请填写未成交原因")
+            }
+        } else if (status == "success") {
+            //获取值
+            var sSum = $("#sSum").val();
+            var sPaysum = $("#sPaysum").val();
+            var sAId = $("#aId").val();
+            var sHId = $("#sHId").val();
+            var sMessage = $("#feedback").val();
+            var isDeduction = "";
+            if ($("[name=clEntryFee]")[1].checked){
+                isDeduction = $("#isDeduction").val();
+            }
+            var sRemark = $("#sRemark").val();
+            if (sSum != '' && sSum.trim() != '') {
+                //声明格式是否正确
+                var verify = true;
+                //验证成交金额
+                if(isNaN(sSum) || sSum <= 0){
+                    layer.msg("成交金额必须是大于零的数值");
+                    verify = false;
+                    return;
+                }
+                //验证支付金额
+                if(isNaN(sPaysum) || sPaysum <= 0 || parseFloat(sPaysum) > parseFloat(sSum)){
+                    layer.msg("支付金额必须是大于零小于成交金额的数值");
+                    verify = false;
+                    return;
+                }
+                if(verify) {
+                    $.post(action, {
+                            uId: uId,
+                            uName:uName,
+                            cName:cName,
+                            cId: cId,
+                            clId: clId,
+                            sAId: sAId,
+                            sHId: sHId,
+                            sMessage: sMessage,
+                            isDeduction: isDeduction,
+                            sSum: sSum.trim(),
+                            sPaysum: sPaysum.trim(),
+                            sRemark: sRemark
+                        },
+                        function (obj) {
+                            layer.msg(obj.msg, {time: 500}, function () {
+                                parent.layer.closeAll();
+                            });
+                        }
+                    );
+                }
+            } else {
+                layer.msg('请填写带星号的必填项');
+            }
+        }
+        return false;
+    })
+
+</script>
+</body>
+</html>

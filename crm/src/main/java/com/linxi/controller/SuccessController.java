@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,15 @@ public class SuccessController {
     @Autowired
     private IPaytypeService iPaytypeService;
 
+    @Autowired
+    private IFollowService iFollowService;
+
+    @Autowired
+    private IAtypeService iAtypeService;
+
+    @Autowired
+    private ICustomerService iCustomerService;
+
     @GetMapping("querySByClId")
     @ApiOperation(value = "根据线索编号查询成交客户")
     @ResponseBody
@@ -73,7 +83,7 @@ public class SuccessController {
     public DataResult delSBySId(@ApiParam(value = "用户编号", required = true) Integer uId,
                                 @ApiParam(value = "成交客户编号", required = true) Integer sId){
         //新增操作记录
-        Operating operating = new Operating(sId, uId, "删除了成交客户");
+        Operating operating = new Operating(sId, uId, "删除了成交客户", "");
         iOperatingService.saveOperating(operating);
         //删除成交客户
         iSuccessService.delSBySId(sId);
@@ -95,7 +105,9 @@ public class SuccessController {
     @ApiOperation(value = "根据成交客户编号编辑成交客户")
     @ResponseBody
     public DataResult editSBySId(@ApiParam(value = "用户编号", required = true) Integer uId,
-                                 @ApiParam(value = "用户编号", required = true) Integer cId,
+                                 @ApiParam(value = "用户姓名", required = true) String uName,
+                                 @ApiParam(value = "客户姓名", required = true) String cName,
+                                 @ApiParam(value = "客户编号", required = true) Integer cId,
                                  @ApiParam(value = "成交编号", required = true) Integer sId,
                                  @ApiParam(value = "成交客户编号", required = true) Integer sAId,
                                  @ApiParam(value = "门诊编号", required = true) Integer sHId,
@@ -103,7 +115,7 @@ public class SuccessController {
                                  @ApiParam(value = "总成交金额", required = true) Integer sSum,
                                  @ApiParam(value = "成交备注", required = true) String sRemark){
         //新增操作记录
-        Operating operating = new Operating(cId, uId, "编辑了成交客户");
+        Operating operating = new Operating(cId, uId, "编辑成交", uName + "更新了客户" + cName + "的成交信息");
         iOperatingService.saveOperating(operating);
         //编辑成交客户
         Success success = new Success(sId, sAId, sHId, sMessage, sSum, null, sRemark, 0);
@@ -115,21 +127,33 @@ public class SuccessController {
     @ApiOperation(value = "新增成交客户")
     @ResponseBody
     public DataResult saveSuccess(@ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
+                                  @ApiParam(name = "uName", value = "用户姓名", required = true) String uName,
+                                  @ApiParam(name = "cName", value = "客户姓名", required = true) String cName,
                                   @ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
                                   @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
                                   @ApiParam(name = "sAId", value = "预约编号", required = true) Integer sAId,
                                   @ApiParam(name = "sHId", value = "门诊编号", required = true) Integer sHId,
                                   @ApiParam(name = "sMessage", value = "成交信息", required = true) String sMessage,
+                                  @ApiParam(name = "isDeduction", value = "抵扣报名费", required = true) String isDeduction,
                                   @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
                                   @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
                                   @ApiParam(name = "sRemark", value = "备注", required = true) String sRemark){
         //添加操作记录
-        Operating operating = new Operating(cId, uId, "添加了成交客户");
+        Operating operating = new Operating(cId, uId, "新增成交项目", uName + "给" + cName + "添加了一条新成交");
         iOperatingService.saveOperating(operating);
+        //新增跟进记录
+        Follow follow = new Follow(null, clId, 1, new Timestamp(System.currentTimeMillis()), sMessage, uId);
+        iFollowService.saveFollow(follow);
         //根据客户状态查询编号
         Integer clTypeId = iCtypeService.queryCtypeByCtType("成交");
         //改变客户状态为成交状态
         iClueService.editClTypeIdByClId(clId, clTypeId);
+        //编辑报名费为已抵扣
+        if (isDeduction.equals("1")){
+            //根据线索编号查询线索
+            Clue clue = iClueService.queryClByClId(clId);
+            iClueService.editClByClId(clId, clue.getClEntryFee() + "(已抵扣)");
+        }
         //新增成交客户
         Success success = new Success(null, sAId, sHId, sMessage, sSum, sPaysum, sRemark, 0);
         iSuccessService.saveSuccess(success);
@@ -275,7 +299,10 @@ public class SuccessController {
     @GetMapping("refundMoney")
     @ApiOperation(value = "退款")
     @ResponseBody
-    public DataResult refundMoney(@ApiParam(value = "操作用户编号", required = true) Integer uId,
+    public DataResult refundMoney(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                  @ApiParam(value = "用户姓名", required = true) String uName,
+                                  @ApiParam(value = "客户编号", required = true) Integer cId,
+                                  @ApiParam(value = "客户姓名", required = true) String cName,
                                   @ApiParam(value = "成交客户编号", required = true) Integer paySId,
                                   @ApiParam(value = "成交退款金额", required = true) Integer refundsSum,
                                   @ApiParam(value = "支付退款金额", required = true) Integer refundsPaysum,
@@ -291,6 +318,9 @@ public class SuccessController {
         //新增支付记录
         Payrecord payrecord = new Payrecord(null, paySId, paySum, null, payRemark, payTypeId);
         iPayrecordService.savePayrecord(payrecord);
+        //新增操作记录
+        Operating operating = new Operating(cId, uId, "退款", uName + "处理了客户" + cName + "的退款");
+        iOperatingService.saveOperating(operating);
         return new DataResult(0, "操作成功");
     }
 
@@ -356,6 +386,169 @@ public class SuccessController {
         List<Success> successes = iSuccessService.querySByTime((page - 1) * limit, limit, uId, rName, beginTime, endTime);
         Integer total = iSuccessService.getTotalByTime(uId, rName, beginTime, endTime);
         return new DataResult(0, "操作成功", total, successes);
+    }
+
+    @PostMapping("saveCAndAAndS")
+    @ApiOperation(value = "新增客户信息和预约信息和成交信息")
+    @ResponseBody
+    public DataResult saveCAndAAndS(@ApiParam(name = "uId", value = "操作用户编号", required = true) Integer uId,
+                                    @ApiParam(name = "uName", value = "操作用户姓名", required = true) String uName,
+                                    @ApiParam(name = "cName", value = "姓名", required = true) String cName,
+                                    @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
+                                    @ApiParam(name = "cAge", value = "年龄", required = false) Integer cAge,
+                                    @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
+                                    @ApiParam(name = "clProject", value = "报名项目", required = true) String clProject,
+                                    @ApiParam(name = "clPlaceTime", value = "报名时间", required = true) String clPlaceTime,
+                                    @ApiParam(name = "clEntryFee", value = "报名费", required = false) String clEntryFee,
+                                    @ApiParam(name = "clUId", value = "用户编号", required = true) Integer clUId,
+                                    @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
+                                    @ApiParam(name = "clTypeId", value = "状态编号", required = true) Integer clTypeId,
+                                    @ApiParam(name = "clRemark", value = "备注", required = false) String clRemark,
+                                    @ApiParam(name = "clMessage", value = "症状信息", required = false) String clMessage,
+                                    @ApiParam(name = "aTime", value = "预约时间", required = false) String aTime,
+                                    @ApiParam(name = "aHId", value = "预约门诊编号", required = false) Integer aHId,
+                                    @ApiParam(name = "atType", value = "预约类型", required = false) String atType,
+                                    @ApiParam(name = "sHId", value = "成交门诊编号", required = true) Integer sHId,
+                                    @ApiParam(name = "sMessage", value = "成交信息", required = true) String sMessage,
+                                    @ApiParam(name = "isDeduction", value = "抵扣报名费", required = true) String isDeduction,
+                                    @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
+                                    @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
+                                    @ApiParam(name = "sRemark", value = "备注", required = true) String sRemark) {
+        //创建客户
+        Customer c = new Customer(null, cName, cSex, cAge, cTel, null);
+        //根据姓名查询客户
+        List<Customer> customers1 = iCustomerService.queryCByCName(cName);
+        if (customers1.size() != 0) {
+            String s = customers1.get(0).getcName();
+            if (s.contains("(")){
+                String substring = s.substring(s.indexOf("(") + 1, s.indexOf(")"));
+                Integer num = Integer.parseInt(substring) + 1;
+                String number = "(" + num + ")";
+                c.setcName(c.getcName() + number);
+            } else {
+                String number = "(1)";
+                c.setcName(c.getcName() + number);
+            }
+        }
+        //新增客户
+        iCustomerService.saveCustomer(c);
+        //新增线索
+        Clue clue = new Clue(null, c.getcId(), clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
+        iClueService.saveClue(clue);
+        //新增操作记录
+        Operating operating = new Operating(c.getcId(), uId, "新增", uName + "添加了客户" + cName);
+        iOperatingService.saveOperating(operating);
+        //根据客户状态查询编号
+        Integer clTypeId2 = iCtypeService.queryCtypeByCtType("待到店");
+        //改变客户状态为待到店状态
+        iClueService.editClTypeIdByClId(clue.getClId(), clTypeId2);
+        //根据预约类型查询编号
+        Integer aTypeId = iAtypeService.queryAByAType(atType);
+        //新增预约客户
+        Appointment appointment = new Appointment(null, clue.getClId(), Timestamp.valueOf(aTime), aHId, aTypeId, 0, null);
+        iAppointmentService.saveAppointment(appointment);
+        //根据线索编号查询客户
+        Customer customer = iCustomerService.queryCByClId(clue.getClId());
+        //根据门诊编号查询门诊
+        Hospital hospital = iHospitalService.queryHByHId(aHId);
+        //新增操作记录
+        Operating operating1 = new Operating(customer.getcId(), uId, "预约", uName + "为" + customer.getcName() + "预约了" + hospital.gethName());
+        iOperatingService.saveOperating(operating1);
+        //添加操作记录
+        Operating operating2 = new Operating(customer.getcId(), uId, "新增成交项目", uName + "给" + cName + "添加了一条新成交");
+        iOperatingService.saveOperating(operating2);
+        //新增跟进记录
+        Follow follow = new Follow(null, clue.getClId(), 1, new Timestamp(System.currentTimeMillis()), sMessage, uId);
+        iFollowService.saveFollow(follow);
+        //根据客户状态查询编号
+        Integer clTypeId3 = iCtypeService.queryCtypeByCtType("成交");
+        //改变客户状态为成交状态
+        iClueService.editClTypeIdByClId(clue.getClId(), clTypeId3);
+        //编辑报名费为已抵扣
+        if (isDeduction.equals("1")){
+            //根据线索编号查询线索
+            Clue clue2 = iClueService.queryClByClId(clue.getClId());
+            iClueService.editClByClId(clue.getClId(), clue2.getClEntryFee() + "(已抵扣)");
+        }
+        //新增成交客户
+        Success success = new Success(null, appointment.getaId(), sHId, sMessage, sSum, sPaysum, sRemark, 0);
+        iSuccessService.saveSuccess(success);
+        //根据预约编号编辑预约状态
+        iAppointmentService.editAStatusByAIdAndAStatus(appointment.getaId(), 2);
+        if (sPaysum != 0){
+            //查询最大的成交编号
+            Integer sId = iSuccessService.queryMaxSId();
+            //查询支付类型为退款的编号
+            Integer payId = iPaytypeService.queryPByPayType("首次缴费");
+            //新增支付记录
+            Payrecord payrecord = new Payrecord(null, sId, sPaysum, null, null, payId);
+            iPayrecordService.savePayrecord(payrecord);
+        }
+        return new DataResult(0, "新增成功");
+    }
+
+    @PostMapping("saveAAndS")
+    @ApiOperation(value = "新增预约信息和成交信息")
+    @ResponseBody
+    public DataResult saveAAndS(@ApiParam(name = "uId", value = "操作用户编号", required = true) Integer uId,
+                                @ApiParam(name = "uName", value = "操作用户姓名", required = true) String uName,
+                                @ApiParam(name = "aClId", value = "线索编号", required = true) Integer aClId,
+                                @ApiParam(name = "aTime", value = "预约时间", required = false) String aTime,
+                                @ApiParam(name = "aHId", value = "预约门诊编号", required = false) Integer aHId,
+                                @ApiParam(name = "atType", value = "预约类型", required = false) String atType,
+                                @ApiParam(name = "sHId", value = "成交门诊编号", required = true) Integer sHId,
+                                @ApiParam(name = "sMessage", value = "成交信息", required = true) String sMessage,
+                                @ApiParam(name = "isDeduction", value = "抵扣报名费", required = true) String isDeduction,
+                                @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
+                                @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
+                                @ApiParam(name = "sRemark", value = "备注", required = true) String sRemark) {
+        //根据客户状态查询编号
+        Integer clTypeId = iCtypeService.queryCtypeByCtType("待到店");
+        //改变客户状态为待到店状态
+        iClueService.editClTypeIdByClId(aClId, clTypeId);
+        //根据预约类型查询编号
+        Integer aTypeId = iAtypeService.queryAByAType(atType);
+        //新增预约客户
+        Appointment appointment = new Appointment(null, aClId, Timestamp.valueOf(aTime), aHId, aTypeId, 0, null);
+        iAppointmentService.saveAppointment(appointment);
+        //根据线索编号查询客户
+        Customer customer = iCustomerService.queryCByClId(aClId);
+        //根据门诊编号查询门诊
+        Hospital hospital = iHospitalService.queryHByHId(aHId);
+        //新增操作记录
+        Operating operating1 = new Operating(customer.getcId(), uId, "预约", uName + "为" + customer.getcName() + "预约了" + hospital.gethName());
+        iOperatingService.saveOperating(operating1);
+        //添加操作记录
+        Operating operating2 = new Operating(customer.getcId(), uId, "新增成交项目", uName + "给" + customer.getcName() + "添加了一条新成交");
+        iOperatingService.saveOperating(operating2);
+        //新增跟进记录
+        Follow follow = new Follow(null, aClId, 1, new Timestamp(System.currentTimeMillis()), sMessage, uId);
+        iFollowService.saveFollow(follow);
+        //根据客户状态查询编号
+        Integer clTypeId3 = iCtypeService.queryCtypeByCtType("成交");
+        //改变客户状态为成交状态
+        iClueService.editClTypeIdByClId(aClId, clTypeId3);
+        //编辑报名费为已抵扣
+        if (isDeduction.equals("1")){
+            //根据线索编号查询线索
+            Clue clue2 = iClueService.queryClByClId(aClId);
+            iClueService.editClByClId(aClId, clue2.getClEntryFee() + "(已抵扣)");
+        }
+        //新增成交客户
+        Success success = new Success(null, appointment.getaId(), sHId, sMessage, sSum, sPaysum, sRemark, 0);
+        iSuccessService.saveSuccess(success);
+        //根据预约编号编辑预约状态
+        iAppointmentService.editAStatusByAIdAndAStatus(appointment.getaId(), 2);
+        if (sPaysum != 0){
+            //查询最大的成交编号
+            Integer sId = iSuccessService.queryMaxSId();
+            //查询支付类型为退款的编号
+            Integer payId = iPaytypeService.queryPByPayType("首次缴费");
+            //新增支付记录
+            Payrecord payrecord = new Payrecord(null, sId, sPaysum, null, null, payId);
+            iPayrecordService.savePayrecord(payrecord);
+        }
+        return new DataResult(0, "新增成功");
     }
 
 }

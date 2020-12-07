@@ -1,6 +1,7 @@
 package com.linxi.controller;
 
-import com.linxi.service.ICtypeService;
+import com.linxi.entity.Follow;
+import com.linxi.service.IFollowService;
 import com.linxi.service.IFtypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,12 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @Api(tags = "视图", description = "负责返回视图")
 @Controller
 public class ViewController {
 
     @Autowired
-    private ICtypeService iCtypeService;
+    private IFollowService iFollowService;
 
     @Autowired
     private IFtypeService iFtypeService;
@@ -30,21 +33,6 @@ public class ViewController {
     @ApiOperation(value = "客户信息列表")
     public String customerlist(){
         return "customer/customerlist";
-    }
-
-    @GetMapping("screen")
-    @ApiOperation(value = "高级筛选")
-    public String screen(@ApiParam(name = "cType", value = "客户状态", required = true) String cType, ModelMap map){
-        if (cType != null) {
-            //根据客户状态查询编号
-            Integer cTypeId = iCtypeService.queryCtypeByCtType(cType);
-            map.addAttribute("cTypeId", cTypeId);
-            map.addAttribute("cType", cType);
-        } else {
-            map.addAttribute("cTypeId", 0);
-            map.addAttribute("cType", "");
-        }
-        return "screen/screen";
     }
 
     @GetMapping("customer/customersave")
@@ -152,22 +140,34 @@ public class ViewController {
     @ApiOperation(value = "待到店客户列表")
     public String awaitarrive(){return "customer/awaitarrivelist";}
 
-    @GetMapping("arrivesave")
-    @ApiOperation(value = "新增未到店客户")
-    public String arrivesave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
-                             @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
-                             @ApiParam(name = "aId", value = "预约编号", required = true) Integer aId,
-                             @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
-                             @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
-                             @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
-                             ModelMap map){
+    @GetMapping("dispose")
+    @ApiOperation(value = "待到店处理")
+    public String dispose(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                          @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
+                          @ApiParam(name = "aId", value = "预约编号", required = true) Integer aId,
+                          @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
+                          @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
+                          @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
+                          @ApiParam(name = "reUId", value = "负责人编号", required = true) Integer reUId,
+                          @ApiParam(name = "aTime", value = "预约时间", required = true) String aTime,
+                          @ApiParam(name = "clEntryFee", value = "报名费", required = true) String clEntryFee,
+                          ModelMap map){
         map.addAttribute("cId", cId);
         map.addAttribute("clId", clId);
         map.addAttribute("aId", aId);
+        map.addAttribute("aTime", aTime);
         map.addAttribute("cName", cName);
         map.addAttribute("hId", hId);
         map.addAttribute("hName", hName);
-        return "customer/arrivesave";
+        map.addAttribute("reUId", reUId);
+        if (clEntryFee == null || clEntryFee.equals("null") || clEntryFee.equals("")){
+            map.addAttribute("isDeduction", 0);
+        } else if ((clEntryFee == null || !clEntryFee.equals("null")) && (clEntryFee.contains("已抵扣") || clEntryFee.contains("已退还"))){
+            map.addAttribute("isDeduction", 0);
+        } else {
+            map.addAttribute("isDeduction", 1);
+        }
+        return "customer/dispose";
     }
 
     @GetMapping("reroutesave")
@@ -175,7 +175,6 @@ public class ViewController {
     public String reroutesave(@ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
                               @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
                               @ApiParam(name = "reUId", value = "负责人编号", required = true) Integer reUId,
-                              @ApiParam(name = "arId", value = "未到店编号", required = true) Integer arId,
                               @ApiParam(name = "aId", value = "预约编号", required = true) Integer aId,
                               @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
                               @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
@@ -185,7 +184,6 @@ public class ViewController {
         map.addAttribute("cId", cId);
         map.addAttribute("clId", clId);
         map.addAttribute("reUId", reUId);
-        map.addAttribute("arId", arId);
         map.addAttribute("aId", aId);
         map.addAttribute("cName", cName);
         map.addAttribute("hId", hId);
@@ -220,6 +218,7 @@ public class ViewController {
                               @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
                               @ApiParam(name = "hId", value = "门诊编号", required = true) Integer hId,
                               @ApiParam(name = "hName", value = "门诊名称", required = true) String hName,
+                              @ApiParam(name = "clEntryFee", value = "报名费", required = true) String clEntryFee,
                               ModelMap map){
         map.addAttribute("cId", cId);
         map.addAttribute("clId", clId);
@@ -227,6 +226,13 @@ public class ViewController {
         map.addAttribute("cName", cName);
         map.addAttribute("hId", hId);
         map.addAttribute("hName", hName);
+        if (clEntryFee == null || clEntryFee.equals("null") || clEntryFee.equals("")){
+            map.addAttribute("isDeduction", 0);
+        } else if ((clEntryFee == null || !clEntryFee.equals("null")) && (clEntryFee.contains("已抵扣") || clEntryFee.contains("已退还"))){
+            map.addAttribute("isDeduction", 0);
+        } else {
+            map.addAttribute("isDeduction", 1);
+        }
         return "success/successsave";
     }
 
@@ -246,14 +252,21 @@ public class ViewController {
                               @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
                               @ApiParam(name = "ftType", value = "回访类型", required = true) String ftType,
                               ModelMap map){
-        //跟进回访类型查询编号
+        //跟进跟进类型查询编号
         Integer ftId = iFtypeService.queryFtIdByFtType(ftType);
+        //根据线索编号查询跟进记录
+        List<Follow> follows = iFollowService.queryFByFClId(clId);
+        StringBuffer content = new StringBuffer();
+        for (Follow follow : follows){
+            content.append(follow.getfTime() + "  " + follow.getfContent() + "\n");
+        }
         map.addAttribute("cId", cId);
         map.addAttribute("clId", clId);
         map.addAttribute("clUId", clUId);
         map.addAttribute("cName", cName);
         map.addAttribute("ftId", ftId);
         map.addAttribute("ftType", ftType);
+        map.addAttribute("content", content);
         return "customer/followsave";
     }
 
@@ -286,10 +299,12 @@ public class ViewController {
     @GetMapping("payrecordsave")
     @ApiOperation(value = "新增支付记录")
     public String payrecordsave(@ApiParam(name = "sId", value = "成交客户编号", required = true) Integer sId,
-                                @ApiParam(name = "cName", value = "成交客户名称", required = true) String cName,
+                                @ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                                @ApiParam(name = "cName", value = "客户姓名", required = true) String cName,
                                 @ApiParam(name = "wk", value = "尾款", required = true) String wk,
                                 ModelMap map){
         map.addAttribute("sId", sId);
+        map.addAttribute("cId", cId);
         map.addAttribute("cName", cName);
         map.addAttribute("wk", wk);
         return "customer/payrecordsave";
@@ -358,22 +373,16 @@ public class ViewController {
         return "customer/editPrincipal";
     }
 
-    @GetMapping("refund")
-    @ApiOperation(value = "退定金")
-    public String refund(@ApiParam(name = "clId", value = "线索编号", required = true) String clId,
-                         ModelMap map){
-        map.addAttribute("clId", clId);
-        return "customer/refund";
-    }
-
     @GetMapping("refundMoney")
     @ApiOperation(value = "退款")
     public String refundMoney(@ApiParam(name = "sId", value = "成交客户编号", required = true) Integer sId,
-                              @ApiParam(name = "cName", value = "成交客户姓名", required = true) String cName,
+                              @ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
+                              @ApiParam(name = "cName", value = "客户姓名", required = true) String cName,
                               @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
                               @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
                               ModelMap map){
         map.addAttribute("sId", sId);
+        map.addAttribute("cId", cId);
         map.addAttribute("cName", cName);
         map.addAttribute("sSum", sSum);
         map.addAttribute("sPaysum", sPaysum);

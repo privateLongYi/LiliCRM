@@ -26,6 +26,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;性别
             </label>
             <div class="layui-input-inline layui-form">
+                <input type="radio" name="cSex" value="" title="未知" th:checked="${c.cSex == ''} ? true : false">
                 <input type="radio" name="cSex" value="男" title="男" th:checked="${c.cSex == '男'} ? true : false">
                 <input type="radio" name="cSex" value="女" title="女" th:checked="${c.cSex == '女'} ? true : false">
             </div>
@@ -70,32 +71,19 @@
 
         <br />
         <div class="layui-form-item">
-            <input type="hidden" id="page" th:value="${page}">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
-                <input type="hidden" id="uId" th:value="${c.clUId}">
-                <input type="hidden" id="clUId" th:value="${c.clUId}">
-            </label>
-            <div class="layui-input-inline layui-form" id="admin">
-                <select id="salelist" lay-filter="change">
-                    <option value=""></option>
-                </select>
-            </div>
-            <div class="layui-input-inline layui-form" id="sale">
-                <input type="text" id="saleman" readonly class="layui-input">
-            </div>
-            <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;来源
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;来源
             </label>
             <div class="layui-input-inline">
                 <input type="text" id="clSource" placeholder="请输入来源"
                        autocomplete="off" class="layui-input" th:value="${c.clSource}">
             </div>
             <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
             </label>
             <div class="layui-input-inline layui-form">
+                <input type="hidden" id="page" th:value="${page}">
                 <input type="hidden" id="typeId" th:value="${c.clTypeId}">
                 <input type="hidden" id="type" th:value="${c.cType}">
                 <input type="hidden" id="clTypeId" th:value="${c.clTypeId}">
@@ -141,147 +129,16 @@
         var uName = sessionStorage.getItem('uName');
         var rName = sessionStorage.getItem('rName');
 
-        if(rName == "管理员"){
-
-            //管理员登录，隐藏负责人文本框，显示负责人下拉框
-            $("#admin").addClass("layui-show");
-            $("#sale").addClass("layui-hide");
-
-            //获取从哪个页面过来的
-            var page = $("#page").val();
-
-            if(page == "customer") {
-                //获取角色为销售员的用户对象
-                $.get("/user/queryUserByRName", function (res) {
-                    //定义负责人下拉框内容
-                    var html = "";
-                    //获取负责人编号
-                    var clUId = $("#clUId").val();
-                    $.each(res.data, function (index, item) {
-                        if (clUId == item.uId) {
-                            html += "<option value='" + item.uId + "' selected>" + item.uName + "</option>";
-                        } else {
-                            html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
-                        }
-                    });
-                    $("#salelist").append(html);
-                    //append后必须重新渲染
-                    form.render('select');
-                })
-                //客户状态赋值
-                if($("#clUId").val() != ""){
-                    //状态赋值
-                    $("#cType").val($("#type").val());
-                    $("#clTypeId").val($("#typeId").val());
-                }else{
-                    //状态赋值
-                    $("#cType").val("待分配");
-                    $("#clTypeId").val("1");
-                }
-            }else if(page == "awaitcontact-awaitappoint") {
-                //状态赋值
-                $("#cType").val("待预约");
-                $("#clTypeId").val("3");
-                //禁用下拉框
-                $("#salelist").attr("disabled", "disabled");
-                //append后必须重新渲染
-                form.render('select');
-            }else if(page == "awaitcontact-edit"){
-                //禁用下拉框
-                $("#salelist").attr("disabled", "disabled");
-                //append后必须重新渲染
-                form.render('select');
-            }else{
-                //禁用下拉框
-                $("#salelist").attr("disabled", "disabled");
-                //append后必须重新渲染
-                form.render('select');
-            }
-        } else {
-            //销售员登录，显示负责人文本框，隐藏负责人下拉框
-            $("#admin").addClass("layui-hide");
-            $("#sale").addClass("layui-show");
-            //赋值
-            $("#saleman").val(uName);
-            $("#clUId").val(uId);
+        //状态赋值
+        $("#cType").val($("#type").val());
+        $("#clTypeId").val($("#typeId").val());
+        //获取从哪个页面过来的
+        var page = $("#page").val();
+        if(page == "awaitappoint") {
             //状态赋值
-            $("#cType").val($("#type").val());
-            $("#clTypeId").val($("#typeId").val());
-
-            //获取从哪个页面过来的
-            var page = $("#page").val();
-
-            if(page == "customer") {
-                //获取角色为销售员的用户对象
-                $.get("/user/queryUserByRName", function (res) {
-                    //定义负责人下拉框内容
-                    var html = "";
-                    //获取负责人编号
-                    var clUId = $("#clUId").val();
-                    $.each(res.data, function (index, item) {
-                        if (clUId == item.uId) {
-                            html += "<option value='" + item.uId + "' selected>" + item.uName + "</option>";
-                        } else {
-                            html += "<option value='" + item.uId + "'>" + item.uName + "</option>";
-                        }
-                    });
-                    $("#salelist").append(html);
-                    //append后必须重新渲染
-                    form.render('select');
-                })
-                //客户状态赋值
-                if($("#clUId").val() != ""){
-                    //状态赋值
-                    $("#cType").val($("#type").val());
-                    $("#clTypeId").val($("#typeId").val());
-                }else{
-                    //状态赋值
-                    $("#cType").val("待分配");
-                    $("#clTypeId").val("1");
-                }
-            }else if(page == "awaitcontact-awaitappoint") {
-                //状态赋值
-                $("#cType").val("待预约");
-                $("#clTypeId").val("3");
-                //禁用下拉框
-                $("#salelist").attr("disabled", "disabled");
-                //append后必须重新渲染
-                form.render('select');
-            }else if(page == "awaitcontact-edit"){
-                //禁用下拉框
-                $("#salelist").attr("disabled", "disabled");
-                //append后必须重新渲染
-                form.render('select');
-            }else{
-                //禁用下拉框
-                $("#salelist").attr("disabled", "disabled");
-                //append后必须重新渲染
-                form.render('select');
-            }
+            $("#cType").val("待预约");
+            $("#clTypeId").val("3");
         }
-
-        //下拉框改变事件
-        form.on('select(change)', function(data){
-            //改变负责人编号
-            $("#clUId").val(data.value+"");
-            //改变客户状态
-            if($("#clUId").val() != ""){
-                //没有改变负责人
-                if(data.value == $("#uId").val()){
-                    //状态赋值
-                    $("#cType").val($("#type").val());
-                    $("#clTypeId").val($("#typeId").val());
-                }else{
-                    //状态赋值
-                    $("#cType").val("待联系");
-                    $("#clTypeId").val("2");
-                }
-            }else{
-                //状态赋值
-                $("#cType").val("待分配");
-                $("#clTypeId").val("1");
-            }
-        });
 
     });
 

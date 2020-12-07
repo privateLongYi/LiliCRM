@@ -72,7 +72,7 @@ public class ReferralController {
         Appointment appointment = new Appointment(null, clId, Timestamp.valueOf(aTime), rHId, aTypeId, 0, null);
         iAppointmentService.saveAppointment(appointment);
         //新增操作记录
-        Operating operating = new Operating(cId, uId, "新增了转诊记录");
+        Operating operating = new Operating(cId, uId, "新增了转诊记录", "");
         iOperatingService.saveOperating(operating);
         //新增转诊记录
         Referral referral = new Referral(null, rAId, rFailHId, rHId, rMessage, rCause);

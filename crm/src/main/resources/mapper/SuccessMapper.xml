@@ -21,11 +21,13 @@
 
   <!--根据线索编号查询成交客户-->
   <select id="querySByClId" resultMap="BaseResultMap">
-    SELECT s.*, c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hName FROM success s
+    SELECT s.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId, u.u_name AS uName, cl.cl_entry_fee AS clEntryFee,
+    h.h_name AS hName, cl.cl_id AS clId, cl.cl_u_id AS clUId, c.c_tel AS cTel FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
-    LEFT JOIN hospital h ON s.s_h_id = h.h_id
+    LEFT JOIN hospital h ON s.s_h_id=h.h_id
+    LEFT JOIN `user` u ON u.u_id=cl.cl_u_id
     WHERE cl.cl_id = #{clId} AND cl.cl_invalid = 0 AND a.a_status = 2
     ORDER BY s_time DESC
     limit #{page}, #{limit}
@@ -63,14 +65,14 @@
   </update>
 
   <!--新增成交客户-->
-  <insert id="saveSuccess">
+  <insert id="saveSuccess" useGeneratedKeys="true" keyProperty="sId">
     INSERT INTO success(s_a_id, s_h_id, s_message, s_sum, s_paysum, s_remark, s_time, s_whether)
     VALUES (#{sAId}, #{sHId}, #{sMessage}, #{sSum}, #{sPaysum}, #{sRemark}, now(), #{sWhether})
   </insert>
 
   <!--根据筛选条件查询成交客户-->
   <select id="querySByScreen" resultMap="BaseResultMap">
-    SELECT s.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId, u.u_name AS uName,
+    SELECT s.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId, u.u_name AS uName, cl.cl_entry_fee AS clEntryFee,
     h.h_name AS hName, cl.cl_id AS clId, cl.cl_u_id AS clUId, c.c_tel AS cTel FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
@@ -165,7 +167,7 @@
 
   <!--根据用户编号和客户名称查询成交客户-->
   <select id="querySCByUIdAndCName" resultMap="BaseResultMap">
-    SELECT s.s_id, c.c_name AS cName, s.s_sum, s.s_paysum FROM success s
+    SELECT s.s_id, c.c_name AS cName, s.s_sum, s.s_paysum, c.c_id AS cId FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
@@ -373,5 +375,16 @@
 	GROUP BY s.s_id
   </select>
 
+  <!--根据线索编号查询退款总金额-->
+  <select id="queryRefundByClId" resultType="Integer">
+    SELECT SUM(p.pay_sum) AS refund FROM payrecord p
+    LEFT JOIN success s ON s.s_id=p.pay_s_id
+    LEFT JOIN appointment a ON a.a_id=s.s_a_id
+    LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
+    LEFT JOIN customer c ON c.c_id=cl.cl_c_id
+    LEFT JOIN hospital h ON s.s_h_id=h.h_id
+    WHERE cl.cl_invalid = 0 AND a.a_status = 2 AND p.pay_type_id = 3
+    AND cl.cl_id = #{clId}
+  </select>
 
 </mapper>

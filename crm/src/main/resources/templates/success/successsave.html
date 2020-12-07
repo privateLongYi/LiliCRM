@@ -17,7 +17,7 @@
                 <input type="hidden" id="cId" th:value="${cId}">
                 <input type="hidden" id="clId" th:value="${clId}">
                 <input type="hidden" id="sAId" th:value="${sAId}">
-                <input type="text" class="layui-input" th:value="${cName}" readonly>
+                <input type="text" class="layui-input" id="cName" th:value="${cName}" readonly>
             </div>
         </div>
         <div class="layui-form-item">
@@ -28,9 +28,17 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">成交信息</label>
+            <label class="layui-form-label">门诊反馈</label>
             <div class="layui-input-block">
                 <textarea class="layui-textarea" id="sMessage" autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item" id="clEntryFee">
+            <label class="layui-form-label">抵扣报名费</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="isDeduction" th:value="${isDeduction}">
+                <input type="radio" name="clEntryFee" value="0" title="否" checked>
+                <input type="radio" name="clEntryFee" value="1" title="是">
             </div>
         </div>
         <div class="layui-form-item">
@@ -63,14 +71,16 @@
 <script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
 <!--<script th:src="@{/layui/layui.js}"></script>-->
 <script>
-    //加载form、laydate
-    layui.use(['form', 'laydate'], function(){
-        var form = layui.form
-            ,laydate = layui.laydate
-            ,$ = layui.jquery
-            ,layer = layui.layer;
 
-    });
+    var form = layui.form
+        ,laydate = layui.laydate
+        ,$ = layui.jquery
+        ,layer = layui.layer;
+
+    //隐藏抵扣报名费
+    if ($("#isDeduction").val() == 0){
+        $("#clEntryFee").hide();
+    }
 
 </script>
 </body>

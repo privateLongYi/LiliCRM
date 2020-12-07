@@ -30,4 +30,7 @@ public interface IFailService {
     //根据预约编号查询未成交
     List<Fail> queryFlByFlAId(Integer flAId);
 
+    //根据编号删除未成交
+    void delFlByFlId(Integer flId);
+
 }

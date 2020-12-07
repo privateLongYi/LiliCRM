@@ -81,7 +81,7 @@ public class Appointment implements Serializable {
     /**
      * 预交金额
      */
-    private Integer clEarnest;
+    private String clEntryFee;
 
     /**
      * 成交总金额
@@ -276,12 +276,12 @@ public class Appointment implements Serializable {
         this.clProject = clProject;
     }
 
-    public Integer getClEarnest() {
-        return clEarnest;
+    public String getClEntryFee() {
+        return clEntryFee;
     }
 
-    public void setClEarnest(Integer clEarnest) {
-        this.clEarnest = clEarnest;
+    public void setClEntryFee(String clEntryFee) {
+        this.clEntryFee = clEntryFee;
     }
 
     public Integer getsSum() {

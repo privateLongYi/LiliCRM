@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>新增支付记录(退款)</title>
+    <title>退款</title>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
     <style>
         .list{cursor: pointer;height: 30px;padding: 5px;top: 0;line-height: 30px;}
@@ -21,6 +21,7 @@
             </label>
             <div class="layui-input-block">
                 <input type="hidden" id="paySId">
+                <input type="hidden" id="cId">
                 <input type="text" class="layui-input" autocomplete="off" id="cName">
                 <input type="hidden" id="page" value="1">
                 <input type="hidden" id="count">
@@ -91,7 +92,7 @@
             $.post("/success/querySCByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
-                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].sId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].sSum+"&quot;,&quot;"+data.data[i].sPaysum+"&quot;);'>"+data.data[i].cName+"</div>";
+                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].sId+"&quot;,&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].sSum+"&quot;,&quot;"+data.data[i].sPaysum+"&quot;);'>"+data.data[i].cName+"</div>";
                 }
                 //赋值
                 $("#data").html(html);
@@ -121,8 +122,9 @@
     });
 
     //赋值
-    function assign(sId, cName, sSum, sPaysum) {
+    function assign(sId, cId, cName, sSum, sPaysum) {
         $("#paySId").val(sId);
+        $("#cId").val(cId);
         $("#cName").val(cName);
         $("#sSum").val(sSum);
         $("#sPaysum").val(sPaysum);

@@ -40,39 +40,35 @@
 
 </div>
 <script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
-<!--<script th:src="@{/layui/layui.js}"></script>-->
 <script>
-    //加载form、laydate
-    layui.use(['form', 'laydate'], function(){
-        var form = layui.form
-            ,laydate = layui.laydate
-            ,$ = layui.jquery
-            ,layer = layui.layer;
 
-        //从sessionStorage中获取用户编号
-        var uId = sessionStorage.getItem('uId');
-        var rName = sessionStorage.getItem('rName');
+    var form = layui.form
+        ,laydate = layui.laydate
+        ,$ = layui.jquery
+        ,layer = layui.layer;
 
-        //时间控件
-        laydate.render({
-            elem: '#aTime' //指定元素
-            ,type: 'datetime' //时间格式
-            ,trigger: 'click' //采用click弹出
-        });
+    //从sessionStorage中获取用户编号
+    var uId = sessionStorage.getItem('uId');
+    var rName = sessionStorage.getItem('rName');
 
-        //获取所有门诊
-        $.get("/hospital/queryHospital", function (res){
-            //定义负责人下拉框内容
-            var html = "";
-            $.each(res.data, function (index, item) {
-                html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
-            });
-            $("#aHId").append(html);
-            //append后必须重新渲染
-            form.render('select');
-        })
-
+    //时间控件
+    laydate.render({
+        elem: '#aTime' //指定元素
+        ,type: 'datetime' //时间格式
+        ,trigger: 'click' //采用click弹出
     });
+
+    //获取所有门诊
+    $.get("/hospital/queryHospital", function (res){
+        //定义负责人下拉框内容
+        var html = "";
+        $.each(res.data, function (index, item) {
+            html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
+        });
+        $("#aHId").append(html);
+        //append后必须重新渲染
+        form.render('select');
+    })
 
 </script>
 </body>

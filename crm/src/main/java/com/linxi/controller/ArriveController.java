@@ -64,7 +64,7 @@ public class ArriveController {
                                  @ApiParam(name = "arHId", value = "门诊编号", required = true) Integer arHId,
                                  @ApiParam(name = "arCause", value = "未到店原因", required = true) String arCause){
         //添加操作记录
-        Operating operating = new Operating(cId, uId, "添加了未到店客户");
+        Operating operating = new Operating(cId, uId, "添加了未到店客户", "");
         iOperatingService.saveOperating(operating);
         //根据客户状态查询编号
         Integer clTypeId = iCtypeService.queryCtypeByCtType("未到店");

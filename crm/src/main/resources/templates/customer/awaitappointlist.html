@@ -105,6 +105,7 @@
 
             //从sessionStorage中获取用户编号和角色名称
             var uId = sessionStorage.getItem('uId');
+            var uName = sessionStorage.getItem('uName');
             var rName = sessionStorage.getItem('rName');
 
             //时间控件
@@ -371,7 +372,7 @@
 									}
 								}
 								if(verify){
-									$.post("/customer/editCByCId?cId="+data.cId, {uId: uId, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), clProject:clProject,
+									$.post("/customer/editCByCId?cId="+data.cId, {uId: uId, uName: uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), clProject:clProject,
 											clRemark:clRemark, clMessage:clMessage, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
 										function (obj) {
 											layer.msg(obj.msg, {time: 500}, function () {
@@ -394,7 +395,7 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '新增预约',
-						content: ['/appointmentsave?clId='+data.clId+'&cName='+data.cName+'&atType=普通预约'],
+						content: ['/appointmentsave?clId='+data.clId+'&cName='+data.cName+'&atType=初次预约'],
 						area: ['450px', '450px'],
 						resize: false,
 						btn: '确定',
@@ -406,7 +407,7 @@
 							var aHId = $(body).find("#aHId").val();
 							var atType = $(body).find("#atType").val();
 							if (aTime != '') {
-								$.post("/appointment/saveAppointment", {uId:uId, aClId:aClId, aTime:aTime,
+								$.post("/appointment/saveAppointment", {uId:uId, uName:uName, aClId:aClId, aTime:aTime,
 										aHId:aHId, atType:atType},
 									function (obj) {
 										layer.msg(obj.msg, {time: 500}, function () {

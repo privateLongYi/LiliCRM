@@ -1,7 +1,9 @@
 package com.linxi.controller;
 
+import com.linxi.entity.Customer;
 import com.linxi.entity.Follow;
 import com.linxi.entity.Operating;
+import com.linxi.service.ICustomerService;
 import com.linxi.service.IFollowService;
 import com.linxi.service.IOperatingService;
 import com.linxi.util.DataResult;
@@ -37,10 +39,14 @@ public class FollowController {
     @Autowired
     private IOperatingService iOperatingService;
 
+    @Autowired
+    private ICustomerService iCustomerService;
+
     @PostMapping("saveFollow")
     @ApiOperation(value = "新增客户跟进")
     @ResponseBody
     public DataResult queryFByFCId(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                   @ApiParam(value = "用户姓名", required = true) String uName,
                                    @ApiParam(value = "客户编号", required = true) Integer cId,
                                    @ApiParam(value = "线索编号", required = true) Integer fClId,
                                    @ApiParam(value = "负责人编号", required = true) Integer clUId,
@@ -48,8 +54,10 @@ public class FollowController {
                                    @ApiParam(value = "回访类型", required = true) String ftType,
                                    @ApiParam(value = "回访内容", required = true) String fContent,
                                    @ApiParam(value = "回访时间", required = true) String fTime){
+        //根据客户编号查询客户
+        Customer customer = iCustomerService.queryCByCId(cId);
         //新增操作记录
-        Operating operating = new Operating(cId, uId, "新增了"+ftType);
+        Operating operating = new Operating(cId, uId, ftType, uName + "添加了" + customer.getcName() + "的" + ftType);
         iOperatingService.saveOperating(operating);
         //新增跟进记录
         Follow follow = new Follow(null, fClId, fTypeId, Timestamp.valueOf(fTime), fContent, clUId);

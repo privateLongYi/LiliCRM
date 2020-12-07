@@ -11,10 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sound.midi.Soundbank;
 import javax.xml.crypto.Data;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -65,6 +67,8 @@ public class CustomerController {
                                    @ApiParam(name = "beginTime", value = "开始时间", required = false) String beginTime,
                                    @ApiParam(name = "endTime", value = "结束时间", required = false) String endTime,
                                    @ApiParam(name = "export", value = "是否导出", required = false) Integer export) {
+        System.out.println("0".equals(clEntryFee));
+        System.out.println("1".equals(clEntryFee));
         if (clTypeId == null && ctType != null) {
             //根据客户状态查询编号
             clTypeId = iCtypeService.queryCtypeByCtType(ctType);
@@ -101,7 +105,9 @@ public class CustomerController {
     @PostMapping("saveCustomer")
     @ApiOperation(value = "新增客户信息")
     @ResponseBody
-    public DataResult saveCustomer(@ApiParam(name = "cName", value = "姓名", required = true) String cName,
+    public DataResult saveCustomer(@ApiParam(name = "uId", value = "操作用户编号", required = true) Integer uId,
+                                   @ApiParam(name = "uName", value = "操作用户姓名", required = true) String uName,
+                                   @ApiParam(name = "cName", value = "姓名", required = true) String cName,
                                    @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
                                    @ApiParam(name = "cAge", value = "年龄", required = false) Integer cAge,
                                    @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
@@ -118,14 +124,30 @@ public class CustomerController {
         if (customers.size() != 0) {
             return new DataResult(1, "新增失败，姓名和电话号码重复！");
         } else {
-            //新增客户
+            //创建客户
             Customer c = new Customer(null, cName, cSex, cAge, cTel, null);
+            //根据姓名查询客户
+            List<Customer> customers1 = iCustomerService.queryCByCName(cName);
+            if (customers1.size() != 0) {
+                String s = customers1.get(0).getcName();
+                if (s.contains("(")){
+                    String substring = s.substring(s.indexOf("(") + 1, s.indexOf(")"));
+                    Integer num = Integer.parseInt(substring) + 1;
+                    String number = "(" + num + ")";
+                    c.setcName(c.getcName() + number);
+                } else {
+                    String number = "(1)";
+                    c.setcName(c.getcName() + number);
+                }
+            }
+            //新增客户
             iCustomerService.saveCustomer(c);
-            //查询新增客户的编号
-            Integer cId = iCustomerService.queryMaxCId();
             //新增线索
-            Clue clue = new Clue(null, cId, clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
+            Clue clue = new Clue(null, c.getcId(), clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
             iClueService.saveClue(clue);
+            //新增操作记录
+            Operating operating = new Operating(c.getcId(), uId, "新增", uName + "添加了客户" + cName);
+            iOperatingService.saveOperating(operating);
             return new DataResult(0, "新增成功");
         }
     }
@@ -133,15 +155,16 @@ public class CustomerController {
     @GetMapping("delCByCId")
     @ApiOperation(value = "删除客户信息")
     @ResponseBody
-    public DataResult delCByCId(@ApiParam(value = "客户编号", required = true) Integer cId,
-                                @ApiParam(value = "客户名称", required = true) String cName,
-                                @ApiParam(value = "用户编号", required = true) Integer uId) {
+    public DataResult delCByCId(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                @ApiParam(value = "用户姓名", required = true) String uName,
+                                @ApiParam(value = "客户编号", required = true) Integer cId,
+                                @ApiParam(value = "客户名称", required = true) String cName) {
         //删除客户
         iCustomerService.delCByCId(cId);
         //删除线索
         iClueService.delClByClCId(cId);
         //新增操作记录
-        Operating operating = new Operating(cId, uId, "删除了客户");
+        Operating operating = new Operating(cId, uId, "删除", uName + "删除了客户" + cName);
         iOperatingService.saveOperating(operating);
         return new DataResult(0, "删除成功");
     }
@@ -161,6 +184,7 @@ public class CustomerController {
     @ApiOperation(value = "编辑客户信息")
     @ResponseBody
     public DataResult editCByCId(@ApiParam(name = "uId", value = "操作用户编号", required = true) Integer uId,
+                                 @ApiParam(name = "uName", value = "操作用户姓名", required = true) String uName,
                                  @ApiParam(name = "cId", value = "编号", required = true) Integer cId,
                                  @ApiParam(name = "cName", value = "姓名", required = true) String cName,
                                  @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
@@ -168,7 +192,6 @@ public class CustomerController {
                                  @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
                                  @ApiParam(name = "clProject", value = "项目", required = true) String clProject,
                                  @ApiParam(name = "clEntryFee", value = "报名费", required = false) String clEntryFee,
-                                 @ApiParam(name = "clUId", value = "用户编号", required = false) Integer clUId,
                                  @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
                                  @ApiParam(name = "clTypeId", value = "状态", required = true) Integer clTypeId,
                                  @ApiParam(name = "clRemark", value = "备注", required = false) String clRemark,
@@ -178,11 +201,11 @@ public class CustomerController {
         //编辑客户
         iCustomerService.editCByCId(c);
         //创建线索
-        Clue clue = new Clue(null, cId, clProject, null, clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
+        Clue clue = new Clue(null, cId, clProject, null, clRemark, clEntryFee, null, clSource, clMessage, clTypeId, 0);
         //编辑线索
         iClueService.editClByCId(clue);
         //新增操作记录
-        Operating operating = new Operating(cId, uId, "编辑了客户");
+        Operating operating = new Operating(cId, uId, "编辑信息", uName + "更新了" + cName + "的信息");
         iOperatingService.saveOperating(operating);
         return new DataResult(0, "编辑成功");
     }
@@ -280,12 +303,16 @@ public class CustomerController {
         //根据客户编号查询客户并加入集合
         Customer c = iCustomerService.queryCByClId(clId);
         map.put("customer", c);
-        //根据客户编号查询最近预约门诊
-        String hName = iAppointmentService.queryLastHNameByClId(clId);
-        if (hName == null) {
+        //根据客户编号查询最近预约
+        Appointment appointment = iAppointmentService.queryLastAByClId(clId);
+        if (appointment == null) {
+            map.put("hId", "");
             map.put("hName", "");
+            map.put("date", "");
         } else {
-            map.put("hName", hName);
+            map.put("hId", appointment.getaHId());
+            map.put("hName", appointment.gethName());
+            map.put("date", appointment.getaTime());
         }
         //根据线索编号查询成交金额
         Integer successMoney = iSuccessService.queryTotalMoneyByClId(clId, 0);
@@ -307,12 +334,37 @@ public class CustomerController {
         } else {
             map.put("waitMoney", 0);
         }
+        //抵扣状态
+        String status = "";
+        if (c.getClEntryFee() != null){
+            if (c.getClEntryFee().contains("已抵扣")){
+                status = "已抵扣";
+            } else if(c.getClEntryFee().contains("已退还")){
+                status = "已退还";
+            } else {
+                status = "未抵扣";
+            }
+        }
+        map.put("status", status);
+        //退款金额
+        Integer refund = iSuccessService.queryRefundByClId(clId);
+        if (refund == null){
+            refund = 0;
+        }
+        map.put("refund", refund);
         //最后修改时间
         String s = iOperatingService.queryOpTimeByClId(clId);
         if (s == null) {
-            map.put("updateTime", "");
+            map.put("editTime", "");
         } else {
-            map.put("updateTime", s);
+            map.put("editTime", s);
+        }
+        //根据线索编号查询预约
+        Appointment appointment1 = iAppointmentService.queryAByClId(clId);
+        if (appointment1 != null){
+            map.put("sAId", appointment1.getaId());
+        } else {
+            map.put("sAId", "");
         }
         return map;
     }
@@ -346,9 +398,13 @@ public class CustomerController {
         map.put("success", success);
         //客户成交率
         String percent;
-        if (insert != 0){
+        //未成交客户数量
+        Integer failTotal = iCustomerService.getTotalFCByTime(uId, rName, beginTime, endTime);
+        //成交客户数量
+        Integer successTotal = iCustomerService.getTotalSCByTime(uId, rName, beginTime, endTime);
+        if (failTotal + successTotal > 0){
             DecimalFormat df = new DecimalFormat("0.00");//格式化小数
-            String num = df.format((float)success/(float)insert*100);
+            String num = df.format((float)successTotal/(float)(failTotal+successTotal)*100);
             percent = num + "%";
         } else {
             percent = "0%";
@@ -362,7 +418,7 @@ public class CustomerController {
         map.put("successMoney", successMoney);
         //平均客单价
         Double acup;
-        if (appoint != 0){
+        if (success != 0){
             acup = Double.valueOf(successMoney/success);
         } else {
             acup = 0.0;
@@ -454,6 +510,44 @@ public class CustomerController {
         List<Customer> customers = iCustomerService.queryArriveByTime((page - 1) * limit, limit, uId, rName, beginTime, endTime);
         Integer total = iCustomerService.getTotalArriveByTime(uId, rName, beginTime, endTime);
         return new DataResult(0, "操作成功", total, customers);
+    }
+
+    @PostMapping("arrive")
+    @ApiOperation(value = "未到店")
+    @ResponseBody
+    public DataResult arrive(@ApiParam(value = "用户编号", required = true) Integer uId,
+                             @ApiParam(value = "用户姓名", required = true) String uName,
+                             @ApiParam(value = "客户编号", required = true) Integer cId,
+                             @ApiParam(value = "客户姓名", required = true) String cName,
+                             @ApiParam(value = "线索编号", required = true) Integer clId,
+                             @ApiParam(value = "预约编号", required = true) Integer aId,
+                             @ApiParam(value = "未到店原因", required = true) String cause) {
+        //新增操作记录
+        Operating operating = new Operating(cId, uId, "更新状态", uName + "更新了客户状态----" + cName + "(未到店）");
+        iOperatingService.saveOperating(operating);
+        //新增跟进记录
+        Follow follow = new Follow(null, clId, 2, new Timestamp(System.currentTimeMillis()), cause, uId);
+        iFollowService.saveFollow(follow);
+        //根据客户状态查询编号
+        Integer clTypeId = iCtypeService.queryCtypeByCtType("未到店");
+        //改变客户状态为未到店状态
+        iClueService.editClTypeIdByClId(clId, clTypeId);
+        //根据预约编号编辑预约状态
+        iAppointmentService.editAStatusByAIdAndAStatus(aId, 1);
+        return new DataResult(0, "操作成功");
+    }
+
+    @GetMapping("queryCByCNameAndCTel")
+    @ApiOperation(value = "根据姓名和电话查询客户")
+    @ResponseBody
+    public DataResult queryCByCNameAndCTel(@ApiParam(value = "姓名", required = true) String cName,
+                                           @ApiParam(value = "电话", required = true) String cTel) {
+        List<Customer> customers = iCustomerService.queryCByCNameAndCTel(cName, cTel);
+        if (customers.size() != 0) {
+            return new DataResult(1, "姓名和电话号码重复！");
+        } else {
+            return new DataResult(0, "操作成功");
+        }
     }
 
 }

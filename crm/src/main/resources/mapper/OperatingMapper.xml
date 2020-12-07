@@ -12,13 +12,14 @@
     <result column="op_c_id" jdbcType="INTEGER" property="opCId" />
     <result column="op_u_id" jdbcType="INTEGER" property="opUId" />
     <result column="op_name" jdbcType="VARCHAR" property="opName" />
+    <result column="op_content" jdbcType="VARCHAR" property="opContent" />
     <result column="op_time" jdbcType="TIMESTAMP" property="opTime" />
   </resultMap>
 
   <!--新增操作记录-->
   <insert id="saveOperating" >
-    INSERT INTO operating(op_c_id, op_u_id, op_name, op_time)
-    VALUES (#{opCId}, #{opUId}, #{opName}, now());
+    INSERT INTO operating(op_c_id, op_u_id, op_name, op_content, op_time)
+    VALUES (#{opCId}, #{opUId}, #{opName}, #{opContent}, now());
   </insert>
 
   <!--根据客户编号查询操作记录-->

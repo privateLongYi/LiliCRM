@@ -53,6 +53,14 @@
                 <textarea class="layui-textarea" id="sMessage" autocomplete="off"></textarea>
             </div>
         </div>
+        <div class="layui-form-item" id="clEntryFee">
+            <label class="layui-form-label">抵扣报名费</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="isDeduction">
+                <input type="radio" name="clEntryFee" value="0" title="否" checked>
+                <input type="radio" name="clEntryFee" value="1" title="是">
+            </div>
+        </div>
         <div class="layui-form-item">
             <label class="layui-form-label">
                 <span style="color: red;">*&nbsp;</span>成交金额
@@ -101,6 +109,7 @@
                     html += "<div class='list' onclick='assign(&quot;"+data.data[i].cId+"&quot;," +
                         "&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].aId+"&quot;," +
                         "&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].hId+"&quot;," +
+                        "&quot;"+data.data[i].clEntryFee+"&quot;," +
                         "&quot;"+data.data[i].hName+"&quot;)'>"+data.data[i].cName+"</div>";
                 }
                 //赋值
@@ -131,13 +140,20 @@
     });
 
     //赋值
-    function assign(cId, clId, aId, cName, hId, hName) {
+    function assign(cId, clId, aId, cName, hId, clEntryFee, hName) {
         $("#cId").val(cId);
         $("#clId").val(clId);
         $("#sAId").val(aId);
         $("#cName").val(cName);
         $("#sHId").val(hId);
         $("#hName").val(hName);
+        //是否隐藏抵扣报名费
+        if (clEntryFee == null || clEntryFee == "" || clEntryFee == "null" || clEntryFee.indexOf("已抵扣")!=-1 || clEntryFee.indexOf("已退还")!=-1){
+            $("#isDeduction").val("0");
+            $("#clEntryFee").hide();
+        } else {
+            $("#isDeduction").val("1");
+        }
         //隐藏列表
         $("#list").attr("style", "background-color: white;height: auto; display: none;");
     }

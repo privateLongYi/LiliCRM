@@ -46,8 +46,8 @@ public class CustomerService implements ICustomerService{
     }
 
     @Override
-    public void saveCustomer(Customer c) {
-        customerMapper.saveCustomer(c);
+    public Integer saveCustomer(Customer c) {
+        return customerMapper.saveCustomer(c);
     }
 
     @Override
@@ -168,4 +168,21 @@ public class CustomerService implements ICustomerService{
         return customerMapper.queryCByCNameAndCTel(cName, cTel);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Customer> queryCByCName(String cName) {
+        return customerMapper.queryCByCName(cName);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalFCByTime(Integer uId, String rName, String beginTime, String endTime) {
+        return customerMapper.getTotalFCByTime(uId, rName, beginTime, endTime);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer getTotalSCByTime(Integer uId, String rName, String beginTime, String endTime) {
+        return customerMapper.getTotalSCByTime(uId, rName, beginTime, endTime);
+    }
 }

@@ -133,4 +133,7 @@ public interface SuccessMapper {
                                       @Param("beginTime") String beginTime,
                                       @Param("endTime") String endTime);
 
+    //根据线索编号查询退款总金额
+    Integer queryRefundByClId(@Param("clId") Integer clId);
+
 }

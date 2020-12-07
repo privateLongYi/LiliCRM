@@ -50,14 +50,14 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public void saveAppointment(Appointment appointment) {
-        appointmentMapper.saveAppointment(appointment);
+    public Integer saveAppointment(Appointment appointment) {
+        return appointmentMapper.saveAppointment(appointment);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public String queryLastHNameByClId(Integer clId) {
-        return appointmentMapper.queryLastHNameByClId(clId);
+    public Appointment queryLastAByClId(Integer clId) {
+        return appointmentMapper.queryLastAByClId(clId);
     }
 
     @Override
@@ -83,4 +83,9 @@ public class AppointmentService implements IAppointmentService {
         return appointmentMapper.queryMaxAId();
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Appointment queryAByClId(Integer clId) {
+        return appointmentMapper.queryAByClId(clId);
+    }
 }

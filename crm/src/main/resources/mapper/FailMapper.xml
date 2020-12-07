@@ -22,8 +22,9 @@
 
   <!--根据客户名称查询未成交客户-->
   <select id="queryFailByCName" resultMap="BaseResultMap">
-    SELECT fl.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId,
-    h.h_name AS hName, cl.cl_id AS clId, cl.cl_u_id AS clUId FROM fail fl
+    SELECT fl.*, c.c_id AS cId, c.c_name AS cName, h.h_id AS hId, a.a_time AS aTime,
+    h.h_name AS hName, cl.cl_id AS clId, cl.cl_u_id AS clUId,
+    cl.cl_entry_fee AS clEntryFee FROM fail fl
     LEFT JOIN appointment a ON a.a_id=fl.fl_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
@@ -64,5 +65,10 @@
   <select id="queryFlByFlAId" resultMap="BaseResultMap">
     SELECT * FROM fail WHERE fl_a_id = #{flAId}
   </select>
+
+  <!--根据编号删除未成交-->
+  <delete id="delFlByFlId">
+    DELETE FROM fail WHERE fl_id = #{flId}
+  </delete>
 
 </mapper>

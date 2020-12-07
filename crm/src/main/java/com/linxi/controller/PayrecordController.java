@@ -2,8 +2,10 @@ package com.linxi.controller;
 
 import com.linxi.entity.Operating;
 import com.linxi.entity.Payrecord;
+import com.linxi.entity.Paytype;
 import com.linxi.service.IOperatingService;
 import com.linxi.service.IPayrecordService;
+import com.linxi.service.IPaytypeService;
 import com.linxi.service.ISuccessService;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
@@ -36,6 +38,9 @@ public class PayrecordController {
     @Autowired
     private ISuccessService iSuccessService;
 
+    @Autowired
+    private IPaytypeService iPaytypeService;
+
     @GetMapping("queryPByPaySId")
     @ApiOperation(value = "根据成交客户编号查询支付记录")
     @ResponseBody
@@ -49,12 +54,17 @@ public class PayrecordController {
     @ApiOperation(value = "新增支付记录")
     @ResponseBody
     public DataResult savePayrecord(@ApiParam(value = "用户编号", required = true) Integer uId,
+                                    @ApiParam(value = "用户姓名", required = true) String uName,
+                                    @ApiParam(value = "客户编号", required = true) Integer cId,
+                                    @ApiParam(value = "客户姓名", required = true) String cName,
                                     @ApiParam(value = "成交客户编号", required = true) Integer paySId,
                                     @ApiParam(value = "支付金额", required = true) Integer paySum,
                                     @ApiParam(value = "支付备注", required = true) String payRemark,
                                     @ApiParam(value = "支付类型编号", required = true) Integer payTypeId){
+        //根据支付编号查询支付
+        Paytype paytype = iPaytypeService.queryPaytypeByPayId(payTypeId);
         //新增操作记录
-        Operating operating = new Operating(paySId, uId, "新增了支付记录");
+        Operating operating = new Operating(cId, uId, "收款", uName + "为客户" + cName + "新增了一条支付记录（" + paySum + "/" + paytype.getPayType() + "）");
         iOperatingService.saveOperating(operating);
         //新增支付记录
         Payrecord payrecord = new Payrecord(null, paySId, paySum, null, payRemark, payTypeId);

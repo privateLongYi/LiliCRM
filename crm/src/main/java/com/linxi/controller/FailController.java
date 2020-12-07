@@ -2,6 +2,7 @@ package com.linxi.controller;
 
 import com.linxi.entity.Customer;
 import com.linxi.entity.Fail;
+import com.linxi.entity.Follow;
 import com.linxi.entity.Operating;
 import com.linxi.service.*;
 import com.linxi.util.DataResult;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -41,18 +43,26 @@ public class FailController {
     @Autowired
     private IClueService iClueService;
 
+    @Autowired
+    private IFollowService iFollowService;
+
     @PostMapping("saveFail")
     @ApiOperation(value = "新增未成交客户")
     @ResponseBody
     public DataResult saveFail(@ApiParam(name = "uId", value = "用户编号", required = true) Integer uId,
+                               @ApiParam(name = "uName", value = "用户姓名", required = true) String uName,
+                               @ApiParam(name = "cName", value = "客户姓名", required = true) String cName,
                                @ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
                                @ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
                                @ApiParam(name = "flAId", value = "预约编号", required = true) Integer flAId,
                                @ApiParam(name = "flHId", value = "门诊编号", required = true) Integer flHId,
                                @ApiParam(name = "flCause", value = "未成交原因", required = true) String flCause){
         //添加操作记录
-        Operating operating = new Operating(cId, uId, "添加了未成交客户");
+        Operating operating = new Operating(cId, uId, "更新状态", uName + "更新了客户状态----" + cName + "(未成交）");
         iOperatingService.saveOperating(operating);
+        //新增跟进记录
+        Follow follow = new Follow(null, clId, 1, new Timestamp(System.currentTimeMillis()), flCause, uId);
+        iFollowService.saveFollow(follow);
         //根据客户状态查询编号
         Integer clTypeId = iCtypeService.queryCtypeByCtType("未成交");
         //改变客户状态为未成交状态

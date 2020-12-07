@@ -4,6 +4,18 @@
 		<meta charset="UTF-8">
 		<title>未成交客户列表</title>
 		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+		<style>
+			body .demo-class .layui-layer-btn .layui-layer-btn1{
+				border-color: #1E9FFF;
+				background-color: #1E9FFF;
+				color: #fff;
+			}
+			body .demo-class .layui-layer-btn .layui-layer-btn2{
+				border-color: #1E9FFF;
+				background-color: #1E9FFF;
+				color: #fff;
+			}
+		</style>
 	</head>
 	<body>
 
@@ -26,15 +38,14 @@
 		</script>
 
 		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-xs" lay-event="feedback">门诊反馈</a>
-			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="callback">客户回访</a>
-			<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="referral">转诊</a>
+			<a class="layui-btn layui-btn-xs" lay-event="follow">客户跟进</a>
+			<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reroute">改约</a>
+			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="success">成交</a>
 		</script>
 
 		<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
 
 		<script th:src="@{/js/detail.js}"></script>
-
 
 		<script>
 
@@ -45,6 +56,7 @@
 
 			//从sessionStorage中获取用户编号和角色名称
 			var uId = sessionStorage.getItem('uId');
+            var uName = sessionStorage.getItem('uName');
 			var rName = sessionStorage.getItem('rName');
 
 			//为条件搜索按钮增加点击事件
@@ -87,42 +99,34 @@
             }
 
 			//新增客户跟进
-			function saveFollow(data, ftType){
-				var ix = layer.open({
-					type: 2, //层类型，iframe
-					title: '新增客户跟进',
-					content: ['/followsave?cId='+data.cId+'&clId='+data.clId+
-                    '&clUId='+data.clUId+'&cName='+data.cName+'&ftType='+ftType],
-					area: ['450px', '450px'],
-					resize: false,
-					btn: '确定',
-					btn1: function (index, layero) {
-						var body = layer.getChildFrame('body', index);
-						//获取值
-                        var cId = $(body).find("#cId").val();
-						var fClId = $(body).find("#fClId").val();
-                        var clUId = $(body).find("#clUId").val();
-						var fTypeId = $(body).find("#fTypeId").val();
-                        var fTime = $(body).find("#fTime").val();
-						var fContent = $(body).find("#fContent").val();
-						if (fContent != '' && fContent.trim() != '') {
-							$.post("/follow/saveFollow", {uId:uId, cId:cId, fClId:fClId, fTime:fTime,
-                                    clUId:clUId, fTypeId:fTypeId, ftType:ftType, fContent:fContent},
-								function (obj) {
-									layer.msg(obj.msg, {time: 500}, function () {
-										layer.close(ix);
-										tableReload();
-									});
-								}
-							);
-						} else {
-							layer.msg('请输入门诊反馈内容');
-						}
-					},
-					cancel: function(index, layero){
-						layer.close(index);
-					}
-				});
+			function saveFollow(index){
+                var body = layer.getChildFrame('body', index);
+                //获取值
+                var cId = $(body).find("#cId").val();
+                var fClId = $(body).find("#fClId").val();
+                var clUId = $(body).find("#clUId").val();
+                var fTypeId, ftType;
+                if ($(body).find("[name=ftType]")[0].checked){
+                    fTypeId = $(body).find("[name=ftType]")[0].value;
+                    ftType = $(body).find("[name=ftType]")[0].title;
+                } else if ($(body).find("[name=ftType]")[1].checked){
+                    fTypeId = $(body).find("[name=ftType]")[1].value;
+                    ftType = $(body).find("[name=ftType]")[1].title;
+                }
+                var fTime = $(body).find("#fTime").val();
+                var fContent = $(body).find("#fContent").val();
+                if (fContent != '' && fContent.trim() != '') {
+                    $.post("/follow/saveFollow", {uId:uId, uName:uName, cId:cId, fClId:fClId, fTime:fTime,
+                            clUId:clUId, fTypeId:fTypeId, ftType:ftType, fContent:fContent},
+                        function (obj) {
+                            layer.msg(obj.msg, {time: 500}, function () {
+                                layer.close(index);
+                            });
+                        }
+                    );
+                } else {
+                    layer.msg('请输入跟进内容');
+                }
 			}
 
 			//执行一个 table 实例
@@ -138,12 +142,12 @@
 				,defaultToolbar: ['filter'] //筛选工具栏
 				,cols: [ //表头
 					[
-                        {field: 'cName', minWidth: 120, title: '姓名', align:'center'
+                        {field: 'cName', width: 120, title: '姓名', align:'center'
                             ,templet: '<div><a href="javascript:goDetail({{d.cId}}, {{d.clId}}, {{d.clUId}});" class="layui-table-link">{{d.cName}}</a></div>'
                         }
                         ,{field: 'hName', minWidth: 200, title: '门诊', align:'center'}
 						,{field: 'flCause', minWidth: 200, title: '未成交原因', align:'center'}
-						,{fixed: 'right', minWidth: 240, align:'center', toolbar: '#barDemo'}
+						,{fixed: 'right', minWidth: 150, align:'center', toolbar: '#barDemo'}
 					]
 				]
 			});
@@ -163,54 +167,182 @@
 			table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
 				var data = obj.data //获得当前行数据
 					,layEvent = obj.event; //获得 lay-event 对应的值
-				if(layEvent === 'feedback'){
-					saveFollow(data, "门诊反馈");
-				} else if(layEvent === 'callback'){
-					saveFollow(data, "客户回访");
-				} else if(layEvent === 'referral'){
-					//弹出转诊页面
-					var ix = layer.open({
-						type: 2, //层类型，iframe
-						title: '新增转诊记录',
-						content: ['/referralsave?cId='+data.cId+'&clId='+data.clId+'&rAId='+data.flAId+'&flId='+data.flId+
-                        '&clUId='+data.clUId+'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName],
-						area: ['450px', '450px'],
-						resize: false,
-						btn: '确定',
-						btn1: function (index, layero) {
-							var body = layer.getChildFrame('body', index);
-							//获取值
-							var cId = $(body).find("#cId").val();
+				if(layEvent === 'follow'){
+                    layer.open({
+                        type: 2, //层类型，iframe
+                        title: '新增客户跟进',
+                        content: ['/followsave?cId='+data.cId+'&clId='+data.clId+
+                        '&clUId='+data.clUId+'&cName='+data.cName],
+                        area: ['450px', '450px'],
+                        skin: 'demo-class',
+                        resize: false,
+                        btn: ['确认保存', '保存并改约'],
+                        btn1: function (index, layero) {
+							saveFollow(index);
+                        },
+                        btn2: function (index, layero) {
+                            saveFollow(index);
+                            layer.open({
+                                type: 2, //层类型，iframe
+                                title: '新增改约记录',
+                                content: ['/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+
+                                '&aId='+data.flAId+'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
+                                '&aTime='+data.aTime],
+                                area: ['450px', '450px'],
+                                resize: false,
+                                btn: '确定',
+                                btn1: function (index, layero) {
+                                    var body = layer.getChildFrame('body', index);
+                                    //获取值
+                                    var cId = $(body).find("#cId").val();
+                                    var cName = $(body).find("#cName").val();
+                                    var reClId = $(body).find("#reClId").val();
+                                    var reUId = $(body).find("#reUId").val();
+                                    var arId = $(body).find("#arId").val();
+                                    var aId = $(body).find("#aId").val();
+                                    var reHId = $(body).find("#reHId").val();
+                                    var reLastTime = $(body).find("#reLastTime").val();
+                                    var reTime = $(body).find("#reTime").val();
+                                    var reCause = $(body).find("#reCause").val();
+                                    if (reTime != '' && reCause != '' && reCause.trim() != '') {
+                                        $.post("/reroute/saveReroute", {uId:uId, uName:uName, cName:cName, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
+                                                aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause, flId:data.flId},
+                                            function (obj) {
+                                                layer.msg(obj.msg, {time: 500}, function () {
+                                                    layer.close(index);
+                                                    tableReload();
+                                                });
+                                            }
+                                        );
+                                    } else {
+                                        layer.msg('请输入带星号的必填项');
+                                    }
+                                },
+                                cancel: function(index, layero){
+                                    layer.close(index);
+                                }
+                            });
+                        },
+                        cancel: function(index, layero){
+                            layer.close(index);
+                        }
+                    });
+				}else if(layEvent === 'reroute'){
+                    //弹出改约页面
+                    layer.open({
+                        type: 2, //层类型，iframe
+                        title: '新增改约记录',
+                        content: ['/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+
+                        '&aId='+data.flAId+'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
+                        '&aTime='+data.aTime],
+                        area: ['450px', '450px'],
+                        resize: false,
+                        btn: '确定',
+                        btn1: function (index, layero) {
+                            var body = layer.getChildFrame('body', index);
+                            //获取值
+                            var cId = $(body).find("#cId").val();
+                            var cName = $(body).find("#cName").val();
+                            var reClId = $(body).find("#reClId").val();
+                            var reUId = $(body).find("#reUId").val();
+                            var arId = $(body).find("#arId").val();
+                            var aId = $(body).find("#aId").val();
+                            var reHId = $(body).find("#reHId").val();
+                            var reLastTime = $(body).find("#reLastTime").val();
+                            var reTime = $(body).find("#reTime").val();
+                            var reCause = $(body).find("#reCause").val();
+                            if (reTime != '' && reCause != '' && reCause.trim() != '') {
+                                $.post("/reroute/saveReroute", {uId:uId, uName:uName, cName:cName, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
+                                        aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause, flId:data.flId},
+                                    function (obj) {
+                                        layer.msg(obj.msg, {time: 500}, function () {
+                                            layer.close(index);
+                                            tableReload();
+                                        });
+                                    }
+                                );
+                            } else {
+                                layer.msg('请输入带星号的必填项');
+                            }
+                        },
+                        cancel: function(index, layero){
+                            layer.close(index);
+                        }
+                    });
+                } else if(layEvent === 'success'){
+                    //弹出成交页面
+                    layer.open({
+                        type: 2, //层类型，iframe
+                        title: '新增成交客户',
+                        content: ['/successsave?cId='+data.cId+'&clId='+data.clId+'&sAId='+data.flAId+
+                        '&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+'&clEntryFee='+data.clEntryFee],
+                        area: ['500px', '450px'],
+                        resize: false,
+                        btn: '确定',
+                        btn1: function (index, layero) {
+                            var body = layer.getChildFrame('body', index);
+                            //获取值
+                            var cId = $(body).find("#cId").val();
+                            var cName = $(body).find("#cName").val();
                             var clId = $(body).find("#clId").val();
-                            var rAId = $(body).find("#rAId").val();
-                            var clUId = $(body).find("#clUId").val();
-                            var flId = $(body).find("#flId").val();
-							var rFailHId = $(body).find("#rFailHId").val();
-							var rHId = $(body).find("#rHId").val();
-							var aTime = $(body).find("#aTime").val();
-							var rMessage = $(body).find("#rMessage").val();
-							var rCause = $(body).find("#rCause").val();
-							if (rMessage != '' && rMessage.trim() != '' && rCause != '' && rCause.trim() != '') {
-								$.post("/referral/saveReferral",
-									{uId:uId, cId:cId, clId:clId, clUId:clUId, rAId:rAId, flId:flId,
-										rFailHId:rFailHId, aTime:aTime, rHId:rHId,
-										rMessage:rMessage, rCause:rCause},
-									function (obj) {
-										layer.msg(obj.msg, {time: 500}, function () {
-											layer.close(ix);
-											tableReload();
-										});
-									}
-								);
-							} else {
-								layer.msg('请填写带星号的必填项');
-							}
-						},
-						cancel: function(index, layero){
-							layer.close(index);
-						}
-					});
-				}
+                            var sAId = $(body).find("#sAId").val();
+                            var sHId = $(body).find("#sHId").val();
+                            var sMessage = $(body).find("#sMessage").val();
+							var isDeduction = "";
+                            if ($(body).find("[name=clEntryFee]")[1].checked){
+                                isDeduction = $(body).find("#isDeduction").val();
+                            }
+                            console.log("isDeduction:"+isDeduction);
+                            var sSum = $(body).find("#sSum").val();
+                            var sPaysum = $(body).find("#sPaysum").val();
+                            var sRemark = $(body).find("#sRemark").val();
+                            if (sSum != '' && sSum.trim() != '') {
+                                //声明格式是否正确
+                                var verify = true;
+                                //验证成交金额
+                                if(isNaN(sSum) || sSum <= 0){
+                                    layer.msg("成交金额必须是大于零的数值");
+                                    verify = false;
+                                    return;
+                                }
+                                //验证支付金额
+                                if(isNaN(sPaysum) || sPaysum <= 0 || parseFloat(sPaysum) > parseFloat(sSum)){
+                                    layer.msg("支付金额必须是大于零小于成交金额的数值");
+                                    verify = false;
+                                    return;
+                                }
+                                if(verify) {
+                                    $.post("/success/saveSuccess", {
+                                            uId: uId,
+                                            uName:uName,
+                                            cName:cName,
+                                            cId: cId,
+                                            clId: clId,
+                                            sAId: sAId,
+                                            sHId: sHId,
+                                            sMessage: sMessage,
+                                            isDeduction: isDeduction,
+                                            sSum: sSum.trim(),
+                                            sPaysum: sPaysum.trim(),
+                                            sRemark: sRemark
+                                        },
+                                        function (obj) {
+                                            layer.msg(obj.msg, {time: 500}, function () {
+                                                layer.close(index);
+                                                tableReload();
+                                            });
+                                        }
+                                    );
+                                }
+                            } else {
+                                layer.msg('请填写带星号的必填项');
+                            }
+                        },
+                        cancel: function(index, layero){
+                            layer.close(index);
+                        }
+                    });
+                }
 			});
 
 		</script>

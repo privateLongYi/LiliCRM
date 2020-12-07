@@ -14,7 +14,8 @@
 <div class="layui-fluid">
 
     <br />
-    <form class="layui-form" lay-filter="form">
+    <!--新增预约-->
+    <div id="appoint">
         <div class="layui-form-item">
             <label class="layui-form-label">客户名称</label>
             <div class="layui-input-block">
@@ -36,7 +37,7 @@
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">门诊名称</label>
-            <div class="layui-input-block">
+            <div class="layui-input-block layui-form">
                 <select id="aHId"></select>
             </div>
         </div>
@@ -49,11 +50,76 @@
         <div class="layui-form-item">
             <label class="layui-form-label">预约类型</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" id="atType" value="普通预约" readonly>
+                <input type="text" class="layui-input" id="atType" value="初次预约" readonly>
             </div>
         </div>
-    </form>
-
+    </div>
+    <!--新增成交-->
+    <div id="success" style="display: none;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">客户名称</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="sCName" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">门诊名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="sHId">
+                <input type="text" class="layui-input" id="sHName" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">门诊反馈</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="sMessage" autocomplete="off"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item" id="sClEntryFee">
+            <label class="layui-form-label">抵扣报名费</label>
+            <div class="layui-form layui-input-block">
+                <input type="hidden" id="isDeduction">
+                <input type="radio" name="clEntryFee" value="0" title="否" checked>
+                <input type="radio" name="clEntryFee" value="1" title="是">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>成交金额
+            </label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" placeholder="请输入成交金额"
+                       autocomplete="off" id="sSum">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>支付金额
+            </label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" placeholder="请输入支付金额"
+                       autocomplete="off" id="sPaysum">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" id="sRemark" autocomplete="off"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item" id="appointBtn">
+        <div class="layui-input-block" style="text-align: right;">
+            <button class="layui-btn" onclick="aToS()">继续成交</button>
+            <button class="layui-btn" onclick="aSave()">确认保存</button>
+        </div>
+    </div>
+    <div class="layui-form-item" id="successBtn" style="display: none;">
+        <div class="layui-input-block" style="text-align: right;">
+            <button class="layui-btn" onclick="sToPrevious()">上一步</button>
+            <button class="layui-btn" onclick="sSave()">确认保存</button>
+        </div>
+    </div>
 </div>
 <script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
 <!--<script th:src="@{/layui/layui.js}"></script>-->
@@ -66,6 +132,7 @@
 
     //从sessionStorage中获取用户编号
     var uId = sessionStorage.getItem('uId');
+    var uName = sessionStorage.getItem('uName');
     var rName = sessionStorage.getItem('rName');
 
     //根据客户名称查询可预约客户
@@ -74,7 +141,7 @@
             $.post("/customer/queryCACByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
-                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].cName+"&quot;);'>"+data.data[i].cName+"</div>";
+                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].clEntryFee+"&quot;);'>"+data.data[i].cName+"</div>";
                 }
                 //赋值
                 $("#data").html(html);
@@ -104,9 +171,17 @@
     });
 
     //赋值
-    function assign(clId, cName) {
+    function assign(clId, cName, clEntryFee) {
         $("#aClId").val(clId);
         $("#cName").val(cName);
+        console.log(clEntryFee)
+        console.log(clEntryFee!="")
+        //判断是否可抵扣报名费并隐藏或显示
+        if (clEntryFee != ""){
+            $("#isDeduction").val("1");
+        } else {
+            $("#isDeduction").val("0");
+        }
         //隐藏列表
         $("#list").attr("style", "background-color: white;height: auto; display: none;");
     }
@@ -174,6 +249,131 @@
         //append后必须重新渲染
         form.render('select');
     })
+
+    //继续成交
+    function aToS() {
+        //获取预约信息
+        var cName = $("#cName").val();
+        var hId = $("#aHId").val();
+        var hName = $("#aHId [value="+hId+"]").text();
+        var aTime = $("#aTime").val();
+        var isDeduction = $("#isDeduction").val();
+        if (aTime != '') {
+            //隐藏新增预约信息、显示新增成交信息
+            $("#appoint").hide();
+            $("#appointBtn").hide();
+            $("#success").show();
+            $("#successBtn").show();
+            //赋值
+            $("#sCName").val(cName);
+            $("#sHId").val(hId);
+            $("#sHName").val(hName);
+            //判断是否可抵扣报名费并隐藏或显示
+            if (isDeduction == "1"){
+                $("#sClEntryFee").show();
+            } else {
+                $("#sClEntryFee").hide();
+            }
+        } else {
+            layer.msg('请输入预约时间');
+        }
+    }
+
+    //预约确认保存
+    function aSave() {
+        //获取预约信息
+        var aClId = $("#aClId").val();
+        var aTime = $("#aTime").val();
+        var aHId = $("#aHId").val();
+        var atType = $("#atType").val();
+        if (aTime != ""){
+            $.post("/appointment/saveAppointment",{
+                    uId:uId
+                    ,uName:uName
+                    ,aClId:aClId
+                    ,aTime:aTime
+                    ,aHId:aHId
+                    ,atType:atType
+                },function (data) {
+                    layer.msg(data.msg, {time: 500}, function () {
+                        parent.layer.closeAll();
+                        parent.location.reload();
+                    });
+                }
+            )
+        } else {
+            layer.msg("请填写预约时间")
+        }
+    }
+
+    //成交上一步
+    function sToPrevious() {
+        //隐藏新增客户信息、显示新增预约信息
+        $("#appoint").show();
+        $("#appointBtn").show();
+        $("#success").hide();
+        $("#successBtn").hide();
+    }
+
+    //成交确认保存
+    function sSave() {
+        //获取预约信息
+        var aClId = $("#aClId").val();
+        var aTime = $("#aTime").val();
+        var aHId = $("#aHId").val();
+        var atType = $("#atType").val();
+        //获取成交信息
+        var sCName = $("#sCName").val();
+        var sHId = $("#sHId").val();
+        var sMessage = $("#sMessage").val();
+        var isDeduction = "";
+        if ($("[name=clEntryFee]")[1].checked){
+            isDeduction = $("#isDeduction").val();
+        }
+        var sSum = $("#sSum").val();
+        var sPaysum = $("#sPaysum").val();
+        var sRemark = $("#sRemark").val();
+        if (sSum != '' && sSum.trim() != '') {
+            //声明格式是否正确
+            var verify = true;
+            //验证成交金额
+            if(isNaN(sSum) || sSum <= 0){
+                layer.msg("成交金额必须是大于零的数值");
+                verify = false;
+                return;
+            }
+            //验证支付金额
+            if(isNaN(sPaysum) || sPaysum <= 0 || parseFloat(sPaysum) > parseFloat(sSum)){
+                layer.msg("支付金额必须是大于零小于成交金额的数值");
+                verify = false;
+                return;
+            }
+            if(verify) {
+                $.post("/success/saveAAndS", {
+                        uId:uId
+                        ,uName:uName
+                        ,aClId:aClId
+                        ,aTime:aTime
+                        ,aHId:aHId
+                        ,atType:atType
+                        ,sHId: sHId
+                        ,sMessage: sMessage
+                        ,isDeduction: isDeduction
+                        ,sSum: sSum.trim()
+                        ,sPaysum: sPaysum.trim()
+                        ,sRemark: sRemark
+                    },function (data) {
+                        layer.msg(data.msg, {time: 500}, function () {
+                            parent.layer.closeAll();
+                            parent.location.reload();
+                        });
+                    }
+                );
+            }
+        } else {
+            layer.msg('请填写带星号的必填项');
+        }
+    }
 
 </script>
 </body>

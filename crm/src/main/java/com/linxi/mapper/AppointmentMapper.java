@@ -8,7 +8,7 @@ import java.util.List;
 public interface AppointmentMapper {
 
     //新增预约客户
-    void saveAppointment(Appointment appointment);
+    Integer saveAppointment(Appointment appointment);
 
     //根据客户编号查询预约客户
     List<Appointment> queryAByACId(Integer aCId);
@@ -25,8 +25,8 @@ public interface AppointmentMapper {
     //根据编号删除预约客户
     void delAByAId(Integer aId);
 
-    //根据线索编号查询最近预约门诊
-    String queryLastHNameByClId(Integer clId);
+    //根据线索编号查询最近预约
+    Appointment queryLastAByClId(Integer clId);
 
     //根据线索编号查询预约记录（详情）
     List<Appointment> queryAToDetail(Integer clId);
@@ -40,5 +40,8 @@ public interface AppointmentMapper {
 
     //查询最大的预约编号
     Integer queryMaxAId();
+
+    //根据线索编号查询预约
+    Appointment queryAByClId(Integer clId);
 
 }

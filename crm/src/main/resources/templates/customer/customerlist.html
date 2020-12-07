@@ -93,149 +93,6 @@
 	<!-- 数据表格 -->
 	<table class="layui-hide" id="tab" lay-filter="test" lay-data="{id: 'tab'}"></table>
 
-	<!--详情页面-->
-	<div id="detail" style="position:absolute; z-index:999999; top:0; right:-100%;
-		transition:all linear 0.5s; width: 1050px; height: 580px;background-color:white;
-		border: 1px gainsboro solid;box-shadow: gainsboro 0 0 5px 5px;margin-top: 2px;">
-
-		<div style="float: left; margin: 5px;">
-			<span style="font-size: 20px;">客户详情</span>
-		</div>
-		<div style="float: right; cursor: pointer;">
-			<i onclick="javascript:document.getElementById('detail').style.right = '-100%';" class="layui-icon layui-icon-close" style="font-size: 25px;"></i>
-		</div>
-		<br>
-
-		<!--head-->
-		<div class="layui-row layui-card" style="height: 120px;">
-			<div class="layui-col-md9 layui-row">
-				<div class="layui-col-space1">
-					<!--客户信息-->
-					<br />
-					<div class="layui-col-md4 layui-row">
-						<div class="layui-col-space1">
-							<div class="layui-col-md3" style="padding-top: 10px;"><img id="img" th:src="@{/images/boy.png}" width="40px" height="40px" /></div>
-							<div class="layui-col-md7">
-								<div class="layui-row" style="margin-bottom: 2px;">
-									<div class="layui-col-md6"><span style="font-size: 20px;" name="cName"></span></div>
-									<div class="layui-col-md3"><span style="float: right;margin-top: 3px;" name="cAge"></span></div>岁
-								</div>
-								<div style="margin-bottom: 2px;"><span name="cTel"></span></div>
-								<div>上次:<span id="hName"></span></div>
-							</div>
-						</div>
-					</div>
-					<!--成交金额-->
-					<div class="layui-col-md2">
-						<br><div><span id="successMoney"></span></div>
-						<div><span style="color: #9F9F9F;">成交金额</span></div>
-					</div>
-					<!--已收金额-->
-					<div class="layui-col-md2">
-						<br><span id="payMoney"></span><br />
-						<span style="color: #9F9F9F;">已交金额</span>
-					</div>
-					<!--待收金额-->
-					<div class="layui-col-md2">
-						<br><span id="waitMoney"></span><br />
-						<span style="color: #9F9F9F;">待交金额</span>
-					</div>
-					<!--预交金额-->
-					<div class="layui-col-md2">
-						<br><span name="clEntryFee"></span><br />
-						<span style="color: #9F9F9F;">预交金额</span>
-					</div>
-				</div>
-			</div>
-			<br />
-			<div class="layui-col-md3">
-				<div style="margin-bottom: 2px;">创建时间:<span id="cTime"></span></div>
-				<div style="margin-bottom: 2px;">修改时间:<span id="editTime"></span></div>
-				<div>负责人:<span id="username"></span></div>
-			</div>
-		</div>
-
-		<!--body-->
-		<div class="layui-row">
-			<div class="layui-col-space10">
-				<!--左侧选项卡、预约记录-->
-				<div class="layui-col-md8">
-					<!--选项卡-->
-					<div class="layui-card" style="height: 255px;">
-						<div class="layui-tab">
-							<ul class="layui-tab-title">
-								<li class="layui-this">基本信息</li>
-								<li>操作记录</li>
-								<li>成交记录</li>
-							</ul>
-							<div class="layui-tab-content">
-								<!--基本信息-->
-								<div class="layui-tab-item layui-show">
-									<div class="layui-row" style="align-content: center;margin-left: 5px;">
-										<div class="layui-col-md4 baseMargin">姓名：<span class="baseColor" name="cName"></span></div>
-										<div class="layui-col-md4 baseMargin">性别：<span class="baseColor" id="cSex"></span></div>
-										<div class="layui-col-md4 baseMargin">年龄：<span class="baseColor" name="cAge"></span></div>
-										<div class="layui-col-md4 baseMargin">电话：<span class="baseColor" name="cTel"></span></div>
-										<div class="layui-col-md4 baseMargin">来源：<span class="baseColor" id="clSource"></span></div>
-										<div class="layui-col-md4 baseMargin">预交金额：<span class="baseColor" name="clEntryFee"></span></div><br>
-										<div class="layui-col-md4 baseMargin">报名项目：<span class="baseColor" id="clProject"></span></div>
-										<div class="layui-col-md8 baseMargin">报名时间：<span class="baseColor" id="clPlaceTime"></span></div>
-									</div>
-								</div>
-								<!--操作记录-->
-								<div class="layui-tab-item" style="height: 190px;overflow-y: auto;">
-									<ul class="layui-timeline" id="operating"></ul>
-								</div>
-								<!--成交记录-->
-								<div class="layui-tab-item">
-									<!--表格-->
-									<table class="layui-hide" id="successTab" lay-filter="successTab"></table>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!--预约记录-->
-					<div style="height: 155px;overflow-y: auto;">
-						<ul class="layui-timeline" id="appoint"></ul>
-					</div>
-				</div>
-				<!--右侧跟进-->
-				<div class="layui-col-md4">
-					<div class="layui-card" style="height: 420px;overflow-y: auto;">
-						<!--表单-->
-						<div style="border:1px solid #f2f2f2;height: 280px;">
-							<div class="layui-form layui-form-item" style="margin: 15px 15px 0 15px;">
-								<div class="layui-input-inline layui-form">
-									<input type="radio" name="followInput" value="1" title="门诊反馈" checked>
-									<input type="radio" name="followInput" value="2" title="客户回访">
-								</div>
-								<br><br><br>
-								<input class="layui-input" id="fTime" autocomplete="off"
-									   placeholder="跟进时间" readonly>
-							</div>
-							<div class="layui-form-item layui-form-text" style="margin-top: 15px; margin-left: 15px; margin-right: 15px;">
-								<input type="hidden" id="cId">
-								<input type="hidden" id="clId">
-								<input type="hidden" id="clUId">
-								<textarea id="content" placeholder="请输入内容" class="layui-textarea" style="border-color: #FFFFFF;"></textarea>
-							</div>
-							<div class="layui-form-item" style="margin-top: 15px;text-align: center;">
-								<button class="layui-btn layui-btn-sm" onclick="saveFollow()">提交</button>
-								<button class="layui-btn layui-btn-sm layui-btn-primary" onclick="clean()">清空</button>
-							</div>
-						</div>
-						<!--跟进记录-->
-						<div style="margin-top: 20px;">
-							<ul class="layui-timeline" id="follow">
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	</div>
-
 		<script type="text/html" id="toolbarDemo">
 			<div class="layui-inline" lay-event="refresh"><i class="layui-icon layui-icon-refresh-1"></i></div>
 			<div class='layui-inline' lay-event='add'><i class='layui-icon layui-icon-add-1'></i></div>
@@ -258,6 +115,7 @@
 
 			//从sessionStorage中获取用户编号和角色名称
 			var uId = sessionStorage.getItem('uId');
+            var uName = sessionStorage.getItem('uName');
 			var rName = sessionStorage.getItem('rName');
 
             //时间控件
@@ -272,13 +130,11 @@
                 saleTable();
                 $("#searchclUId").attr("disabled", "disabled");
                 form.render('select');
-                var operate = "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>" +
-							"<a class='layui-btn layui-btn-warm layui-btn-xs' lay-event='appoint'>预约</a>";
+                var operate = "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>";
                 $("#barDemo").html(operate);
             } else if (rName == "管理者"){
                 adminTable();
                 var operate = "<a class='layui-btn layui-btn-xs layui-btn-normal' lay-event='update'>变更负责人</a>" +
-                    		"<a class='layui-btn layui-btn-xs layui-btn-warm ' lay-event='appoint'>预约</a>"+
 							  "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>";
                 $("#barDemo").html(operate);
                 //获取角色为销售员的用户对象
@@ -295,7 +151,6 @@
             } else {
                 superAdminTable();
                 var operate = "<a class='layui-btn layui-btn-xs layui-btn-normal' lay-event='update'>变更负责人</a>" +
-                    "<a class='layui-btn layui-btn-warm layui-btn-xs' lay-event='appoint'>预约</a>"+
                     "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>" +
                     "<a class='layui-btn layui-btn-danger layui-btn-xs' lay-event='del'>删除</a>";
                 $("#barDemo").html(operate);
@@ -474,7 +329,7 @@
                         return;
                     }
 					if(verify){
-						$.post(url, {uId: uId, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), clPlaceTime:clPlaceTime, clProject:clProject,
+						$.post(url, {uId: uId, uName:uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), clPlaceTime:clPlaceTime, clProject:clProject,
 								clMessage:clMessage, clRemark:clRemark, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
 							function (obj) {
 						    	if (obj.code == 1){
@@ -516,7 +371,10 @@
                             ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
                             ,{field: 'clEntryFee', minWidth: 120, title: '报名费', align:'center'}
                             ,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
-                            ,{fixed: 'right', minWidth: 250, title: '操作', toolbar: '#barDemo', align:'center'}
+                            ,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
+                            ,{field: 'clRemark', minWidth: 200, title: '备注', align:'center'}
+                            ,{field: 'clMessage', minWidth: 200, title: '症状信息', align:'center'}
+                            ,{fixed: 'right', minWidth: 200, title: '操作', toolbar: '#barDemo', align:'center'}
                         ]
                     ]
                 });
@@ -545,7 +403,10 @@
                             ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
                             ,{field: 'clEntryFee', minWidth: 120, title: '报名费', align:'center'}
                             ,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
-                            ,{fixed: 'right', minWidth: 200, title: '操作', toolbar: '#barDemo', align:'center'}
+                            ,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
+                            ,{field: 'clRemark', minWidth: 200, title: '备注', align:'center'}
+                            ,{field: 'clMessage', minWidth: 200, title: '症状信息', align:'center'}
+                            ,{fixed: 'right', minWidth: 150, title: '操作', toolbar: '#barDemo', align:'center'}
                         ]
                     ]
                 });
@@ -573,7 +434,10 @@
                             ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
                             ,{field: 'clEntryFee', minWidth: 120, title: '报名费', align:'center'}
                             ,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
-                            ,{fixed: 'right', minWidth: 100, title: '操作', toolbar: '#barDemo', align:'center'}
+                            ,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
+                            ,{field: 'clRemark', minWidth: 200, title: '备注', align:'center'}
+                            ,{field: 'clMessage', minWidth: 200, title: '症状信息', align:'center'}
+                            ,{fixed: 'right', minWidth: 90, title: '操作', toolbar: '#barDemo', align:'center'}
                         ]
                     ]
                 });
@@ -586,16 +450,12 @@
 				switch(obj.event){
 					case 'add':
 						//弹出新增页面
-						var ix = layer.open({
+						layer.open({
 							type: 2, //层类型，iframe
 							title: '新增客户',
 							content: ['/customer/customersave'],
 							area: ['1000px', '500px'],
 							resize: false,
-							btn: '确定',
-							btn1: function (index, layero) {
-								popup(ix, index, "/customer/saveCustomer");
-							},
 							cancel: function(index, layero){
 								layer.close(index);
 							}
@@ -613,7 +473,7 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'del'){
 					layer.confirm('确定删除吗？', {icon: 3, title:'提示'}, function(index){
-						$.get("/customer/delCByCId?cId=" + data.cId + "&cName=" + data.cName + "&uId=" + uId, function(obj){
+						$.get("/customer/delCByCId?cId=" + data.cId + "&cName=" + data.cName + "&uId=" + uId + "&uName=" + uName, function(obj){
 							if (obj.code == 0) {
 								layer.msg(obj.msg, {time: 500}, function () {
 									tableReload();
@@ -628,8 +488,8 @@
 					var ix = layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑客户',
-						content: ['/customer/queryCByCId?cId=' + data.cId + "&page=customer"],
-						area: ['1000px', '450px'],
+						content: ['/customer/queryCByCId?cId=' + data.cId],
+						area: ['1000px', '500px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
@@ -653,7 +513,7 @@
                                 //获取值
                                 var cId = $(body).find("#cId").val();
                                 var clUId = $(body).find("#clUId").val();
-                                $.get("/clue/editPrincipal", {uId: uId, cId:cId, clUId:clUId},
+                                $.get("/clue/editPrincipal", {uId: uId, uName: uName, cId:cId, clUId:clUId},
                                     function (obj) {
                                         layer.msg(obj.msg, {time: 500}, function () {
                                             layer.close(index);
@@ -667,7 +527,7 @@
                             }
 						})
                     });
-                } else if (layEvent === 'appoint'){
+                }/* else if (layEvent === 'appoint'){
 					if (data.cType == '待联系' || data.cType == '待预约'){
 						//弹出预约页面
                         layer.open({
@@ -685,7 +545,7 @@
                                 var aHId = $(body).find("#aHId").val();
                                 var atType = $(body).find("#atType").val();
                                 if (aTime != '') {
-                                    $.post("/appointment/saveAppointment", {uId:uId, aClId:aClId, aTime:aTime,
+                                    $.post("/appointment/saveAppointment", {uId:uId, uName:uName, aClId:aClId, aTime:aTime,
                                             aHId:aHId, atType:atType},
                                         function (obj) {
                                             layer.msg(obj.msg, {time: 500}, function () {
@@ -706,7 +566,7 @@
 					    layer.msg('该客户不可预约');
 					}
 				}
-                /*else if(layEvent === 'refund'){
+                else if(layEvent === 'refund'){
 				    if (data.clEntryFee == null || data.clEntryFee == ""){
 						layer.msg("该客户没付报名费");
 					} else {

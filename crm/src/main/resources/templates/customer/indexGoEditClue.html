@@ -35,6 +35,7 @@
 
 			//从sessionStorage中获取用户编号和角色名称
 			var uId = sessionStorage.getItem('uId');
+            var uName = sessionStorage.getItem('uName');
 			var rName = sessionStorage.getItem('rName');
 
             //获取角色为销售员的用户对象
@@ -94,7 +95,7 @@
                                     param += item.clId + ",";
                                 });
                                 param = param.substring(0, param.length-1);
-								$.get("/clue/allot", {uId:uId, clUId:clUId, param:param}, function (data) {
+								$.get("/clue/allot", {uId:uId, uName:uName, clUId:clUId, param:param}, function (data) {
                                     layer.msg(data.msg, {time: 500}, function () {
 										table.reload('tab', {
                                             url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待分配'+'&export=0'

@@ -107,7 +107,7 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
             	if(layEvent === 'reroute'){
                     //弹出改约页面
-                    var ix = layer.open({
+                    layer.open({
                         type: 2, //层类型，iframe
                         title: '新增改约记录',
                         content: ['/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+'&arId='+data.arId+
@@ -133,7 +133,7 @@
                                         aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause},
                                     function (obj) {
                                         layer.msg(obj.msg, {time: 500}, function () {
-                                            layer.close(ix);
+                                            layer.close(index);
                                             tableReload();
                                         });
                                     }
@@ -160,70 +160,6 @@
 					});
 				}
 			});
-
-			/*//弹出高级筛选列表
-			$("#screen").click(function(){
-				layer.open({
-					type: 2, //层类型，iframe
-					title: '高级筛选',
-					content: ['screen?cType=未到店'],
-					area: ['1000px', '420px'],
-					resize: false,
-					btn: '确定',
-					btn1: function(index, layero){
-						var body = layer.getChildFrame('body', index);
-						//获取筛选值
-						var cName = $(body).find("#cName").val();
-						var cTel = $(body).find("#cTel").val();
-						var cProject = $(body).find("#cProject").val();
-						//给是否交报名费赋值
-						var cEarnest;
-						var cEarnestText;
-						if($(body).find("[name=cEarnest]")[0].checked){
-							cEarnest = $(body).find("[name=cEarnest]")[0].value;
-							cEarnestText = $(body).find("[name=cEarnest]")[0].title;
-						}
-						if($(body).find("[name=cEarnest]")[1].checked){
-							cEarnest = $(body).find("[name=cEarnest]")[1].value;
-							cEarnestText = $(body).find("[name=cEarnest]")[1].title;
-						}
-						var cUId = $(body).find("#cUId").val();
-						var cSource = $(body).find("#cSource").val();
-						var cPlaceTime = $(body).find("#cPlaceTime").val();
-						//新增筛选条件或者修改
-						if(cName != ''){
-							screen("cName", cName.trim(), cName.trim());
-						}
-						if(cTel != ''){
-							screen("cTel", cTel.trim(), cTel.trim());
-						}
-						if(cProject != ''){
-							var cProjectText = $(body).find("#cProject [value="+cProject+"]").text();
-							screen("cProject", cProject, cProjectText);
-						}
-						if(cEarnest != undefined){
-							screen("cEarnest", cEarnest, cEarnestText);
-						}
-						if(cUId != ''){
-							var cUIdText = $(body).find("#cUId [value="+cUId+"]").text();
-							screen("cUId", cUId, cUIdText);
-						}
-						if(cSource != ''){
-							screen("cSource", cSource.trim(), cSource.trim());
-						}
-						if(cPlaceTime != ''){
-							screen("cPlaceTime", cPlaceTime, cPlaceTime);
-						}
-						//关闭弹出框
-						layer.close(layer.index);
-						//根据筛选条件查询客户
-						tableReload();
-					},
-					cancel: function(layero,index){
-						layer.close(layer.index);
-					}
-				});
-			});*/
 
 		</script>
 
