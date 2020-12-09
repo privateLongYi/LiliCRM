@@ -21,8 +21,7 @@
                        autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;性别
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;性别
             </label>
             <div class="layui-input-inline layui-form">
                 <input type="radio" name="cSex" value="" title="未知" checked>
@@ -30,10 +29,11 @@
                 <input type="radio" name="cSex" value="女" title="女">
             </div>
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;年龄
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;年龄
             </label>
             <div class="layui-input-inline">
-                <input type="number" id="cAge" placeholder="请输入年龄"
+                <input type="text" id="cAge" placeholder="请输入年龄"
                        autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -48,15 +48,25 @@
                        autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微信号
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cWx" placeholder="请输入微信号"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;
                 <span style="color: red;">*&nbsp;</span>报名时间
             </label>
             <div class="layui-input-inline">
                 <input type="text" id="clPlaceTime" placeholder="请输入报名时间"
                        autocomplete="off" class="layui-input" readonly>
             </div>
+        </div>
+        <br />
+        <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;报名项目
+                &nbsp;&nbsp;&nbsp;报名项目
             </label>
             <div class="layui-input-inline layui-form">
                 <select id="clProject">
@@ -65,19 +75,15 @@
                     <option value="其他">其他</option>
                 </select>
             </div>
-        </div>
-        <br />
-        <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;报名费
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;报名费
             </label>
             <div class="layui-input-inline">
-                <input type="number" id="clEntryFee" placeholder="请输入报名费"
+                <input type="text" id="clEntryFee" placeholder="请输入报名费"
                        autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;负责人
                 <input type="hidden" id="clUId" value="">
             </label>
             <div class="layui-input-inline layui-form" id="admin">
@@ -88,34 +94,36 @@
             <div class="layui-input-inline layui-form" id="sale">
                 <input type="text" id="saleman" readonly class="layui-input">
             </div>
+        </div>
+        <br />
+        <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;来源
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;来源
             </label>
             <div class="layui-input-inline">
                 <input type="text" id="clSource" placeholder="请输入来源"
                        autocomplete="off" class="layui-input">
             </div>
-        </div>
-        <br />
-        <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
             </label>
             <div class="layui-input-inline layui-form">
                 <input type="hidden" id="clTypeId">
                 <input type="text" id="cType" readonly
                        autocomplete="off" class="layui-input">
             </div>
+        </div>
+        <br />
+        <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注
             </label>
             <div class="layui-input-inline">
                 <textarea class="layui-textarea" id="clRemark"
                           autocomplete="off"></textarea>
             </div>
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;症状信息
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;症状信息
             </label>
             <div class="layui-input-inline">
                 <textarea class="layui-textarea" id="clMessage"
@@ -183,10 +191,11 @@
             <label class="layui-form-label">
                 <span style="color: red;">*&nbsp;</span>成交金额
             </label>
-            <div class="layui-input-block">
+            <div class="layui-input-inline">
                 <input type="text" class="layui-input" placeholder="请输入成交金额"
                        autocomplete="off" id="sSum">
             </div>
+            <div class="layui-form-mid layui-word-aux">（不含报名费）</div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">
@@ -244,6 +253,7 @@
         elem: '#clPlaceTime' //指定元素
         ,type: 'datetime' //时间格式
         ,trigger: 'click' //采用click弹出
+        ,value: new Date() //默认时间
     });
 
     //时间控件
@@ -252,6 +262,7 @@
         ,type: 'datetime' //时间格式
         ,trigger: 'click' //采用click弹出
     });
+
 
     if(rName != "销售员"){
 
@@ -401,6 +412,7 @@
         var cSex = $("[name=cSex]").val();
         var cAge = $("#cAge").val();
         var cTel = $("#cTel").val();
+        var cWx = $("#cWx").val();
         var clPlaceTime = $("#clPlaceTime").val();
         var clProject = $("#clProject").val();
         var clEntryFee = $("#clEntryFee").val();
@@ -442,7 +454,7 @@
             }
             if (verify){
                 $.post("/customer/saveCustomer",
-                    {uId: uId, uName:uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), clPlaceTime:clPlaceTime, clProject:clProject,
+                    {uId: uId, uName:uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cWx:cWx, clPlaceTime:clPlaceTime, clProject:clProject,
                         clMessage:clMessage, clRemark:clRemark, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
                     function (obj) {
                         if (obj.code == 1){
@@ -516,6 +528,7 @@
         var cSex = $("[name=cSex]").val();
         var cAge = $("#cAge").val();
         var cTel = $("#cTel").val();
+        var cWx = $("#cWx").val();
         var clPlaceTime = $("#clPlaceTime").val();
         var clProject = $("#clProject").val();
         var clEntryFee = $("#clEntryFee").val();
@@ -536,6 +549,7 @@
                     ,cSex:cSex
                     ,cAge:cAge
                     ,cTel:cTel
+                    ,cWx:cWx
                     ,clPlaceTime:clPlaceTime
                     ,clProject:clProject
                     ,clEntryFee:clEntryFee
@@ -575,6 +589,7 @@
         var cSex = $("[name=cSex]").val();
         var cAge = $("#cAge").val();
         var cTel = $("#cTel").val();
+        var cWx = $("#cWx").val();
         var clPlaceTime = $("#clPlaceTime").val();
         var clProject = $("#clProject").val();
         var clEntryFee = $("#clEntryFee").val();
@@ -621,6 +636,7 @@
                         ,cSex:cSex
                         ,cAge:cAge
                         ,cTel:cTel
+                        ,cWx:cWx
                         ,clPlaceTime:clPlaceTime
                         ,clProject:clProject
                         ,clEntryFee:clEntryFee

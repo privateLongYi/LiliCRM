@@ -13,6 +13,7 @@
     <result column="c_sex" jdbcType="VARCHAR" property="cSex" />
     <result column="c_age" jdbcType="INTEGER" property="cAge" />
     <result column="c_tel" jdbcType="VARCHAR" property="cTel" />
+    <result column="c_wx" jdbcType="VARCHAR" property="cWx" />
     <result column="c_time" jdbcType="TIMESTAMP" property="cTime" />
   </resultMap>
 
@@ -58,7 +59,7 @@
       </if>
       AND cl.cl_invalid = 0
     </where>
-    ORDER BY cl_place_time DESC
+    ORDER BY c_time DESC
     <if test="export == 0">
       limit #{page}, #{limit}
     </if>
@@ -204,8 +205,8 @@
 
   <!-- 新增客户 -->
   <insert id="saveCustomer" useGeneratedKeys="true" keyProperty="cId">
-    INSERT INTO customer(c_name, c_sex, c_age, c_tel, c_time)
-    VALUES (#{cName}, #{cSex}, #{cAge}, #{cTel}, NOW())
+    INSERT INTO customer(c_name, c_sex, c_age, c_tel, c_wx, c_time)
+    VALUES (#{cName}, #{cSex}, #{cAge}, #{cTel}, #{cWx}, NOW())
   </insert>
 
   <!--查询最大的编号（新增客户的编号）-->
@@ -245,7 +246,7 @@
   <!-- 根据编号编辑客户 -->
   <update id="editCByCId">
     UPDATE customer SET c_name = #{cName}, c_sex = #{cSex}, c_age = #{cAge},
-    c_tel = #{cTel} WHERE c_id = #{cId}
+    c_tel = #{cTel}, c_wx = #{cWx} WHERE c_id = #{cId}
   </update>
 
   <!--根据用户编号和状态查询客户总条数-->
@@ -291,14 +292,14 @@
 
   <!--根据用户编号和客户名称查询可成交客户-->
   <select id="queryCSCByUIdAndCName" resultMap="BaseResultMap">
-    SELECT c.c_id, c.c_name, h.h_id AS hId, h.h_name AS hName,
+    SELECT c.c_id, c.c_name, h.h_id AS hId, h.h_name AS hName, c.c_tel,
     cl.cl_id AS clId, a.a_id AS aId, cl.cl_entry_fee AS clEntryFee FROM customer c
     LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
     LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
     LEFT JOIN appointment a ON cl.cl_id=a.a_cl_id
     LEFT JOIN hospital h ON a.a_h_id=h.h_id
     <where>
-      c.c_name LIKE '%${cName}%'
+      (c.c_name LIKE '%${cName}%' OR c.c_tel LIKE '%${cName}%')
       AND (cl.cl_type_id >= 4)
       <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
@@ -327,11 +328,11 @@
 
   <!--根据用户编号和客户名称查询可预约客户-->
   <select id="queryCACByUIdAndCName" resultMap="BaseResultMap">
-    SELECT cl.cl_id AS clId, c.c_name, cl.cl_entry_fee AS clEntryFee FROM customer c
+    SELECT cl.cl_id AS clId, c.c_name, cl.cl_entry_fee AS clEntryFee, c.c_tel FROM customer c
     LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
     LEFT JOIN `user` u ON cl.cl_u_id=u.u_id
     <where>
-      c.c_name LIKE '%${cName}%'
+      (c.c_name LIKE '%${cName}%' OR c.c_tel LIKE '%${cName}%')
       AND cl.cl_type_id = 3
       <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}

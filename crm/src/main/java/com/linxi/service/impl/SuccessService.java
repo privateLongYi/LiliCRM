@@ -162,4 +162,10 @@ public class SuccessService implements ISuccessService{
         return successMapper.queryRefundByClId(clId);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Success queryFirstSByClId(Integer clId) {
+        return successMapper.queryFirstSByClId(clId);
+    }
+
 }

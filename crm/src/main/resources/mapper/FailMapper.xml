@@ -12,12 +12,13 @@
     <result column="fl_a_id" jdbcType="INTEGER" property="flAId" />
     <result column="fl_h_id" jdbcType="INTEGER" property="flHId" />
     <result column="fl_cause" jdbcType="LONGVARCHAR" property="flCause" />
+    <result column="fl_time" jdbcType="TIMESTAMP" property="flTime" />
   </resultMap>
 
   <!--新增未成交客户-->
   <insert id="saveFail">
-    INSERT INTO fail(fl_a_id, fl_h_id, fl_cause)
-    VALUES (#{flAId}, #{flHId}, #{flCause})
+    INSERT INTO fail(fl_a_id, fl_h_id, fl_cause, fl_time)
+    VALUES (#{flAId}, #{flHId}, #{flCause}, NOW())
   </insert>
 
   <!--根据客户名称查询未成交客户-->
@@ -38,6 +39,7 @@
       </if>
       AND cl.cl_invalid = 0 AND a.a_status = 3
     </where>
+    ORDER BY fl.fl_time DESC
     <if test="export == 0">
       limit #{page}, #{limit}
     </if>

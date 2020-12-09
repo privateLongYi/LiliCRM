@@ -68,23 +68,9 @@ public class FollowController {
     @GetMapping("queryFollowByFClId")
     @ApiOperation(value = "根据线索编号查询跟进记录")
     @ResponseBody
-    public List<Object> queryFollowByFClId(@ApiParam(value = "线索编号", required = true) Integer clId){
-        List<Object> list = new ArrayList<>();
-        //根据线索编号查询所拥有的根据记录
-        List<Follow> ftTypes = iFollowService.queryFtypeByFClId(clId);
-        for (Follow f : ftTypes){
-            //根据跟进类型和线索编号查询最后一次跟进时间
-            String lastTime = iFollowService.queryLastFTimeByFtypeAndFClId(clId, f.getfType());
-            //根据线索编号查询客户跟进
-            List<Follow> follows = iFollowService.queryFByFtypeAndFClId(clId, f.getfType());
-            //声明跟进信息列表
-            List<String> objects = new ArrayList<>();
-            for (Follow follow : follows){
-                objects.add(follow.getfContent());
-            }
-            list.add(new FollowVo(Timestamp.valueOf(lastTime), f.getfType(), objects));
-        }
-        return list;
+    public DataResult queryFollowByFClId(@ApiParam(value = "线索编号", required = true) Integer clId){
+        List<Follow> follows = iFollowService.queryFByFClId(clId);
+        return new DataResult(0, "操作成功", 0, follows);
     }
 
 }

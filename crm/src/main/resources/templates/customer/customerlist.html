@@ -284,70 +284,6 @@
                 });
             }
 
-			//处理弹出的新增或修改页面
-			function popup(ix, index, url) {
-				var body = layer.getChildFrame('body', index);
-				//获取值
-				var cName = $(body).find("#cName").val();
-				var cSex = null;
-				if($(body).find("[name=cSex]")[0].checked){
-					cSex = $(body).find("[name=cSex]")[0].value;
-				}else{
-					cSex = $(body).find("[name=cSex]")[1].value;
-				}
-				var cAge = $(body).find("#cAge").val();
-				var cTel = $(body).find("#cTel").val();
-                var clPlaceTime = $(body).find("#clPlaceTime").val();
-				var clProject = $(body).find("#clProject").val();
-				var clRemark = $(body).find("#clRemark").val();
-				var clMessage = $(body).find("#clMessage").val();
-				var clEntryFee = $(body).find("#clEntryFee").val();
-				var clUId = $(body).find("#clUId").val();
-				var clSource = $(body).find("#clSource").val();
-				var clTypeId = $(body).find("#clTypeId").val();
-				if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '' && clPlaceTime != '') {
-					//声明格式是否正确
-					var verify = true;
-                    //验证姓名格式
-                    if(cName.length > 20){
-                        layer.msg("姓名长度不能大于20位");
-                        verify = false;
-                        return;
-                    }
-                    //验证年龄格式
-                    if(cAge != ''){
-                        if(isNaN(cAge) || cAge <= 0 || cAge >= 150){
-                            layer.msg("年龄必须是大于0小于150的数值");
-                            verify = false;
-                            return;
-                        }
-                    }
-                    //验证电话格式
-                    if(!(/^1[3456789]\d{9}$/.test(cTel))){
-                        layer.msg("手机号码格式错误");
-                        verify = false;
-                        return;
-                    }
-					if(verify){
-						$.post(url, {uId: uId, uName:uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), clPlaceTime:clPlaceTime, clProject:clProject,
-								clMessage:clMessage, clRemark:clRemark, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
-							function (obj) {
-						    	if (obj.code == 1){
-                                    layer.msg(obj.msg);
-								} else {
-                                    layer.msg(obj.msg, {time: 500}, function () {
-                                        layer.close(ix);
-                                        tableReload();
-                                    });
-								}
-							}
-						);
-					}
-				} else {
-					layer.msg('请输入带星号的必填项');
-				}
-			}
-
             //执行一个 table 实例
             function superAdminTable() {
                 table.render({
@@ -368,12 +304,16 @@
                             ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
                             ,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
                             ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
-                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center', sort:true}
                             ,{field: 'clEntryFee', minWidth: 120, title: '报名费', align:'center'}
                             ,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
                             ,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
                             ,{field: 'clRemark', minWidth: 200, title: '备注', align:'center'}
                             ,{field: 'clMessage', minWidth: 200, title: '症状信息', align:'center'}
+                            ,{field: 'hName', minWidth: 150, title: '最近预约', align:'center'}
+                            ,{field: 'sSum', minWidth: 120, title: '总成交金额', align:'center'}
+                            ,{field: 'sPaysum', minWidth: 120, title: '总支付金额', align:'center'}
+                            ,{field: 'sTime', minWidth: 200, title: '最早成交时间', align:'center'}
                             ,{fixed: 'right', minWidth: 200, title: '操作', toolbar: '#barDemo', align:'center'}
                         ]
                     ]
@@ -400,12 +340,16 @@
                             ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
                             ,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
                             ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
-                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center', sort:true}
                             ,{field: 'clEntryFee', minWidth: 120, title: '报名费', align:'center'}
                             ,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
                             ,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
                             ,{field: 'clRemark', minWidth: 200, title: '备注', align:'center'}
                             ,{field: 'clMessage', minWidth: 200, title: '症状信息', align:'center'}
+                            ,{field: 'hName', minWidth: 150, title: '最近预约', align:'center'}
+                            ,{field: 'sSum', minWidth: 120, title: '总成交金额', align:'center'}
+                            ,{field: 'sPaysum', minWidth: 120, title: '总支付金额', align:'center'}
+                            ,{field: 'sTime', minWidth: 200, title: '最早成交时间', align:'center'}
                             ,{fixed: 'right', minWidth: 150, title: '操作', toolbar: '#barDemo', align:'center'}
                         ]
                     ]
@@ -431,12 +375,16 @@
                             }
                             ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
                             ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
-                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
+                            ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center', sort:true}
                             ,{field: 'clEntryFee', minWidth: 120, title: '报名费', align:'center'}
                             ,{field: 'cType', minWidth: 120, title: '状态', align:'center'}
                             ,{field: 'clSource', minWidth: 120, title: '来源', align:'center'}
                             ,{field: 'clRemark', minWidth: 200, title: '备注', align:'center'}
                             ,{field: 'clMessage', minWidth: 200, title: '症状信息', align:'center'}
+                            ,{field: 'hName', minWidth: 150, title: '最近预约', align:'center'}
+                            ,{field: 'sSum', minWidth: 120, title: '总成交金额', align:'center'}
+                            ,{field: 'sPaysum', minWidth: 120, title: '总支付金额', align:'center'}
+                            ,{field: 'sTime', minWidth: 200, title: '最早成交时间', align:'center'}
                             ,{fixed: 'right', minWidth: 90, title: '操作', toolbar: '#barDemo', align:'center'}
                         ]
                     ]
@@ -485,7 +433,7 @@
 					});
 				} else if(layEvent === 'edit'){
 					//弹出编辑页面
-					var ix = layer.open({
+					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑客户',
 						content: ['/customer/queryCByCId?cId=' + data.cId],
@@ -493,7 +441,76 @@
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
-							popup(ix, index, "/customer/editCByCId?cId=" + data.cId);
+                            var body = layer.getChildFrame('body', index);
+                            //获取值
+                            var cId = $(body).find("#cId").val();
+                            var cName = $(body).find("#cName").val();
+                            var cSex = null;
+                            if($(body).find("[name=cSex]")[0].checked){
+                                cSex = $(body).find("[name=cSex]")[0].value;
+                            }else{
+                                cSex = $(body).find("[name=cSex]")[1].value;
+                            }
+                            var cAge = $(body).find("#cAge").val();
+                            var cTel = $(body).find("#cTel").val();
+                            var cWx = $(body).find("#cWx").val();
+                            var clPlaceTime = $(body).find("#clPlaceTime").val();
+                            var clProject = $(body).find("#clProject").val();
+                            var clRemark = $(body).find("#clRemark").val();
+                            var clMessage = $(body).find("#clMessage").val();
+                            var clEntryFee = $(body).find("#clEntryFee").val();
+                            var clUId = $(body).find("#clUId").val();
+                            var clSource = $(body).find("#clSource").val();
+                            var clTypeId = $(body).find("#clTypeId").val();
+                            if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '' && clPlaceTime != '') {
+                                //声明格式是否正确
+                                var verify = true;
+                                //验证姓名格式
+                                if(cName.length > 20){
+                                    layer.msg("姓名长度不能大于20位");
+                                    verify = false;
+                                    return;
+                                }
+                                //验证年龄格式
+                                if(cAge != ''){
+                                    if(isNaN(cAge) || cAge <= 0 || cAge >= 150){
+                                        layer.msg("年龄必须是大于0小于150的数值");
+                                        verify = false;
+                                        return;
+                                    }
+                                }
+                                //验证电话格式
+                                if(!(/^1[3456789]\d{9}$/.test(cTel))){
+                                    layer.msg("手机号码格式错误");
+                                    verify = false;
+                                    return;
+                                }
+                                //验证报名费格式
+                                if (clEntryFee != '') {
+                                    if (isNaN(clEntryFee) || cAge <= 0) {
+                                        layer.msg("报名费必须是大于0的数值");
+                                        verify = false;
+                                        return;
+                                    }
+                                }
+                                if(verify){
+                                    $.post("/customer/editCByCId", {uId: uId, uName:uName, cId: cId, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cWx:cWx, clPlaceTime:clPlaceTime, clProject:clProject,
+                                            clMessage:clMessage, clRemark:clRemark, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
+                                        function (obj) {
+                                            if (obj.code == 1){
+                                                layer.msg(obj.msg);
+                                            } else {
+                                                layer.msg(obj.msg, {time: 500}, function () {
+                                                    layer.close(index);
+                                                    tableReload();
+                                                });
+                                            }
+                                        }
+                                    );
+                                }
+                            } else {
+                                layer.msg('请输入带星号的必填项');
+                            }
 						},
 						cancel: function(index, layero){
 							layer.close(index);

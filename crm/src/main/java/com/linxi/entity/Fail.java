@@ -40,6 +40,8 @@ public class Fail implements Serializable {
      */
     private String flCause;
 
+    private Timestamp flTime;
+
     /**
      * 客户名称
      */
@@ -182,6 +184,14 @@ public class Fail implements Serializable {
      */
     public void setFlCause(String flCause) {
         this.flCause = flCause;
+    }
+
+    public Timestamp getFlTime() {
+        return flTime;
+    }
+
+    public void setFlTime(Timestamp flTime) {
+        this.flTime = flTime;
     }
 
     public String getcName() {

@@ -22,10 +22,9 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">门诊名称</label>
+            <label class="layui-form-label">上次预约门诊</label>
             <div class="layui-input-block">
-                <input type="hidden" id="hName" th:value="${hName}">
-                <select id="reHId"></select>
+                <input type="text" class="layui-input" id="reHName" th:value="${hName}" readonly>
             </div>
         </div>
         <div class="layui-form-item">
@@ -33,6 +32,12 @@
             <div class="layui-input-block">
                 <input type="text" class="layui-input"
                        id="reLastTime" th:value="${aTime}" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">本次预约门诊</label>
+            <div class="layui-input-block">
+                <select id="reHId"></select>
             </div>
         </div>
         <div class="layui-form-item">

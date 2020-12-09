@@ -397,6 +397,7 @@ public class SuccessController {
                                     @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
                                     @ApiParam(name = "cAge", value = "年龄", required = false) Integer cAge,
                                     @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
+                                    @ApiParam(name = "cWx", value = "微信号", required = true) String cWx,
                                     @ApiParam(name = "clProject", value = "报名项目", required = true) String clProject,
                                     @ApiParam(name = "clPlaceTime", value = "报名时间", required = true) String clPlaceTime,
                                     @ApiParam(name = "clEntryFee", value = "报名费", required = false) String clEntryFee,
@@ -415,7 +416,7 @@ public class SuccessController {
                                     @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
                                     @ApiParam(name = "sRemark", value = "备注", required = true) String sRemark) {
         //创建客户
-        Customer c = new Customer(null, cName, cSex, cAge, cTel, null);
+        Customer c = new Customer(null, cName, cSex, cAge, cTel, cWx, null);
         //根据姓名查询客户
         List<Customer> customers1 = iCustomerService.queryCByCName(cName);
         if (customers1.size() != 0) {

@@ -167,12 +167,12 @@
 
   <!--根据用户编号和客户名称查询成交客户-->
   <select id="querySCByUIdAndCName" resultMap="BaseResultMap">
-    SELECT s.s_id, c.c_name AS cName, s.s_sum, s.s_paysum, c.c_id AS cId FROM success s
+    SELECT s.s_id, c.c_name AS cName, c.c_tel AS cTel, s.s_sum, s.s_paysum, c.c_id AS cId FROM success s
     LEFT JOIN appointment a ON a.a_id=s.s_a_id
     LEFT JOIN clue cl ON cl.cl_id=a.a_cl_id
     LEFT JOIN customer c ON c.c_id=cl.cl_c_id
     <where>
-      c.c_name LIKE '%${cName}%'
+      (c.c_name LIKE '%${cName}%' OR c.c_tel LIKE '%${cName}%')
       AND cl.cl_type_id = 7
       <if test="rName != '管理员' and rName != '管理者'">
         AND cl.cl_u_id = #{uId}
@@ -385,6 +385,12 @@
     LEFT JOIN hospital h ON s.s_h_id=h.h_id
     WHERE cl.cl_invalid = 0 AND a.a_status = 2 AND p.pay_type_id = 3
     AND cl.cl_id = #{clId}
+  </select>
+
+  <!--根据线索编号查询最早成交-->
+  <select id="queryFirstSByClId" resultMap="BaseResultMap">
+    SELECT s.* FROM success s LEFT JOIN appointment a ON a.a_id=s.s_a_id WHERE a.a_cl_id = #{clId}
+    ORDER BY s.s_time ASC LIMIT 0,1
   </select>
 
 </mapper>

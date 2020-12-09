@@ -92,7 +92,7 @@
             $.post("/success/querySCByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
-                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].sId+"&quot;,&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].sSum+"&quot;,&quot;"+data.data[i].sPaysum+"&quot;);'>"+data.data[i].cName+"</div>";
+                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].sId+"&quot;,&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].sSum+"&quot;,&quot;"+data.data[i].sPaysum+"&quot;);'>"+data.data[i].cName+"--"+data.data[i].cTel+"</div>";
                 }
                 //赋值
                 $("#data").html(html);

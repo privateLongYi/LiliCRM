@@ -65,10 +65,11 @@
             <label class="layui-form-label">
                 <span style="color: red;">*&nbsp;</span>成交金额
             </label>
-            <div class="layui-input-block">
+            <div class="layui-input-inline">
                 <input type="text" class="layui-input" placeholder="请输入成交金额"
                        autocomplete="off" id="sSum">
             </div>
+            <div class="layui-form-mid layui-word-aux">（不含报名费）</div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">
@@ -110,7 +111,7 @@
                         "&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].aId+"&quot;," +
                         "&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].hId+"&quot;," +
                         "&quot;"+data.data[i].clEntryFee+"&quot;," +
-                        "&quot;"+data.data[i].hName+"&quot;)'>"+data.data[i].cName+"</div>";
+                        "&quot;"+data.data[i].hName+"&quot;)'>"+data.data[i].cName+"--"+data.data[i].cTel+"</div>";
                 }
                 //赋值
                 $("#data").html(html);

@@ -87,10 +87,11 @@
             <label class="layui-form-label">
                 <span style="color: red;">*&nbsp;</span>成交金额
             </label>
-            <div class="layui-input-block">
+            <div class="layui-input-inline">
                 <input type="text" class="layui-input" placeholder="请输入成交金额"
                        autocomplete="off" id="sSum">
             </div>
+            <div class="layui-form-mid layui-word-aux">（不含报名费）</div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">
@@ -141,7 +142,7 @@
             $.post("/customer/queryCACByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
-                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].clEntryFee+"&quot;);'>"+data.data[i].cName+"</div>";
+                    html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].clEntryFee+"&quot;);'>"+data.data[i].cName+"--"+data.data[i].cTel+"</div>";
                 }
                 //赋值
                 $("#data").html(html);

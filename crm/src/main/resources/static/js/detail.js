@@ -257,7 +257,7 @@ function goDetail(cId, clId, clUId){
         date = date.substring(0, 10);
         $(window.parent.document).find("#date").text(date);
         //微信
-        $(window.parent.document).find("#wx").text(data.customer.wx);
+        $(window.parent.document).find("#cWx").text(data.customer.cWx);
         //负责人
         $(window.parent.document).find("#principal").text(data.customer.uName);
         //创建时间
@@ -674,22 +674,20 @@ function goDetail(cId, clId, clUId){
     //根据客户编号查询所拥有的跟进类型
     $.get("/follow/queryFollowByFClId?clId="+clId, function(obj){
         var html = "";
-        for(var i = 0; i < obj.length; i++) {
-            var year = obj[i].time.substring(0, 4);
-            var month = obj[i].time.substring(5, 7);
-            var day = obj[i].time.substring(8, 10);
+        for(var i = 0; i < obj.data.length; i++) {
+            var year = obj.data[i].fTime.substring(0, 4);
+            var month = obj.data[i].fTime.substring(5, 7);
+            var day = obj.data[i].fTime.substring(8, 10);
             var date = year+"年"+month+"月"+day+"日";
             html += "<li class='layui-timeline-item'>" +
-                "<i class='layui-icon layui-timeline-axis'>&#xe63f;</i>" +
-                "<div class='layui-timeline-content layui-text'>" +
-                "<h3>"+date+"("+obj[i].type+")</h3>" +
-                "<ul>";
-            for(var j = 0; j < obj[i].followList.length; j++){
-                html += "<li>"+obj[i].followList[j]+"</li>";
-            }
-            html += "</ul>" +
-                "</div>" +
-                "</li>";
+                        "<i class='layui-icon layui-timeline-axis'>&#xe63f;</i>" +
+                        "<div class='layui-timeline-content layui-text'>" +
+                            "<h3>"+date+"("+obj.data[i].fType+")</h3>" +
+                            "<ul>" +
+                                "<li>"+obj.data[i].fContent+"</li>" +
+                            "</ul>" +
+                        "</div>" +
+                    "</li>";
         }
         //赋值
         $(window.parent.document).find("#follow").html(html);

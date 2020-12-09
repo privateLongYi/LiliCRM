@@ -67,8 +67,6 @@ public class CustomerController {
                                    @ApiParam(name = "beginTime", value = "开始时间", required = false) String beginTime,
                                    @ApiParam(name = "endTime", value = "结束时间", required = false) String endTime,
                                    @ApiParam(name = "export", value = "是否导出", required = false) Integer export) {
-        System.out.println("0".equals(clEntryFee));
-        System.out.println("1".equals(clEntryFee));
         if (clTypeId == null && ctType != null) {
             //根据客户状态查询编号
             clTypeId = iCtypeService.queryCtypeByCtType(ctType);
@@ -77,6 +75,28 @@ public class CustomerController {
                 List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
                 //获取总条数
                 Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId);
+                for (Customer customer : customeres){
+                    //根据线索编号查询最近预约门诊
+                    Appointment appointment = iAppointmentService.queryLastAByClId(customer.getClId());
+                    if (appointment != null && appointment.gethName() != null){
+                        customer.sethName(appointment.gethName());
+                    }
+                    //根据线索编号查询总成交金额
+                    Integer successMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 0);
+                    if (successMoney != null){
+                        customer.setsSum(successMoney);
+                    }
+                    //根据线索编号查询总支付金额
+                    Integer payMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 1);
+                    if (payMoney != null){
+                        customer.setsPaysum(payMoney);
+                    }
+                    //根据线索编号查询最早成交时间
+                    Success success = iSuccessService.queryFirstSByClId(customer.getClId());
+                    if (success != null && success.getsTime() != null){
+                        customer.setsTime(success.getsTime());
+                    }
+                }
                 return new DataResult(0, "操作成功", total, customeres);
             } else {
                 //根据筛选条件查询客户
@@ -98,6 +118,28 @@ public class CustomerController {
             List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
             //获取总条数
             Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId);
+            for (Customer customer : customeres){
+                //根据线索编号查询最近预约门诊
+                Appointment appointment = iAppointmentService.queryLastAByClId(customer.getClId());
+                if (appointment != null && appointment.gethName() != null){
+                    customer.sethName(appointment.gethName());
+                }
+                //根据线索编号查询总成交金额
+                Integer successMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 0);
+                if (successMoney != null){
+                    customer.setsSum(successMoney);
+                }
+                //根据线索编号查询总支付金额
+                Integer payMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 1);
+                if (payMoney != null){
+                    customer.setsPaysum(payMoney);
+                }
+                //根据线索编号查询最早成交时间
+                Success success = iSuccessService.queryFirstSByClId(customer.getClId());
+                if (success != null && success.getsTime() != null){
+                    customer.setsTime(success.getsTime());
+                }
+            }
             return new DataResult(0, "操作成功", total, customeres);
         }
     }
@@ -111,6 +153,7 @@ public class CustomerController {
                                    @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
                                    @ApiParam(name = "cAge", value = "年龄", required = false) Integer cAge,
                                    @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
+                                   @ApiParam(name = "cWx", value = "微信号", required = true) String cWx,
                                    @ApiParam(name = "clProject", value = "报名项目", required = true) String clProject,
                                    @ApiParam(name = "clPlaceTime", value = "报名时间", required = true) String clPlaceTime,
                                    @ApiParam(name = "clEntryFee", value = "报名费", required = false) String clEntryFee,
@@ -125,7 +168,7 @@ public class CustomerController {
             return new DataResult(1, "新增失败，姓名和电话号码重复！");
         } else {
             //创建客户
-            Customer c = new Customer(null, cName, cSex, cAge, cTel, null);
+            Customer c = new Customer(null, cName, cSex, cAge, cTel, cWx, null);
             //根据姓名查询客户
             List<Customer> customers1 = iCustomerService.queryCByCName(cName);
             if (customers1.size() != 0) {
@@ -190,6 +233,7 @@ public class CustomerController {
                                  @ApiParam(name = "cSex", value = "性别", required = true) String cSex,
                                  @ApiParam(name = "cAge", value = "年龄", required = false) Integer cAge,
                                  @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
+                                 @ApiParam(name = "cWx", value = "微信号", required = true) String cWx,
                                  @ApiParam(name = "clProject", value = "项目", required = true) String clProject,
                                  @ApiParam(name = "clEntryFee", value = "报名费", required = false) String clEntryFee,
                                  @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
@@ -197,7 +241,7 @@ public class CustomerController {
                                  @ApiParam(name = "clRemark", value = "备注", required = false) String clRemark,
                                  @ApiParam(name = "clMessage", value = "症状信息", required = false) String clMessage) {
         //创建客户
-        Customer c = new Customer(cId, cName, cSex, cAge, cTel, null);
+        Customer c = new Customer(cId, cName, cSex, cAge, cTel, cWx, null);
         //编辑客户
         iCustomerService.editCByCId(c);
         //创建线索
@@ -529,7 +573,7 @@ public class CustomerController {
         Follow follow = new Follow(null, clId, 2, new Timestamp(System.currentTimeMillis()), cause, uId);
         iFollowService.saveFollow(follow);
         //根据客户状态查询编号
-        Integer clTypeId = iCtypeService.queryCtypeByCtType("未到店");
+        Integer clTypeId = iCtypeService.queryCtypeByCtType("待预约");
         //改变客户状态为未到店状态
         iClueService.editClTypeIdByClId(clId, clTypeId);
         //根据预约编号编辑预约状态

@@ -140,4 +140,7 @@ public interface ISuccessService {
     //根据线索编号查询退款总金额
     Integer queryRefundByClId(@Param("clId") Integer clId);
 
+    //根据线索编号查询最早成交
+    Success queryFirstSByClId(Integer clId);
+
 }
