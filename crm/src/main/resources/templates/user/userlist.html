@@ -127,11 +127,15 @@
 				}
 				if(verify){
 					$.post(url, {uName:uName, uPassword:uPassword, uRoleId:uRoleId},
-						function (obj) {
-							layer.msg(obj.msg, {time: 500}, function () {
-								layer.closeAll();
-								tableReload();
-							});
+						function (data) {
+                            if (data.code != 200){
+                                layer.msg(data.msg);
+                            } else {
+                                layer.msg(data.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    tableReload();
+                                });
+                            }
 						}
 					);
 				}
@@ -176,7 +180,7 @@
 								popup(index, "/user/saveUser");
 							},
 							cancel: function(layero,index){
-								layer.closeAll();
+								layer.close(index);
 							}
 						});
 						break;
@@ -215,7 +219,7 @@
 							popup(index, "/user/editUByUId?uId=" + data.uId);
 						},
 						cancel: function(layero,index){
-							layer.closeAll();
+							layer.close(index);
 						}
 					});
 				}

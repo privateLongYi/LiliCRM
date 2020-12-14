@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.config.security.PasswordConfig;
 import com.linxi.entity.RoleMenu;
 import com.linxi.entity.User;
@@ -38,7 +39,7 @@ public class UserController {
     @ResponseBody
     public DataResult queryUserByRName(){
         List<User> users = iUserService.queryUserByRName();
-        return new DataResult(0, "操作成功",0 , users);
+        return DataResult.success(users);
     }
 
     @GetMapping("queryRNameByRId")
@@ -58,9 +59,10 @@ public class UserController {
         List<User> users = iUserService.queryUserByUNameAndRId((page-1)*limit, limit, uName, uRoleId);
         //获取总条数
         Integer total = iUserService.getTotalByUNameAndRId(uName, uRoleId);
-        return new DataResult(0, "操作成功", total, users);
+        return DataResult.success(total, users);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveUser")
     @ApiOperation(value = "新增用户")
     @ResponseBody
@@ -71,7 +73,7 @@ public class UserController {
         //MD5加密
         user.setuPassword(passwordConfig.encode(user.getuPassword()));
         iUserService.saveUser(user);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
     @GetMapping("goDetail")
@@ -82,12 +84,13 @@ public class UserController {
         return "user/userdetail";
     }
 
+    @NoRepeatSubmit
     @GetMapping("delUByUId")
     @ApiOperation(value = "根据编号删除用户")
     @ResponseBody
     public DataResult delUByUId(@ApiParam(name = "uId", value = "编号", required = true) Integer uId){
         iUserService.delUByUId(uId);
-        return new DataResult(0, "删除成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryUByUId")
@@ -98,6 +101,7 @@ public class UserController {
         return "user/useredit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editUByUId")
     @ApiOperation(value = "根据编号编辑用户")
     @ResponseBody
@@ -109,7 +113,7 @@ public class UserController {
         //MD5加密
         user.setuPassword(passwordConfig.encode(user.getuPassword()));
         iUserService.editUByUId(user);
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
     @PostMapping("verifyPwd")
@@ -121,6 +125,7 @@ public class UserController {
         return passwordConfig.matches(uPassword, user.getuPassword());
     }
 
+    @NoRepeatSubmit
     @PostMapping("editPwd")
     @ApiOperation(value = "修改密码")
     @ResponseBody
@@ -129,7 +134,7 @@ public class UserController {
         //MD5加密
         uPassword = passwordConfig.encode(uPassword);
         iUserService.editPwd(uId, uPassword);
-        return new DataResult(0, "修改成功");
+        return DataResult.success();
     }
 
 }

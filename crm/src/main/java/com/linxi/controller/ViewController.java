@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Follow;
 import com.linxi.service.IFollowService;
 import com.linxi.service.IFtypeService;

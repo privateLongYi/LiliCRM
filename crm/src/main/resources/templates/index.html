@@ -450,15 +450,19 @@
                 ,{uId:uId, cId:cId, fClId:clId, fTypeId:fTypeId, clUId:clUId,
                     ftType:ftType, fContent:fContent, fTime: fTime}
                 ,function (data) {
-                    layer.msg(data.msg, {time: 500}, function () {
-                        $("#content").val("");
-                        var time = new Date();
-                        var fTime = time.getFullYear()+"-"+eval(time.getMonth()+"+"+1)+"-"+
-                            time.getDate()+" "+time.getHours()+":"+
-                            time.getMinutes()+":"+time.getSeconds();
-                        $("#fTime").val(fTime);
-                        goDetail(cId, clId, clUId);
-                    });
+                    if (data.code != 200){
+                        layer.msg(data.msg);
+                    } else {
+                        layer.msg(data.msg, {time: 500}, function () {
+                            $("#content").val("");
+                            var time = new Date();
+                            var fTime = time.getFullYear()+"-"+eval(time.getMonth()+"+"+1)+"-"+
+                                time.getDate()+" "+time.getHours()+":"+
+                                time.getMinutes()+":"+time.getSeconds();
+                            $("#fTime").val(fTime);
+                            goDetail(cId, clId, clUId);
+                        });
+                    }
                 }
             )
         } else {
@@ -501,11 +505,15 @@
                 if (aTime != '') {
                     $.post("/appointment/saveAppointment", {uId:uId, uName:uName, aClId:aClId, aTime:aTime,
                             aHId:aHId, atType:atType},
-                        function (obj) {
-                            layer.msg(obj.msg, {time: 500}, function () {
-                                layer.close(index);
-                                goDetail(cId, clId, clUId);
-                            });
+                        function (data) {
+                            if (data.code != 200){
+                                layer.msg(data.msg);
+                            } else {
+                                layer.msg(data.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    goDetail(cId, clId, clUId);
+                                });
+                            }
                         }
                     );
                 } else {
@@ -595,10 +603,14 @@
                                     sRemark: sRemark
                                 },
                                 function (obj) {
-                                    layer.msg(obj.msg, {time: 500}, function () {
-                                        layer.close(index);
-                                        goDetail(cId, clId, clUId);
-                                    });
+                                    if (data.code != 200){
+                                        layer.msg(data.msg);
+                                    } else {
+                                        layer.msg(data.msg, {time: 500}, function () {
+                                            layer.close(index);
+                                            goDetail(cId, clId, clUId);
+                                        });
+                                    }
                                 }
                             );
                         }
@@ -632,10 +644,14 @@
                 $.get("/clue/refundClEntryFee", {uId: uId, uName: uName, cId: cId,
                         cName: cName, clId: clId, clEntryFee: clEntryFee},
                     function (obj) {
-                        layer.msg(obj.msg, {time: 500}, function () {
-                            layer.close(index);
-                            goDetail(cId, clId, clUId);
-                        });
+                        if (data.code != 200){
+                            layer.msg(data.msg);
+                        } else {
+                            layer.msg(data.msg, {time: 500}, function () {
+                                layer.close(index);
+                                goDetail(cId, clId, clUId);
+                            });
+                        }
                     }
                 );
             });
@@ -905,11 +921,15 @@
                                         sMessage: sMessage, sSum: sSum,
                                         sRemark: sRemark, uName: uName, cName: cName
                                     },
-                                    function (obj) {
-                                        layer.msg(obj.msg, {time: 500}, function () {
-                                            layer.close(index);
-                                            goDetail(cId, clId, clUId);
-                                        });
+                                    function (data) {
+                                        if (data.code != 200){
+                                            layer.msg(data.msg);
+                                        } else {
+                                            layer.msg(data.msg, {time: 500}, function () {
+                                                layer.close(index);
+                                                goDetail(cId, clId, clUId);
+                                            });
+                                        }
                                     }
                                 );
                             }
@@ -952,11 +972,15 @@
                                     } else {
                                         $.post("/payrecord/savePayrecord",
                                             {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, paySum: paySum, payRemark:payRemark, payTypeId: payTypeId},
-                                            function (obj) {
-                                                layer.msg(obj.msg, {time: 500}, function () {
-                                                    layer.close(index);
-                                                    goDetail(cId, clId, clUId);
-                                                });
+                                            function (data) {
+                                                if (data.code != 200){
+                                                    layer.msg(data.msg);
+                                                } else {
+                                                    layer.msg(data.msg, {time: 500}, function () {
+                                                        layer.close(index);
+                                                        goDetail(cId, clId, clUId);
+                                                    });
+                                                }
                                             }
                                         );
                                     }
@@ -1045,11 +1069,15 @@
                                 {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, refundsSum: refundsSum,
                                     refundsPaysum:refundsPaysum, payRemark:payRemark,
                                     payTypeId: payTypeId, paySum:paySum},
-                                function (obj) {
-                                    layer.msg(obj.msg, {time: 500}, function () {
-                                        layer.close(index);
-                                        goDetail(cId, clId, clUId);
-                                    });
+                                function (data) {
+                                    if (data.code != 200){
+                                        layer.msg(data.msg);
+                                    } else {
+                                        layer.msg(data.msg, {time: 500}, function () {
+                                            layer.close(index);
+                                            goDetail(cId, clId, clUId);
+                                        });
+                                    }
                                 }
                             );
                         }
@@ -1114,11 +1142,15 @@
                                         sPaysum: sPaysum.trim(),
                                         sRemark: sRemark
                                     },
-                                    function (obj) {
-                                        layer.msg(obj.msg, {time: 500}, function () {
-                                            layer.close(index);
-                                            goDetail(cId, clId, clUId);
-                                        });
+                                    function (data) {
+                                        if (data.code != 200){
+                                            layer.msg(data.msg);
+                                        } else {
+                                            layer.msg(data.msg, {time: 500}, function () {
+                                                layer.close(index);
+                                                goDetail(cId, clId, clUId);
+                                            });
+                                        }
                                     }
                                 );
                             }

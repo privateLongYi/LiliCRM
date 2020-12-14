@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Appointment;
 import com.linxi.entity.Hospital;
 import com.linxi.entity.Operating;
@@ -41,9 +42,6 @@ public class RerouteController {
     private IAppointmentService iAppointmentService;
 
     @Autowired
-    private IArriveService iArriveService;
-
-    @Autowired
     private IClueService iClueService;
 
     @Autowired
@@ -55,6 +53,7 @@ public class RerouteController {
     @Autowired
     private IFailService iFailService;
 
+    @NoRepeatSubmit
     @PostMapping("saveReroute")
     @ApiOperation(value = "新增改约记录")
     @ResponseBody
@@ -95,7 +94,7 @@ public class RerouteController {
         if (flId != null){
             iFailService.delFlByFlId(flId);
         }
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryRByCName")
@@ -109,7 +108,7 @@ public class RerouteController {
                                     @ApiParam(name = "export", value = "是否导出", required = true) Integer export){
         List<Reroute> reroutes = iRerouteService.queryRByCName((page-1)*limit, limit, uId, rName, cName, export);
         Integer total = iRerouteService.getTotalByCName(uId, rName, cName);
-        return new DataResult(0, "操作成功", total, reroutes);
+        return DataResult.success(total, reroutes);
     }
 
 }

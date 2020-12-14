@@ -131,11 +131,15 @@
                             if (reTime != '' && reCause != '' && reCause.trim() != '') {
                                 $.post("/reroute/saveReroute", {uId:uId, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
                                         aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause},
-                                    function (obj) {
-                                        layer.msg(obj.msg, {time: 500}, function () {
-                                            layer.close(index);
-                                            tableReload();
-                                        });
+                                    function (data) {
+                                    	if (data.code != 200){
+                                    	    layer.msg(data.msg);
+										} else {
+                                            layer.msg(data.msg, {time: 500}, function () {
+                                                layer.close(index);
+                                                tableReload();
+                                            });
+										}
                                     }
                                 );
                             } else {
@@ -149,11 +153,15 @@
                 } else if(layEvent === 'appoint'){
 					layer.confirm('确定更改为待预约状态？', {icon: 3, title:'提示'}, function(index){
 						$.get("/clue/editClTypeIdByClId", {clId:data.clId, aId:data.aId},
-							function (obj) {
-								layer.msg(obj.msg, {time: 500}, function () {
-									layer.close(ix);
-									tableReload();
-								});
+							function (data) {
+						    	if (data.code != 200){
+						    	    layer.msg(data.msg);
+								} else {
+                                    layer.msg(obj.msg, {time: 500}, function () {
+                                        layer.close(index);
+                                        tableReload();
+                                    });
+								}
 							}
 						);
 						layer.close(index);

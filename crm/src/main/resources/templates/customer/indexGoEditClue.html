@@ -96,11 +96,15 @@
                                 });
                                 param = param.substring(0, param.length-1);
 								$.get("/clue/allot", {uId:uId, uName:uName, clUId:clUId, param:param}, function (data) {
-                                    layer.msg(data.msg, {time: 500}, function () {
-										table.reload('tab', {
-                                            url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待分配'+'&export=0'
-                                        })
-                                    });
+                                    if (data.code != 200){
+                                        layer.msg(data.msg);
+									} else {
+                                        layer.msg(data.msg, {time: 500}, function () {
+                                            table.reload('tab', {
+                                                url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待分配'+'&export=0'
+                                            })
+                                        });
+									}
                                 });
                             });
 						}

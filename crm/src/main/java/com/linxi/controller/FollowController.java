@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Customer;
 import com.linxi.entity.Follow;
 import com.linxi.entity.Operating;
@@ -42,6 +43,7 @@ public class FollowController {
     @Autowired
     private ICustomerService iCustomerService;
 
+    @NoRepeatSubmit
     @PostMapping("saveFollow")
     @ApiOperation(value = "新增客户跟进")
     @ResponseBody
@@ -62,7 +64,7 @@ public class FollowController {
         //新增跟进记录
         Follow follow = new Follow(null, fClId, fTypeId, Timestamp.valueOf(fTime), fContent, clUId);
         iFollowService.saveFollow(follow);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryFollowByFClId")
@@ -70,7 +72,7 @@ public class FollowController {
     @ResponseBody
     public DataResult queryFollowByFClId(@ApiParam(value = "线索编号", required = true) Integer clId){
         List<Follow> follows = iFollowService.queryFByFClId(clId);
-        return new DataResult(0, "操作成功", 0, follows);
+        return DataResult.success(follows);
     }
 
 }

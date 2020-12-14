@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.*;
 import com.linxi.service.*;
 import com.linxi.util.DataResult;
@@ -68,9 +69,10 @@ public class ClueController {
     public DataResult getTotalByType(@ApiParam(value = "客户类型", required = true) String ctType){
         Integer clTypeId = iCtypeService.queryCtypeByCtType(ctType);
         Integer total = iClueService.getTotalByType(clTypeId);
-        return new DataResult(0, "操作成功", 0, total);
+        return DataResult.success(total);
     }
 
+    @NoRepeatSubmit
     @GetMapping("editClTypeIdByClId")
     @ApiOperation(value = "编辑客户状态(改为待预约)")
     @ResponseBody
@@ -95,9 +97,10 @@ public class ClueController {
         if (flId != null){
             iFailService.delFlByFlId(flId);
         }
-        return new DataResult(0, "操作成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @GetMapping("editPrincipal")
     @ApiOperation(value = "变更负责人")
     @ResponseBody
@@ -202,9 +205,10 @@ public class ClueController {
                 }
             }
         }
-        return new DataResult(0, "操作成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @GetMapping("refundClEntryFee")
     @ApiOperation(value = "退报名费")
     @ResponseBody
@@ -219,7 +223,7 @@ public class ClueController {
         iOperatingService.saveOperating(operating);
         //根据线索编号编辑报名费
         iClueService.editClByClId(clId, clEntryFee + "(已退还)");
-        return new DataResult(0, "操作成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryNewClue")
@@ -230,9 +234,10 @@ public class ClueController {
         Integer clId = iClueService.queryMaxClId();
         //根据线索编号获取客户名称
         Clue clue = iClueService.queryClByClId(clId);
-        return new DataResult(0, "操作成功", 0, clue);
+        return DataResult.success(clue);
     }
 
+    @NoRepeatSubmit
     @GetMapping("allot")
     @ApiOperation(value = "根据线索编号编辑负责人编号(分配客户)")
     @ResponseBody
@@ -253,7 +258,7 @@ public class ClueController {
             Operating operating = new Operating(customer.getcId(), uId, "分配", uName + "分配了客户" + customer.getcName() + "给" + user.getuName());
             iOperatingService.saveOperating(operating);
         }
-        return new DataResult(0, "操作成功");
+        return DataResult.success();
     }
 
 }

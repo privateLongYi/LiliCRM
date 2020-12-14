@@ -61,11 +61,15 @@
 					}
 					if(verify){
 						$.post(url, {atType:atType},
-							function (obj) {
-								layer.msg(obj.msg, {time: 500}, function () {
-									layer.closeAll();
-									tableReload();
-								});
+							function (data) {
+                                if (data.code != 200){
+                                    layer.msg(data.msg);
+                                } else {
+                                    layer.msg(data.msg, {time: 500}, function () {
+                                        layer.close(index);
+                                        tableReload();
+                                    });
+                                }
 							}
 						);
 					}
@@ -109,7 +113,7 @@
                                     popup(index, "/atype/saveAtype");
                                 },
                                 cancel: function(layero,index){
-                                    layer.closeAll();
+                                    layer.close(index);
                                 }
                             });
                             break;
@@ -125,13 +129,13 @@
                         ,layEvent = obj.event; //获得 lay-event 对应的值
                     if(layEvent === 'del'){
                         layer.confirm('真的删除行么', function(index){
-                            $.get("/atype/delAtypeByAtId?atId=" + data.atId, function(obj){
-                                if (obj.code == 0) {
-                                    layer.msg(obj.msg, {time: 500}, function () {
+                            $.get("/atype/delAtypeByAtId?atId=" + data.atId, function(obj2){
+                                if (obj2.code != 200) {
+                                    layer.msg(obj2.msg);
+                                } else {
+                                    layer.msg(obj2.msg, {time: 500}, function () {
                                         tableReload();
                                     });
-                                } else {
-                                    layer.msg(obj.msg)
                                 }
                             });
                         });
@@ -148,7 +152,7 @@
                                 popup(index, "/atype/editAtypeByAtId?atId=" + data.atId);
                             },
                             cancel: function(layero,index){
-                                layer.closeAll();
+                                layer.close(index);
                             }
                         });
                     }

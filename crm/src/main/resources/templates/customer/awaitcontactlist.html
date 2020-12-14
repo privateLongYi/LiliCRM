@@ -307,7 +307,7 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'edit'){
 					//弹出编辑页面
-					var ix = layer.open({
+					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑客户',
 						content: ['/customer/queryCByCId?cId=' + data.cId],
@@ -367,11 +367,15 @@
 								if(verify){
 									$.post("/customer/editCByCId?cId="+data.cId, {uId: uId, uName: uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), clProject:clProject,
 											clRemark:clRemark, clMessage:clMessage, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
-										function (obj) {
-											layer.msg(obj.msg, {time: 500}, function () {
-												layer.close(ix);
-												tableReload();
-											});
+										function (data) {
+									    	if (data.code != 200){
+									    	    layer.msg(data.msg);
+											} else {
+                                                layer.msg(data.msg, {time: 500}, function () {
+                                                    layer.close(index);
+                                                    tableReload();
+                                                });
+											}
 										}
 									);
 								}
@@ -385,7 +389,7 @@
 					});
 				} else if(layEvent === 'awaitappoint'){
 					//弹出待预约页面
-					var ix = layer.open({
+					layer.open({
 						type: 2, //层类型，iframe
 						title: '新增待预约客户',
 						content: ['/customer/queryCByCId?cId=' + data.cId + "&page=awaitappoint"],
@@ -445,11 +449,15 @@
 								if(verify){
 									$.post("/customer/editCByCId?cId=" + data.cId, {uId: uId, uName:uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), clProject:clProject,
 											clMessage:clMessage, clRemark:clRemark, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
-										function (obj) {
-											layer.msg(obj.msg, {time: 500}, function () {
-												layer.close(ix);
-												tableReload();
-											});
+										function (data) {
+									    	if (data.code != 200){
+									    	    layer.msg(data.msg);
+											} else {
+                                                layer.msg(data.msg, {time: 500}, function () {
+                                                    layer.close(index);
+                                                    tableReload();
+                                                });
+											}
 										}
 									);
 								}
@@ -480,12 +488,16 @@
 							if (aTime != '') {
 								$.post("/appointment/saveAppointment", {uId:uId, uName:uName, aClId:aClId, aTime:aTime,
 										aHId:aHId, atType:atType},
-									function (obj) {
-										layer.msg(obj.msg, {time: 500}, function () {
-											layer.close(index);
-											tableReload();
-										});
-									}
+                                    function (data) {
+                                        if (data.code != 200){
+                                            layer.msg(data.msg);
+                                        } else {
+                                            layer.msg(data.msg, {time: 500}, function () {
+                                                layer.close(index);
+                                                tableReload();
+                                            });
+                                        }
+                                    }
 								);
 							} else {
 								layer.msg('请输入预约时间');

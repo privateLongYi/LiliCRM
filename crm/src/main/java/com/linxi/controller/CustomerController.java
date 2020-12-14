@@ -1,7 +1,9 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.*;
 import com.linxi.service.*;
+import com.linxi.util.CommonEnum;
 import com.linxi.util.DataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,12 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.sound.midi.Soundbank;
-import javax.xml.crypto.Data;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -97,7 +95,7 @@ public class CustomerController {
                         customer.setsTime(success.getsTime());
                     }
                 }
-                return new DataResult(0, "操作成功", total, customeres);
+                return DataResult.success(total, customeres);
             } else {
                 //根据筛选条件查询客户
                 List<Customer> customeres = iCustomerService.queryAACScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
@@ -111,7 +109,7 @@ public class CustomerController {
                 }
                 //获取总条数
                 Integer total = iCustomerService.getAACTotalByScreen(uId, rName, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId);
-                return new DataResult(0, "操作成功", total, customeres);
+                return DataResult.success(total, customeres);
             }
         } else {
             //根据筛选条件查询客户
@@ -140,10 +138,11 @@ public class CustomerController {
                     customer.setsTime(success.getsTime());
                 }
             }
-            return new DataResult(0, "操作成功", total, customeres);
+            return DataResult.success(total, customeres);
         }
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveCustomer")
     @ApiOperation(value = "新增客户信息")
     @ResponseBody
@@ -165,7 +164,7 @@ public class CustomerController {
         //根据姓名和电话查询客户
         List<Customer> customers = iCustomerService.queryCByCNameAndCTel(cName, cTel);
         if (customers.size() != 0) {
-            return new DataResult(1, "新增失败，姓名和电话号码重复！");
+            return DataResult.error(403, "新增失败，姓名和电话号码重复！");
         } else {
             //创建客户
             Customer c = new Customer(null, cName, cSex, cAge, cTel, cWx, null);
@@ -191,10 +190,11 @@ public class CustomerController {
             //新增操作记录
             Operating operating = new Operating(c.getcId(), uId, "新增", uName + "添加了客户" + cName);
             iOperatingService.saveOperating(operating);
-            return new DataResult(0, "新增成功");
+            return DataResult.success();
         }
     }
 
+    @NoRepeatSubmit
     @GetMapping("delCByCId")
     @ApiOperation(value = "删除客户信息")
     @ResponseBody
@@ -209,7 +209,7 @@ public class CustomerController {
         //新增操作记录
         Operating operating = new Operating(cId, uId, "删除", uName + "删除了客户" + cName);
         iOperatingService.saveOperating(operating);
-        return new DataResult(0, "删除成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryCByCId")
@@ -223,6 +223,7 @@ public class CustomerController {
         return "customer/customeredit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editCByCId")
     @ApiOperation(value = "编辑客户信息")
     @ResponseBody
@@ -251,7 +252,7 @@ public class CustomerController {
         //新增操作记录
         Operating operating = new Operating(cId, uId, "编辑信息", uName + "更新了" + cName + "的信息");
         iOperatingService.saveOperating(operating);
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
     @GetMapping("getTotalCByUIdAndCTypeId")
@@ -525,7 +526,7 @@ public class CustomerController {
                                    @ApiParam(value = "结束时间", required = true) String endTime) {
         List<Customer> customers = iCustomerService.queryCByTime((page - 1) * limit, limit, uId, rName, beginTime, endTime);
         Integer total = iCustomerService.getTotalByTime(uId, rName, beginTime, endTime);
-        return new DataResult(0, "操作成功", total, customers);
+        return DataResult.success(total, customers);
     }
 
     @GetMapping("queryAByTime")
@@ -539,7 +540,7 @@ public class CustomerController {
                                    @ApiParam(value = "结束时间", required = true) String endTime) {
         List<Customer> customers = iCustomerService.queryAByTime((page - 1) * limit, limit, uId, rName, beginTime, endTime);
         Integer total = iCustomerService.getTotalAByTime(uId, rName, beginTime, endTime);
-        return new DataResult(0, "操作成功", total, customers);
+        return DataResult.success(total, customers);
     }
 
     @GetMapping("queryArriveByTime")
@@ -553,9 +554,10 @@ public class CustomerController {
                                         @ApiParam(value = "结束时间", required = true) String endTime) {
         List<Customer> customers = iCustomerService.queryArriveByTime((page - 1) * limit, limit, uId, rName, beginTime, endTime);
         Integer total = iCustomerService.getTotalArriveByTime(uId, rName, beginTime, endTime);
-        return new DataResult(0, "操作成功", total, customers);
+        return DataResult.success(total, customers);
     }
 
+    @NoRepeatSubmit
     @PostMapping("arrive")
     @ApiOperation(value = "未到店")
     @ResponseBody
@@ -578,7 +580,7 @@ public class CustomerController {
         iClueService.editClTypeIdByClId(clId, clTypeId);
         //根据预约编号编辑预约状态
         iAppointmentService.editAStatusByAIdAndAStatus(aId, 1);
-        return new DataResult(0, "操作成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryCByCNameAndCTel")
@@ -588,9 +590,9 @@ public class CustomerController {
                                            @ApiParam(value = "电话", required = true) String cTel) {
         List<Customer> customers = iCustomerService.queryCByCNameAndCTel(cName, cTel);
         if (customers.size() != 0) {
-            return new DataResult(1, "姓名和电话号码重复！");
+            return DataResult.error(403, "姓名和电话号码重复！");
         } else {
-            return new DataResult(0, "操作成功");
+            return DataResult.success();
         }
     }
 

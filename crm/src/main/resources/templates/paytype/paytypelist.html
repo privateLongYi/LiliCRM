@@ -60,11 +60,15 @@
 				}
 				if(verify){
 					$.post(url, {payType:payType},
-						function (obj) {
-							layer.msg(obj.msg, {time: 500}, function () {
-								layer.closeAll();
-								tableReload();
-							});
+						function (data) {
+					    	if (data.code != 200){
+					    	    layer.msg(data.msg);
+							} else {
+                                layer.msg(data.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    tableReload();
+                                });
+							}
 						}
 					);
 				}
@@ -108,7 +112,7 @@
 								popup(index, "/paytype/savePaytype");
 							},
 							cancel: function(layero,index){
-								layer.closeAll();
+								layer.close(index);
 							}
 						});
 						break;
@@ -147,7 +151,7 @@
 							popup(index, "/paytype/editPaytypeByPayId?payId=" + data.payId);
 						},
 						cancel: function(layero,index){
-							layer.closeAll();
+							layer.close(index);
 						}
 					});
 				}

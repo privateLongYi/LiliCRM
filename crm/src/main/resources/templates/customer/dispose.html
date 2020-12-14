@@ -250,10 +250,14 @@
             if (arCause != ""){
                 $.post(action, {uId:uId, uName:uName, cId:cId, cName:cName,
                          clId:clId, aId:aId, cause:arCause},
-                    function (obj) {
-                        layer.msg(obj.msg, {time: 500}, function () {
-                            parent.layer.closeAll();
-                        });
+                    function (data) {
+                        if (data.code != 200){
+                            layer.msg(data.msg);
+                        } else {
+                            layer.msg(data.msg, {time: 500}, function () {
+                                parent.layer.closeAll();
+                            });
+                        }
                     }
                 )
             } else {
@@ -271,10 +275,14 @@
                 $.post(action, {uId:uId, uName:uName, cId:cId, cName:cName,
                         reClId:clId, reUId:reUId, aId:aId, reHId:reHId, reLastTime:reLastTime,
                         reTime:reTime, reCause:reCause},
-                    function (obj) {
-                        layer.msg(obj.msg, {time: 500}, function () {
-                            parent.layer.closeAll();
-                        });
+                    function (data) {
+                        if (data.code != 200){
+                            layer.msg(data.msg);
+                        } else {
+                            layer.msg(data.msg, {time: 500}, function () {
+                                parent.layer.closeAll();
+                            });
+                        }
                     }
                 )
             } else {
@@ -290,10 +298,14 @@
                         uId: uId, uName: uName, cId: cId, cName: cName,
                         clId: clId, flAId: flAId, flHId: flHId, flCause: flCause
                     },
-                    function (obj) {
-                        layer.msg(obj.msg, {time: 500}, function () {
-                            parent.layer.closeAll();
-                        });
+                    function (data) {
+                        if (data.code != 200){
+                            layer.msg(data.msg);
+                        } else {
+                            layer.msg(data.msg, {time: 500}, function () {
+                                parent.layer.closeAll();
+                            });
+                        }
                     }
                 )
             } else {
@@ -341,10 +353,14 @@
                             sPaysum: sPaysum.trim(),
                             sRemark: sRemark
                         },
-                        function (obj) {
-                            layer.msg(obj.msg, {time: 500}, function () {
-                                parent.layer.closeAll();
-                            });
+                        function (data) {
+                            if (data.code != 200){
+                                layer.msg(data.msg);
+                            } else {
+                                layer.msg(data.msg, {time: 500}, function () {
+                                    parent.layer.closeAll();
+                                });
+                            }
                         }
                     );
                 }

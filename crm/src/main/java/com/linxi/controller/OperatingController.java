@@ -31,7 +31,7 @@ public class OperatingController {
     @ResponseBody
     public DataResult queryOpByCId(@ApiParam(value = "客户编号", required = true) Integer cId){
         List<Operating> operatings = iOperatingService.queryOpByCId(cId);
-        return new DataResult(0, "操作成功", 0, operatings);
+        return DataResult.success(operatings);
     }
 
 }

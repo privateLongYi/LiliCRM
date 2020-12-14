@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Stype;
 import com.linxi.service.IStypeService;
 import com.linxi.util.DataResult;
@@ -35,23 +36,25 @@ public class StypeController {
                                      @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
         List<Stype> stypes = iStypeService.queryStypePage((page - 1) * limit, limit);
         Integer total = iStypeService.getTotal();
-        return new DataResult(0, "操作成功", total, stypes);
+        return DataResult.success(total, stypes);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveStype")
     @ApiOperation(value = "新增成交类型")
     @ResponseBody
     public DataResult saveStype(@ApiParam(value = "成交类型", required = true) String stType){
         iStypeService.saveStype(stType);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @GetMapping("delStypeByStId")
     @ApiOperation(value = "根据编号删除成交类型")
     @ResponseBody
     public DataResult delStypeByStId(@ApiParam(value = "编号", required = true) Integer stId){
         iStypeService.delStypeByStId(stId);
-        return new DataResult(0, "删除成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryStypeByStId")
@@ -62,6 +65,7 @@ public class StypeController {
         return "stype/stypeedit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editStypeByStId")
     @ApiOperation(value = "根据编号编辑成交类型")
     @ResponseBody
@@ -69,7 +73,7 @@ public class StypeController {
                                       @ApiParam(value = "成交类型", required = true) String stType){
         Stype stype = new Stype(stId, stType);
         iStypeService.editStypeByStId(stype);
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
 }

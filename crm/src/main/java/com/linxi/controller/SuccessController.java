@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.*;
 import com.linxi.service.*;
 import com.linxi.util.DataResult;
@@ -74,9 +75,10 @@ public class SuccessController {
                                    @ApiParam(value = "显示条数", required = true) Integer limit){
         List<Success> successes = iSuccessService.querySByClId(clId, (page - 1) * limit, limit);
         Integer total = iSuccessService.getTotalByClId(clId);
-        return new DataResult(0, "操作成功", total, successes);
+        return DataResult.success(total, successes);
     }
 
+    @NoRepeatSubmit
     @GetMapping("delSBySId")
     @ApiOperation(value = "根据成交客户编号删除成交客户")
     @ResponseBody
@@ -87,7 +89,7 @@ public class SuccessController {
         iOperatingService.saveOperating(operating);
         //删除成交客户
         iSuccessService.delSBySId(sId);
-        return new DataResult(0, "操作成功");
+        return DataResult.success();
     }
 
     @GetMapping("querySBySId")
@@ -101,6 +103,7 @@ public class SuccessController {
         return "success/successedit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editSBySId")
     @ApiOperation(value = "根据成交客户编号编辑成交客户")
     @ResponseBody
@@ -120,9 +123,10 @@ public class SuccessController {
         //编辑成交客户
         Success success = new Success(sId, sAId, sHId, sMessage, sSum, null, sRemark, 0);
         iSuccessService.editSBySId(success);
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveSuccess")
     @ApiOperation(value = "新增成交客户")
     @ResponseBody
@@ -168,7 +172,7 @@ public class SuccessController {
             Payrecord payrecord = new Payrecord(null, sId, sPaysum, null, null, payId);
             iPayrecordService.savePayrecord(payrecord);
         }
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
     @GetMapping("querySByScreen")
@@ -187,7 +191,7 @@ public class SuccessController {
                                      @ApiParam(name = "export", value = "是否导出", required = true) Integer export){
         List<Success> fails = iSuccessService.querySByScreen((page-1)*limit, limit, uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, export);
         Integer total = iSuccessService.getTotalByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime);
-        return new DataResult(0, "操作成功", total, fails);
+        return DataResult.success(total, fails);
     }
 
     @PostMapping("querySCByUIdAndCName")
@@ -283,7 +287,7 @@ public class SuccessController {
             }
         }
         if (page == null && limit == null){
-            return new DataResult(0, "操作成功", list.size(), list);
+            return DataResult.success(list.size(), list);
         } else {
             //分页获取数据
             List<SuccessStatisticsVo> newList = new ArrayList<>();
@@ -292,10 +296,11 @@ public class SuccessController {
                     newList.add(list.get(i));
                 }
             }
-            return new DataResult(0, "操作成功", list.size(), newList);
+            return DataResult.success(list.size(), newList);
         }
     }
 
+    @NoRepeatSubmit
     @GetMapping("refundMoney")
     @ApiOperation(value = "退款")
     @ResponseBody
@@ -321,7 +326,7 @@ public class SuccessController {
         //新增操作记录
         Operating operating = new Operating(cId, uId, "退款", uName + "处理了客户" + cName + "的退款");
         iOperatingService.saveOperating(operating);
-        return new DataResult(0, "操作成功");
+        return DataResult.success();
     }
 
     @GetMapping("querySDetailByScreen")
@@ -385,9 +390,10 @@ public class SuccessController {
                                    @ApiParam(value = "结束时间", required = true) String endTime) {
         List<Success> successes = iSuccessService.querySByTime((page - 1) * limit, limit, uId, rName, beginTime, endTime);
         Integer total = iSuccessService.getTotalByTime(uId, rName, beginTime, endTime);
-        return new DataResult(0, "操作成功", total, successes);
+        return DataResult.success(total, successes);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveCAndAAndS")
     @ApiOperation(value = "新增客户信息和预约信息和成交信息")
     @ResponseBody
@@ -485,9 +491,10 @@ public class SuccessController {
             Payrecord payrecord = new Payrecord(null, sId, sPaysum, null, null, payId);
             iPayrecordService.savePayrecord(payrecord);
         }
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveAAndS")
     @ApiOperation(value = "新增预约信息和成交信息")
     @ResponseBody
@@ -549,7 +556,7 @@ public class SuccessController {
             Payrecord payrecord = new Payrecord(null, sId, sPaysum, null, null, payId);
             iPayrecordService.savePayrecord(payrecord);
         }
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
 }

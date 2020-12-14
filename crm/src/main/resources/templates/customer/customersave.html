@@ -376,7 +376,7 @@
                 data:{cName:cName, cTel:cTel},
                 async: false,
                 success:function (data) {
-                    if (data.code == 1){
+                    if (data.code != 200){
                         layer.msg(data.msg);
                         verify = false;
                         return;
@@ -457,7 +457,7 @@
                     {uId: uId, uName:uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cWx:cWx, clPlaceTime:clPlaceTime, clProject:clProject,
                         clMessage:clMessage, clRemark:clRemark, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
                     function (obj) {
-                        if (obj.code == 1){
+                        if (obj.code != 200){
                             layer.msg(obj.msg);
                         } else {
                             layer.msg(obj.msg, {time: 500}, function () {
@@ -562,10 +562,14 @@
                     ,aHId:aHId
                     ,atType:atType
                 },function (data) {
-                    layer.msg(data.msg, {time: 500}, function () {
-                        parent.layer.closeAll();
-                        parent.location.reload();
-                    });
+                    if (data.code != 200){
+                        parent.layer.msg(data.msg);
+                    } else {
+                        layer.msg(data.msg, {time: 500}, function () {
+                            parent.layer.closeAll();
+                            parent.location.reload();
+                        });
+                    }
                 }
             )
         } else {
@@ -655,10 +659,14 @@
                         ,sPaysum: sPaysum.trim()
                         ,sRemark: sRemark
                     },function (data) {
-                        layer.msg(data.msg, {time: 500}, function () {
-                            parent.layer.closeAll();
-                            parent.location.reload();
-                        });
+                        if (data.code != 200){
+                            parent.layer.msg(data.msg);
+                        } else {
+                            layer.msg(data.msg, {time: 500}, function () {
+                                parent.layer.closeAll();
+                                parent.location.reload();
+                            });
+                        }
                     }
                 );
             }

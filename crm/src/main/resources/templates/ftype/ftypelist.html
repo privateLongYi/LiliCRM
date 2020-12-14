@@ -60,11 +60,15 @@
 				}
 				if(verify){
 					$.post(url, {ftType:ftType},
-						function (obj) {
-							layer.msg(obj.msg, {time: 500}, function () {
-								layer.closeAll();
-								tableReload();
-							});
+						function (data) {
+					    	if (data.code != 200){
+					    	    layer.msg(data.msg);
+							} else {
+                                layer.msg(data.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    tableReload();
+                                });
+							}
 						}
 					);
 				}
@@ -108,7 +112,7 @@
 								popup(index, "/ftype/saveFtype");
 							},
 							cancel: function(layero,index){
-								layer.closeAll();
+								layer.close(index);
 							}
 						});
 						break;
@@ -125,12 +129,12 @@
 				if(layEvent === 'del'){
 					layer.confirm('真的删除行么', function(index){
 						$.get("/ftype/delFtypeByFtId?ftId=" + data.ftId, function(obj){
-							if (obj.code == 0) {
-								layer.msg(obj.msg, {time: 500}, function () {
-									tableReload();
-								});
+							if (obj.code != 200) {
+                                layer.msg(obj.msg);
 							} else {
-								layer.msg(obj.msg)
+                                layer.msg(obj.msg, {time: 500}, function () {
+                                    tableReload();
+                                });
 							}
 						});
 					});
@@ -147,7 +151,7 @@
 							popup(index, "/ftype/editFtypeByFtId?ftId=" + data.ftId);
 						},
 						cancel: function(layero,index){
-							layer.closeAll();
+							layer.close(index);
 						}
 					});
 				}

@@ -532,11 +532,15 @@
                                 sPaysum: sPaysum.trim(),
                                 sRemark: sRemark
                             },
-                            function (obj) {
-                                layer.msg(obj.msg, {time: 500}, function () {
-                                    layer.close(index);
-                                    location.reload();
-                                });
+                            function (data) {
+                                if (data.code != 200){
+                                    layer.msg(data.msg);
+                                } else {
+                                    layer.msg(data.msg, {time: 500}, function () {
+                                        layer.close(index);
+                                        location.reload();
+                                    });
+                                }
                             }
                         );
                     }
@@ -621,11 +625,15 @@
                         {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, refundsSum: refundsSum,
                             refundsPaysum:refundsPaysum, payRemark:payRemark,
                             payTypeId: payTypeId, paySum:paySum},
-                        function (obj) {
-                            layer.msg(obj.msg, {time: 500}, function () {
-                                layer.close(index);
-                                location.reload();
-                            });
+                        function (data) {
+                            if (data.code != 200){
+                                layer.msg(data.msg);
+                            } else {
+                                layer.msg(data.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    location.reload();
+                                });
+                            }
                         }
                     );
                 }

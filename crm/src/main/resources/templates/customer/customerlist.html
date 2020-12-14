@@ -422,7 +422,7 @@
 				if(layEvent === 'del'){
 					layer.confirm('确定删除吗？', {icon: 3, title:'提示'}, function(index){
 						$.get("/customer/delCByCId?cId=" + data.cId + "&cName=" + data.cName + "&uId=" + uId + "&uName=" + uName, function(obj){
-							if (obj.code == 0) {
+							if (obj.code == 200) {
 								layer.msg(obj.msg, {time: 500}, function () {
 									tableReload();
 								});
@@ -497,7 +497,7 @@
                                     $.post("/customer/editCByCId", {uId: uId, uName:uName, cId: cId, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cWx:cWx, clPlaceTime:clPlaceTime, clProject:clProject,
                                             clMessage:clMessage, clRemark:clRemark, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
                                         function (obj) {
-                                            if (obj.code == 1){
+                                            if (obj.code != 200){
                                                 layer.msg(obj.msg);
                                             } else {
                                                 layer.msg(obj.msg, {time: 500}, function () {
@@ -531,11 +531,15 @@
                                 var cId = $(body).find("#cId").val();
                                 var clUId = $(body).find("#clUId").val();
                                 $.get("/clue/editPrincipal", {uId: uId, uName: uName, cId:cId, clUId:clUId},
-                                    function (obj) {
-                                        layer.msg(obj.msg, {time: 500}, function () {
-                                            layer.close(index);
-                                            tableReload();
-                                        });
+                                    function (data) {
+                                        if (data.code != 200){
+                                            layer.msg(data.msg);
+                                        } else {
+                                            layer.msg(data.msg, {time: 500}, function () {
+                                                layer.close(index);
+                                                tableReload();
+                                            });
+                                        }
                                     }
                                 );
                             },

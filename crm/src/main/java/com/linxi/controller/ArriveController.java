@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Arrive;
 import com.linxi.entity.Customer;
 import com.linxi.entity.Operating;
@@ -51,9 +52,10 @@ public class ArriveController {
                                     @ApiParam(name = "cName", value = "客户名称", required = true) String cName){
         List<Arrive> arrives = iArriveService.queryAByCName((page - 1) * limit, limit, uId, rName, cName);
         Integer total = iArriveService.getTotalByCName(uId, rName, cName);
-        return new DataResult(0, "操作成功", total, arrives);
+        return DataResult.success(total, arrives);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveArrive")
     @ApiOperation(value = "新增未到店客户")
     @ResponseBody
@@ -75,7 +77,7 @@ public class ArriveController {
         iArriveService.saveArrive(arrive);
         //根据预约编号编辑预约状态
         iAppointmentService.editAStatusByAIdAndAStatus(arAId, 1);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
 }

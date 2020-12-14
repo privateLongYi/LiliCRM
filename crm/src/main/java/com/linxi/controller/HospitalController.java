@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Customer;
 import com.linxi.entity.Hospital;
 import com.linxi.service.IHospitalService;
@@ -34,7 +35,7 @@ public class HospitalController {
     @ResponseBody
     public DataResult queryHospital(){
         List<Hospital> hospitals = iHospitalService.queryHospital();
-        return new DataResult(0, "操作成功", 0, hospitals);
+        return DataResult.success(hospitals);
     }
 
     @GetMapping("queryHPage")
@@ -44,23 +45,25 @@ public class HospitalController {
                                      @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
         List<Hospital> hospitals = iHospitalService.queryHPage((page - 1) * limit, limit);
         Integer total = iHospitalService.getTotal();
-        return new DataResult(0, "操作成功", total, hospitals);
+        return DataResult.success(total, hospitals);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveHospital")
     @ApiOperation(value = "新增门诊")
     @ResponseBody
     public DataResult saveHospital(@ApiParam(value = "门诊名称", required = true) String hName){
         iHospitalService.saveHospital(hName);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @GetMapping("delHByHId")
     @ApiOperation(value = "根据编号删除门诊")
     @ResponseBody
     public DataResult delHByHId(@ApiParam(value = "编号", required = true) Integer hId){
         iHospitalService.delHByHId(hId);
-        return new DataResult(0, "删除成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryHByHId")
@@ -71,6 +74,7 @@ public class HospitalController {
         return "hospital/hospitaledit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editHByHId")
     @ApiOperation(value = "根据编号编辑门诊")
     @ResponseBody
@@ -78,7 +82,7 @@ public class HospitalController {
                                       @ApiParam(value = "门诊名称", required = true) String hName){
         Hospital hospital = new Hospital(hId, hName);
         iHospitalService.editHByHId(hospital);
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
 }

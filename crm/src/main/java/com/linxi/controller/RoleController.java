@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Menu;
 import com.linxi.entity.Role;
 import com.linxi.entity.RoleMenu;
@@ -46,7 +47,7 @@ public class RoleController {
     @ResponseBody
     public DataResult queryRole(){
         List<Role> roles = iRoleService.queryRole();
-        return new DataResult(0, "操作成功", 0, roles);
+        return DataResult.success(roles);
     }
 
     @GetMapping("queryRByRName")
@@ -57,15 +58,16 @@ public class RoleController {
                                     @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
         List<Role> roles = iRoleService.queryRByRName(rName, (page - 1) * limit, limit);
         Integer total = iRoleService.getTotalByRName(rName);
-        return new DataResult(0, "操作成功", total, roles);
+        return DataResult.success(total, roles);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveRole")
     @ApiOperation(value = "新增角色")
     @ResponseBody
     public DataResult saveRole(@ApiParam(name = "rName", value = "角色名", required = true) String rName){
         iRoleService.saveRole(new Role(rName));
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
     @GetMapping("goDetail")
@@ -76,12 +78,13 @@ public class RoleController {
         return "role/roledetail";
     }
 
+    @NoRepeatSubmit
     @GetMapping("delRByRId")
     @ApiOperation(value = "根据编号删除角色")
     @ResponseBody
     public DataResult delRByRId(@ApiParam(name = "rId", value = "编号", required = true) Integer rId){
         iRoleService.delRByRId(rId);
-        return new DataResult(0, "删除成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryRByRId")
@@ -92,15 +95,17 @@ public class RoleController {
         return "role/roleedit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editRByRId")
     @ApiOperation(value = "根据编号编辑角色")
     @ResponseBody
     public DataResult editRByRId(@ApiParam(name = "rId", value = "编号", required = true) Integer rId,
                                 @ApiParam(name = "rName", value = "角色名", required = true) String rName){
         iRoleService.editRByRId(new Role(rId, rName));
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @GetMapping("roleSetting")
     @ApiOperation(value = "根据角色编号查询角色菜单")
     @ResponseBody

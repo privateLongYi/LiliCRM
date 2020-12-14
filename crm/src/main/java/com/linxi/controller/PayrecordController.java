@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Operating;
 import com.linxi.entity.Payrecord;
 import com.linxi.entity.Paytype;
@@ -47,9 +48,10 @@ public class PayrecordController {
     public DataResult queryPByPaySId(@ApiParam(value = "成交客户编号", required = true) Integer paySId){
         List<Payrecord> payrecords = iPayrecordService.queryPByPaySId(paySId);
         Integer total = iPayrecordService.getTotalByPaySId(paySId);
-        return new DataResult(0, "操作成功", total, payrecords);
+        return DataResult.success(total, payrecords);
     }
 
+    @NoRepeatSubmit
     @PostMapping("savePayrecord")
     @ApiOperation(value = "新增支付记录")
     @ResponseBody
@@ -78,7 +80,7 @@ public class PayrecordController {
         }
         //根据成交客户编号编辑支付金额
         iSuccessService.editMoneyBySId(paySId, null, (paysum-refund));
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryPByScreen")
@@ -93,7 +95,7 @@ public class PayrecordController {
                                      @ApiParam(value = "结束时间", required = true) String endTime){
         List<Payrecord> payrecords = iPayrecordService.queryPByScreen((page - 1) * limit, limit, uId, hId, payId, beginTime, endTime);
         Integer total = iPayrecordService.getTotalByScreen(uId, hId, payId, beginTime, endTime);
-        return new DataResult(0, "操作成功", total, payrecords);
+        return DataResult.success(total, payrecords);
     }
 
 }

@@ -118,10 +118,14 @@
                 if (fContent != '' && fContent.trim() != '') {
                     $.post("/follow/saveFollow", {uId:uId, uName:uName, cId:cId, fClId:fClId, fTime:fTime,
                             clUId:clUId, fTypeId:fTypeId, ftType:ftType, fContent:fContent},
-                        function (obj) {
-                            layer.msg(obj.msg, {time: 500}, function () {
-                                layer.close(index);
-                            });
+                        function (data) {
+                        	if (data.code != 200){
+                        	    layer.msg(data.msg);
+							} else {
+                                layer.msg(data.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                });
+							}
                         }
                     );
                 } else {
@@ -208,11 +212,15 @@
                                     if (reTime != '' && reCause != '' && reCause.trim() != '') {
                                         $.post("/reroute/saveReroute", {uId:uId, uName:uName, cName:cName, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
                                                 aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause, flId:data.flId},
-                                            function (obj) {
-                                                layer.msg(obj.msg, {time: 500}, function () {
-                                                    layer.close(index);
-                                                    tableReload();
-                                                });
+                                            function (data) {
+                                            	if (data.code != 200){
+                                            	    layer.msg(data.msg);
+												} else {
+                                                    layer.msg(data.msg, {time: 500}, function () {
+                                                        layer.close(index);
+                                                        tableReload();
+                                                    });
+												}
                                             }
                                         );
                                     } else {
@@ -255,11 +263,15 @@
                             if (reTime != '' && reCause != '' && reCause.trim() != '') {
                                 $.post("/reroute/saveReroute", {uId:uId, uName:uName, cName:cName, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
                                         aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause, flId:data.flId},
-                                    function (obj) {
-                                        layer.msg(obj.msg, {time: 500}, function () {
-                                            layer.close(index);
-                                            tableReload();
-                                        });
+                                    function (data) {
+                                    	if (data.code != 200){
+                                    	    layer.msg(data.msg);
+										} else {
+                                            layer.msg(data.msg, {time: 500}, function () {
+                                                layer.close(index);
+                                                tableReload();
+                                            });
+										}
                                     }
                                 );
                             } else {
@@ -327,11 +339,15 @@
                                             sPaysum: sPaysum.trim(),
                                             sRemark: sRemark
                                         },
-                                        function (obj) {
-                                            layer.msg(obj.msg, {time: 500}, function () {
-                                                layer.close(index);
-                                                tableReload();
-                                            });
+                                        function (data) {
+                                        	if (data.code != 200){
+                                        	    layer.msg(data.msg);
+											} else {
+                                                layer.msg(data.msg, {time: 500}, function () {
+                                                    layer.close(index);
+                                                    tableReload();
+                                                });
+											}
                                         }
                                     );
                                 }

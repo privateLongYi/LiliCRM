@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Paytype;
 import com.linxi.service.IPaytypeService;
 import com.linxi.util.DataResult;
@@ -35,23 +36,25 @@ public class PaytypeController {
                                      @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
         List<Paytype> paytypes = iPaytypeService.queryPaytypePage((page - 1) * limit, limit);
         Integer total = iPaytypeService.getTotal();
-        return new DataResult(0, "操作成功", total, paytypes);
+        return DataResult.success(total, paytypes);
     }
 
+    @NoRepeatSubmit
     @PostMapping("savePaytype")
     @ApiOperation(value = "新增支付类型")
     @ResponseBody
     public DataResult savePaytype(@ApiParam(value = "支付类型", required = true) String payType){
         iPaytypeService.savePaytype(payType);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @GetMapping("delPaytypeByPayId")
     @ApiOperation(value = "根据编号删除支付类型")
     @ResponseBody
     public DataResult delPaytypeByPayId(@ApiParam(value = "编号", required = true) Integer payId){
         iPaytypeService.delPaytypeByPayId(payId);
-        return new DataResult(0, "删除成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryPaytypeByPayId")
@@ -62,6 +65,7 @@ public class PaytypeController {
         return "paytype/paytypeedit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editPaytypeByPayId")
     @ApiOperation(value = "根据编号编辑支付类型")
     @ResponseBody
@@ -69,7 +73,7 @@ public class PaytypeController {
                                       @ApiParam(value = "支付类型", required = true) String payType){
         Paytype paytype = new Paytype(payId, payType);
         iPaytypeService.editPaytypeByPayId(paytype);
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryAllPaytype")
@@ -77,7 +81,7 @@ public class PaytypeController {
     @ResponseBody
     public DataResult queryAllPaytype(){
         List<Paytype> paytypes = iPaytypeService.queryAllPaytype();
-        return new DataResult(0, "操作成功", 0, paytypes);
+        return DataResult.success(paytypes);
     }
 
     @GetMapping("queryPByPayType")
@@ -85,7 +89,7 @@ public class PaytypeController {
     @ResponseBody
     public DataResult queryPaytypeByPayId(@ApiParam(value = "支付类型", required = true) String payType){
         Integer payId = iPaytypeService.queryPByPayType(payType);
-        return new DataResult(0, "操作成功", 0, payId);
+        return DataResult.success(payId);
     }
 
 }

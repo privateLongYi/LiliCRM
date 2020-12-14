@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Customer;
 import com.linxi.entity.Fail;
 import com.linxi.entity.Follow;
@@ -46,6 +47,7 @@ public class FailController {
     @Autowired
     private IFollowService iFollowService;
 
+    @NoRepeatSubmit
     @PostMapping("saveFail")
     @ApiOperation(value = "新增未成交客户")
     @ResponseBody
@@ -72,7 +74,7 @@ public class FailController {
         iFailService.saveFail(fail);
         //根据预约编号编辑预约状态
         iAppointmentService.editAStatusByAIdAndAStatus(flAId, 3);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryFailByCName")
@@ -86,7 +88,7 @@ public class FailController {
                                        @ApiParam(name = "export", value = "是否导出", required = true) Integer export){
         List<Fail> fails = iFailService.queryFailByCName((page-1)*limit, limit, uId, rName, cName, export);
         Integer total = iFailService.getTotalByCName(uId, rName, cName);
-        return new DataResult(0, "操作成功", total, fails);
+        return DataResult.success(total, fails);
     }
 
 }

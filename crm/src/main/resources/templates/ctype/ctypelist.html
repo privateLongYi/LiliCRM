@@ -61,11 +61,15 @@
 					}
 					if(verify){
 						$.post(url, {ctType:ctType},
-							function (obj) {
-								layer.msg(obj.msg, {time: 500}, function () {
-									layer.closeAll();
-									tableReload();
-								});
+							function (data) {
+						    	if (data.code == 1){
+						    	    layer.msg(data.msg);
+								} else {
+                                    layer.msg(data.msg, {time: 500}, function () {
+                                        layer.close(index);
+                                        tableReload();
+                                    });
+								}
 							}
 						);
 					}
@@ -109,7 +113,7 @@
                                     popup(index, "/ctype/saveCtype");
                                 },
                                 cancel: function(layero,index){
-                                    layer.closeAll();
+                                    layer.close(index);
                                 }
                             });
                             break;
@@ -125,13 +129,13 @@
                         ,layEvent = obj.event; //获得 lay-event 对应的值
                     if(layEvent === 'del'){
                         layer.confirm('真的删除行么', function(index){
-                            $.get("/ctype/delCtypeByCtId?ctId=" + data.ctId, function(obj){
-                                if (obj.code == 0) {
-                                    layer.msg(obj.msg, {time: 500}, function () {
+                            $.get("/ctype/delCtypeByCtId?ctId=" + data.ctId, function(obj2){
+                                if (obj2.code == 1) {
+                                    layer.msg(obj2.msg);
+                                } else {
+                                    layer.msg(obj2.msg, {time: 500}, function () {
                                         tableReload();
                                     });
-                                } else {
-                                    layer.msg(obj.msg)
                                 }
                             });
                         });
@@ -148,7 +152,7 @@
                                 popup(index, "/ctype/editCtypeByCtId?ctId=" + data.ctId);
                             },
                             cancel: function(layero,index){
-                                layer.closeAll();
+                                layer.close(index);
                             }
                         });
                     }

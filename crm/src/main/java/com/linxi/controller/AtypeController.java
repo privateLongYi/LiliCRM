@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Atype;
 import com.linxi.service.IAtypeService;
 import com.linxi.util.DataResult;
@@ -33,7 +34,7 @@ public class AtypeController {
     @ResponseBody
     public DataResult queryAtype(){
         List<Atype> atypes = iAtypeService.queryAtype();
-        return new DataResult(0, "操作成功", 0, atypes);
+        return DataResult.success(atypes);
     }
 
     @GetMapping("queryAtypePage")
@@ -43,23 +44,25 @@ public class AtypeController {
                                      @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
         List<Atype> atypes = iAtypeService.queryAtypePage((page - 1) * limit, limit);
         Integer total = iAtypeService.getTotal();
-        return new DataResult(0, "操作成功", total, atypes);
+        return DataResult.success(total, atypes);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveAtype")
     @ApiOperation(value = "新增预约类型")
     @ResponseBody
     public DataResult saveAtype(@ApiParam(value = "预约类型", required = true) String atType){
         iAtypeService.saveAtype(atType);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @GetMapping("delAtypeByAtId")
     @ApiOperation(value = "根据编号删除预约类型")
     @ResponseBody
     public DataResult delAtypeByAtId(@ApiParam(value = "编号", required = true) Integer atId){
         iAtypeService.delAtypeByAtId(atId);
-        return new DataResult(0, "删除成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryAtypeByAtId")
@@ -70,6 +73,7 @@ public class AtypeController {
         return "atype/atypeedit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editAtypeByAtId")
     @ApiOperation(value = "根据编号编辑预约类型")
     @ResponseBody
@@ -77,7 +81,7 @@ public class AtypeController {
                                       @ApiParam(value = "预约类型", required = true) String atType){
         Atype atype = new Atype(atId, atType);
         iAtypeService.editAtypeByAtId(atype);
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
     @PostMapping("queryAByAType")
@@ -85,7 +89,7 @@ public class AtypeController {
     @ResponseBody
     public DataResult queryAByAType(@ApiParam(value = "预约类型", required = true) String atType){
         Integer atId = iAtypeService.queryAByAType(atType);
-        return new DataResult(0, "编辑成功", 1, atId);
+        return DataResult.success(atId);
     }
 
 }

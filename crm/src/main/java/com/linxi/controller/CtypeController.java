@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Ctype;
 import com.linxi.entity.Hospital;
 import com.linxi.mapper.CtypeMapper;
@@ -35,7 +36,7 @@ public class CtypeController {
     @ResponseBody
     public DataResult queryCtype(){
         List<Ctype> ctypes = iCtypeService.queryCtype();
-        return new DataResult(0, "操作成功", 0, ctypes);
+        return DataResult.success(ctypes);
     }
 
     @GetMapping("queryCtypePage")
@@ -45,23 +46,25 @@ public class CtypeController {
                                      @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
         List<Ctype> ctypes = iCtypeService.queryCtypePage((page - 1) * limit, limit);
         Integer total = iCtypeService.getTotal();
-        return new DataResult(0, "操作成功", total, ctypes);
+        return DataResult.success(total, ctypes);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveCtype")
     @ApiOperation(value = "新增客户状态")
     @ResponseBody
     public DataResult saveCtype(@ApiParam(value = "客户状态", required = true) String ctType){
         iCtypeService.saveCtype(ctType);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @GetMapping("delCtypeByCtId")
     @ApiOperation(value = "根据编号删除客户状态")
     @ResponseBody
     public DataResult delCtypeByCtId(@ApiParam(value = "编号", required = true) Integer ctId){
         iCtypeService.delCtypeByCtId(ctId);
-        return new DataResult(0, "删除成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryCtypeByCtId")
@@ -72,6 +75,7 @@ public class CtypeController {
         return "ctype/ctypeedit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editCtypeByCtId")
     @ApiOperation(value = "根据编号编辑客户状态")
     @ResponseBody
@@ -79,7 +83,7 @@ public class CtypeController {
                                      @ApiParam(value = "客户状态", required = true) String ctType){
         Ctype ctype = new Ctype(ctId, ctType);
         iCtypeService.editCtypeByCtId(ctype);
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
 }

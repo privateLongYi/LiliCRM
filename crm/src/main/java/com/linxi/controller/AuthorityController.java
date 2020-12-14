@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Customer;
 import com.linxi.entity.RoleMenu;
 import com.linxi.service.IRoleMenuService;
@@ -33,9 +34,10 @@ public class AuthorityController {
     @ResponseBody
     public DataResult queryRMByRId(@ApiParam(value = "角色编号", required = true) Integer rId){
         List<RoleMenu> roleMenus = iRoleMenuService.queryRMByRId(rId);
-        return new DataResult(0, "操作成功", 0, roleMenus);
+        return DataResult.success(roleMenus);
     }
 
+    @NoRepeatSubmit
     @GetMapping("editRMByRId")
     @ApiOperation(value = "根据角色编号编辑权限")
     @ResponseBody
@@ -46,7 +48,7 @@ public class AuthorityController {
         for (String s : list) {
             iRoleMenuService.saveRoleMenu(rId, Integer.parseInt(s));
         }
-        return new DataResult(0, "操作成功");
+        return DataResult.success();
     }
 
 }

@@ -87,11 +87,15 @@
 				}
 				if(verify){
 					$.post(url, {mName:mName, mUrl:mUrl, mParentId:mParentId, mType:mType},
-						function (obj) {
-							layer.msg(obj.msg, {time: 500}, function () {
-								layer.closeAll();
-								tableReload();
-							});
+						function (data) {
+					    	if (data.code != 200){
+					    	    layer.msg(data.msg);
+							} else {
+                                layer.msg(data.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    tableReload();
+                                });
+							}
 						}
 					);
 				}
@@ -137,7 +141,7 @@
 								popup(index, "/menu/saveMenu");
 							},
 							cancel: function(layero,index){
-								layer.closeAll();
+								layer.close(index);
 							}
 						});
 						break;
@@ -176,7 +180,7 @@
 							popup(index, "/menu/editMByMId?mId=" + data.mId);
 						},
 						cancel: function(layero,index){
-							layer.closeAll();
+							layer.close(index);
 						}
 					});
 				}

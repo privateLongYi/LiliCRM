@@ -296,10 +296,14 @@
                     ,aHId:aHId
                     ,atType:atType
                 },function (data) {
-                    layer.msg(data.msg, {time: 500}, function () {
-                        parent.layer.closeAll();
-                        parent.location.reload();
-                    });
+                    if (data.code != 200){
+                        layer.msg(data.msg);
+                    } else {
+                        layer.msg(data.msg, {time: 500}, function () {
+                            parent.layer.closeAll();
+                            parent.location.reload();
+                        });
+                    }
                 }
             )
         } else {
@@ -364,10 +368,14 @@
                         ,sPaysum: sPaysum.trim()
                         ,sRemark: sRemark
                     },function (data) {
-                        layer.msg(data.msg, {time: 500}, function () {
-                            parent.layer.closeAll();
-                            parent.location.reload();
-                        });
+                        if (data.code != 200){
+                            layer.msg(data.msg);
+                        } else {
+                            layer.msg(data.msg, {time: 500}, function () {
+                                parent.layer.closeAll();
+                                parent.location.reload();
+                            });
+                        }
                     }
                 );
             }

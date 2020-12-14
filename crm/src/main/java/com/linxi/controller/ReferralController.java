@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Appointment;
 import com.linxi.entity.Operating;
 import com.linxi.entity.Referral;
@@ -45,9 +46,7 @@ public class ReferralController {
     @Autowired
     private IAppointmentService iAppointmentService;
 
-    @Autowired
-    private IFailService iFailService;
-
+    @NoRepeatSubmit
     @PostMapping("saveReferral")
     @ApiOperation(value = "新增转诊记录")
     @ResponseBody
@@ -79,7 +78,7 @@ public class ReferralController {
         iReferralService.saveReferral(referral);
         //根据预约编号编辑预约状态
         iAppointmentService.editAStatusByAIdAndAStatus(rAId, 1);
-        return new DataResult(0, "转诊成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryRByCName")
@@ -93,7 +92,7 @@ public class ReferralController {
                                     @ApiParam(name = "export", value = "是否导出", required = true) Integer export){
         List<Referral> referrals = iReferralService.queryRByCName((page-1)*limit, limit, uId, rName, cName, export);
         Integer total = iReferralService.getTotalByCName(uId, rName, cName);
-        return new DataResult(0, "操作成功", total, referrals);
+        return DataResult.success(total, referrals);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.*;
 import com.linxi.service.*;
 import com.linxi.util.DataResult;
@@ -55,7 +56,7 @@ public class AppointmentController {
     public DataResult queryAByACId(@ApiParam(value = "客户编号", required = true) Integer aCId){
         List<Appointment> appointments = iAppointmentService.queryAByACId(aCId);
         Integer total = iAppointmentService.getTotalAByACId(aCId);
-        return new DataResult(0, "操作成功", total, appointments);
+        return DataResult.success(total, appointments);
     }
 
     @GetMapping("queryAByAId")
@@ -66,6 +67,7 @@ public class AppointmentController {
         return "appointment/appointmentedit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveAppointment")
     @ApiOperation(value = "新增预约客户")
     @ResponseBody
@@ -91,7 +93,7 @@ public class AppointmentController {
         //新增操作记录
         Operating operating = new Operating(customer.getcId(), uId, "预约", uName + "为" + customer.getcName() + "预约了" + hospital.gethName());
         iOperatingService.saveOperating(operating);
-        return new DataResult(0, "预约成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryAToDetail")
@@ -100,7 +102,7 @@ public class AppointmentController {
     public DataResult queryAToDetail(@ApiParam(value = "线索编号", required = true) Integer clId){
         //根据线索编号查询预约
         List<Appointment> appointments = iAppointmentService.queryAToDetail(clId);
-        return new DataResult(0, "操作成功", 0, appointments);
+        return DataResult.success(appointments);
     }
 
     @GetMapping("queryNewAppoint")
@@ -111,9 +113,10 @@ public class AppointmentController {
         Integer aId = iAppointmentService.queryMaxAId();
         //根据预约编号查询预约
         Appointment appointment = iAppointmentService.queryAByAId(aId);
-        return new DataResult(0, "操作成功", 0, appointment);
+        return DataResult.success(appointment);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveCAndA")
     @ApiOperation(value = "新增客户信息和预约信息")
     @ResponseBody
@@ -175,7 +178,7 @@ public class AppointmentController {
         //新增操作记录
         Operating operating2 = new Operating(customer.getcId(), uId, "预约", uName + "为" + customer.getcName() + "预约了" + hospital.gethName());
         iOperatingService.saveOperating(operating2);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
 }

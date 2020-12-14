@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Menu;
 import com.linxi.service.IMenuService;
 import com.linxi.util.DataResult;
@@ -36,7 +37,7 @@ public class MenuController {
                                     @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
         List<Menu> menus = iMenuService.queryMByMName(mName, (page - 1) * limit, limit);
         Integer total = iMenuService.getTotalByMName(mName);
-        return new DataResult(0, "操作成功", total, menus);
+        return DataResult.success(total, menus);
     }
 
     @GetMapping("queryMParent")
@@ -44,9 +45,10 @@ public class MenuController {
     @ResponseBody
     public DataResult queryMParent(){
         List<Menu> menus = iMenuService.queryMParent();
-        return new DataResult(0, "操作成功", 0, menus);
+        return DataResult.success(menus);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveMenu")
     @ApiOperation(value = "新增菜单")
     @ResponseBody
@@ -55,15 +57,16 @@ public class MenuController {
                                @ApiParam(name = "mParentId", value = "菜单父级编号", required = false) Integer mParentId,
                                @ApiParam(name = "mType", value = "菜单类型", required = true) String mType){
         iMenuService.saveMenu(new Menu(null, mName, mUrl, mParentId, mType));
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @GetMapping("delMByMId")
     @ApiOperation(value = "根据编号删除菜单")
     @ResponseBody
     public DataResult delMByMId(@ApiParam(name = "mId", value = "编号", required = true) Integer mId){
         iMenuService.delMByMId(mId);
-        return new DataResult(0, "删除成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryMByMId")
@@ -74,6 +77,7 @@ public class MenuController {
         return "menu/menuedit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editMByMId")
     @ApiOperation(value = "根据编号编辑菜单")
     @ResponseBody
@@ -83,7 +87,7 @@ public class MenuController {
                                  @ApiParam(name = "mParentId", value = "菜单父级编号", required = false) Integer mParentId,
                                  @ApiParam(name = "mType", value = "菜单类型", required = true) String mType){
         iMenuService.editMByMId(new Menu(mId, mName, mUrl, mParentId, mType));
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
 }

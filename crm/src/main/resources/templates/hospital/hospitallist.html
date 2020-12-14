@@ -60,11 +60,15 @@
 				}
 				if(verify){
 					$.post(url, {hName:hName},
-						function (obj) {
-							layer.msg(obj.msg, {time: 500}, function () {
-								layer.closeAll();
-								tableReload();
-							});
+						function (data) {
+					    	if (data.code != 200){
+					    	    layer.msg(data.msg);
+							} else {
+                                layer.msg(data.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    tableReload();
+                                });
+							}
 						}
 					);
 				}
@@ -108,7 +112,7 @@
 								popup(index, "/hospital/saveHospital");
 							},
 							cancel: function(layero,index){
-								layer.closeAll();
+								layer.close(index);
 							}
 						});
 						break;
@@ -147,7 +151,7 @@
 							popup(index, "/hospital/editHByHId?hId=" + data.hId);
 						},
 						cancel: function(layero,index){
-							layer.closeAll();
+							layer.close(index);
 						}
 					});
 				}

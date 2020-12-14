@@ -1,5 +1,6 @@
 package com.linxi.controller;
 
+import com.linxi.anno.NoRepeatSubmit;
 import com.linxi.entity.Ftype;
 import com.linxi.service.IFtypeService;
 import com.linxi.util.DataResult;
@@ -35,23 +36,25 @@ public class FtypeController {
                                      @ApiParam(name = "limit", value = "显示条数", required = true) Integer limit){
         List<Ftype> ftypes = iFtypeService.queryFtypePage((page - 1) * limit, limit);
         Integer total = iFtypeService.getTotal();
-        return new DataResult(0, "操作成功", total, ftypes);
+        return DataResult.success(total, ftypes);
     }
 
+    @NoRepeatSubmit
     @PostMapping("saveFtype")
     @ApiOperation(value = "新增回访类型")
     @ResponseBody
     public DataResult saveFtype(@ApiParam(value = "回访类型", required = true) String ftType){
         iFtypeService.saveFtype(ftType);
-        return new DataResult(0, "新增成功");
+        return DataResult.success();
     }
 
+    @NoRepeatSubmit
     @GetMapping("delFtypeByFtId")
     @ApiOperation(value = "根据编号删除回访类型")
     @ResponseBody
     public DataResult delFtypeByFtId(@ApiParam(value = "编号", required = true) Integer ftId){
         iFtypeService.delFtypeByFtId(ftId);
-        return new DataResult(0, "删除成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryFtypeByFtId")
@@ -62,6 +65,7 @@ public class FtypeController {
         return "ftype/ftypeedit";
     }
 
+    @NoRepeatSubmit
     @PostMapping("editFtypeByFtId")
     @ApiOperation(value = "根据编号编辑回访类型")
     @ResponseBody
@@ -69,7 +73,7 @@ public class FtypeController {
                                       @ApiParam(value = "回访类型", required = true) String ftType){
         Ftype ftype = new Ftype(ftId, ftType);
         iFtypeService.editFtypeByFtId(ftype);
-        return new DataResult(0, "编辑成功");
+        return DataResult.success();
     }
 
     @GetMapping("queryFtype")
@@ -77,7 +81,7 @@ public class FtypeController {
     @ResponseBody
     public DataResult queryFtype(){
         List<Ftype> follows = iFtypeService.queryFtype();
-        return new DataResult(0, "操作成功", 0, follows);
+        return DataResult.success(follows);
     }
 
 }
