@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  * 自定义session失效策略
@@ -27,14 +28,18 @@ public class MyInvalidSessionStrategy implements InvalidSessionStrategy {
     public void onInvalidSessionDetected(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
         HttpSession session = httpServletRequest.getSession();
         String sessionId = httpServletRequest.getRequestedSessionId();
-        if(!session.isNew()){
+        /*if(!session.isNew()){
             //内部重定向
             httpServletResponse.sendRedirect("/loginPage");
-        }else{
+        }else{*/
             //直接输出js脚本跳转
             httpServletResponse.setContentType("text/html;charset=UTF-8");
-            httpServletResponse.getWriter().print("<script type='text/javascript'>window.location.href = \"/loginPage\"</script>");
-        }
+            httpServletResponse.getWriter().print("<script type='text/javascript'>" +
+                                                    "window.parent.location.href = \"/loginPage\";" +
+                                                    "if (window.top!=null && window.top.document.URL!=document.URL){\n" +
+                                                        "window.top.location= document.URL;\n" +
+                                                    "}</script>");
+        /*}*/
         SessionInformation sessionInformation = sessionRegistry.getSessionInformation(sessionId);
         if(sessionInformation != null){
             User user = (User) sessionInformation.getPrincipal();

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -80,12 +81,12 @@ public class CustomerController {
                         customer.sethName(appointment.gethName());
                     }
                     //根据线索编号查询总成交金额
-                    Integer successMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 0);
+                    Double successMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 0);
                     if (successMoney != null){
                         customer.setsSum(successMoney);
                     }
                     //根据线索编号查询总支付金额
-                    Integer payMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 1);
+                    Double payMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 1);
                     if (payMoney != null){
                         customer.setsPaysum(payMoney);
                     }
@@ -123,12 +124,12 @@ public class CustomerController {
                     customer.sethName(appointment.gethName());
                 }
                 //根据线索编号查询总成交金额
-                Integer successMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 0);
+                Double successMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 0);
                 if (successMoney != null){
                     customer.setsSum(successMoney);
                 }
                 //根据线索编号查询总支付金额
-                Integer payMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 1);
+                Double payMoney = iSuccessService.queryTotalMoneyByClId(customer.getClId(), 1);
                 if (payMoney != null){
                     customer.setsPaysum(payMoney);
                 }
@@ -316,7 +317,7 @@ public class CustomerController {
     }
 
     @PostMapping("queryCACByUIdAndCName")
-    @ApiOperation(value = "根据用户编号和客户名称查询可成交客户")
+    @ApiOperation(value = "根据用户编号和客户名称查询可预约客户")
     @ResponseBody
     public Map<String, Object> queryCACByUIdAndCName(@ApiParam(value = "角色名称", required = true) String rName,
                                                      @ApiParam(value = "用户编号", required = true) Integer uId,
@@ -324,6 +325,15 @@ public class CustomerController {
                                                      @ApiParam(value = "当前页码", required = true) Integer page) {
         Map<String, Object> map = new HashMap<>();
         List<Customer> customers = iCustomerService.queryCACByUIdAndCName(rName, uId, cName, (page - 1) * 4);
+        for (Customer customer : customers){
+            //根据线索编号查询预约
+            List<Appointment> appointments = iAppointmentService.queryAByAClId(customer.getClId());
+            if (appointments.size() == 0){
+                customer.setAtType("初次预约");
+            } else {
+                customer.setAtType("普通预约");
+            }
+        }
         Integer total = iCustomerService.getTotalCACByUIdAndCName(rName, uId, cName);
         if (total == null) {
             total = 0;
@@ -360,14 +370,14 @@ public class CustomerController {
             map.put("date", appointment.getaTime());
         }
         //根据线索编号查询成交金额
-        Integer successMoney = iSuccessService.queryTotalMoneyByClId(clId, 0);
+        Double successMoney = iSuccessService.queryTotalMoneyByClId(clId, 0);
         if (successMoney == null) {
             map.put("successMoney", 0);
         } else {
             map.put("successMoney", successMoney);
         }
         //根据线索编号查询已交金额
-        Integer payMoney = iSuccessService.queryTotalMoneyByClId(clId, 1);
+        Double payMoney = iSuccessService.queryTotalMoneyByClId(clId, 1);
         if (successMoney == null) {
             map.put("payMoney", 0);
         } else {
@@ -392,9 +402,9 @@ public class CustomerController {
         }
         map.put("status", status);
         //退款金额
-        Integer refund = iSuccessService.queryRefundByClId(clId);
+        Double refund = iSuccessService.queryRefundByClId(clId);
         if (refund == null){
-            refund = 0;
+            refund = 0.0;
         }
         map.put("refund", refund);
         //最后修改时间
@@ -405,9 +415,9 @@ public class CustomerController {
             map.put("editTime", s);
         }
         //根据线索编号查询预约
-        Appointment appointment1 = iAppointmentService.queryAByClId(clId);
-        if (appointment1 != null){
-            map.put("sAId", appointment1.getaId());
+        Integer maxAId = iAppointmentService.queryMaxAIdByClId(clId);
+        if (maxAId != null){
+            map.put("sAId", maxAId);
         } else {
             map.put("sAId", "");
         }
@@ -456,27 +466,29 @@ public class CustomerController {
         }
         map.put("percent", percent);
         //客户成交金额
-        Integer successMoney = iSuccessService.queryMoneyByTime(uId, rName, beginTime, endTime, 0);
+        Double successMoney = iSuccessService.queryMoneyByTime(uId, rName, beginTime, endTime, 0);
         if (successMoney == null){
-            successMoney = 0;
+            successMoney = 0.0;
         }
         map.put("successMoney", successMoney);
         //平均客单价
         Double acup;
         if (success != 0){
             acup = Double.valueOf(successMoney/success);
+            BigDecimal b = new BigDecimal(acup);
+            acup = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         } else {
             acup = 0.0;
         }
         map.put("acup", acup);
         //客户实收金额
-        Integer payMoney = iSuccessService.queryMoneyByTime(uId, rName, beginTime, endTime, 1);
+        Double payMoney = iSuccessService.queryMoneyByTime(uId, rName, beginTime, endTime, 1);
         if (payMoney == null){
-            payMoney = 0;
+            payMoney = 0.0;
         }
         map.put("payMoney", payMoney);
         //客户待收金额
-        Integer awaitMoney = successMoney - payMoney;
+        Double awaitMoney = successMoney - payMoney;
         map.put("awaitMoney", awaitMoney);
         return map;
     }

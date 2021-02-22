@@ -56,11 +56,11 @@ public interface ISuccessService {
 
     //根据成交客户编号编辑成交金额和支付金额
     void editMoneyBySId(@Param("sId") Integer sId,
-                        @Param("sSum") Integer sSum,
-                        @Param("sPaysum") Integer sPaysum);
+                        @Param("sSum") Double sSum,
+                        @Param("sPaysum") Double sPaysum);
 
     //根据线索编号查询总成交金额
-    Integer queryTotalMoneyByClId(@Param("clId") Integer clId,
+    Double queryTotalMoneyByClId(@Param("clId") Integer clId,
                                   @Param("type") Integer type);
 
     //根据用户编号和客户名称查询成交客户
@@ -89,7 +89,7 @@ public interface ISuccessService {
                            @Param("endTime") String endTime);
 
     //根据用户编号和起止时间查询成交总金额/支付总金额
-    Integer queryMoneyByTime(@Param("uId") Integer uId,
+    Double queryMoneyByTime(@Param("uId") Integer uId,
                              @Param("rName") String rName,
                              @Param("beginTime") String beginTime,
                              @Param("endTime") String endTime,
@@ -111,13 +111,13 @@ public interface ISuccessService {
     List<Success> querySBySAId(Integer sAId);
 
     //根据预约编号查询成交总金额
-    Integer querySSumBySAId(Integer sAId);
+    Double querySSumBySAId(Integer sAId);
 
     //查询最大的成交编号
     Integer queryMaxSId();
 
     //根据筛选条件查询成交金额或支付金额
-    Integer queryMoneyByScreen(@Param("uId") Integer uId,
+    Double queryMoneyByScreen(@Param("uId") Integer uId,
                                @Param("rName") String rName,
                                @Param("cName") String cName,
                                @Param("cTel") String cTel,
@@ -138,7 +138,7 @@ public interface ISuccessService {
                                       @Param("endTime") String endTime);
 
     //根据线索编号查询退款总金额
-    Integer queryRefundByClId(@Param("clId") Integer clId);
+    Double queryRefundByClId(@Param("clId") Integer clId);
 
     //根据线索编号查询最早成交
     Success queryFirstSByClId(Integer clId);

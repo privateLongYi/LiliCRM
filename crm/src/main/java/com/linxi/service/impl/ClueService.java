@@ -81,4 +81,10 @@ public class ClueService implements IClueService{
         clueMapper.editClUIdByClId(clId, clUId);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Clue queryValidClByClCId(Integer cId) {
+        return clueMapper.queryValidClByClCId(cId);
+    }
+
 }

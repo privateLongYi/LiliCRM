@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>LiLiCRM</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}" />
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/css/layui.min.css" />
     <style>
         .baseMargin{
             margin: 5px 0 10px 0;
@@ -97,55 +97,6 @@
         </div>
         <br>
 
-        <!--head-->
-        <!--<div class="layui-row layui-card" style="height: 120px;">
-            <div class="layui-col-md9 layui-row">
-                <div class="layui-col-space1">
-                    &lt;!&ndash;客户信息&ndash;&gt;
-                    <br />
-                    <div class="layui-col-md4 layui-row">
-                        <div class="layui-col-space1">
-                            <div class="layui-col-md3" style="padding-top: 10px;"><img id="img" th:src="@{/images/boy.png}" width="40px" height="40px" /></div>
-                            <div class="layui-col-md7">
-                                <div class="layui-row" style="margin-bottom: 2px;">
-                                    <div class="layui-col-md6"><span style="font-size: 20px;" name="cName"></span></div>
-                                    <div class="layui-col-md3"><span style="float: right;margin-top: 3px;" name="cAge"></span></div>岁
-                                </div>
-                                <div style="margin-bottom: 2px;"><span name="cTel"></span></div>
-                                <div>上次:<span id="hName"></span></div>
-                            </div>
-                        </div>
-                    </div>
-                    &lt;!&ndash;成交金额&ndash;&gt;
-                    <div class="layui-col-md2">
-                        <br><div><span id="successMoney"></span></div>
-                        <div><span style="color: #9F9F9F;">成交金额</span></div>
-                    </div>
-                    &lt;!&ndash;已收金额&ndash;&gt;
-                    <div class="layui-col-md2">
-                        <br><span id="payMoney"></span><br />
-                        <span style="color: #9F9F9F;">已交金额</span>
-                    </div>
-                    &lt;!&ndash;待收金额&ndash;&gt;
-                    <div class="layui-col-md2">
-                        <br><span id="waitMoney"></span><br />
-                        <span style="color: #9F9F9F;">待交金额</span>
-                    </div>
-                    &lt;!&ndash;预交金额&ndash;&gt;
-                    <div class="layui-col-md2">
-                        <br><span name="clEarnest"></span><br />
-                        <span style="color: #9F9F9F;">预交金额</span>
-                    </div>
-                </div>
-            </div>
-            <br />
-            <div class="layui-col-md3">
-                <div style="margin-bottom: 2px;">创建时间:<span id="cTime"></span></div>
-                <div style="margin-bottom: 2px;">修改时间:<span id="editTime"></span></div>
-                <div>负责人:<span id="principal"></span></div>
-            </div>
-        </div>-->
-        <!--head-->
         <div class="layui-row layui-card" style="height:90px;">
             <!--信息区域-->
             <div class="layui-col-md10" style="margin-top: 5px;">
@@ -293,14 +244,14 @@
 
 </div>
 
-<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
-
 <script type="text/html" id="sBarDemo">
     <a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>
     <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="gathering">收款</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="refund">退款</a>
     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="success">成交</a>
 </script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
 
 <script>
 
@@ -487,43 +438,49 @@
         var cName = $("[name=cName]")[0].innerText;
         //客户状态
         var cType = $("#cType").text();
-        //弹出预约页面
-        layer.open({
-            type: 2, //层类型，iframe
-            title: '新增预约客户',
-            content: ['/appointmentsave?clId='+clId+'&cName='+cName+'&atType=普通预约'],
-            area: ['450px', '450px'],
-            resize: false,
-            btn: '确定',
-            btn1: function (index, layero) {
-                var body = layer.getChildFrame('body', index);
-                //获取值
-                var aClId = $(body).find("#aClId").val();
-                var aTime = $(body).find("#aTime").val();
-                var aHId = $(body).find("#aHId").val();
-                var atType = $(body).find("#atType").val();
-                if (aTime != '') {
-                    $.post("/appointment/saveAppointment", {uId:uId, uName:uName, aClId:aClId, aTime:aTime,
-                            aHId:aHId, atType:atType},
-                        function (data) {
-                            if (data.code != 200){
-                                layer.msg(data.msg);
-                            } else {
-                                layer.msg(data.msg, {time: 500}, function () {
-                                    layer.close(index);
-                                    goDetail(cId, clId, clUId);
-                                });
+        if (cType == "待分配"){
+            layer.msg("该客户尚未分配，请先分配！")
+        } else {
+            //弹出预约页面
+            layer.open({
+                type: 2, //层类型，iframe
+                title: '新增预约客户',
+                content: ['/appointmentsave?clId=' + clId + '&cName=' + cName],
+                area: ['450px', '450px'],
+                resize: false,
+                btn: '确定',
+                btn1: function (index, layero) {
+                    var body = layer.getChildFrame('body', index);
+                    //获取值
+                    var aClId = $(body).find("#aClId").val();
+                    var aTime = $(body).find("#aTime").val();
+                    var aHId = $(body).find("#aHId").val();
+                    var atType = $(body).find("#atType").val();
+                    if (aTime != '') {
+                        $.post("/appointment/saveAppointment", {
+                                uId: uId, uName: uName, aClId: aClId, aTime: aTime,
+                                aHId: aHId, atType: atType
+                            },
+                            function (data) {
+                                if (data.code != 200) {
+                                    layer.msg(data.msg);
+                                } else {
+                                    layer.msg(data.msg, {time: 500}, function () {
+                                        layer.close(index);
+                                        goDetail(cId, clId, clUId);
+                                    });
+                                }
                             }
-                        }
-                    );
-                } else {
-                    layer.msg('请输入预约时间');
+                        );
+                    } else {
+                        layer.msg('请输入预约时间');
+                    }
+                },
+                cancel: function (index, layero) {
+                    layer.close(index);
                 }
-            },
-            cancel: function(index, layero){
-                layer.close(index);
-            }
-        });
+            });
+        }
     }
 
     //成交
@@ -544,8 +501,10 @@
         var clEntryFee = $("#clEntryFee").text();
         //预约编号
         var sAId = $("#sAId").val();
-        if (sAId == ""){
-            layer.msg("未预约的客户不能成交，请先预约！")
+        //客户状态
+        var cType = $("#cType").text();
+        if (cType == "待分配" || cType == "待联系" || cType == "待预约"){
+            layer.msg("该客户未预约，请先预约！")
         } else {
             //弹出成交页面
             layer.open({
@@ -571,6 +530,7 @@
                     }
                     var sSum = $(body).find("#sSum").val();
                     var sPaysum = $(body).find("#sPaysum").val();
+                    var sTime = $(body).find("#sTime").val();
                     var sRemark = $(body).find("#sRemark").val();
                     if (sSum != '' && sSum.trim() != '') {
                         //声明格式是否正确
@@ -600,9 +560,10 @@
                                     isDeduction: isDeduction,
                                     sSum: sSum.trim(),
                                     sPaysum: sPaysum.trim(),
+                                    sTime: sTime,
                                     sRemark: sRemark
                                 },
-                                function (obj) {
+                                function (data) {
                                     if (data.code != 200){
                                         layer.msg(data.msg);
                                     } else {
@@ -630,11 +591,13 @@
         //客户编号
         var cId = $("#cId").val();
         //客户编号
-        var cName = $("#cName").val();
+        var cName = $("[name=cName]")[0].innerText;
         //线索编号
         var clId = $("#clId").val();
         //负责人编号
         var clUId = $("#clUId").val();
+        //负责人编号
+        var sAId = $("#sAId").val();
         //报名费
         var clEntryFee = $("#clEntryFee").text();
         if (clEntryFee == "null" || clEntryFee == "" || clEntryFee.indexOf("已抵扣")!=-1 || clEntryFee.indexOf("已退还")!=-1){
@@ -642,8 +605,8 @@
         } else {
             layer.confirm('确定退报名费吗？', {icon: 3, title:'提示'}, function(index){
                 $.get("/clue/refundClEntryFee", {uId: uId, uName: uName, cId: cId,
-                        cName: cName, clId: clId, clEntryFee: clEntryFee},
-                    function (obj) {
+                        cName: cName, clId: clId, sAId: sAId, clEntryFee: clEntryFee},
+                    function (data) {
                         if (data.code != 200){
                             layer.msg(data.msg);
                         } else {
@@ -905,6 +868,7 @@
                         var sHId = $(body).find("#sHId").val();
                         var sMessage = $(body).find("#sMessage").val();
                         var sSum = $(body).find("#sSum").val();
+                        var sTime = $(body).find("#sTime").val();
                         var sRemark = $(body).find("#sRemark").val();
                         if (sSum != '' && sSum.trim() != '') {
                             //声明格式是否正确
@@ -918,7 +882,7 @@
                                 $.post("/success/editSBySId",
                                     {
                                         uId: uId, sId:sId, cId:cId, sAId: sAId, sHId: sHId,
-                                        sMessage: sMessage, sSum: sSum,
+                                        sMessage: sMessage, sSum: sSum, sTime:sTime,
                                         sRemark: sRemark, uName: uName, cName: cName
                                     },
                                     function (data) {
@@ -965,13 +929,14 @@
                             var paySum = $(body).find("#paySum").val();
                             var payRemark = $(body).find("#payRemark").val();
                             var payTypeId = $(body).find("#payTypeId").val();
+                            var payTime = $(body).find("#payTime").val();
                             if (paySum != '' && paySum.trim() != '') {
                                 if (!isNaN(paySum) && paySum >= 0){
                                     if (parseFloat(wk) < parseFloat(paySum)){
                                         layer.msg("支付金额不能大于尾款，尾款为"+wk);
                                     } else {
                                         $.post("/payrecord/savePayrecord",
-                                            {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, paySum: paySum, payRemark:payRemark, payTypeId: payTypeId},
+                                            {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, paySum: paySum, payRemark:payRemark, payTypeId: payTypeId, payTime:payTime},
                                             function (data) {
                                                 if (data.code != 200){
                                                     layer.msg(data.msg);
@@ -1017,6 +982,7 @@
                         var paySId = $(body).find("#paySId").val();
                         var refundsSum = $(body).find("#refundsSum").val();
                         var refundsPaysum = $(body).find("#refundsPaysum").val();
+                        var payTime = $(body).find("#payTime").val();
                         var payRemark = $(body).find("#payRemark").val();
                         var payTypeId = $(body).find("#payTypeId").val();
                         //声明格式是否正确
@@ -1028,8 +994,6 @@
                                     layer.msg("成交退款金额不能大于成交金额，成交金额为" + sSum);
                                     verify = false;
                                     return;
-                                } else {
-                                    refundsSum = eval(sSum + "-" + refundsSum);
                                 }
                             } else {
                                 layer.msg('成交退款金额必须是大于零的数值');
@@ -1041,8 +1005,6 @@
                             verify = false;
                             return;
                         }
-                        //退款金额
-                        var paySum;
                         //验证支付退款金额
                         if (refundsPaysum != '' && refundsPaysum.trim() != '') {
                             if (!isNaN(refundsPaysum) && refundsPaysum >= 0) {
@@ -1050,9 +1012,6 @@
                                     layer.msg("支付退款金额不能大于支付金额，支付金额为" + sPaysum);
                                     verify = false;
                                     return;
-                                } else {
-                                    paySum = refundsPaysum;
-                                    refundsPaysum = eval(sPaysum + "-" + refundsPaysum);
                                 }
                             } else {
                                 layer.msg('支付退款金额必须是大于等于零的数值');
@@ -1066,9 +1025,8 @@
                         }
                         if (verify){
                             $.get("/success/refundMoney",
-                                {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, refundsSum: refundsSum,
-                                    refundsPaysum:refundsPaysum, payRemark:payRemark,
-                                    payTypeId: payTypeId, paySum:paySum},
+                                {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, sSum:sSum, sPaysum:sPaysum, refundsSum: refundsSum,
+                                    refundsPaysum:refundsPaysum, payTime:payTime, payRemark:payRemark, payTypeId: payTypeId},
                                 function (data) {
                                     if (data.code != 200){
                                         layer.msg(data.msg);
@@ -1111,6 +1069,7 @@
                         }
                         var sSum = $(body).find("#sSum").val();
                         var sPaysum = $(body).find("#sPaysum").val();
+                        var sTime = $(body).find("#sTime").val();
                         var sRemark = $(body).find("#sRemark").val();
                         if (sSum != '' && sSum.trim() != '') {
                             //声明格式是否正确
@@ -1140,6 +1099,7 @@
                                         isDeduction: isDeduction,
                                         sSum: sSum.trim(),
                                         sPaysum: sPaysum.trim(),
+                                        sTime: sTime,
                                         sRemark: sRemark
                                     },
                                     function (data) {
@@ -1245,9 +1205,13 @@
         var child = obj.data;
         for(index in parent){
             if(parent[index].mParentId == 0){
-                html += "<li class='layui-nav-item layui-nav-itemed'>" +
-                    "       <a class='' href='javascript:;'>"+parent[index].mName+"</a>" +
-                    "       <dl class='layui-nav-child'>";
+                if (parent[index].mName == "客户管理"){
+                    html += "<li class='layui-nav-item layui-nav-itemed'>";
+                } else {
+                    html += "<li class='layui-nav-item'>"
+                }
+                html += "<a class='' href='javascript:;'>"+parent[index].mName+"</a>" +
+                        "<dl class='layui-nav-child'>";
                 for(i in child){
                     if(child[i].mParentId == parent[index].rmMId){
                         html += "<dd>" +

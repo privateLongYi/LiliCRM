@@ -47,7 +47,7 @@ public class Success implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    private Integer sSum;
+    private Double sSum;
 
     /**
      *
@@ -56,7 +56,7 @@ public class Success implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    private Integer sPaysum;
+    private Double sPaysum;
 
     /**
      *
@@ -75,6 +75,8 @@ public class Success implements Serializable {
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
     private Timestamp sTime;
+
+    private Timestamp sAddTime;
 
     private Integer sWhether;
 
@@ -101,7 +103,7 @@ public class Success implements Serializable {
     /**
      * 总成交额
      */
-    private Integer totalSum;
+    private Double totalSum;
 
     /**
      * 用户名称
@@ -131,12 +133,12 @@ public class Success implements Serializable {
     /**
      * 退款总金额
      */
-    private Integer refund;
+    private Double refund;
 
     /**
      * 待收金额
      */
-    private Integer awaitMoney;
+    private Double awaitMoney;
 
     /**
      * 报名费
@@ -231,7 +233,7 @@ public class Success implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public Integer getsSum() {
+    public Double getsSum() {
         return sSum;
     }
 
@@ -243,7 +245,7 @@ public class Success implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public void setsSum(Integer sSum) {
+    public void setsSum(Double sSum) {
         this.sSum = sSum;
     }
 
@@ -255,7 +257,7 @@ public class Success implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public Integer getsPaysum() {
+    public Double getsPaysum() {
         return sPaysum;
     }
 
@@ -267,7 +269,7 @@ public class Success implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public void setsPaysum(Integer sPaysum) {
+    public void setsPaysum(Double sPaysum) {
         this.sPaysum = sPaysum;
     }
 
@@ -319,6 +321,14 @@ public class Success implements Serializable {
         this.sTime = sTime;
     }
 
+    public Timestamp getsAddTime() {
+        return sAddTime;
+    }
+
+    public void setsAddTime(Timestamp sAddTime) {
+        this.sAddTime = sAddTime;
+    }
+
     public Integer getsWhether() {
         return sWhether;
     }
@@ -335,11 +345,11 @@ public class Success implements Serializable {
         this.hId = hId;
     }
 
-    public Integer getTotalSum() {
+    public Double getTotalSum() {
         return totalSum;
     }
 
-    public void setTotalSum(Integer totalSum) {
+    public void setTotalSum(Double totalSum) {
         this.totalSum = totalSum;
     }
 
@@ -383,19 +393,19 @@ public class Success implements Serializable {
         this.clUId = clUId;
     }
 
-    public Integer getRefund() {
+    public Double getRefund() {
         return refund;
     }
 
-    public void setRefund(Integer refund) {
+    public void setRefund(Double refund) {
         this.refund = refund;
     }
 
-    public Integer getAwaitMoney() {
+    public Double getAwaitMoney() {
         return awaitMoney;
     }
 
-    public void setAwaitMoney(Integer awaitMoney) {
+    public void setAwaitMoney(Double awaitMoney) {
         this.awaitMoney = awaitMoney;
     }
 
@@ -410,7 +420,7 @@ public class Success implements Serializable {
     public Success() {
     }
 
-    public Success(Integer sId, Integer sAId, Integer sHId, String sMessage, Integer sSum, Integer sPaysum, String sRemark, Integer sWhether) {
+    public Success(Integer sId, Integer sAId, Integer sHId, String sMessage, Double sSum, Double sPaysum, String sRemark, Timestamp sTime, Integer sWhether) {
         this.sId = sId;
         this.sAId = sAId;
         this.sHId = sHId;
@@ -418,6 +428,7 @@ public class Success implements Serializable {
         this.sSum = sSum;
         this.sPaysum = sPaysum;
         this.sRemark = sRemark;
+        this.sTime = sTime;
         this.sWhether = sWhether;
     }
 }

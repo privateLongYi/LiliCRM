@@ -79,4 +79,9 @@
     UPDATE clue SET cl_u_id = #{clUId}, cl_type_id = 2 WHERE cl_id = #{clId}
   </update>
 
+  <!--根据客户编号查询有效线索-->
+  <select id="queryValidClByClCId" resultMap="BaseResultMap">
+    SELECT * FROM clue WHERE cl_c_id = #{cId} AND cl_invalid = 0
+  </select>
+
 </mapper>

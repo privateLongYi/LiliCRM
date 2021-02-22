@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>待预约列表</title>
-		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/css/layui.min.css" />
 		<style>
 			.layui-table-fixed .layui-table-body {
 				height: auto!important;
@@ -90,7 +90,7 @@
 			<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="appoint">预约</a>
 		</script>
 
-		<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
 
 		<script th:src="@{/js/detail.js}"></script>
 
@@ -333,6 +333,7 @@
 							}
 							var cAge = $(body).find("#cAge").val();
 							var cTel = $(body).find("#cTel").val();
+                            var cWx = $(body).find("#cWx").val();
 							var clProject = $(body).find("#clProject").val();
 							var clRemark = $(body).find("#clRemark").val();
                             var clMessage = $(body).find("#clMessage").val();
@@ -372,7 +373,7 @@
 									}
 								}
 								if(verify){
-									$.post("/customer/editCByCId?cId="+data.cId, {uId: uId, uName: uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), clProject:clProject,
+									$.post("/customer/editCByCId?cId="+data.cId, {uId: uId, uName: uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cWx:cWx, clProject:clProject,
 											clRemark:clRemark, clMessage:clMessage, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
 										function (data) {
 									    	if (data.code != 200){
@@ -399,7 +400,7 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '新增预约',
-						content: ['/appointmentsave?clId='+data.clId+'&cName='+data.cName+'&atType=初次预约'],
+						content: ['/appointmentsave?clId='+data.clId+'&cName='+data.cName],
 						area: ['450px', '450px'],
 						resize: false,
 						btn: '确定',

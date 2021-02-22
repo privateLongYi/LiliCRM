@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -60,7 +61,8 @@ public class PayrecordController {
                                     @ApiParam(value = "客户编号", required = true) Integer cId,
                                     @ApiParam(value = "客户姓名", required = true) String cName,
                                     @ApiParam(value = "成交客户编号", required = true) Integer paySId,
-                                    @ApiParam(value = "支付金额", required = true) Integer paySum,
+                                    @ApiParam(value = "支付金额", required = true) Double paySum,
+                                    @ApiParam(value = "支付时间", required = true) String payTime,
                                     @ApiParam(value = "支付备注", required = true) String payRemark,
                                     @ApiParam(value = "支付类型编号", required = true) Integer payTypeId){
         //根据支付编号查询支付
@@ -69,14 +71,14 @@ public class PayrecordController {
         Operating operating = new Operating(cId, uId, "收款", uName + "为客户" + cName + "新增了一条支付记录（" + paySum + "/" + paytype.getPayType() + "）");
         iOperatingService.saveOperating(operating);
         //新增支付记录
-        Payrecord payrecord = new Payrecord(null, paySId, paySum, null, payRemark, payTypeId);
+        Payrecord payrecord = new Payrecord(null, paySId, paySum, Timestamp.valueOf(payTime), payRemark, payTypeId);
         iPayrecordService.savePayrecord(payrecord);
         //根据成交客户编号查询支付总金额
-        Integer paysum = iPayrecordService.queryPPaysumBySId(paySId);
+        Double paysum = iPayrecordService.queryPPaysumBySId(paySId);
         //根据成交客户编号查询退款总金额
-        Integer refund = iPayrecordService.queryRefundBySId(paySId);
+        Double refund = iPayrecordService.queryRefundBySId(paySId);
         if (refund == null){
-            refund = 0;
+            refund = 0.0;
         }
         //根据成交客户编号编辑支付金额
         iSuccessService.editMoneyBySId(paySId, null, (paysum-refund));

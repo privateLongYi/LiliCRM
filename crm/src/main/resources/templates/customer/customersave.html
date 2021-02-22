@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>新增客户信息</title>
-    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/css/layui.min.css" />
 </head>
 <body>
 
@@ -195,15 +195,24 @@
                 <input type="text" class="layui-input" placeholder="请输入成交金额"
                        autocomplete="off" id="sSum">
             </div>
-            <div class="layui-form-mid layui-word-aux">（不含报名费）</div>
+            <div class="layui-form-mid layui-word-aux">（包含报名费）</div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">
                 <span style="color: red;">*&nbsp;</span>支付金额
             </label>
-            <div class="layui-input-block">
+            <div class="layui-input-inline">
                 <input type="text" class="layui-input" placeholder="请输入支付金额"
                        autocomplete="off" id="sPaysum">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>成交时间
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="sTime" readonly
+                       autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -234,7 +243,7 @@
     </div>
 </div>
 
-<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
 
 <script>
 
@@ -253,6 +262,7 @@
         elem: '#clPlaceTime' //指定元素
         ,type: 'datetime' //时间格式
         ,trigger: 'click' //采用click弹出
+        ,btns: ['now', 'confirm']
         ,value: new Date() //默认时间
     });
 
@@ -263,6 +273,12 @@
         ,trigger: 'click' //采用click弹出
     });
 
+    //时间控件
+    laydate.render({
+        elem: '#sTime' //指定元素
+        ,type: 'datetime' //时间格式
+        ,trigger: 'click' //采用click弹出
+    });
 
     if(rName != "销售员"){
 
@@ -364,8 +380,8 @@
             }
             //验证报名费格式
             if (clEntryFee != '') {
-                if (isNaN(clEntryFee) || cAge <= 0) {
-                    layer.msg("报名费必须是大于0的数值");
+                if (isNaN(clEntryFee) || clEntryFee < 0) {
+                    layer.msg("报名费必须是大于等于0的数值");
                     verify = false;
                     return;
                 }
@@ -409,7 +425,14 @@
     function cSave() {
         //获取客户信息
         var cName = $("#cName").val();
-        var cSex = $("[name=cSex]").val();
+        var cSex = "";
+        if ($("[name=cSex]")[0].checked){
+            cSex = $("[name=cSex]")[0].value;
+        } else if ($("[name=cSex]")[1].checked){
+            cSex = $("[name=cSex]")[1].value;
+        } else if ($("[name=cSex]")[2].checked){
+            cSex = $("[name=cSex]")[2].value;
+        }
         var cAge = $("#cAge").val();
         var cTel = $("#cTel").val();
         var cWx = $("#cWx").val();
@@ -446,8 +469,8 @@
             }
             //验证报名费格式
             if (clEntryFee != '') {
-                if (isNaN(clEntryFee) || cAge <= 0) {
-                    layer.msg("报名费必须是大于0的数值");
+                if (isNaN(clEntryFee) || clEntryFee < 0) {
+                    layer.msg("报名费必须是大于等于0的数值");
                     verify = false;
                     return;
                 }
@@ -509,7 +532,7 @@
             $("#sHId").val(hId);
             $("#sHName").val(hName);
             //判断是否可抵扣报名费并隐藏或显示
-            if (clEntryFee != ""){
+            if (clEntryFee != "" && clEntryFee > 0){
                 $("#isDeduction").val("1");
                 $("#sClEntryFee").show();
             } else {
@@ -525,7 +548,14 @@
     function aSave() {
         //获取客户信息
         var cName = $("#cName").val();
-        var cSex = $("[name=cSex]").val();
+        var cSex = "";
+        if ($("[name=cSex]")[0].checked){
+            cSex = $("[name=cSex]")[0].value;
+        } else if ($("[name=cSex]")[1].checked){
+            cSex = $("[name=cSex]")[1].value;
+        } else if ($("[name=cSex]")[2].checked){
+            cSex = $("[name=cSex]")[2].value;
+        }
         var cAge = $("#cAge").val();
         var cTel = $("#cTel").val();
         var cWx = $("#cWx").val();
@@ -590,7 +620,14 @@
     function sSave() {
         //获取客户信息
         var cName = $("#cName").val();
-        var cSex = $("[name=cSex]").val();
+        var cSex = "";
+        if ($("[name=cSex]")[0].checked){
+            cSex = $("[name=cSex]")[0].value;
+        } else if ($("[name=cSex]")[1].checked){
+            cSex = $("[name=cSex]")[1].value;
+        } else if ($("[name=cSex]")[2].checked){
+            cSex = $("[name=cSex]")[2].value;
+        }
         var cAge = $("#cAge").val();
         var cTel = $("#cTel").val();
         var cWx = $("#cWx").val();
@@ -616,8 +653,9 @@
         }
         var sSum = $("#sSum").val();
         var sPaysum = $("#sPaysum").val();
+        var sTime = $("#sTime").val();
         var sRemark = $("#sRemark").val();
-        if (sSum != '' && sSum.trim() != '') {
+        if (sSum != '' && sSum.trim() != '' && sTime != '') {
             //声明格式是否正确
             var verify = true;
             //验证成交金额
@@ -657,6 +695,7 @@
                         ,isDeduction: isDeduction
                         ,sSum: sSum.trim()
                         ,sPaysum: sPaysum.trim()
+                        ,sTime: sTime
                         ,sRemark: sRemark
                     },function (data) {
                         if (data.code != 200){

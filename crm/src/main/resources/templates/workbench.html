@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>工作台</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}" />
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/css/layui.min.css" />
     <style>
         .number{color: #01AAED; font-size: 30px;}
         .indexFont{font-size: 20px;}
@@ -315,9 +315,9 @@
     </div>
 
 </body>
-<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
 <!--统计图表JS-->
-<script src="//cdn.bootcdn.net/ajax/libs/echarts/4.9.0-rc.1/echarts.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/echarts/5.0.0/echarts.min.js"></script>
 <script type="text/javascript" th:src="@{/js/ld_vue.js}"></script>
 <script type="text/javascript" th:src="@{/js/ld2_vue.js}"></script>
 <script>
@@ -494,7 +494,9 @@
                 var sSum = $(body).find("#sSum").val();
                 var sPaysum = $(body).find("#sPaysum").val();
                 var sRemark = $(body).find("#sRemark").val();
-                if (sAId != '' && sHId != '' && sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '') {
+                var sTime = $(body).find("#sTime").val();
+                var entryFee = $(body).find("#entryFee").val();
+                if (sAId != '' && sHId != '' && sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '' && sTime != '') {
                     //声明格式是否正确
                     var verify = true;
                     //验证成交金额
@@ -515,6 +517,10 @@
                             return;
                         }
                     }
+                    //判断是否抵扣报名费
+                    if (isDeduction == 1 || isDeduction == '1'){
+                        sSum = eval(sSum + "+" + entryFee);
+                    }
                     if(verify) {
                         $.post("/success/saveSuccess", {
                                 uId: uId,
@@ -530,7 +536,8 @@
                                 isDeduction: isDeduction,
                                 sSum: sSum.trim(),
                                 sPaysum: sPaysum.trim(),
-                                sRemark: sRemark
+                                sRemark: sRemark,
+                                sTime: sTime
                             },
                             function (data) {
                                 if (data.code != 200){
@@ -573,19 +580,18 @@
                 var sPaysum = $(body).find("#sPaysum").val();
                 var refundsSum = $(body).find("#refundsSum").val();
                 var refundsPaysum = $(body).find("#refundsPaysum").val();
+                var payTime = $(body).find("#payTime").val();
                 var payRemark = $(body).find("#payRemark").val();
                 var payTypeId = $(body).find("#payTypeId").val();
                 //声明格式是否正确
                 var verify = true;
                 //验证成交退款金额
-                if (refundsSum != '' && refundsSum.trim() != '') {
+                if (refundsSum != '' && refundsSum.trim() != '' && payTime != '') {
                     if (!isNaN(refundsSum) && refundsSum >= 0) {
                         if (parseFloat(sSum) < parseFloat(refundsSum)) {
                             layer.msg("成交退款金额不能大于成交金额，成交金额为" + sSum);
                             verify = false;
                             return;
-                        } else {
-                            refundsSum = eval(sSum + "-" + refundsSum);
                         }
                     } else {
                         layer.msg('成交退款金额必须是大于零的数值');
@@ -597,8 +603,6 @@
                     verify = false;
                     return;
                 }
-                //退款金额
-                var paySum;
                 //验证支付退款金额
                 if (refundsPaysum != '' && refundsPaysum.trim() != '') {
                     if (!isNaN(refundsPaysum) && refundsPaysum >= 0) {
@@ -606,9 +610,6 @@
                             layer.msg("支付退款金额不能大于支付金额，支付金额为" + sPaysum);
                             verify = false;
                             return;
-                        } else {
-                            paySum = refundsPaysum;
-                            refundsPaysum = eval(sPaysum + "-" + refundsPaysum);
                         }
                     } else {
                         layer.msg('支付退款金额必须是大于等于零的数值');
@@ -623,8 +624,8 @@
                 if (verify){
                     $.get("/success/refundMoney",
                         {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, refundsSum: refundsSum,
-                            refundsPaysum:refundsPaysum, payRemark:payRemark,
-                            payTypeId: payTypeId, paySum:paySum},
+                            refundsPaysum:refundsPaysum, sSum:sSum, sPaysum:sPaysum,
+                            payRemark:payRemark, payTypeId: payTypeId, payTime:payTime},
                         function (data) {
                             if (data.code != 200){
                                 layer.msg(data.msg);

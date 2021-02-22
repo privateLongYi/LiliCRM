@@ -29,7 +29,7 @@ public class Payrecord implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    private Integer paySum;
+    private Double paySum;
 
     /**
      *
@@ -39,6 +39,8 @@ public class Payrecord implements Serializable {
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
     private Timestamp payTime;
+
+    private Timestamp payAddTime;
 
     /**
      *
@@ -140,7 +142,7 @@ public class Payrecord implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public Integer getPaySum() {
+    public Double getPaySum() {
         return paySum;
     }
 
@@ -152,7 +154,7 @@ public class Payrecord implements Serializable {
      *
      * @mbg.generated Sat Aug 22 10:46:35 CST 2020
      */
-    public void setPaySum(Integer paySum) {
+    public void setPaySum(Double paySum) {
         this.paySum = paySum;
     }
 
@@ -178,6 +180,14 @@ public class Payrecord implements Serializable {
      */
     public void setPayTime(Timestamp payTime) {
         this.payTime = payTime;
+    }
+
+    public Timestamp getPayAddTime() {
+        return payAddTime;
+    }
+
+    public void setPayAddTime(Timestamp payAddTime) {
+        this.payAddTime = payAddTime;
     }
 
     /**
@@ -252,7 +262,7 @@ public class Payrecord implements Serializable {
         this.hName = hName;
     }
 
-    public Payrecord(Integer payId, Integer paySId, Integer paySum, Timestamp payTime, String payRemark, Integer payTypeId) {
+    public Payrecord(Integer payId, Integer paySId, Double paySum, Timestamp payTime, String payRemark, Integer payTypeId) {
         this.payId = payId;
         this.paySId = paySId;
         this.paySum = paySum;

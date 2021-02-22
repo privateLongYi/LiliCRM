@@ -401,16 +401,15 @@
         AND cl.cl_u_id = #{uId}
       </if>
       <if test="beginTime != null and endTime != null">
-        AND <![CDATA[  cl.cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-        AND <![CDATA[  cl.cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+        AND <![CDATA[  c.c_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+        AND <![CDATA[  c.c_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
       </if>
     </where>
   </select>
 
   <!--根据用户编号和起始时间查询预约-->
   <select id="queryAByTime" resultMap="BaseResultMap">
-    SELECT c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hName, a.a_time AS aTime
-    FROM appointment a
+    SELECT c.c_name AS cName, c.c_tel AS cTel, h.h_name AS hName, a.a_time AS aTime FROM appointment a
     INNER JOIN clue cl ON cl.cl_id=a.a_cl_id
     INNER JOIN customer c ON c.c_id=cl.cl_c_id
     INNER JOIN hospital h ON h.h_id=a.a_h_id
@@ -419,8 +418,8 @@
         cl.cl_u_id = #{uId}
       </if>
       AND cl.cl_invalid = 0
-      AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-      AND <![CDATA[  a.a_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      AND <![CDATA[  a.a_create_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  a.a_create_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
     </where>
     limit #{page}, #{limit}
   </select>
@@ -436,8 +435,8 @@
         cl.cl_u_id = #{uId}
       </if>
       AND cl.cl_invalid = 0
-      AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-      AND <![CDATA[  a.a_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      AND <![CDATA[  a.a_create_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  a.a_create_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
     </where>
   </select>
 
@@ -474,8 +473,8 @@
       </if>
       AND cl.cl_invalid = 0
       AND (cl.cl_type_id = 6 OR cl.cl_type_id = 7)
-      AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-      AND <![CDATA[  a.a_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      AND <![CDATA[  cl.cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  cl.cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
     </where>
   </select>
 
@@ -492,13 +491,14 @@
   <!--根据用户编号和起始时间查询未成交客户数量-->
   <select id="getTotalFCByTime" resultType="Integer">
     SELECT COUNT(*) FROM clue cl
+    LEFT JOIN appointment a ON a.a_cl_id=cl.cl_id
     <where>
       <if test="rName == '销售员'">
         cl.cl_u_id = #{uId}
       </if>
       AND cl.cl_invalid = 0
-      AND <![CDATA[  cl.cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-      AND <![CDATA[  cl.cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      AND <![CDATA[  a.a_create_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  a.a_create_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
       AND cl.cl_type_id = 6
     </where>
   </select>
@@ -506,13 +506,14 @@
   <!--根据用户编号和起始时间查询成交客户数量-->
   <select id="getTotalSCByTime" resultType="Integer">
     SELECT COUNT(*) FROM clue cl
+    LEFT JOIN appointment a ON a.a_cl_id=cl.cl_id
     <where>
       <if test="rName == '销售员'">
         cl.cl_u_id = #{uId}
       </if>
       AND cl.cl_invalid = 0
-      AND <![CDATA[  cl.cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-      AND <![CDATA[  cl.cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      AND <![CDATA[  a.a_create_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  a.a_create_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
       AND cl.cl_type_id = 7
     </where>
   </select>

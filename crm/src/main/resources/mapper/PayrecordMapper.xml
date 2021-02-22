@@ -10,8 +10,9 @@
     -->
     <id column="pay_id" jdbcType="INTEGER" property="payId" />
     <result column="pay_s_id" jdbcType="INTEGER" property="paySId" />
-    <result column="pay_sum" jdbcType="INTEGER" property="paySum" />
+    <result column="pay_sum" jdbcType="DOUBLE" property="paySum" />
     <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="pay_add_time" jdbcType="TIMESTAMP" property="payAddTime" />
     <result column="pay_remark" jdbcType="VARCHAR" property="payRemark" />
     <result column="pay_type_id" jdbcType="INTEGER" property="payTypeId" />
   </resultMap>
@@ -34,18 +35,18 @@
 
   <!--新增支付记录-->
   <insert id="savePayrecord">
-    INSERT INTO payrecord(pay_s_id, pay_sum, pay_time, pay_remark, pay_type_id)
-    VALUES (#{paySId}, #{paySum}, now(), #{payRemark}, #{payTypeId})
+    INSERT INTO payrecord(pay_s_id, pay_sum, pay_time, pay_add_time, pay_remark, pay_type_id)
+    VALUES (#{paySId}, #{paySum}, #{payTime}, now(), #{payRemark}, #{payTypeId})
   </insert>
 
   <!--根据成交客户编号查询支付总金额-->
-  <select id="queryPPaysumBySId" resultType="Integer">
+  <select id="queryPPaysumBySId" resultType="Double">
     SELECT SUM(pay_sum) FROM payrecord WHERE pay_s_id = #{sId}
     AND (pay_type_id = 1 OR pay_type_id = 2)
   </select>
 
   <!--根据成交客户编号查询退款总金额-->
-  <select id="queryRefundBySId" resultType="Integer">
+  <select id="queryRefundBySId" resultType="Double">
     SELECT SUM(pay_sum) FROM payrecord WHERE pay_s_id = #{sId} AND pay_type_id = 3
   </select>
 

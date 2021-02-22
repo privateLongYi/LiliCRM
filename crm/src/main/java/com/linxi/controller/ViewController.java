@@ -1,7 +1,9 @@
 package com.linxi.controller;
 
 import com.linxi.anno.NoRepeatSubmit;
+import com.linxi.entity.Appointment;
 import com.linxi.entity.Follow;
+import com.linxi.service.IAppointmentService;
 import com.linxi.service.IFollowService;
 import com.linxi.service.IFtypeService;
 import io.swagger.annotations.Api;
@@ -23,6 +25,9 @@ public class ViewController {
 
     @Autowired
     private IFtypeService iFtypeService;
+
+    @Autowired
+    private IAppointmentService iAppointmentService;
 
     @GetMapping("workbench")
     @ApiOperation(value = "工作台")
@@ -161,6 +166,7 @@ public class ViewController {
         map.addAttribute("hId", hId);
         map.addAttribute("hName", hName);
         map.addAttribute("reUId", reUId);
+        map.addAttribute("entryFee", clEntryFee);
         if (clEntryFee == null || clEntryFee.equals("null") || clEntryFee.equals("")){
             map.addAttribute("isDeduction", 0);
         } else if ((clEntryFee == null || !clEntryFee.equals("null")) && (clEntryFee.contains("已抵扣") || clEntryFee.contains("已退还"))){
@@ -319,11 +325,24 @@ public class ViewController {
     @ApiOperation(value = "新增预约客户")
     public String appointmentsave(@ApiParam(name = "clId", value = "线索编号", required = true) Integer clId,
                                   @ApiParam(name = "cName", value = "客户名称", required = true) String cName,
-                                  @ApiParam(name = "atType", value = "预约类型", required = true) String atType,
+                                  @ApiParam(name = "atType", value = "预约类型", required = false) String atType,
                                   ModelMap map){
         map.addAttribute("clId", clId);
         map.addAttribute("cName", cName);
-        map.addAttribute("atType", atType);
+        System.out.println(atType);
+        System.out.println(atType == null);
+        System.out.println(atType == "");
+        if (atType == null || atType == ""){
+            //根据线索编号查询预约
+            List<Appointment> appointments = iAppointmentService.queryAByAClId(clId);
+            if (appointments.size() == 0){
+                map.addAttribute("atType", "初次预约");
+            } else {
+                map.addAttribute("atType", "普通预约");
+            }
+        } else {
+            map.addAttribute("atType", atType);
+        }
         return "appointment/appointmentsave";
     }
 

@@ -68,13 +68,13 @@ public class SuccessService implements ISuccessService{
     }
 
     @Override
-    public void editMoneyBySId(Integer sId, Integer sSum, Integer sPaySum) {
+    public void editMoneyBySId(Integer sId, Double sSum, Double sPaySum) {
         successMapper.editMoneyBySId(sId, sSum, sPaySum);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer queryTotalMoneyByClId(Integer clId, Integer type) {
+    public Double queryTotalMoneyByClId(Integer clId, Integer type) {
         return successMapper.queryTotalMoneyByClId(clId, type);
     }
 
@@ -104,7 +104,7 @@ public class SuccessService implements ISuccessService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer queryMoneyByTime(Integer uId, String rName, String beginTime, String endTime, Integer type) {
+    public Double queryMoneyByTime(Integer uId, String rName, String beginTime, String endTime, Integer type) {
         return successMapper.queryMoneyByTime(uId, rName, beginTime, endTime, type);
     }
 
@@ -134,7 +134,7 @@ public class SuccessService implements ISuccessService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer querySSumBySAId(Integer sAId) {
+    public Double querySSumBySAId(Integer sAId) {
         return successMapper.querySSumBySAId(sAId);
     }
 
@@ -146,7 +146,7 @@ public class SuccessService implements ISuccessService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer queryMoneyByScreen(Integer uId, String rName, String cName, String cTel, Integer sHId, Integer queryUId, String beginTime, String endTime, Integer type) {
+    public Double queryMoneyByScreen(Integer uId, String rName, String cName, String cTel, Integer sHId, Integer queryUId, String beginTime, String endTime, Integer type) {
         return successMapper.queryMoneyByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, type);
     }
 
@@ -158,7 +158,7 @@ public class SuccessService implements ISuccessService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer queryRefundByClId(Integer clId) {
+    public Double queryRefundByClId(Integer clId) {
         return successMapper.queryRefundByClId(clId);
     }
 

@@ -11,14 +11,14 @@ function appoint() {
     var cName = $(window.parent.document).find("[name=cName]")[0].innerText;
     //客户状态
     var cType = $(window.parent.document).find("#cType").text();
-    if (cType == "未成交" || cType == "成交"){
-        layer.msg("该客户不可预约"+cType);
+    if (cType == "待分配"){
+        layer.msg("该客户尚未分配，请先分配！");
     } else {
         //弹出预约页面
         layer.open({
             type: 2, //层类型，iframe
             title: '新增预约客户',
-            content: ['/appointmentsave?clId='+clId+'&cName='+cName+'&atType=普通预约'],
+            content: ['/appointmentsave?clId='+clId+'&cName='+cName],
             area: ['450px', '450px'],
             resize: false,
             btn: '确定',
@@ -32,11 +32,15 @@ function appoint() {
                 if (aTime != '') {
                     $.post("/appointment/saveAppointment", {uId:uId, uName:uName, aClId:aClId, aTime:aTime,
                             aHId:aHId, atType:atType},
-                        function (obj) {
-                            layer.msg(obj.msg, {time: 500}, function () {
-                                layer.close(index);
-                                goDetail(cId, clId, clUId);
-                            });
+                        function (data) {
+                            if (data.code == 200){
+                                layer.msg(data.msg, {time: 500}, function () {
+                                    layer.close(index);
+                                    goDetail(cId, clId, clUId);
+                                });
+                            } else {
+                                layer.msg(data.msg);
+                            }
                         }
                     );
                 } else {
@@ -68,8 +72,10 @@ function success() {
     var clEntryFee = $(window.parent.document).find("#clEntryFee").text();
     //预约编号
     var sAId = $(window.parent.document).find("#sAId").val();
-    if (sAId == ""){
-        layer.msg("未预约的客户不能成交，请先预约！")
+    //客户状态
+    var cType = $(window.parent.document).find("#cType").text();
+    if (cType == "待分配" || cType == "待联系" || cType == "待预约"){
+        layer.msg("该客户尚未分配，请先分配！");
     } else {
         //弹出成交页面
         layer.open({
@@ -83,9 +89,6 @@ function success() {
             btn1: function (index, layero) {
                 var body = layer.getChildFrame('body', index);
                 //获取值
-                var cId = $(body).find("#cId").val();
-                var cName = $(body).find("#cName").val();
-                var clId = $(body).find("#clId").val();
                 var sAId = $(body).find("#sAId").val();
                 var sHId = $(body).find("#sHId").val();
                 var sMessage = $(body).find("#sMessage").val();
@@ -95,6 +98,7 @@ function success() {
                 }
                 var sSum = $(body).find("#sSum").val();
                 var sPaysum = $(body).find("#sPaysum").val();
+                var sTime = $(body).find("#sTime").val();
                 var sRemark = $(body).find("#sRemark").val();
                 if (sSum != '' && sSum.trim() != '') {
                     //声明格式是否正确
@@ -124,13 +128,18 @@ function success() {
                                 isDeduction: isDeduction,
                                 sSum: sSum.trim(),
                                 sPaysum: sPaysum.trim(),
+                                sTime: sTime,
                                 sRemark: sRemark
                             },
-                            function (obj) {
-                                layer.msg(obj.msg, {time: 500}, function () {
-                                    layer.close(index);
-                                    goDetail(cId, clId, clUId);
-                                });
+                            function (data) {
+                                if (data.code == 200){
+                                    layer.msg(data.msg, {time: 500}, function () {
+                                        layer.close(index);
+                                        goDetail(cId, clId, clUId);
+                                    });
+                                } else {
+                                    layer.msg(data.msg);
+                                }
                             }
                         );
                     }
@@ -150,11 +159,13 @@ function refund() {
     //客户编号
     var cId = $(window.parent.document).find("#cId").val();
     //客户编号
-    var cName = $(window.parent.document).find("#cName").val();
+    var cName = $(window.parent.document).find("[name=cName]")[0].innerText;
     //线索编号
     var clId = $(window.parent.document).find("#clId").val();
     //负责人编号
     var clUId = $(window.parent.document).find("#clUId").val();
+    //预约编号
+    var sAId = $(window.parent.document).find("#sAId").val();
     //报名费
     var clEntryFee = $(window.parent.document).find("#clEntryFee").text();
     if (clEntryFee == "null" || clEntryFee == "" || clEntryFee.indexOf("已抵扣")!=-1 || clEntryFee.indexOf("已退还")!=-1){
@@ -162,12 +173,16 @@ function refund() {
     } else {
         layer.confirm('确定退报名费吗？', {icon: 3, title:'提示'}, function(index){
             $.get("/clue/refundClEntryFee", {uId: uId, uName: uName, cId: cId,
-                    cName: cName, clId: clId, clEntryFee: clEntryFee},
-                function (obj) {
-                    layer.msg(obj.msg, {time: 500}, function () {
-                        layer.close(index);
-                        goDetail(cId, clId, clUId);
-                    });
+                    cName: cName, clId: clId, sAId: sAId, clEntryFee: clEntryFee},
+                function (data) {
+                    if (data.code == 200){
+                        layer.msg(data.msg, {time: 500}, function () {
+                            layer.close(index);
+                            goDetail(cId, clId, clUId);
+                        });
+                    } else {
+                        layer.msg(data.msg);
+                    }
                 }
             );
         });
@@ -427,6 +442,7 @@ function goDetail(cId, clId, clUId){
                     var sHId = $(body).find("#sHId").val();
                     var sMessage = $(body).find("#sMessage").val();
                     var sSum = $(body).find("#sSum").val();
+                    var sTime = $(body).find("#sTime").val();
                     var sRemark = $(body).find("#sRemark").val();
                     if (sSum != '' && sSum.trim() != '') {
                         //声明格式是否正确
@@ -440,14 +456,18 @@ function goDetail(cId, clId, clUId){
                             $.post("/success/editSBySId",
                                 {
                                     uId: uId, sId:sId, cId:cId, sAId: sAId, sHId: sHId,
-                                    sMessage: sMessage, sSum: sSum,
+                                    sMessage: sMessage, sSum: sSum, sTime:sTime,
                                     sRemark: sRemark, uName: uName, cName: cName
                                 },
-                                function (obj) {
-                                    parent.layer.msg(obj.msg, {time: 500}, function () {
-                                        parent.layer.close(index);
-                                        goDetail(cId, clId, clUId);
-                                    });
+                                function (data) {
+                                    if (data.code == 200){
+                                        parent.layer.msg(data.msg, {time: 500}, function () {
+                                            parent.layer.close(index);
+                                            goDetail(cId, clId, clUId);
+                                        });
+                                    } else {
+                                        layer.msg(data.msg);
+                                    }
                                 }
                             );
                         }
@@ -483,18 +503,23 @@ function goDetail(cId, clId, clUId){
                         var paySum = $(body).find("#paySum").val();
                         var payRemark = $(body).find("#payRemark").val();
                         var payTypeId = $(body).find("#payTypeId").val();
+                        var payTime = $(body).find("#payTime").val();
                         if (paySum != '' && paySum.trim() != '') {
                             if (!isNaN(paySum) && paySum >= 0){
                                 if (parseFloat(wk) < parseFloat(paySum)){
                                     parent.layer.msg("支付金额不能大于尾款，尾款为"+wk);
                                 } else {
                                     $.post("/payrecord/savePayrecord",
-                                        {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, paySum: paySum, payRemark:payRemark, payTypeId: payTypeId},
-                                        function (obj) {
-                                            parent.layer.msg(obj.msg, {time: 500}, function () {
-                                                parent.layer.close(index);
-                                                goDetail(cId, clId, clUId);
-                                            });
+                                        {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, paySum: paySum, payRemark:payRemark, payTypeId: payTypeId, payTime:payTime},
+                                        function (data) {
+                                            if (data.code == 200){
+                                                parent.layer.msg(data.msg, {time: 500}, function () {
+                                                    parent.layer.close(index);
+                                                    goDetail(cId, clId, clUId);
+                                                });
+                                            } else {
+                                                layer.msg(data.msg);
+                                            }
                                         }
                                     );
                                 }
@@ -531,6 +556,7 @@ function goDetail(cId, clId, clUId){
                     var paySId = $(body).find("#paySId").val();
                     var refundsSum = $(body).find("#refundsSum").val();
                     var refundsPaysum = $(body).find("#refundsPaysum").val();
+                    var payTime = $(body).find("#payTime").val();
                     var payRemark = $(body).find("#payRemark").val();
                     var payTypeId = $(body).find("#payTypeId").val();
                     //声明格式是否正确
@@ -542,8 +568,6 @@ function goDetail(cId, clId, clUId){
                                 parent.layer.msg("成交退款金额不能大于成交金额，成交金额为" + sSum);
                                 verify = false;
                                 return;
-                            } else {
-                                refundsSum = eval(sSum + "-" + refundsSum);
                             }
                         } else {
                             parent.layer.msg('成交退款金额必须是大于零的数值');
@@ -555,8 +579,6 @@ function goDetail(cId, clId, clUId){
                         verify = false;
                         return;
                     }
-                    //退款金额
-                    var paySum;
                     //验证支付退款金额
                     if (refundsPaysum != '' && refundsPaysum.trim() != '') {
                         if (!isNaN(refundsPaysum) && refundsPaysum >= 0) {
@@ -564,9 +586,6 @@ function goDetail(cId, clId, clUId){
                                 parent.layer.msg("支付退款金额不能大于支付金额，支付金额为" + sPaysum);
                                 verify = false;
                                 return;
-                            } else {
-                                paySum = refundsPaysum;
-                                refundsPaysum = eval(sPaysum + "-" + refundsPaysum);
                             }
                         } else {
                             parent.layer.msg('支付退款金额必须是大于等于零的数值');
@@ -580,14 +599,17 @@ function goDetail(cId, clId, clUId){
                     }
                     if (verify){
                         $.get("/success/refundMoney",
-                            {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, refundsSum: refundsSum,
-                                refundsPaysum:refundsPaysum, payRemark:payRemark,
-                                payTypeId: payTypeId, paySum:paySum},
-                            function (obj) {
-                                parent.layer.msg(obj.msg, {time: 500}, function () {
-                                    parent.layer.close(index);
-                                    goDetail(cId, clId, clUId);
-                                });
+                            {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, sSum:sSum, sPaysum:sPaysum, refundsSum: refundsSum,
+                                refundsPaysum:refundsPaysum, payTime:payTime, payRemark:payRemark, payTypeId: payTypeId},
+                            function (data) {
+                                if (data.code == 200){
+                                    parent.layer.msg(data.msg, {time: 500}, function () {
+                                        parent.layer.close(index);
+                                        goDetail(cId, clId, clUId);
+                                    });
+                                } else {
+                                    layer.msg(data.msg);
+                                }
                             }
                         );
                     }
@@ -621,6 +643,7 @@ function goDetail(cId, clId, clUId){
                     }
                     var sSum = $(body).find("#sSum").val();
                     var sPaysum = $(body).find("#sPaysum").val();
+                    var sTime = $(body).find("#sTime").val();
                     var sRemark = $(body).find("#sRemark").val();
                     if (sSum != '' && sSum.trim() != '') {
                         //声明格式是否正确
@@ -650,13 +673,18 @@ function goDetail(cId, clId, clUId){
                                     isDeduction: isDeduction,
                                     sSum: sSum.trim(),
                                     sPaysum: sPaysum.trim(),
+                                    sTime: sTime,
                                     sRemark: sRemark
                                 },
-                                function (obj) {
-                                    parent.layer.msg(obj.msg, {time: 500}, function () {
-                                        parent.layer.close(index);
-                                        goDetail(cId, clId, clUId);
-                                    });
+                                function (data) {
+                                    if (data.code == 200){
+                                        parent.layer.msg(data.msg, {time: 500}, function () {
+                                            parent.layer.close(index);
+                                            goDetail(cId, clId, clUId);
+                                        });
+                                    } else {
+                                        layer.msg(data.msg);
+                                    }
                                 }
                             );
                         }

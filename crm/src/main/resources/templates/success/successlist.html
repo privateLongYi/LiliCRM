@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>成交客户列表</title>
-		<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/css/layui.min.css" />
 		<style>
 			.layui-table-fixed .layui-table-body {
 				height: auto!important;
@@ -111,8 +111,7 @@
 			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="success">成交</a>
 		</script>
 
-		<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
-
+		<script src="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
 		<script th:src="@{/js/detail.js}"></script>
 
 		<script>
@@ -419,7 +418,8 @@
                             var sMessage = $(body).find("#sMessage").val();
                             var sSum = $(body).find("#sSum").val();
                             var sRemark = $(body).find("#sRemark").val();
-                            if (sSum != '' && sSum.trim() != '') {
+                            var sTime = $(body).find("#sTime").val();
+                            if (sSum != '' && sSum.trim() != '' && sTime != '') {
                                 //声明格式是否正确
                                 var verify = true;
                                 if (isNaN(sSum) || sSum <= 0 || parseFloat(sSum) < parseFloat(data.sPaysum)) {
@@ -431,7 +431,7 @@
                                     $.post("/success/editSBySId",
                                         {
                                             uId: uId, sId:sId, cId:cId, sAId: sAId, sHId: sHId,
-                                            sMessage: sMessage, sSum: sSum,
+                                            sMessage: sMessage, sSum: sSum, sTime:sTime,
 											sRemark: sRemark, uName: uName, cName: cName
                                         },
                                         function (data) {
@@ -476,15 +476,17 @@
                                 var paySId = $(body).find("#paySId").val();
                                 var wk = $(body).find("#wk").val();
                                 var paySum = $(body).find("#paySum").val();
+                                var payTime = $(body).find("#payTime").val();
                                 var payRemark = $(body).find("#payRemark").val();
                                 var payTypeId = $(body).find("#payTypeId").val();
-                                if (paySum != '' && paySum.trim() != '') {
+                                if (paySum != '' && paySum.trim() != '' && payTime != '') {
                                     if (!isNaN(paySum) && paySum >= 0){
                                         if (parseFloat(wk) < parseFloat(paySum)){
                                             layer.msg("支付金额不能大于尾款，尾款为"+wk);
                                         } else {
                                             $.post("/payrecord/savePayrecord",
-                                                {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, paySum: paySum, payRemark:payRemark, payTypeId: payTypeId},
+                                                {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId,
+													paySum: paySum, payTime: payTime, payRemark:payRemark, payTypeId: payTypeId},
                                                 function (data) {
                                                     if (data.code != 200){
                                                         layer.msg(data.msg);
@@ -501,7 +503,7 @@
                                         layer.msg('支付金额必须是大于等于零的数值');
 									}
                                 } else {
-                                    layer.msg('请填写支付金额');
+                                    layer.msg('请填写带星号的必填项');
                                 }
                             },
                             cancel: function (index, layero) {
@@ -530,6 +532,7 @@
                             var paySId = $(body).find("#paySId").val();
                             var refundsSum = $(body).find("#refundsSum").val();
                             var refundsPaysum = $(body).find("#refundsPaysum").val();
+                            var payTime = $(body).find("#payTime").val();
                             var payRemark = $(body).find("#payRemark").val();
                             var payTypeId = $(body).find("#payTypeId").val();
                             //声明格式是否正确
@@ -541,8 +544,6 @@
                                         layer.msg("成交退款金额不能大于成交金额，成交金额为" + sSum);
                                         verify = false;
                                         return;
-                                    } else {
-                                        refundsSum = eval(sSum + "-" + refundsSum);
                                     }
                                 } else {
                                     layer.msg('成交退款金额必须是大于零的数值');
@@ -554,8 +555,6 @@
                                 verify = false;
                                 return;
                             }
-                            //退款金额
-							var paySum;
                             //验证支付退款金额
                             if (refundsPaysum != '' && refundsPaysum.trim() != '') {
                                 if (!isNaN(refundsPaysum) && refundsPaysum >= 0) {
@@ -563,9 +562,6 @@
                                         layer.msg("支付退款金额不能大于支付金额，支付金额为" + sPaysum);
                                         verify = false;
                                         return;
-                                    } else {
-                                        paySum = refundsPaysum;
-                                        refundsPaysum = eval(sPaysum + "-" + refundsPaysum);
                                     }
                                 } else {
                                     layer.msg('支付退款金额必须是大于等于零的数值');
@@ -577,11 +573,16 @@
                                 verify = false;
                                 return;
                             }
+                            //判断时间是否填写
+							if (payTime == ''){
+                                layer.msg('退款时间不能为空');
+                                verify = false;
+                                return;
+							}
                             if (verify){
                                 $.get("/success/refundMoney",
-                                    {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, refundsSum: refundsSum,
-                                        refundsPaysum:refundsPaysum, payRemark:payRemark,
-										payTypeId: payTypeId, paySum:paySum},
+                                    {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, sSum:sSum, sPaysum:sPaysum, refundsSum: refundsSum,
+                                        refundsPaysum:refundsPaysum, payTime:payTime, payRemark:payRemark, payTypeId: payTypeId},
                                     function (data) {
                                         if (data.code != 200){
                                             layer.msg(data.msg);
@@ -624,8 +625,9 @@
                             }
                             var sSum = $(body).find("#sSum").val();
                             var sPaysum = $(body).find("#sPaysum").val();
+                            var sTime = $(body).find("#sTime").val();
                             var sRemark = $(body).find("#sRemark").val();
-                            if (sSum != '' && sSum.trim() != '') {
+                            if (sSum != '' && sSum.trim() != '' && sTime != '') {
                                 //声明格式是否正确
                                 var verify = true;
                                 //验证成交金额
@@ -640,6 +642,10 @@
                                     verify = false;
                                     return;
                                 }
+                                //判断是否抵扣报名费
+								if (isDeduction == 1 || isDeduction == '1'){
+                                    sSum = eval(sSum + "+" + data.clEntryFee);
+								}
                                 if(verify) {
                                     $.post("/success/saveSuccess", {
                                             uId: uId,
@@ -653,6 +659,7 @@
                                             isDeduction: isDeduction,
                                             sSum: sSum.trim(),
                                             sPaysum: sPaysum.trim(),
+                                            sTime: sTime,
                                             sRemark: sRemark
                                         },
                                         function (data) {

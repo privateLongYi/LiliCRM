@@ -49,4 +49,7 @@ public interface IAppointmentService {
     //根据线索编号查询预约
     Appointment queryAByClId(Integer clId);
 
+    //根据线索编号查询最大的预约编号
+    Integer queryMaxAIdByClId(Integer clId);
+
 }

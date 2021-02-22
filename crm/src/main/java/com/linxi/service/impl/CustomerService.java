@@ -147,7 +147,7 @@ public class CustomerService implements ICustomerService{
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Integer getTotalAByTime(Integer uId, String rName, String beginTime, String endTime) {
-        return customerMapper.getTotalByTime(uId, rName, beginTime, endTime);
+        return customerMapper.getTotalAByTime(uId, rName, beginTime, endTime);
     }
 
     @Override

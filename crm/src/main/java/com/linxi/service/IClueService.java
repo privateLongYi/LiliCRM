@@ -48,4 +48,7 @@ public interface IClueService {
     void editClUIdByClId(@Param("clId") Integer clId,
                          @Param("clUId") Integer clUId);
 
+    //根据客户编号查询有效线索
+    Clue queryValidClByClCId(Integer cId);
+
 }

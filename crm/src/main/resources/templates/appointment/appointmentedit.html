@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>新增预约</title>
-    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/css/layui.min.css" />
 </head>
 <body>
 
@@ -49,64 +49,60 @@
     </form>
 
 </div>
-<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
-<!--<script th:src="@{/layui/layui.js}"></script>-->
+<script src="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
 <script>
-    //加载form、laydate
-    layui.use(['form', 'laydate'], function(){
-        var form = layui.form
-            ,laydate = layui.laydate
-            ,$ = layui.jquery
-            ,layer = layui.layer;
 
-        //获得门诊编号和预约类型编号
-        var hId = $("#hId").val();
-        var atId = $("#atId").val();
+    var form = layui.form
+        ,laydate = layui.laydate
+        ,$ = layui.jquery
+        ,layer = layui.layer;
 
-        ////改变时间格式 yyyy-MM-dd HH:mm:ss.0 改为 yyyy-MM-dd HH:mm:ss
-        var time = $("#time").val();
-        var aTime = time.substring(0, time.length - 2);
-        $("#aTime").val(aTime);
+    //获得门诊编号和预约类型编号
+    var hId = $("#hId").val();
+    var atId = $("#atId").val();
 
-        //获取所有门诊
-        $.get("/hospital/queryHospital", function (res){
-            //定义预约门诊下拉框内容
-            var html = "";
-            $.each(res.data, function (index, item) {
-                if(item.hId == hId){
-                    html += "<option value='" + item.hId + "' selected>" + item.hName + "</option>";
-                }else{
-                    html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
-                }
-            });
-            $("#aHId").append(html);
-            //append后必须重新渲染
-            form.render('select');
-        })
+    ////改变时间格式 yyyy-MM-dd HH:mm:ss.0 改为 yyyy-MM-dd HH:mm:ss
+    var time = $("#time").val();
+    var aTime = time.substring(0, time.length - 2);
+    $("#aTime").val(aTime);
 
-        //获取所有预约类型
-        $.get("/atype/queryAtype", function (res){
-            //定义预约类型下拉框内容
-            var html = "";
-            $.each(res.data, function (index, item) {
-                if(item.atId == atId){
-                    html += "<option value='" + item.atId + "' selected>" + item.atType + "</option>";
-                }else{
-                    html += "<option value='" + item.atId + "'>" + item.atType + "</option>";
-                }
-            });
-            $("#aTypeId").append(html);
-            //append后必须重新渲染
-            form.render('select');
-        })
-
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#aTime' //指定元素
-            ,type: 'datetime' //时间格式
-            ,trigger: 'click' //采用click自动弹出
+    //获取所有门诊
+    $.get("/hospital/queryHospital", function (res){
+        //定义预约门诊下拉框内容
+        var html = "";
+        $.each(res.data, function (index, item) {
+            if(item.hId == hId){
+                html += "<option value='" + item.hId + "' selected>" + item.hName + "</option>";
+            }else{
+                html += "<option value='" + item.hId + "'>" + item.hName + "</option>";
+            }
         });
+        $("#aHId").append(html);
+        //append后必须重新渲染
+        form.render('select');
+    })
 
+    //获取所有预约类型
+    $.get("/atype/queryAtype", function (res){
+        //定义预约类型下拉框内容
+        var html = "";
+        $.each(res.data, function (index, item) {
+            if(item.atId == atId){
+                html += "<option value='" + item.atId + "' selected>" + item.atType + "</option>";
+            }else{
+                html += "<option value='" + item.atId + "'>" + item.atType + "</option>";
+            }
+        });
+        $("#aTypeId").append(html);
+        //append后必须重新渲染
+        form.render('select');
+    })
+
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#aTime' //指定元素
+        ,type: 'datetime' //时间格式
+        ,trigger: 'click' //采用click自动弹出
     });
 
 </script>

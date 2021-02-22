@@ -11,9 +11,10 @@
     <id column="s_id" jdbcType="INTEGER" property="sId" />
     <result column="s_a_id" jdbcType="INTEGER" property="sAId" />
     <result column="s_h_id" jdbcType="INTEGER" property="sHId" />
-    <result column="s_sum" jdbcType="INTEGER" property="sSum" />
-    <result column="s_paysum" jdbcType="INTEGER" property="sPaysum" />
+    <result column="s_sum" jdbcType="DOUBLE" property="sSum" />
+    <result column="s_paysum" jdbcType="DOUBLE" property="sPaysum" />
     <result column="s_time" jdbcType="TIMESTAMP" property="sTime" />
+    <result column="s_add_time" jdbcType="TIMESTAMP" property="sAddTime" />
     <result column="s_message" jdbcType="LONGVARCHAR" property="sMessage" />
     <result column="s_remark" jdbcType="LONGVARCHAR" property="sRemark" />
     <result column="s_whether" jdbcType="INTEGER" property="sWhether" />
@@ -61,13 +62,13 @@
   <!--根据成交客户编号编辑成交客户-->
   <update id="editSBySId">
     UPDATE success SET s_h_id = #{sHId}, s_message = #{sMessage}, s_sum = #{sSum},
-    s_remark = #{sRemark} WHERE s_id = #{sId}
+    s_remark = #{sRemark}, s_time = #{sTime} WHERE s_id = #{sId}
   </update>
 
   <!--新增成交客户-->
   <insert id="saveSuccess" useGeneratedKeys="true" keyProperty="sId">
-    INSERT INTO success(s_a_id, s_h_id, s_message, s_sum, s_paysum, s_remark, s_time, s_whether)
-    VALUES (#{sAId}, #{sHId}, #{sMessage}, #{sSum}, #{sPaysum}, #{sRemark}, now(), #{sWhether})
+    INSERT INTO success(s_a_id, s_h_id, s_message, s_sum, s_paysum, s_remark, s_time, s_add_time, s_whether)
+    VALUES (#{sAId}, #{sHId}, #{sMessage}, #{sSum}, #{sPaysum}, #{sRemark}, #{sTime}, now(), #{sWhether})
   </insert>
 
   <!--根据筛选条件查询成交客户-->
@@ -151,7 +152,7 @@
   </update>
 
   <!--根据线索编号查询成交金额-->
-  <select id="queryTotalMoneyByClId" resultType="Integer">
+  <select id="queryTotalMoneyByClId" resultType="Double">
     SELECT
     <if test="type == 0">
       SUM(s_sum)
@@ -235,7 +236,7 @@
   </select>
 
   <!--根据用户编号和起止时间查询成交总金额/支付总金额-->
-  <select id="queryMoneyByTime" resultType="Integer">
+  <select id="queryMoneyByTime" resultType="Double">
     SELECT
     <if test="type ==0">
       SUM(s.s_sum)
@@ -295,7 +296,7 @@
   </select>
 
   <!--根据预约编号查询成交总金额-->
-  <select id="querySSumBySAId" resultType="Integer">
+  <select id="querySSumBySAId" resultType="Double">
     SELECT SUM(s_sum) FROM success WHERE s_a_id = #{sAId}
   </select>
 
@@ -305,7 +306,7 @@
   </select>
 
   <!--根据筛选条件查询成交金额或支付金额-->
-  <select id="queryMoneyByScreen" resultType="Integer">
+  <select id="queryMoneyByScreen" resultType="Double">
     SELECT
     <if test="type == 0">
       SUM(s_sum)
@@ -376,7 +377,7 @@
   </select>
 
   <!--根据线索编号查询退款总金额-->
-  <select id="queryRefundByClId" resultType="Integer">
+  <select id="queryRefundByClId" resultType="Double">
     SELECT SUM(p.pay_sum) AS refund FROM payrecord p
     LEFT JOIN success s ON s.s_id=p.pay_s_id
     LEFT JOIN appointment a ON a.a_id=s.s_a_id

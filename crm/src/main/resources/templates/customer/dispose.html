@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>待到店处理</title>
-    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/css/layui.min.css" />
 </head>
 <body>
 
@@ -67,14 +67,18 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">本次预约时间</label>
+                <label class="layui-form-label">
+                    <span style="color: red;">*&nbsp;</span>本次预约时间
+                </label>
                 <div class="layui-input-block">
                     <input type="text" id="reTime" readonly placeholder="请输入本次预约时间"
                            autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">改约原因</label>
+                <label class="layui-form-label">
+                    <span style="color: red;">*&nbsp;</span>改约原因
+                </label>
                 <div class="layui-input-block">
                     <textarea class="layui-textarea" id="reCause" autocomplete="off"></textarea>
                 </div>
@@ -115,6 +119,7 @@
                 <label class="layui-form-label">抵扣报名费</label>
                 <div class="layui-input-block">
                     <input type="hidden" id="isDeduction" th:value="${isDeduction}">
+                    <input type="hidden" id="entryFee" th:value="${entryFee}">
                     <input type="radio" name="clEntryFee" value="0" title="否" checked>
                     <input type="radio" name="clEntryFee" value="1" title="是">
                 </div>
@@ -138,6 +143,15 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span style="color: red;">*&nbsp;</span>成交时间
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" id="sTime" readonly
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">备注</label>
                 <div class="layui-input-block">
                     <textarea class="layui-textarea" id="sRemark" autocomplete="off"></textarea>
@@ -153,7 +167,8 @@
     </form>
 
 </div>
-<script src="//cdn.bootcdn.net/ajax/libs/layui/2.4.3/layui.all.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
 
 <script>
 
@@ -171,6 +186,13 @@
     //执行一个laydate实例
     laydate.render({
         elem: '#reTime' //指定元素
+        ,type: 'datetime' //时间格式
+        ,trigger: 'click' //采用click弹出
+    });
+
+    //时间控件
+    laydate.render({
+        elem: '#sTime' //指定元素
         ,type: 'datetime' //时间格式
         ,trigger: 'click' //采用click弹出
     });
@@ -323,7 +345,9 @@
                 isDeduction = $("#isDeduction").val();
             }
             var sRemark = $("#sRemark").val();
-            if (sSum != '' && sSum.trim() != '') {
+            var sTime = $("#sTime").val();
+            var entryFee = $("#entryFee").val();
+            if (sSum != '' && sSum.trim() != '' && sTime != '') {
                 //声明格式是否正确
                 var verify = true;
                 //验证成交金额
@@ -338,6 +362,10 @@
                     verify = false;
                     return;
                 }
+                //判断是否抵扣报名费
+                if (isDeduction == 1 || isDeduction == '1'){
+                    sSum = eval(sSum + "+" + entryFee);
+                }
                 if(verify) {
                     $.post(action, {
                             uId: uId,
@@ -349,9 +377,10 @@
                             sHId: sHId,
                             sMessage: sMessage,
                             isDeduction: isDeduction,
-                            sSum: sSum.trim(),
-                            sPaysum: sPaysum.trim(),
-                            sRemark: sRemark
+                            sSum: sSum,
+                            sPaysum: sPaysum,
+                            sRemark: sRemark,
+                            sTime: sTime
                         },
                         function (data) {
                             if (data.code != 200){

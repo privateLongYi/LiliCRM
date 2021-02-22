@@ -97,4 +97,9 @@
     SELECT MAX(a_id) FROM appointment
   </select>
 
+  <!--根据线索编号查询最大的预约编号-->
+  <select id="queryMaxAIdByClId" resultType="Integer">
+    SELECT MAX(a_id) FROM appointment WHERE a_cl_id = #{clId}
+  </select>
+
 </mapper>

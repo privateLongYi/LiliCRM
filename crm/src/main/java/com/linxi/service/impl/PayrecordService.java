@@ -40,13 +40,13 @@ public class PayrecordService implements IPayrecordService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer queryPPaysumBySId(Integer sId) {
+    public Double queryPPaysumBySId(Integer sId) {
         return payrecordMapper.queryPPaysumBySId(sId);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer queryRefundBySId(Integer sId) {
+    public Double queryRefundBySId(Integer sId) {
         return payrecordMapper.queryRefundBySId(sId);
     }
 

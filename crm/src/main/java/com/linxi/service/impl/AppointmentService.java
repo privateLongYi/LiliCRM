@@ -88,4 +88,11 @@ public class AppointmentService implements IAppointmentService {
     public Appointment queryAByClId(Integer clId) {
         return appointmentMapper.queryAByClId(clId);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Integer queryMaxAIdByClId(Integer clId) {
+        return appointmentMapper.queryMaxAIdByClId(clId);
+    }
+
 }

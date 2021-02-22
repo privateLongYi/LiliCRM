@@ -16,12 +16,12 @@ public class SuccessStatisticsVo {
     /**
      * 成交额
      */
-    private Integer sum;
+    private Double sum;
 
     public SuccessStatisticsVo() {
     }
 
-    public SuccessStatisticsVo(String unit, Integer sum) {
+    public SuccessStatisticsVo(String unit, Double sum) {
         this.unit = unit;
         this.sum = sum;
     }
@@ -34,11 +34,11 @@ public class SuccessStatisticsVo {
         this.unit = unit;
     }
 
-    public Integer getSum() {
+    public Double getSum() {
         return sum;
     }
 
-    public void setSum(Integer sum) {
+    public void setSum(Double sum) {
         this.sum = sum;
     }
 }

@@ -117,94 +117,72 @@ public class ClueController {
         iOperatingService.saveOperating(operating);
 
         //根据客户编号查询线索
-        List<Clue> clues = iClueService.queryClByClCId(cId);
+        Clue clue = iClueService.queryValidClByClCId(cId);
 
-        for (Clue clue : clues){
+        //新增线索
+        Clue cl = new Clue(null, clue.getClCId(), clue.getClProject(), clue.getClPlaceTime(),
+                clue.getClRemark(), clue.getClEntryFee(),
+                clUId, clue.getClSource(), clue.getClMessage(), clue.getClTypeId(), 0);
+        iClueService.saveClue(cl);
 
-            //新增线索
-            Clue cl = new Clue(null, clue.getClCId(), clue.getClProject(), clue.getClPlaceTime(),
-                    clue.getClRemark(), clue.getClEntryFee(),
-                    clUId, clue.getClSource(), clue.getClMessage(), clue.getClTypeId(), 0);
-            iClueService.saveClue(cl);
+        //改变之前的线索为无效
+        iClueService.editInvalidByClId(clue.getClId());
 
-            //改变之前的线索为无效
-            iClueService.editInvalidByClId(clue.getClId());
+        //根据线索编号查询改约
+        List<Reroute> reroutes = iRerouteService.queryReByReClId(clue.getClId());
+        for (Reroute reroute : reroutes){
+            //新增改约记录
+            Reroute re = new Reroute(cl.getClId(), reroute.getReHId(), reroute.getReLastTime(),
+                    reroute.getReTime(), reroute.getReCause(), reroute.getReUId());
+            iRerouteService.saveReroute(re);
+        }
 
-            //根据线索编号查询改约
-            List<Reroute> reroutes = iRerouteService.queryReByReClId(clue.getClId());
-            for (Reroute reroute : reroutes){
-                //新增改约记录
-                Reroute re = new Reroute(cl.getClId(), reroute.getReHId(), reroute.getReLastTime(),
-                        reroute.getReTime(), reroute.getReCause(), reroute.getReUId());
-                iRerouteService.saveReroute(re);
+        //根据线索编号查询跟进
+        List<Follow> follows = iFollowService.queryFByFClId(clue.getClId());
+        for (Follow follow : follows){
+            //新增跟进记录
+            Follow f = new Follow(null, cl.getClId(), follow.getfTypeId(),
+                    follow.getfTime(), follow.getfContent(), follow.getfUId());
+            iFollowService.saveFollow(f);
+        }
+
+        //根据线索编号查询预约
+        List<Appointment> appointments = iAppointmentService.queryAByAClId(clue.getClId());
+        for (Appointment appointment : appointments){
+
+            //新增预约记录
+            Appointment a = new Appointment(null, cl.getClId(), appointment.getaTime(),
+                    appointment.getaHId(), appointment.getaTypeId(),
+                    appointment.getaStatus(), appointment.getaCreateTime());
+            iAppointmentService.saveAppointment(a);
+
+            //根据预约编号查询未成交
+            List<Fail> fails = iFailService.queryFlByFlAId(appointment.getaId());
+            for (Fail fail : fails){
+                //新增未成交
+                Fail fl = new Fail(null, a.getaId(), fail.getFlHId(), fail.getFlCause());
+                iFailService.saveFail(fl);
             }
 
-            //根据线索编号查询跟进
-            List<Follow> follows = iFollowService.queryFByFClId(clue.getClId());
-            for (Follow follow : follows){
-                //新增跟进记录
-                Follow f = new Follow(null, cl.getClId(), follow.getfTypeId(),
-                        follow.getfTime(), follow.getfContent(), follow.getfUId());
-                iFollowService.saveFollow(f);
-            }
-
-            //根据线索编号查询预约
-            List<Appointment> appointments = iAppointmentService.queryAByAClId(clue.getClId());
-            for (Appointment appointment : appointments){
-
-                //新增预约记录
-                Appointment a = new Appointment(null, cl.getClId(), appointment.getaTime(),
-                        appointment.getaHId(), appointment.getaTypeId(),
-                        appointment.getaStatus(), appointment.getaCreateTime());
-                iAppointmentService.saveAppointment(a);
-
-                //根据预约编号查询转诊
-                List<Referral> referrals = iReferralService.queryRByRAId(appointment.getaId());
-                for (Referral referral : referrals){
-                    //新增转诊记录
-                    Referral r = new Referral(null, a.getaId(), referral.getrFailHId(),
-                            referral.getrHId(), referral.getrMessage(), referral.getrCause());
-                    iReferralService.saveReferral(r);
-                }
-
-                //根据预约编号查询未到店
-                List<Arrive> arrives = iArriveService.queryArByArAId(appointment.getaId());
-                for (Arrive arrive : arrives){
-                    //改变之前的未到店为无效
-                    iArriveService.editArInvalidByArId(arrive.getArId());
-                    //新增未到店
-                    Arrive ar = new Arrive(null, a.getaId(), arrive.getArHId(), arrive.getArCause(),
-                            arrive.getArInvalid());
-                    iArriveService.saveArrive(ar);
-                }
-
-                //根据预约编号查询未成交
-                List<Fail> fails = iFailService.queryFlByFlAId(appointment.getaId());
-                for (Fail fail : fails){
-                    //新增未成交
-                    Fail fl = new Fail(null, a.getaId(), fail.getFlHId(), fail.getFlCause());
-                    iFailService.saveFail(fl);
-                }
-
-                //根据预约编号查询成交
-                List<Success> successes = iSuccessService.querySBySAId(appointment.getaId());
-                for (Success success : successes){
-                    //新增成交
-                    Success s = new Success(null, a.getaId(), success.getsHId(), success.getsMessage(),
-                            success.getsSum(), success.getsPaysum(), success.getsRemark(), 1);
-                    iSuccessService.saveSuccess(s);
-                    //根据成交编号查询支付
-                    List<Payrecord> payrecords = iPayrecordService.queryPByPaySId(success.getsId());
-                    for (Payrecord payrecord : payrecords){
-                        //新增支付
-                        Payrecord p = new Payrecord(null, s.getsId(), payrecord.getPaySum(),
-                                payrecord.getPayTime(), payrecord.getPayRemark(),
-                                payrecord.getPayTypeId());
-                        iPayrecordService.savePayrecord(p);
-                    }
+            //根据预约编号查询成交
+            List<Success> successes = iSuccessService.querySBySAId(appointment.getaId());
+            for (Success success : successes){
+                //新增成交
+                Success s = new Success(null, a.getaId(), success.getsHId(), success.getsMessage(),
+                        success.getsSum(), success.getsPaysum(), success.getsRemark(), success.getsTime(), 1);
+                iSuccessService.saveSuccess(s);
+                //根据成交编号查询支付
+                List<Payrecord> payrecords = iPayrecordService.queryPByPaySId(success.getsId());
+                for (Payrecord payrecord : payrecords){
+                    //新增支付
+                    Payrecord p = new Payrecord(null, s.getsId(), payrecord.getPaySum(),
+                            payrecord.getPayTime(), payrecord.getPayRemark(),
+                            payrecord.getPayTypeId());
+                    iPayrecordService.savePayrecord(p);
                 }
             }
         }
+
         return DataResult.success();
     }
 
@@ -217,10 +195,18 @@ public class ClueController {
                                        @ApiParam(value = "客户姓名", required = true) String cName,
                                        @ApiParam(value = "客户编号", required = true) Integer cId,
                                        @ApiParam(value = "编号", required = true) Integer clId,
+                                       @ApiParam(value = "预约编号", required = true) Integer sAId,
                                        @ApiParam(value = "报名费", required = true) String clEntryFee){
         //新增操作记录
         Operating operating = new Operating(cId, uId, "退报名费", uName + "退还了" + cName + "的报名费");
         iOperatingService.saveOperating(operating);
+        if (sAId != null){
+            //根据预约编号查询成交
+            List<Success> successes = iSuccessService.querySBySAId(sAId);
+            Success success = successes.get(0);
+            //根据成交编号扣除报名费
+            iSuccessService.editMoneyBySId(success.getsId(), success.getsSum() - Integer.parseInt(clEntryFee), success.getsPaysum() - Integer.parseInt(clEntryFee));
+        }
         //根据线索编号编辑报名费
         iClueService.editClByClId(clId, clEntryFee + "(已退还)");
         return DataResult.success();
@@ -237,7 +223,7 @@ public class ClueController {
         return DataResult.success(clue);
     }
 
-    @NoRepeatSubmit
+    @NoRepeatSubmit(lockTime = 3)
     @GetMapping("allot")
     @ApiOperation(value = "根据线索编号编辑负责人编号(分配客户)")
     @ResponseBody

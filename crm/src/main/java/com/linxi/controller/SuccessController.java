@@ -115,13 +115,14 @@ public class SuccessController {
                                  @ApiParam(value = "成交客户编号", required = true) Integer sAId,
                                  @ApiParam(value = "门诊编号", required = true) Integer sHId,
                                  @ApiParam(value = "成交信息", required = true) String sMessage,
-                                 @ApiParam(value = "总成交金额", required = true) Integer sSum,
+                                 @ApiParam(value = "总成交金额", required = true) Double sSum,
+                                 @ApiParam(value = "成交时间", required = true) String sTime,
                                  @ApiParam(value = "成交备注", required = true) String sRemark){
         //新增操作记录
         Operating operating = new Operating(cId, uId, "编辑成交", uName + "更新了客户" + cName + "的成交信息");
         iOperatingService.saveOperating(operating);
         //编辑成交客户
-        Success success = new Success(sId, sAId, sHId, sMessage, sSum, null, sRemark, 0);
+        Success success = new Success(sId, sAId, sHId, sMessage, sSum, null, sRemark, Timestamp.valueOf(sTime), 0);
         iSuccessService.editSBySId(success);
         return DataResult.success();
     }
@@ -139,8 +140,9 @@ public class SuccessController {
                                   @ApiParam(name = "sHId", value = "门诊编号", required = true) Integer sHId,
                                   @ApiParam(name = "sMessage", value = "成交信息", required = true) String sMessage,
                                   @ApiParam(name = "isDeduction", value = "抵扣报名费", required = true) String isDeduction,
-                                  @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
-                                  @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
+                                  @ApiParam(name = "sSum", value = "成交金额", required = true) Double sSum,
+                                  @ApiParam(name = "sPaysum", value = "支付金额", required = true) Double sPaysum,
+                                  @ApiParam(name = "sTime", value = "成交时间", required = true) String sTime,
                                   @ApiParam(name = "sRemark", value = "备注", required = true) String sRemark){
         //添加操作记录
         Operating operating = new Operating(cId, uId, "新增成交项目", uName + "给" + cName + "添加了一条新成交");
@@ -159,7 +161,7 @@ public class SuccessController {
             iClueService.editClByClId(clId, clue.getClEntryFee() + "(已抵扣)");
         }
         //新增成交客户
-        Success success = new Success(null, sAId, sHId, sMessage, sSum, sPaysum, sRemark, 0);
+        Success success = new Success(null, sAId, sHId, sMessage, sSum, sPaysum, sRemark, Timestamp.valueOf(sTime), 0);
         iSuccessService.saveSuccess(success);
         //根据预约编号编辑预约状态
         iAppointmentService.editAStatusByAIdAndAStatus(sAId, 2);
@@ -169,7 +171,7 @@ public class SuccessController {
             //查询支付类型为退款的编号
             Integer payId = iPaytypeService.queryPByPayType("首次缴费");
             //新增支付记录
-            Payrecord payrecord = new Payrecord(null, sId, sPaysum, null, null, payId);
+            Payrecord payrecord = new Payrecord(null, sId, sPaysum, Timestamp.valueOf(sTime), null, payId);
             iPayrecordService.savePayrecord(payrecord);
         }
         return DataResult.success();
@@ -243,7 +245,7 @@ public class SuccessController {
                     }
                 }
                 if (b == false){
-                    list.add(new SuccessStatisticsVo(user.getuName(), 0));
+                    list.add(new SuccessStatisticsVo(user.getuName(), 0.0));
                 }
             }
         } else if(unit.equals("门诊")){
@@ -261,7 +263,7 @@ public class SuccessController {
                     }
                 }
                 if (b == false){
-                    list.add(new SuccessStatisticsVo(hospital.gethName(), 0));
+                    list.add(new SuccessStatisticsVo(hospital.gethName(), 0.0));
                 }
             }
         } else {
@@ -282,7 +284,7 @@ public class SuccessController {
                     }
                 }
                 if (b == false){
-                    list.add(new SuccessStatisticsVo(project, 0));
+                    list.add(new SuccessStatisticsVo(project, 0.0));
                 }
             }
         }
@@ -309,19 +311,21 @@ public class SuccessController {
                                   @ApiParam(value = "客户编号", required = true) Integer cId,
                                   @ApiParam(value = "客户姓名", required = true) String cName,
                                   @ApiParam(value = "成交客户编号", required = true) Integer paySId,
-                                  @ApiParam(value = "成交退款金额", required = true) Integer refundsSum,
-                                  @ApiParam(value = "支付退款金额", required = true) Integer refundsPaysum,
+                                  @ApiParam(value = "成交金额", required = true) Double sSum,
+                                  @ApiParam(value = "支付金额", required = true) Double sPaysum,
+                                  @ApiParam(value = "成交退款金额", required = true) Double refundsSum,
+                                  @ApiParam(value = "支付退款金额", required = true) Double refundsPaysum,
+                                  @ApiParam(value = "退款时间", required = true) String payTime,
                                   @ApiParam(value = "备注", required = false) String payRemark,
-                                  @ApiParam(value = "支付类型", required = true) Integer payTypeId,
-                                  @ApiParam(value = "退款金额", required = true) Integer paySum){
+                                  @ApiParam(value = "支付类型", required = true) Integer payTypeId){
         //根据成交编号编辑成交金额和支付金额
-        iSuccessService.editMoneyBySId(paySId, refundsSum, refundsPaysum);
+        iSuccessService.editMoneyBySId(paySId, sSum-refundsSum, sPaysum-refundsPaysum);
         if (refundsSum != 0){
             //拼接备注
-            payRemark = payRemark + "(扣除成交金额" + paySum + ")";
+            payRemark = payRemark + "(扣除成交金额" + refundsSum + ")";
         }
         //新增支付记录
-        Payrecord payrecord = new Payrecord(null, paySId, paySum, null, payRemark, payTypeId);
+        Payrecord payrecord = new Payrecord(null, paySId, refundsPaysum, Timestamp.valueOf(payTime), payRemark, payTypeId);
         iPayrecordService.savePayrecord(payrecord);
         //新增操作记录
         Operating operating = new Operating(cId, uId, "退款", uName + "处理了客户" + cName + "的退款");
@@ -348,26 +352,26 @@ public class SuccessController {
         }
         map.put("count", total);
         //根据筛选条件查询成交金额
-        Integer sSum = iSuccessService.queryMoneyByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, 0);
+        Double sSum = iSuccessService.queryMoneyByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, 0);
         if (sSum == null){
-            sSum = 0;
+            sSum = 0.0;
         }
         map.put("sSum", sSum);
         //根据筛选条件查询支付金额
-        Integer sPaysum = iSuccessService.queryMoneyByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, 1);
+        Double sPaysum = iSuccessService.queryMoneyByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, 1);
         if (sPaysum == null){
-            sPaysum = 0;
+            sPaysum = 0.0;
         }
         map.put("sPaysum", sPaysum);
         //待收金额
-        Integer awaitMoney = sSum - sPaysum;
+        Double awaitMoney = sSum - sPaysum;
         map.put("awaitMoney", awaitMoney);
         //根据筛选条件分组查询退款总金额
         List<Success> successes = iSuccessService.queryRefundByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime);
         //退款总数
         Integer refundCount = 0;
         //退款总金额
-        Integer refundMoney = 0;
+        Double refundMoney = 0.0;
         if (successes != null){
             refundCount = successes.size();
             for (Success success : successes){
@@ -418,8 +422,9 @@ public class SuccessController {
                                     @ApiParam(name = "sHId", value = "成交门诊编号", required = true) Integer sHId,
                                     @ApiParam(name = "sMessage", value = "成交信息", required = true) String sMessage,
                                     @ApiParam(name = "isDeduction", value = "抵扣报名费", required = true) String isDeduction,
-                                    @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
-                                    @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
+                                    @ApiParam(name = "sSum", value = "成交金额", required = true) Double sSum,
+                                    @ApiParam(name = "sPaysum", value = "支付金额", required = true) Double sPaysum,
+                                    @ApiParam(name = "sTime", value = "成交时间", required = true) String sTime,
                                     @ApiParam(name = "sRemark", value = "备注", required = true) String sRemark) {
         //创建客户
         Customer c = new Customer(null, cName, cSex, cAge, cTel, cWx, null);
@@ -478,7 +483,7 @@ public class SuccessController {
             iClueService.editClByClId(clue.getClId(), clue2.getClEntryFee() + "(已抵扣)");
         }
         //新增成交客户
-        Success success = new Success(null, appointment.getaId(), sHId, sMessage, sSum, sPaysum, sRemark, 0);
+        Success success = new Success(null, appointment.getaId(), sHId, sMessage, sSum, sPaysum, sRemark, Timestamp.valueOf(sTime), 0);
         iSuccessService.saveSuccess(success);
         //根据预约编号编辑预约状态
         iAppointmentService.editAStatusByAIdAndAStatus(appointment.getaId(), 2);
@@ -488,7 +493,7 @@ public class SuccessController {
             //查询支付类型为退款的编号
             Integer payId = iPaytypeService.queryPByPayType("首次缴费");
             //新增支付记录
-            Payrecord payrecord = new Payrecord(null, sId, sPaysum, null, null, payId);
+            Payrecord payrecord = new Payrecord(null, sId, sPaysum, Timestamp.valueOf(sTime), null, payId);
             iPayrecordService.savePayrecord(payrecord);
         }
         return DataResult.success();
@@ -507,8 +512,9 @@ public class SuccessController {
                                 @ApiParam(name = "sHId", value = "成交门诊编号", required = true) Integer sHId,
                                 @ApiParam(name = "sMessage", value = "成交信息", required = true) String sMessage,
                                 @ApiParam(name = "isDeduction", value = "抵扣报名费", required = true) String isDeduction,
-                                @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
-                                @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
+                                @ApiParam(name = "sSum", value = "成交金额", required = true) Double sSum,
+                                @ApiParam(name = "sPaysum", value = "支付金额", required = true) Double sPaysum,
+                                @ApiParam(name = "sTime", value = "成交时间", required = true) String sTime,
                                 @ApiParam(name = "sRemark", value = "备注", required = true) String sRemark) {
         //根据客户状态查询编号
         Integer clTypeId = iCtypeService.queryCtypeByCtType("待到店");
@@ -543,7 +549,7 @@ public class SuccessController {
             iClueService.editClByClId(aClId, clue2.getClEntryFee() + "(已抵扣)");
         }
         //新增成交客户
-        Success success = new Success(null, appointment.getaId(), sHId, sMessage, sSum, sPaysum, sRemark, 0);
+        Success success = new Success(null, appointment.getaId(), sHId, sMessage, sSum, sPaysum, sRemark, Timestamp.valueOf(sTime), 0);
         iSuccessService.saveSuccess(success);
         //根据预约编号编辑预约状态
         iAppointmentService.editAStatusByAIdAndAStatus(appointment.getaId(), 2);
@@ -553,7 +559,7 @@ public class SuccessController {
             //查询支付类型为退款的编号
             Integer payId = iPaytypeService.queryPByPayType("首次缴费");
             //新增支付记录
-            Payrecord payrecord = new Payrecord(null, sId, sPaysum, null, null, payId);
+            Payrecord payrecord = new Payrecord(null, sId, sPaysum, Timestamp.valueOf(sTime), null, payId);
             iPayrecordService.savePayrecord(payrecord);
         }
         return DataResult.success();
