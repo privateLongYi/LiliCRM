@@ -61,9 +61,9 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
         Map<RequestMatcher, Collection<ConfigAttribute>> map = new ConcurrentHashMap<>();
         for (Menu menu : menus) {
             String mName = menu.getmName();
-            if (menu.getmUrl() == null){ continue; }
+            if (menu.getmUrl() == null || menu.getmUrl() == ""){ continue; }
             for (Menu m : menus){
-                if (m.getmUrl() == null){ continue; }
+                if (m.getmUrl() == null || menu.getmUrl() == ""){ continue; }
                 Collection<ConfigAttribute> value = map.get(new AntPathRequestMatcher(m.getmUrl()));
                 if (StringUtils.isEmpty(value)){
                     ArrayList<ConfigAttribute> configs = new ArrayList<>();

@@ -20,14 +20,18 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">成交退款金额</label>
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>成交退款金额
+            </label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" id="refundsSum" value="0"
                        placeholder="请输入成交退款金额" autocomplete="off">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">支付退款金额</label>
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>支付退款金额
+            </label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" id="refundsPaysum"
                        placeholder="请输入支付退款金额" autocomplete="off">
@@ -71,6 +75,8 @@
         elem: '#payTime' //指定元素
         ,type: 'datetime' //时间格式
         ,trigger: 'click' //采用click弹出
+        ,btns: ['now', 'confirm'] //底部按钮
+        ,value: new Date() //默认时间
     });
 
 </script>

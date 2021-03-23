@@ -70,7 +70,7 @@
                 <input type="text" class="layui-input" placeholder="请输入成交金额"
                        autocomplete="off" id="sSum">
             </div>
-            <div class="layui-form-mid layui-word-aux">（不含报名费）</div>
+            <div class="layui-form-mid layui-word-aux">（包含报名费）</div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">
@@ -80,7 +80,7 @@
                 <input type="text" class="layui-input" placeholder="请输入支付金额"
                        autocomplete="off" id="sPaysum">
             </div>
-            <div class="layui-form-mid layui-word-aux">（不含报名费）</div>
+            <div class="layui-form-mid layui-word-aux">（包含报名费）</div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">
@@ -117,12 +117,14 @@
         elem: '#sTime' //指定元素
         ,type: 'datetime' //时间格式
         ,trigger: 'click' //采用click弹出
+        ,btns: ['clear', 'confirm'] //底部按钮
+        ,value: new Date() //初始时间
     });
 
     //根据客户名称查询可成交客户(待到店，成交）
     function getList(cName, page){
         if(cName != ""){
-            $.post("/customer/queryCSCByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
+            $.post("/crm/customer/queryCSCByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
                     html += "<div class='list' onclick='assign(&quot;"+data.data[i].cId+"&quot;," +

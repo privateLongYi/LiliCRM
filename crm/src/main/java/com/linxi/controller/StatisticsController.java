@@ -19,7 +19,7 @@ import java.math.BigDecimal;
  * @create 2020/9/17 21:40
  */
 @Controller
-@RequestMapping("statistics")
+@RequestMapping("crm/statistics")
 @Api(value = "统计控制类", tags = "统计控制类")
 public class StatisticsController {
 

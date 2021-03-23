@@ -58,7 +58,7 @@
     <div class="layui-fluid">
 
         <!--快捷按钮-->
-        <div class="layui-card layui-row" style="height: 100px;" id="admin">
+        <div class="layui-card layui-row" style="height: 100px; display: none;" id="admin">
             <div class="layui-col-md1">&nbsp;</div>
             <div class="layui-col-md2" align="center" style="margin-top: 5px;">
                 <div name="insert" style="width: 65px; height: 65px; cursor: pointer;">
@@ -255,22 +255,22 @@
                         <span style="font-size: 20px; font-weight: normal;">待办客资</span>
                     </div>
                     <div class="layui-card-body">
-                        <a th:href="@{/contact}">
+                        <a href="javascript:void(0);" class="skip" id="contact">
                             <div class="css1">
                                 <span class="l_font">待联系客户</span>
                                 <span class="r_font" id="awaitContact"></span>
                             </div>
                         </a>
-                        <a th:href="@{/appointment}">
+                        <a href="javascript:void(0);" class="skip" id="appointment">
                             <div class="css1">
                                 <span class="l_font">待预约客户</span>
                                 <span class="r_font" id="awaitAppoint"></span>
                             </div>
                         </a>
-                        <a th:href="@{/awaitarrive}">
+                        <a href="javascript:void(0);" class="skip" id="awaitarrive">
                             <div class="css1">
                                 <span class="l_font">待到店客户</span>
-                                <span class="r_font" id="awaitArrive"></span>
+                                <span class="r_font" id="awaitArriveSpan"></span>
                             </div>
                         </a>
                     </div>
@@ -332,10 +332,33 @@
     var uName = sessionStorage.getItem('uName');
     var rName = sessionStorage.getItem('rName');
 
+    //绑定跳转事件
+    $(".skip").on("click", function () {
+        skip(this);
+    })
+
+    //绑定跳转事件
+    function skip(el) {
+        $(window.parent.document).find("#frame").attr("src", el.id);
+        var mNavgition = $(window.parent.document).find("[name=" + el.id + "]")[0].value;
+        var navs = mNavgition.split("/");
+        var html = "";
+        for (var i = 0; i < navs.length; i++) {
+            if (i == 0) {
+                html += "<a lay-href=''>" + navs[i] + "</a>";
+            } else {
+                html += "<span lay-separator=''>/</span><a><cite>" + navs[i] + "</cite></a>";
+            }
+        }
+        $(window.parent.document).find("#navgition").html(html);
+    }
+
     //隐藏快捷
     if (rName == '销售员'){
         $("#admin").hide();
+        $("#sale").show();
     } else {
+        $("#admin").show();
         $("#sale").hide();
     }
 
@@ -360,7 +383,7 @@
         var clSource = $(body).find("#clSource").val();
         var clTypeId = $(body).find("#clTypeId").val();
         var clPlaceTime = $(body).find("#clPlaceTime").val();
-        if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '' && clPlaceTime != '') {
+        if (cName != '' && cTel != '' && clPlaceTime != '') {
             //声明格式是否正确
             var verify = true;
             //验证姓名格式
@@ -384,17 +407,18 @@
                 return;
             }
             if (verify) {
+                var load = layer.load();
                 $.ajax({
                     type: "POST",
                     async: false,
-                    url: "/customer/saveCustomer",
+                    url: "/crm/customer/saveCustomer",
                     data: {
                         uId: uId,
                         uName:uName,
-                        cName: cName.trim(),
+                        cName: cName,
                         cSex: cSex,
                         cAge: cAge,
-                        cTel: cTel.trim(),
+                        cTel: cTel,
                         clProject: clProject,
                         clMessage: clMessage,
                         clRemark: clRemark,
@@ -405,6 +429,7 @@
                         clPlaceTime: clPlaceTime
                     },
                     success: function (obj) {
+                        layer.close(load);
                         layer.close(index);
                     }
                 });
@@ -423,15 +448,17 @@
         var aHId = $(body).find("#aHId").val();
         var atType = $(body).find("#atType").val();
         if (aTime != '') {
+            var load = layer.load();
             $.ajax({
                 type: "POST",
                 async: false,
-                url: "/appointment/saveAppointment",
+                url: "/crm/appointment/saveAppointment",
                 data: {
                     uId: uId, uName:uName, aClId: aClId, aTime: aTime,
                     aHId: aHId, atType: atType
                 },
                 success: function (obj) {
+                    layer.close(load);
                     layer.close(index);
                 }
             });
@@ -446,7 +473,7 @@
         layer.open({
             type: 2, //层类型，iframe
             title: '新增客户',
-            content: ['/customer/customersave'],
+            content: ['/crm/customer/customersave'],
             area: ['1000px', '500px'],
             resize: false,
             cancel: function(index, layero){
@@ -460,8 +487,8 @@
         layer.open({
             type: 2, //层类型，iframe
             title: '新增预约客户',
-            content: ['/indexGoAppointSave'],
-            area: ['450px', '450px'],
+            content: ['/crm/indexGoAppointSave'],
+            area: ['500px', '500px'],
             resize: false,
             cancel: function(index, layero){
                 layer.close(index);
@@ -474,8 +501,8 @@
         layer.open({
             type: 2, //层类型，iframe
             title: '新增成交',
-            content: ['/indexGoSuccessSave'],
-            area: ['500px', '450px'],
+            content: ['/crm/indexGoSuccessSave'],
+            area: ['500px', '500px'],
             resize: false,
             btn: '确定',
             btn1: function (index, layero) {
@@ -496,7 +523,7 @@
                 var sRemark = $(body).find("#sRemark").val();
                 var sTime = $(body).find("#sTime").val();
                 var entryFee = $(body).find("#entryFee").val();
-                if (sAId != '' && sHId != '' && sSum != '' && sSum.trim() != '' && sPaysum != '' && sPaysum.trim() != '' && sTime != '') {
+                if (sAId != '' && sHId != '' && sSum != '' && sSum != '' && sPaysum != '' && sPaysum != '' && sTime != '') {
                     //声明格式是否正确
                     var verify = true;
                     //验证成交金额
@@ -517,12 +544,9 @@
                             return;
                         }
                     }
-                    //判断是否抵扣报名费
-                    if (isDeduction == 1 || isDeduction == '1'){
-                        sSum = eval(sSum + "+" + entryFee);
-                    }
                     if(verify) {
-                        $.post("/success/saveSuccess", {
+                        var load = layer.load();
+                        $.post("/crm/success/saveSuccess", {
                                 uId: uId,
                                 cId: cId,
                                 uName: uName,
@@ -534,12 +558,13 @@
                                 sHId: sHId,
                                 sMessage: sMessage,
                                 isDeduction: isDeduction,
-                                sSum: sSum.trim(),
-                                sPaysum: sPaysum.trim(),
+                                sSum: sSum,
+                                sPaysum: sPaysum,
                                 sRemark: sRemark,
                                 sTime: sTime
                             },
                             function (data) {
+                                layer.close(load);
                                 if (data.code != 200){
                                     layer.msg(data.msg);
                                 } else {
@@ -566,8 +591,8 @@
         layer.open({
             type: 2, //层类型，iframe
             title: '客户退款',
-            content: ['/indexGoPayrecordSave'],
-            area: ['500px', '450px'],
+            content: ['/crm/indexGoPayrecordSave'],
+            area: ['500px', '500px'],
             resize: false,
             btn: '确定',
             btn1: function (index, layero) {
@@ -585,8 +610,9 @@
                 var payTypeId = $(body).find("#payTypeId").val();
                 //声明格式是否正确
                 var verify = true;
-                //验证成交退款金额
-                if (refundsSum != '' && refundsSum.trim() != '' && payTime != '') {
+                //验证
+                if (cName != '' && refundsSum != '' && refundsPaysum != '' && payTime != '') {
+                    //成交退款金额
                     if (!isNaN(refundsSum) && refundsSum >= 0) {
                         if (parseFloat(sSum) < parseFloat(refundsSum)) {
                             layer.msg("成交退款金额不能大于成交金额，成交金额为" + sSum);
@@ -594,39 +620,36 @@
                             return;
                         }
                     } else {
-                        layer.msg('成交退款金额必须是大于零的数值');
+                        layer.msg('成交退款金额必须是大于等于零的数值');
                         verify = false;
                         return;
                     }
-                } else {
-                    layer.msg('成交退款金额不能为空');
-                    verify = false;
-                    return;
-                }
-                //验证支付退款金额
-                if (refundsPaysum != '' && refundsPaysum.trim() != '') {
-                    if (!isNaN(refundsPaysum) && refundsPaysum >= 0) {
+                    //支付退款金额
+                    if (!isNaN(refundsPaysum) && refundsPaysum > 0) {
                         if (parseFloat(sPaysum) < parseFloat(refundsPaysum)) {
                             layer.msg("支付退款金额不能大于支付金额，支付金额为" + sPaysum);
                             verify = false;
                             return;
                         }
                     } else {
-                        layer.msg('支付退款金额必须是大于等于零的数值');
+                        layer.msg('支付退款金额必须是大于零的数值');
                         verify = false;
                         return;
                     }
+
                 } else {
-                    layer.msg('支付退款金额不能为空');
+                    layer.msg('请填写带星号的必填项');
                     verify = false;
                     return;
                 }
                 if (verify){
-                    $.get("/success/refundMoney",
+                    var load = layer.load();
+                    $.get("/crm/success/refundMoney",
                         {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, refundsSum: refundsSum,
                             refundsPaysum:refundsPaysum, sSum:sSum, sPaysum:sPaysum,
                             payRemark:payRemark, payTypeId: payTypeId, payTime:payTime},
                         function (data) {
+                            layer.close(load);
                             if (data.code != 200){
                                 layer.msg(data.msg);
                             } else {
@@ -650,7 +673,7 @@
         layer.open({
             type: 2, //层类型，iframe
             title: '分配客户',
-            content: ['/indexGoEditClue'],
+            content: ['/crm/indexGoEditClue'],
             area: ['1000px', '500px'],
             resize: false,
             cancel: function(index, layero){
@@ -677,7 +700,7 @@
     //销售简报加载事件
     function bulletin(begin, end) {
         //销售简报查询并赋值
-        $.get('/customer/bulletin', {uId:uId, rName:rName, beginTime:begin, endTime:end},
+        $.get('/crm/customer/bulletin', {uId:uId, rName:rName, beginTime:begin, endTime:end},
             function (data) {
                 //新增客户数
                 $("#insert").html(data.insert);
@@ -701,14 +724,14 @@
 
     //待办客资加载事件
     function await() {
-        $.get('/customer/await', {uId:uId, rName:rName},
+        $.get('/crm/customer/await', {uId:uId, rName:rName},
             function (data) {
                 //待联系客户
                 $("#awaitContact").html(data.awaitContact);
                 //待预约客户
                 $("#awaitAppoint").html(data.awaitAppoint);
                 //待到店客户
-                $("#awaitArrive").html(data.awaitArrive);
+                $("#awaitArriveSpan").html(data.awaitArrive);
             }
         );
     }
@@ -753,8 +776,8 @@
         layer.open({
             type: 2, //层类型，iframe
             title: '新增客户列表',
-            content: ['/indexGoSaveCList?beginTime='+begin+'&endTime='+end],
-            area: ['1000px', '550px'],
+            content: ['/crm/indexGoSaveCList?beginTime='+begin+'&endTime='+end],
+            area: ['1000px', '535px'],
             resize: false,
             cancel: function(index, layero){
                 layer.close(index);
@@ -770,8 +793,8 @@
         layer.open({
             type: 2, //层类型，iframe
             title: '预约客户列表',
-            content: ['/indexGoSaveAList?beginTime='+begin+'&endTime='+end],
-            area: ['1000px', '550px'],
+            content: ['/crm/indexGoSaveAList?beginTime='+begin+'&endTime='+end],
+            area: ['1000px', '535px'],
             resize: false,
             cancel: function(index, layero){
                 layer.close(index);
@@ -787,8 +810,8 @@
         layer.open({
             type: 2, //层类型，iframe
             title: '成交客户列表',
-            content: ['/indexGoSaveSList?beginTime='+begin+'&endTime='+end],
-            area: ['1000px', '550px'],
+            content: ['/crm/indexGoSaveSList?beginTime='+begin+'&endTime='+end],
+            area: ['1000px', '535px'],
             resize: false,
             cancel: function(index, layero){
                 layer.close(index);
@@ -804,8 +827,8 @@
         layer.open({
             type: 2, //层类型，iframe
             title: '已到店客户列表',
-            content: ['/indexGoSaveArriveList?beginTime='+begin+'&endTime='+end],
-            area: ['1000px', '550px'],
+            content: ['/crm/indexGoSaveArriveList?beginTime='+begin+'&endTime='+end],
+            area: ['1000px', '535px'],
             resize: false,
             cancel: function(index, layero){
                 layer.close(index);

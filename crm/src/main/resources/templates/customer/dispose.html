@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>待到店处理</title>
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/css/layui.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/css/layui.min.css" />
 </head>
 <body>
 
@@ -160,7 +160,7 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block" style="text-align: center;">
-                <input type="hidden" id="action" value="/customer/arrive">
+                <input type="hidden" id="action" value="/crm/customer/arrive">
                 <button class="layui-btn" lay-submit="" lay-filter="login">确认保存</button>
             </div>
         </div>
@@ -168,7 +168,7 @@
 
 </div>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
 
 <script>
 
@@ -203,7 +203,7 @@
     }
 
     //获取所有门诊
-    $.get("/hospital/queryHospital", function (res) {
+    $.get("/crm/hospital/queryHospital", function (res) {
         //定义负责人下拉框内容
         var html = "";
         //获取负责人编号
@@ -229,7 +229,7 @@
             $("#fail").hide();
             $("#success").hide();
             //改变提交地址
-            $("#action").val("/customer/arrive")
+            $("#action").val("/crm/customer/arrive")
         } else if (status == "reroute") {
             //显示和隐藏
             $("#arrive").hide();
@@ -237,7 +237,7 @@
             $("#fail").hide();
             $("#success").hide();
             //改变提交地址
-            $("#action").val("/reroute/saveReroute")
+            $("#action").val("/crm/reroute/saveReroute")
         } else if (status == "fail") {
             //显示和隐藏
             $("#arrive").hide();
@@ -245,7 +245,7 @@
             $("#fail").show();
             $("#success").hide();
             //改变提交地址
-            $("#action").val("/fail/saveFail")
+            $("#action").val("/crm/fail/saveFail")
         } else if (status == "success") {
             //显示和隐藏
             $("#arrive").hide();
@@ -253,7 +253,7 @@
             $("#fail").hide();
             $("#success").show();
             //改变提交地址
-            $("#action").val("/success/saveSuccess")
+            $("#action").val("/crm/success/saveSuccess")
         }
     });
 
@@ -270,9 +270,11 @@
             var aId = $("#aId").val();
             var arCause = $("#arCause").val();
             if (arCause != ""){
+                var load = layer.load();
                 $.post(action, {uId:uId, uName:uName, cId:cId, cName:cName,
                          clId:clId, aId:aId, cause:arCause},
                     function (data) {
+                        layer.close(load);
                         if (data.code != 200){
                             layer.msg(data.msg);
                         } else {
@@ -294,10 +296,12 @@
             var reTime = $("#reTime").val();
             var reCause = $("#reCause").val();
             if (reTime != '' && reCause != ''){
+                var load = layer.load();
                 $.post(action, {uId:uId, uName:uName, cId:cId, cName:cName,
                         reClId:clId, reUId:reUId, aId:aId, reHId:reHId, reLastTime:reLastTime,
                         reTime:reTime, reCause:reCause},
                     function (data) {
+                        layer.close(load);
                         if (data.code != 200){
                             layer.msg(data.msg);
                         } else {
@@ -316,11 +320,13 @@
             var flHId = $("#flHId").val();
             var flCause = $("#flCause").val();
             if (flCause != "") {
+                var load = layer.load();
                 $.post(action, {
                         uId: uId, uName: uName, cId: cId, cName: cName,
                         clId: clId, flAId: flAId, flHId: flHId, flCause: flCause
                     },
                     function (data) {
+                        layer.close(load);
                         if (data.code != 200){
                             layer.msg(data.msg);
                         } else {
@@ -347,26 +353,29 @@
             var sRemark = $("#sRemark").val();
             var sTime = $("#sTime").val();
             var entryFee = $("#entryFee").val();
-            if (sSum != '' && sSum.trim() != '' && sTime != '') {
+            if (sSum != '' && sPaysum != '' && sTime != '') {
                 //声明格式是否正确
                 var verify = true;
                 //验证成交金额
                 if(isNaN(sSum) || sSum <= 0){
+                    console.log("成交金额必须是大于零的数值")
                     layer.msg("成交金额必须是大于零的数值");
                     verify = false;
-                    return;
+                    return false;
                 }
                 //验证支付金额
                 if(isNaN(sPaysum) || sPaysum <= 0 || parseFloat(sPaysum) > parseFloat(sSum)){
+                    console.log("支付金额必须是大于零小于成交金额的数值")
                     layer.msg("支付金额必须是大于零小于成交金额的数值");
                     verify = false;
-                    return;
+                    return false;
                 }
                 //判断是否抵扣报名费
                 if (isDeduction == 1 || isDeduction == '1'){
                     sSum = eval(sSum + "+" + entryFee);
                 }
                 if(verify) {
+                    var load = layer.load();
                     $.post(action, {
                             uId: uId,
                             uName:uName,
@@ -383,6 +392,7 @@
                             sTime: sTime
                         },
                         function (data) {
+                            layer.close(load);
                             if (data.code != 200){
                                 layer.msg(data.msg);
                             } else {

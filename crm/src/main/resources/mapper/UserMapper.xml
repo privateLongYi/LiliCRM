@@ -14,6 +14,11 @@
     <result column="u_role_id" jdbcType="INTEGER" property="uRoleId" />
   </resultMap>
 
+  <!--登录-->
+  <select id="login" resultMap="BaseResultMap">
+    SELECT * FROM user WHERE u_name = #{username} AND u_password = #{password}
+  </select>
+
   <!--根据用户名查询用户-->
   <select id="findByLoginName" resultMap="BaseResultMap">
     SELECT u.*, r.r_name AS rName FROM user u LEFT JOIN role r ON u.u_role_id = r.r_id

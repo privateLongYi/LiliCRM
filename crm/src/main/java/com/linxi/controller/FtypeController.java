@@ -22,7 +22,7 @@ import java.util.List;
  * @create 2020/9/10 22:11
  */
 @Controller
-@RequestMapping("ftype")
+@RequestMapping("crm/ftype")
 @Api(value = "回访类型控制类", tags = "回访类型控制类")
 public class FtypeController {
 

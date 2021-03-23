@@ -22,7 +22,7 @@ import java.util.List;
  * @create 2020/9/7 20:15
  */
 @Controller
-@RequestMapping("menu")
+@RequestMapping("crm/menu")
 @Api(value = "菜单控制类", tags = "菜单控制类")
 public class MenuController {
 
@@ -55,8 +55,9 @@ public class MenuController {
     public DataResult saveMenu(@ApiParam(name = "mName", value = "菜单名称", required = true) String mName,
                                @ApiParam(name = "mUrl", value = "菜单路径", required = true) String mUrl,
                                @ApiParam(name = "mParentId", value = "菜单父级编号", required = false) Integer mParentId,
-                               @ApiParam(name = "mType", value = "菜单类型", required = true) String mType){
-        iMenuService.saveMenu(new Menu(null, mName, mUrl, mParentId, mType));
+                               @ApiParam(name = "mType", value = "菜单类型", required = true) String mType,
+                               @ApiParam(name = "mNavgition", value = "菜单导航文本", required = true) String mNavgition){
+        iMenuService.saveMenu(new Menu(null, mName, mUrl, mParentId, mType, mNavgition));
         return DataResult.success();
     }
 
@@ -85,8 +86,9 @@ public class MenuController {
                                  @ApiParam(name = "mName", value = "菜单名称", required = true) String mName,
                                  @ApiParam(name = "mUrl", value = "菜单路径", required = true) String mUrl,
                                  @ApiParam(name = "mParentId", value = "菜单父级编号", required = false) Integer mParentId,
-                                 @ApiParam(name = "mType", value = "菜单类型", required = true) String mType){
-        iMenuService.editMByMId(new Menu(mId, mName, mUrl, mParentId, mType));
+                                 @ApiParam(name = "mType", value = "菜单类型", required = true) String mType,
+                                 @ApiParam(name = "mNavgition", value = "菜单导航文本", required = true) String mNavgition){
+        iMenuService.editMByMId(new Menu(mId, mName, mUrl, mParentId, mType, mNavgition));
         return DataResult.success();
     }
 

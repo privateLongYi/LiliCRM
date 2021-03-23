@@ -69,7 +69,7 @@
     });
 
     //获取所有支付类型
-    $.get("/paytype/queryAllPaytype", function (res){
+    $.get("/crm/paytype/queryAllPaytype", function (res){
         //定义负责人下拉框内容
         var html = "";
         $.each(res.data, function (index, item) {

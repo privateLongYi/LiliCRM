@@ -29,7 +29,7 @@ import java.util.Map;
  * @create 2020/8/30 15:17
  */
 @Controller
-@RequestMapping("role")
+@RequestMapping("crm/role")
 @Api(value = "角色控制类", tags = "角色控制类")
 public class RoleController {
 

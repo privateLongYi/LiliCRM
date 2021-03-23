@@ -24,7 +24,7 @@ import java.util.List;
  * @create 2020/8/22 14:47
  */
 @Controller
-@RequestMapping("ctype")
+@RequestMapping("crm/ctype")
 @Api(value = "客户状态控制类", tags = "客户状态控制类")
 public class CtypeController {
 

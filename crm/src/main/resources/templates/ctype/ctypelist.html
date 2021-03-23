@@ -38,7 +38,7 @@
 			//表格重载
 			function tableReload(){
 				table.reload('tab', {
-					url: '/ctype/queryCtypePage'
+					url: '/crm/ctype/queryCtypePage'
 					,page: {
 						curr: 1 //重新从第 1 页开始
 					}
@@ -52,15 +52,17 @@
 				var ctType = $(body).find("#ctType").val();
 				//声明格式是否正确
 				var verify = true;
-				if (ctType.trim() == ''){
+				if (ctType == ''){
 					layer.msg("请输入客户状态");
 					verify = false;
 					return;
 				}
 				if(verify){
+                    var load = layer.load();
 					$.post(url, {ctType:ctType},
 						function (data) {
-							if (data.code == 1){
+					    	layer.close(load);
+							if (data.code != 200){
 								layer.msg(data.msg);
 							} else {
 								layer.msg(data.msg, {time: 500}, function () {
@@ -76,7 +78,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/ctype/queryCtypePage' //数据接口
+				,url: '/crm/ctype/queryCtypePage' //数据接口
 				,title: '客户状态表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -103,12 +105,12 @@
 						layer.open({
 							type: 2, //层类型，iframe
 							title: '新增客户状态',
-							content: ['/ctype/ctypesave'],
-							area: ['400px', '350px'],
+							content: ['/crm/ctype/ctypesave'],
+							area: ['500px', '500px'],
 							resize: false,
 							btn: '确定',
 							btn1: function (index, layero) {
-								popup(index, "/ctype/saveCtype");
+								popup(index, "/crm/ctype/saveCtype");
 							},
 							cancel: function(index,layero){
 								layer.close(index);
@@ -127,8 +129,10 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'del'){
 					layer.confirm('真的删除行么', function(index){
-						$.get("/ctype/delCtypeByCtId?ctId=" + data.ctId, function(obj2){
-							if (obj2.code == 1) {
+                        var load = layer.load();
+						$.get("/crm/ctype/delCtypeByCtId?ctId=" + data.ctId, function(obj2){
+							layer.close(load);
+						    if (obj2.code != 200) {
 								layer.msg(obj2.msg);
 							} else {
 								layer.msg(obj2.msg, {time: 500}, function () {
@@ -142,12 +146,12 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑客户状态',
-						content: ['/ctype/queryCtypeByCtId?ctId=' + data.ctId],
-						area: ['400px', '350px'],
+						content: ['/crm/ctype/queryCtypeByCtId?ctId=' + data.ctId],
+						area: ['500px', '500px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
-							popup(index, "/ctype/editCtypeByCtId?ctId=" + data.ctId);
+							popup(index, "/crm/ctype/editCtypeByCtId?ctId=" + data.ctId);
 						},
 						cancel: function(index,layero){
 							layer.close(index);

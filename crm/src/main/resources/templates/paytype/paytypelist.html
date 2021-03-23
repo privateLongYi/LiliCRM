@@ -38,7 +38,7 @@
 			//表格重载
 			function tableReload(){
 				table.reload('tab', {
-					url: '/paytype/queryPaytypePage'
+					url: '/crm/paytype/queryPaytypePage'
 					,page: {
 						curr: 1 //重新从第 1 页开始
 					}
@@ -52,14 +52,16 @@
 				var payType = $(body).find("#payType").val();
 				//声明格式是否正确
 				var verify = true;
-				if (payType.trim() == ''){
+				if (payType == ''){
 					layer.msg("请输入支付类型");
 					verify = false;
 					return;
 				}
 				if(verify){
+                    var load = layer.load();
 					$.post(url, {payType:payType},
 						function (data) {
+					    	layer.close(load);
 					    	if (data.code != 200){
 					    	    layer.msg(data.msg);
 							} else {
@@ -76,7 +78,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/paytype/queryPaytypePage' //数据接口
+				,url: '/crm/paytype/queryPaytypePage' //数据接口
 				,title: '支付类型表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -103,12 +105,12 @@
 						layer.open({
 							type: 2, //层类型，iframe
 							title: '新增支付类型',
-							content: ['/paytype/paytypesave'],
-							area: ['400px', '350px'],
+							content: ['/crm/paytype/paytypesave'],
+							area: ['500px', '500px'],
 							resize: false,
 							btn: '确定',
 							btn1: function (index, layero) {
-								popup(index, "/paytype/savePaytype");
+								popup(index, "/crm/paytype/savePaytype");
 							},
 							cancel: function(index,layero){
 								layer.close(index);
@@ -127,8 +129,10 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'del'){
 					layer.confirm('真的删除行么', function(index){
-						$.get("/paytype/delPaytypeByPayId?payId=" + data.payId, function(obj){
-							if (obj.code == 0) {
+                        var load = layer.load();
+						$.get("/crm/paytype/delPaytypeByPayId?payId=" + data.payId, function(obj){
+							layer.close(load);
+						    if (obj.code == 200) {
 								layer.msg(obj.msg, {time: 500}, function () {
 									tableReload();
 								});
@@ -142,12 +146,12 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑支付类型',
-						content: ['/paytype/queryPaytypeByPayId?payId=' + data.payId],
-						area: ['400px', '350px'],
+						content: ['/crm/paytype/queryPaytypeByPayId?payId=' + data.payId],
+						area: ['500px', '500px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
-							popup(index, "/paytype/editPaytypeByPayId?payId=" + data.payId);
+							popup(index, "/crm/paytype/editPaytypeByPayId?payId=" + data.payId);
 						},
 						cancel: function(index,layero){
 							layer.close(index);

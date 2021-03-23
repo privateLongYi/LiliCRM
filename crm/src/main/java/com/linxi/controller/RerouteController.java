@@ -25,7 +25,7 @@ import java.util.List;
  * @create 2020/9/12 20:09
  */
 @Controller
-@RequestMapping("reroute")
+@RequestMapping("crm/reroute")
 @Api(value = "改约记录控制类", tags = "改约记录控制类")
 public class RerouteController {
 

@@ -64,6 +64,11 @@ public class Customer implements Serializable {
     private Timestamp clPlaceTime;
 
     /**
+     * 报名时间
+     */
+    private String clCity;
+
+    /**
      * 备注
      */
     private String clRemark;
@@ -311,6 +316,14 @@ public class Customer implements Serializable {
 
     public void setClPlaceTime(Timestamp clPlaceTime) {
         this.clPlaceTime = clPlaceTime;
+    }
+
+    public String getClCity() {
+        return clCity;
+    }
+
+    public void setClCity(String clCity) {
+        this.clCity = clCity;
     }
 
     public String getClRemark() {

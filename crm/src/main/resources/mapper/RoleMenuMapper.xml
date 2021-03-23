@@ -16,7 +16,7 @@
   <!--根据角色编号查询权限-->
   <select id="queryRMByRId" resultMap="BaseResultMap">
     SELECT rm.*, m.m_name AS mName, m.m_url AS mUrl, m.m_parent_id AS mParentId,
-    (SELECT COUNT(*) FROM menu me WHERE me.m_parent_id = rm.rm_m_id) AS childCount
+    m.m_navgition AS mNavgition, (SELECT COUNT(*) FROM menu me WHERE me.m_parent_id = rm.rm_m_id) AS childCount
     FROM role_menu rm INNER JOIN menu m ON rm.rm_m_id=m.m_id
     WHERE rm.rm_r_id = #{rId}
   </select>

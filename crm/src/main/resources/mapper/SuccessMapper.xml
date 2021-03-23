@@ -94,8 +94,8 @@
         AND s.s_h_id = #{sHId}
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
-        AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  s.s_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H:%i') ]]>
+        AND <![CDATA[  s.s_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i') ]]>
       </if>
       <if test="queryUId != null and queryUId != ''">
         AND cl.cl_u_id = #{queryUId}
@@ -129,8 +129,8 @@
         AND s.s_h_id = #{sHId}
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
-        AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  s.s_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H:%i') ]]>
+        AND <![CDATA[  s.s_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i') ]]>
       </if>
       <if test="queryUId != null and queryUId != ''">
         AND cl.cl_u_id = #{queryUId}
@@ -212,8 +212,8 @@
         cl.cl_u_id = #{uId} AND
       </if>
       cl.cl_invalid = 0 AND a.a_status = 2
-      AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-      AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      AND <![CDATA[  s.s_add_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  s.s_add_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
     </where>
     limit #{page}, #{limit}
   </select>
@@ -230,8 +230,8 @@
         cl.cl_u_id = #{uId} AND
       </if>
       cl.cl_invalid = 0 AND a.a_status = 2
-      AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-      AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      AND <![CDATA[  s.s_add_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  s.s_add_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
     </where>
   </select>
 
@@ -252,8 +252,8 @@
         cl.cl_u_id = #{uId} AND
       </if>
       cl.cl_invalid = 0 AND a.a_status = 2 AND s.s_whether = 0
-      AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-      AND <![CDATA[  s.s_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      AND <![CDATA[  s.s_add_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  s.s_add_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
     </where>
   </select>
 
@@ -333,8 +333,8 @@
         AND s.s_h_id = #{sHId}
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
-        AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  s.s_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  s.s_add_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H:%i') ]]>
+        AND <![CDATA[  s.s_add_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i') ]]>
       </if>
       <if test="queryUId != null and queryUId != ''">
         AND cl.cl_u_id = #{queryUId}
@@ -365,8 +365,8 @@
         AND s.s_h_id = #{sHId}
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
-        AND <![CDATA[  s.s_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  s.s_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  s.s_add_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H:%i') ]]>
+        AND <![CDATA[  s.s_add_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i') ]]>
       </if>
       <if test="queryUId != null and queryUId != ''">
         AND cl.cl_u_id = #{queryUId}

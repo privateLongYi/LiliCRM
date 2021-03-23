@@ -5,10 +5,9 @@ import com.linxi.entity.RoleMenu;
 import com.linxi.entity.User;
 import com.linxi.service.IRoleMenuService;
 import com.linxi.service.IUserService;
-import com.linxi.util.ErrorUtil;
-import com.linxi.util.RsaUtil;
-import com.linxi.util.SecurityUtil;
-import com.linxi.util.VerifyCodeImageUtil;
+import com.linxi.util.*;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,9 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.imageio.ImageIO;
@@ -74,7 +75,7 @@ public class CrmApplication {
 
 @Slf4j
 @Controller
-@RequestMapping("/")
+@RequestMapping("crm")
 @Configuration
 class IndexController {
 
@@ -111,14 +112,24 @@ class IndexController {
 		return modelAndView;
 	}
 
+	@PostMapping("doLogin")
+	@ApiOperation(value = "登录")
+	@ResponseBody
+	public DataResult login(@ApiParam(value = "角色编号", required = true) String username,
+							@ApiParam(value = "角色编号", required = true) String password){
+		System.out.println("========登录中========");
+		User user = iUserService.login(username, password);
+		return DataResult.success(user);
+	}
+
 	/**
 	 * 跳转首页
 	 */
-	@GetMapping("")
+	@GetMapping("/")
 	public void index1(HttpServletResponse response){
 		//内部重定向
 		try {
-			response.sendRedirect("/index");
+			response.sendRedirect("/crm/index");
 		} catch (IOException e) {
 			//输出到日志文件中
 			log.error(ErrorUtil.errorInfoToString(e));

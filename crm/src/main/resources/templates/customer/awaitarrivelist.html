@@ -59,11 +59,17 @@
 				</div>
 			</div>
 			<div class="layui-col-md4">
+				<label class="layui-form-label">城市</label>
+				<div class="layui-inline">
+					<input class="layui-input" id="searchClCity" autocomplete="off">
+				</div>
+			</div><br><br><br>
+			<!--<div class="layui-col-md4">
 				<label class="layui-form-label">来源</label>
 				<div class="layui-inline">
 					<input class="layui-input" id="searchClSource" autocomplete="off">
 				</div>
-			</div><br><br><br>
+			</div><br><br><br>-->
 			<div class="layui-col-md8">
 				<label class="layui-form-label">预约时间</label>
 				<div class="layui-input-inline layui-form">
@@ -122,7 +128,7 @@
             } else {
                 adminTable();
                 //获取角色为销售员的用户对象
-                $.get("/user/queryUserByRName", function (res){
+                $.get("/crm/user/queryUserByRName", function (res){
                     //定义负责人下拉框内容
                     var html = "";
                     $.each(res.data, function (index, item) {
@@ -135,7 +141,7 @@
             }
 
             //获取所有客户状态
-            $.get("/ctype/queryCtype", function (res){
+            $.get("/crm/ctype/queryCtype", function (res){
                 //定义负责人下拉框内容
                 var html = "";
                 $.each(res.data, function (index, item) {
@@ -161,7 +167,7 @@
                     clEntryFee = $("[name=searchclEntryFee]")[2].value;
                 }
                 var clUId = $("#searchClUId").val();
-                var clSource = $("#searchClSource").val();
+                var clCity = $("#searchClCity").val();
                 var searchATime = $("#searchATime").val();
                 var beginTime = null;
                 var endTime = null;
@@ -171,14 +177,14 @@
                 }
                 //根据筛选条件查询
                 table.reload('tab', {
-                    url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'+'&export=0'
+                    url: '/crm/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'+'&export=0'
                     ,where: {
                         cName: cName
                         ,cTel: cTel
                         ,clProject: clProject
                         ,clEntryFee: clEntryFee
                         ,clUId: clUId
-                        ,clSource: clSource
+                        ,clCity: clCity
                         ,beginTime: beginTime
                         ,endTime: endTime
                     }
@@ -203,7 +209,7 @@
                     clEntryFee = $("[name=searchclEntryFee]")[2].value;
                 }
                 var clUId = $("#searchclUId").val();
-                var clSource = $("#searchclSource").val();
+                var clCity = $("#searchClCity").val();
                 var searchATime = $("#searchATime").val();
                 var beginTime = "";
                 var endTime = "";
@@ -213,7 +219,7 @@
                 }
                 //根据筛选条件查询
                 $.ajax({
-                    url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店',
+                    url: '/crm/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店',
                     type: 'get',
                     data: {
                         cName: cName
@@ -221,7 +227,7 @@
                         ,clProject: clProject
                         ,clEntryFee: clEntryFee
                         ,clUId: clUId
-                        ,clSource: clSource
+                        ,clCity: clCity
                         ,beginTime: beginTime
                         ,endTime: endTime
                         ,export: 1
@@ -241,7 +247,7 @@
             function adminTable() {
                 table.render({
                     elem: '#tab'
-                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'+'&export=0' //数据接口
+                    ,url: '/crm/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'+'&export=0' //数据接口
                     ,title: '待到店客户' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
@@ -256,6 +262,7 @@
                             }
                             ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
                             ,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
+                            ,{field: 'clCity', minWidth: 120, title: '城市', align:'center'}
                             ,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
                             ,{field: 'aTime', minWidth: 200, title: '预约时间', align:'center'}
                             ,{field: 'isDue', minWidth: 200, title: '预约状态', align: 'center', sort: true
@@ -281,7 +288,7 @@
             function saleTable() {
                 table.render({
                     elem: '#tab'
-                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'+'&export=0' //数据接口
+                    ,url: '/crm/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待到店'+'&export=0' //数据接口
                     ,title: '待到店客户' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
@@ -295,6 +302,7 @@
                                 ,templet: '<div><a href="javascript:goDetail({{d.cId}}, {{d.clId}}, {{d.clUId}});" class="layui-table-link">{{d.cName}}</a></div>'
                             }
                             ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
+                            ,{field: 'clCity', minWidth: 120, title: '城市', align:'center'}
                             ,{field: 'hName', minWidth: 120, title: '预约门诊', align:'center'}
                             ,{field: 'aTime', minWidth: 200, title: '预约时间', align:'center'}
                             ,{field: 'isDue', minWidth: 200, title: '预约状态', align:'center', sort: true
@@ -518,9 +526,9 @@
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '处理',
-                        content: ['/dispose?cId='+data.cId+'&clId='+data.clId+'&aId='+data.aId+'&aTime='+data.aTime+
+                        content: ['/crm/dispose?cId='+data.cId+'&clId='+data.clId+'&aId='+data.aId+'&aTime='+data.aTime+
                         '&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+'&reUId='+data.clUId+'&clEntryFee='+data.clEntryFee],
-                        area: ['550px', '550px'],
+                        area: ['500px', '500px'],
                         end: function(){
                             tableReload();
                         }

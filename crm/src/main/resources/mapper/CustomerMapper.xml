@@ -19,7 +19,7 @@
 
   <!-- 高级筛选加分页查询客户 -->
   <select id="queryCScreen" resultMap="BaseResultMap">
-    SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
+    SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime, cl.cl_city AS clCity,
     cl.cl_remark AS clRemark, cl.cl_entry_fee AS clEntryFee, u.u_name AS uName, cl.cl_source AS clSource,
     cl.cl_message AS clMessage, ct.ct_type AS cType, u.u_id AS clUId FROM customer c
     LEFT JOIN clue cl ON c.c_id=cl.cl_c_id
@@ -38,6 +38,9 @@
       <if test="clProject != null and clProject != ''">
         AND cl.cl_project = #{clProject}
       </if>
+      <if test="clCity != null and clCity != ''">
+        AND cl.cl_city = #{clCity}
+      </if>
       <if test="clEntryFee == 0">
         AND (cl.cl_entry_fee = '0' OR cl.cl_entry_fee IS NULL OR cl.cl_entry_fee ='')
       </if>
@@ -45,8 +48,8 @@
         AND !(cl.cl_entry_fee = '0' OR cl.cl_entry_fee IS NULL OR cl.cl_entry_fee ='')
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
-        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H:%i') ]]>
+        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i') ]]>
       </if>
       <if test="clUId != null">
         AND cl.cl_u_id = #{clUId}
@@ -84,6 +87,9 @@
       <if test="clProject != null and clProject != ''">
         AND cl.cl_project = #{clProject}
       </if>
+      <if test="clCity != null and clCity != ''">
+        AND cl.cl_city = #{clCity}
+      </if>
       <if test="clEntryFee == 0">
         AND (cl.cl_entry_fee = '0' OR cl.cl_entry_fee IS NULL OR cl.cl_entry_fee ='')
       </if>
@@ -91,8 +97,8 @@
         AND !(cl.cl_entry_fee = '0' OR cl.cl_entry_fee IS NULL OR cl.cl_entry_fee ='')
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
-        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H:%i') ]]>
+        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i') ]]>
       </if>
       <if test="clUId != null">
         AND cl.cl_u_id = #{clUId}
@@ -109,7 +115,7 @@
 
   <!-- 高级筛选加分页查询客户 -->
   <select id="queryAACScreen" resultMap="BaseResultMap">
-    SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
+    SELECT c.*, cl.cl_id AS clId, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime, cl.cl_city AS clCity,
     cl.cl_remark AS clRemark, cl.cl_entry_fee AS clEntryFee,
     u.u_name AS uName, cl.cl_source AS clSource,
     cl.cl_message AS clMessage, ct.ct_type AS cType, a.a_id AS aId, h.h_id AS hId, h.h_name AS hName,
@@ -132,6 +138,9 @@
       <if test="clProject != null and clProject != ''">
         AND cl.cl_project = #{clProject}
       </if>
+      <if test="clCity != null and clCity != ''">
+        AND cl.cl_city = #{clCity}
+      </if>
       <if test="clEntryFee == 0">
         AND (cl.cl_entry_fee = '0' OR cl.cl_entry_fee IS NULL OR cl.cl_entry_fee ='')
       </if>
@@ -139,8 +148,8 @@
         AND !(cl.cl_entry_fee = '0' OR cl.cl_entry_fee IS NULL OR cl.cl_entry_fee ='')
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
-        AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  a.a_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  a.a_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H:%i') ]]>
+        AND <![CDATA[  a.a_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i') ]]>
       </if>
       <if test="clUId != null">
         AND cl.cl_u_id = #{clUId}
@@ -180,6 +189,9 @@
       <if test="clProject != null and clProject != ''">
         AND cl.cl_project = #{clProject}
       </if>
+      <if test="clCity != null and clCity != ''">
+        AND cl.cl_city = #{clCity}
+      </if>
       <if test="clEntryFee == 0">
         AND (cl.cl_entry_fee = '0' OR cl.cl_entry_fee IS NULL OR cl.cl_entry_fee ='')
       </if>
@@ -187,8 +199,8 @@
         AND !(cl.cl_entry_fee = '0' OR cl.cl_entry_fee IS NULL OR cl.cl_entry_fee ='')
       </if>
       <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
-        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H') ]]>
-        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H') ]]>
+        AND <![CDATA[  cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d %H:%i') ]]>
+        AND <![CDATA[  cl_place_time <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i') ]]>
       </if>
       <if test="clUId != null">
         AND cl.cl_u_id = #{clUId}
@@ -221,7 +233,7 @@
 
   <!-- 根据客户编号查看客户 -->
   <select id="queryCByCId" resultMap="BaseResultMap">
-    SELECT c.*, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
+    SELECT c.*, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime, cl.cl_city AS clCity,
     cl.cl_remark AS clRemark, cl.cl_entry_fee AS clEntryFee, cl_u_id AS clUId,
     cl.cl_source AS clSource, cl.cl_message AS clMessage, u.u_name AS uName,
     ct.ct_type AS cType, cl.cl_type_id AS clTypeId FROM customer c
@@ -233,7 +245,7 @@
 
   <!-- 根据线索编号查看客户 -->
   <select id="queryCByClId" resultMap="BaseResultMap">
-    SELECT c.*, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
+    SELECT c.*, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime, cl.cl_city AS clCity,
     cl.cl_remark AS clRemark, cl.cl_entry_fee AS clEntryFee, cl_u_id AS clUId,
     cl.cl_source AS clSource, cl.cl_message AS clMessage, u.u_name AS uName,
     ct.ct_type AS cType, cl.cl_type_id AS clTypeId FROM customer c
@@ -375,7 +387,7 @@
 
   <!--根据用户编号和起始时间查询客户-->
   <select id="queryCByTime" resultMap="BaseResultMap">
-    SELECT c.c_name, c.c_tel, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime,
+    SELECT c.c_name, c.c_tel, cl.cl_project AS clProject, cl.cl_place_time AS clPlaceTime, cl.cl_city AS clCity,
     cl.cl_entry_fee AS clEntryFee, cl.cl_message AS clMessage FROM customer c
     LEFT JOIN clue cl ON cl.cl_c_id=c.c_id
     <where>
@@ -454,8 +466,8 @@
       </if>
       AND cl.cl_invalid = 0
       AND (cl.cl_type_id = 6 OR cl.cl_type_id = 7)
-      AND <![CDATA[  cl.cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-      AND <![CDATA[  cl.cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      AND <![CDATA[  cl.cl_create_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  cl.cl_create_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
     </where>
     limit #{page}, #{limit}
   </select>
@@ -473,8 +485,8 @@
       </if>
       AND cl.cl_invalid = 0
       AND (cl.cl_type_id = 6 OR cl.cl_type_id = 7)
-      AND <![CDATA[  cl.cl_place_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
-      AND <![CDATA[  cl.cl_place_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
+      AND <![CDATA[  cl.cl_create_time >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d') ]]>
+      AND <![CDATA[  cl.cl_create_time <= DATE_ADD(DATE_FORMAT(#{endTime}, '%Y-%m-%d'),INTERVAL 1 DAY) ]]>
     </where>
   </select>
 

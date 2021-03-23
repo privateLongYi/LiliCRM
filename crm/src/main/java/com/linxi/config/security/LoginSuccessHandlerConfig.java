@@ -62,9 +62,9 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
 
         //查询当前与系统交互的用户，存储在本地线程安全上下文，校验账号有效性
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        com.linxi.entity.User login = iUserService.findByLoginName(user.getUsername());
+        com.linxi.entity.User login = iUserService.login(user.getUsername(), user.getPassword());
         //默认登陆成功
-        String msg = "{\"code\":\"300\",\"msg\":\"登录成功\",\"url\":\"/index\"}";
+        String msg = "{\"code\":\"300\",\"msg\":\"登录成功\",\"url\":\"/crm/index\"}";
         boolean flag = false;
 
         //校验不通过

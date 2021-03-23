@@ -27,7 +27,7 @@ import java.util.List;
  * @create 2020/9/5 14:34
  */
 @Controller
-@RequestMapping("payrecord")
+@RequestMapping("crm/payrecord")
 @Api(value = "支付记录控制类", tags = "支付记录控制类")
 public class PayrecordController {
 

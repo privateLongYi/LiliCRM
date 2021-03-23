@@ -82,7 +82,7 @@
             });
 
             //获取角色为销售员的用户对象
-            $.get("/user/queryUserByRName", function (res){
+            $.get("/crm/user/queryUserByRName", function (res){
                 //定义负责人下拉框内容
                 var html = "";
                 $.each(res.data, function (index, item) {
@@ -94,7 +94,7 @@
             })
 
             //获取所有门诊
-            $.get("/hospital/queryHospital", function (res){
+            $.get("/crm/hospital/queryHospital", function (res){
                 //定义门诊下拉框内容
                 var html = "";
                 $.each(res.data, function (index, item) {
@@ -106,7 +106,7 @@
             })
 
             //获取所有支付类型
-            $.get("/paytype/queryAllPaytype", function (res){
+            $.get("/crm/paytype/queryAllPaytype", function (res){
                 //定义支付类型下拉框内容
                 var html = "";
                 $.each(res.data, function (index, item) {
@@ -132,7 +132,7 @@
                 }
                 //根据筛选条件查询
                 table.reload('tab', {
-                    url: '/payrecord/queryPByScreen'
+                    url: '/crm/payrecord/queryPByScreen'
                     ,where: {
                         uId: uId
                         ,hId: hId
@@ -149,7 +149,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/payrecord/queryPByScreen' //数据接口
+				,url: '/crm/payrecord/queryPByScreen' //数据接口
 				,title: '支付记录' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页

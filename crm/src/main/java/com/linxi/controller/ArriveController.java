@@ -23,7 +23,7 @@ import java.util.List;
  * @create 2020/9/12 18:25
  */
 @Controller
-@RequestMapping("arrive")
+@RequestMapping("crm/arrive")
 @Api(value = "未到店客户控制类", tags = "未到店客户控制类")
 public class ArriveController {
 

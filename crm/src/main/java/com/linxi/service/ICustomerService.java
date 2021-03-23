@@ -20,6 +20,7 @@ public interface ICustomerService {
                                 @Param("cName") String cName,
                                 @Param("cTel") String cTel,
                                 @Param("clProject") String clProject,
+                                @Param("clCity") String clCity,
                                 @Param("clEntryFee") String clEntryFee,
                                 @Param("beginTime") String beginTime,
                                 @Param("endTime") String endTime,
@@ -34,6 +35,7 @@ public interface ICustomerService {
                              @Param("cName") String cName,
                              @Param("cTel") String cTel,
                              @Param("clProject") String clProject,
+                             @Param("clCity") String clCity,
                              @Param("clEntryFee") String clEntryFee,
                              @Param("beginTime") String beginTime,
                              @Param("endTime") String endTime,
@@ -43,32 +45,34 @@ public interface ICustomerService {
 
     //高级筛选加分页查询客户
     List<Customer> queryAACScreen(@Param("uId") Integer uId,
+                                  @Param("rName") String rName,
+                                  @Param("page") Integer page,
+                                  @Param("limit") Integer limit,
+                                  @Param("cName") String cName,
+                                  @Param("cTel") String cTel,
+                                  @Param("clProject") String clProject,
+                                  @Param("clCity") String clCity,
+                                  @Param("clEntryFee") String clEntryFee,
+                                  @Param("beginTime") String beginTime,
+                                  @Param("endTime") String endTime,
+                                  @Param("clUId") Integer clUId,
+                                  @Param("clSource") String clSource,
+                                  @Param("clTypeId") Integer clTypeId,
+                                  @Param("export") Integer export);
+
+    //获得客户总数量
+    Integer getAACTotalByScreen(@Param("uId") Integer uId,
                                 @Param("rName") String rName,
-                                @Param("page") Integer page,
-                                @Param("limit") Integer limit,
                                 @Param("cName") String cName,
                                 @Param("cTel") String cTel,
                                 @Param("clProject") String clProject,
+                                @Param("clCity") String clCity,
                                 @Param("clEntryFee") String clEntryFee,
                                 @Param("beginTime") String beginTime,
                                 @Param("endTime") String endTime,
                                 @Param("clUId") Integer clUId,
                                 @Param("clSource") String clSource,
-                                @Param("clTypeId") Integer clTypeId,
-                                @Param("export") Integer export);
-
-    //获得客户总数量
-    Integer getAACTotalByScreen(@Param("uId") Integer uId,
-                             @Param("rName") String rName,
-                             @Param("cName") String cName,
-                             @Param("cTel") String cTel,
-                             @Param("clProject") String clProject,
-                             @Param("clEntryFee") String clEntryFee,
-                             @Param("beginTime") String beginTime,
-                             @Param("endTime") String endTime,
-                             @Param("clUId") Integer clUId,
-                             @Param("clSource") String clSource,
-                             @Param("clTypeId") Integer clTypeId);
+                                @Param("clTypeId") Integer clTypeId);
 
     //新增客户
     Integer saveCustomer(Customer c);
@@ -76,7 +80,7 @@ public interface ICustomerService {
     //查询最大的编号（新增客户的编号）
     Integer queryMaxCId();
 
-    //根据编号删除线索
+    //根据编号删除客户
     void delCByCId(Integer cId);
 
     //根据编号查询客户
@@ -111,8 +115,8 @@ public interface ICustomerService {
 
     //根据用户编号和客户名称查询可成交客户总条数
     Integer getTotalCSCByUIdAndCName(@Param("rName") String rName,
-                                            @Param("uId") Integer uId,
-                                            @Param("cName") String cName);
+                                     @Param("uId") Integer uId,
+                                     @Param("cName") String cName);
 
     //根据用户编号和客户名称查询可成交客户
     List<Customer> queryCACByUIdAndCName(@Param("rName") String rName,

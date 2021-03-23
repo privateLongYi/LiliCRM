@@ -80,9 +80,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //登录处理
                 .addFilterBefore(captchaFilterConfig, UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
-                .loginProcessingUrl("/login")
+                .loginProcessingUrl("/crm/doLogin")
                 //未登录时默认跳转页面
-                .loginPage("/loginPage")
+                .loginPage("/crm/loginPage")
                 .failureHandler(loginFailureHandlerConfig)
                 .successHandler(loginSuccessHandlerConfig)
                 .permitAll()
@@ -91,8 +91,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //登出处理
                 .logout()
                 .addLogoutHandler(logoutHandlerConfig)
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/loginPage")
+                .logoutUrl("/crm/logout")
+                .logoutSuccessUrl("/crm/loginPage")
                 .permitAll()
                 .and();
         http
@@ -101,8 +101,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 
                 //无需权限访问
-                .antMatchers("/favicon.ico", "/layui/**", "/images/**",
-                        "/error/**", "/getVerifyCodeImage")
+                .antMatchers("/crm/favicon.ico", "/crm/layui/**", "/crm/images/**",
+                        "/crm/error/**", "/crm/getVerifyCodeImage")
                 .permitAll()
 
                 //其他接口需要登录后才能访问

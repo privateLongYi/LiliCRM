@@ -52,7 +52,7 @@
 				,form = layui.form //表单
 
 			//获取所有角色
-			$.get("/role/queryRole", function (res){
+			$.get("/crm/role/queryRole", function (res){
 				//定义角色下拉框内容
 				var html = "";
 				$.each(res.data, function (index, item) {
@@ -75,7 +75,7 @@
 				var uRoleId = $("#uRoleId").val();
 				//根据筛选条件查询
 				table.reload('tab', {
-					url: '/user/queryUserByUNameAndRId'
+					url: '/crm/user/queryUserByUNameAndRId'
 					,where: {
 						uName: uName,
 						uRoleId: uRoleId
@@ -90,13 +90,13 @@
 			function popup(index, url) {
 				var body = layer.getChildFrame('body', index);
 				//获取值
-				var uName = $(body).find("#uName").val().trim();
-				var uPassword = $(body).find("#uPassword").val().trim();
-				var uPassword2 = $(body).find("#uPassword2").val().trim();
+				var uName = $(body).find("#uName").val();
+				var uPassword = $(body).find("#uPassword").val();
+				var uPassword2 = $(body).find("#uPassword2").val();
 				var uRoleId = $(body).find("#uRoleId").val();
 				//声明格式是否正确
 				var verify = true;
-				if (uName == '' || uName.trim() == ''){
+				if (uName == '' || uName == ''){
 					layer.msg("用户名不能为空");
 					verify = false;
 					return;
@@ -108,12 +108,12 @@
 						return;
 					}
 				}
-				if (uPassword == '' || uPassword.trim() == ''){
+				if (uPassword == ''){
 					layer.msg("密码不能为空");
 					verify = false;
 					return;
 				}
-				if (uPassword2 == '' || uPassword2.trim() == ''){
+				if (uPassword2 == ''){
 					layer.msg("确认密码不能为空");
 					verify = false;
 					return;
@@ -125,8 +125,10 @@
 					return;
 				}
 				if(verify){
+                    var load = layer.load();
 					$.post(url, {uName:uName, uPassword:uPassword, uRoleId:uRoleId},
 						function (data) {
+					    	layer.close(load);
                             if (data.code != 200){
                                 layer.msg(data.msg);
                             } else {
@@ -143,7 +145,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/user/queryUserByUNameAndRId' //数据接口
+				,url: '/crm/user/queryUserByUNameAndRId' //数据接口
 				,title: '用户表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -171,12 +173,12 @@
 						layer.open({
 							type: 2, //层类型，iframe
 							title: '新增用户',
-							content: ['/user/usersave'],
-							area: ['400px', '330px'],
+							content: ['/crm/user/usersave'],
+							area: ['500px', '500px'],
 							resize: false,
 							btn: '确定',
 							btn1: function (index, layero) {
-								popup(index, "/user/saveUser");
+								popup(index, "/crm/user/saveUser");
 							},
 							cancel: function(index,layero){
 								layer.close(index);
@@ -195,8 +197,10 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'del'){
 					layer.confirm('真的删除行么', function(index){
-						$.get("/user/delUByUId?uId=" + data.uId, function(obj){
-							if (obj.code == 0) {
+                        var load = layer.load();
+						$.get("/crm/user/delUByUId?uId=" + data.uId, function(obj){
+							layer.close(load);
+						    if (obj.code == 200) {
 								layer.msg(obj.msg, {time: 500}, function () {
 									tableReload();
 								});
@@ -210,12 +214,12 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑客户',
-						content: ['/user/queryUByUId?uId=' + data.uId],
-						area: ['400px', '330px'],
+						content: ['/crm/user/queryUByUId?uId=' + data.uId],
+						area: ['500px', '500px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
-							popup(index, "/user/editUByUId?uId=" + data.uId);
+							popup(index, "/crm/user/editUByUId?uId=" + data.uId);
 						},
 						cancel: function(index,layero){
 							layer.close(index);

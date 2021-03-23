@@ -19,7 +19,7 @@ import java.util.List;
  * @create 2020/9/5 16:39
  */
 @Controller
-@RequestMapping("operating")
+@RequestMapping("crm/operating")
 @Api(value = "操作记录控制类", tags = "操作记录控制类")
 public class OperatingController {
 

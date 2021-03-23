@@ -70,7 +70,7 @@
 				var cName = $("#cName").val();
 				//根据客户名称查询
 				table.reload('tab', {
-					url: '/fail/queryFailByCName?uId='+uId+'&rName='+rName
+					url: '/crm/fail/queryFailByCName?uId='+uId+'&rName='+rName+'&page=1&limit=10&export=0'
 					,where: {
 						cName: cName
 					}
@@ -86,7 +86,7 @@
                 var cName = $("#cName").val();
                 //根据筛选条件查询
                 $.ajax({
-                    url: '/fail/queryFailByCName?uId='+uId+'&rName='+
+                    url: '/crm/fail/queryFailByCName?uId='+uId+'&rName='+
                     rName+'&cName='+cName+'&page=1&limit=10&export=1',
                     type: 'get',
                     async: false,
@@ -115,10 +115,12 @@
                 }
                 var fTime = $(body).find("#fTime").val();
                 var fContent = $(body).find("#fContent").val();
-                if (fContent != '' && fContent.trim() != '') {
-                    $.post("/follow/saveFollow", {uId:uId, uName:uName, cId:cId, fClId:fClId, fTime:fTime,
+                if (fContent != '') {
+                    var load = layer.load();
+                    $.post("/crm/follow/saveFollow", {uId:uId, uName:uName, cId:cId, fClId:fClId, fTime:fTime,
                             clUId:clUId, fTypeId:fTypeId, ftType:ftType, fContent:fContent},
                         function (data) {
+                        	layer.close(load);
                         	if (data.code != 200){
                         	    layer.msg(data.msg);
 							} else {
@@ -136,7 +138,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/fail/queryFailByCName?uId='+uId+'&rName='+rName+'&export=0' //数据接口
+				,url: '/crm/fail/queryFailByCName?uId='+uId+'&rName='+rName+'&export=0' //数据接口
 				,title: '未成交客户' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -176,7 +178,7 @@
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '新增客户跟进',
-                        content: ['/followsave?cId='+data.cId+'&clId='+data.clId+
+                        content: ['/crm/followsave?cId='+data.cId+'&clId='+data.clId+
                         '&clUId='+data.clUId+'&cName='+data.cName],
                         area: ['450px', '450px'],
                         skin: 'demo-class',
@@ -190,7 +192,7 @@
                             layer.open({
                                 type: 2, //层类型，iframe
                                 title: '新增改约记录',
-                                content: ['/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+
+                                content: ['/crm/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+
                                 '&aId='+data.flAId+'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
                                 '&aTime='+data.aTime],
                                 area: ['450px', '450px'],
@@ -209,10 +211,12 @@
                                     var reLastTime = $(body).find("#reLastTime").val();
                                     var reTime = $(body).find("#reTime").val();
                                     var reCause = $(body).find("#reCause").val();
-                                    if (reTime != '' && reCause != '' && reCause.trim() != '') {
-                                        $.post("/reroute/saveReroute", {uId:uId, uName:uName, cName:cName, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
+                                    if (reTime != '' && reCause != '') {
+                                        var load = layer.load();
+                                        $.post("/crm/reroute/saveReroute", {uId:uId, uName:uName, cName:cName, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
                                                 aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause, flId:data.flId},
                                             function (data) {
+                                            	layer.close(load);
                                             	if (data.code != 200){
                                             	    layer.msg(data.msg);
 												} else {
@@ -241,7 +245,7 @@
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '新增改约记录',
-                        content: ['/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+
+                        content: ['/crm/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+
                         '&aId='+data.flAId+'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
                         '&aTime='+data.aTime],
                         area: ['450px', '450px'],
@@ -260,10 +264,12 @@
                             var reLastTime = $(body).find("#reLastTime").val();
                             var reTime = $(body).find("#reTime").val();
                             var reCause = $(body).find("#reCause").val();
-                            if (reTime != '' && reCause != '' && reCause.trim() != '') {
-                                $.post("/reroute/saveReroute", {uId:uId, uName:uName, cName:cName, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
+                            if (reTime != '' && reCause != '') {
+                                var load = layer.load();
+                                $.post("/crm/reroute/saveReroute", {uId:uId, uName:uName, cName:cName, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
                                         aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause, flId:data.flId},
                                     function (data) {
+                                    	layer.close(load);
                                     	if (data.code != 200){
                                     	    layer.msg(data.msg);
 										} else {
@@ -287,7 +293,7 @@
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '新增成交客户',
-                        content: ['/successsave?cId='+data.cId+'&clId='+data.clId+'&sAId='+data.flAId+
+                        content: ['/crm/successsave?cId='+data.cId+'&clId='+data.clId+'&sAId='+data.flAId+
                         '&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+'&clEntryFee='+data.clEntryFee],
                         area: ['500px', '450px'],
                         resize: false,
@@ -305,11 +311,11 @@
                             if ($(body).find("[name=clEntryFee]")[1].checked){
                                 isDeduction = $(body).find("#isDeduction").val();
                             }
-                            console.log("isDeduction:"+isDeduction);
                             var sSum = $(body).find("#sSum").val();
                             var sPaysum = $(body).find("#sPaysum").val();
+                            var sTime = $(body).find("#sTime").val();
                             var sRemark = $(body).find("#sRemark").val();
-                            if (sSum != '' && sSum.trim() != '') {
+                            if (sSum != '' && sPaysum != '' && sTime != '') {
                                 //声明格式是否正确
                                 var verify = true;
                                 //验证成交金额
@@ -325,7 +331,8 @@
                                     return;
                                 }
                                 if(verify) {
-                                    $.post("/success/saveSuccess", {
+                                    var load = layer.load();
+                                    $.post("/crm/success/saveSuccess", {
                                             uId: uId,
                                             uName:uName,
                                             cName:cName,
@@ -335,11 +342,13 @@
                                             sHId: sHId,
                                             sMessage: sMessage,
                                             isDeduction: isDeduction,
-                                            sSum: sSum.trim(),
-                                            sPaysum: sPaysum.trim(),
+                                            sSum: sSum,
+                                            sPaysum: sPaysum,
+                                        	sTime: sTime,
                                             sRemark: sRemark
                                         },
                                         function (data) {
+                                        	layer.close(load);
                                         	if (data.code != 200){
                                         	    layer.msg(data.msg);
 											} else {

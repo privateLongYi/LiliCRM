@@ -55,7 +55,7 @@
 				var rName = $("#rName").val();
 				//根据筛选条件查询
 				table.reload('tab', {
-					url: '/role/queryRByRName'
+					url: '/crm/role/queryRByRName'
 					,where: {
 						rName: rName
 					}
@@ -72,14 +72,16 @@
 				var rName = $(body).find("#rName").val();
 				//声明格式是否正确
 				var verify = true;
-				if (rName.trim() == '' || rName.trim() == ''){
+				if (rName == ''){
 					layer.msg("角色名不能为空");
 					verify = false;
 					return;
 				}
 				if(verify){
+                    var load = layer.load();
 					$.post(url, {rName:rName},
 						function (data) {
+					    	layer.close(load);
 					    	if (data.code != 200){
 					    	    layer.msg(data.msg);
 							} else {
@@ -96,7 +98,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/role/queryRByRName' //数据接口
+				,url: '/crm/role/queryRByRName' //数据接口
 				,title: '角色表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -123,12 +125,12 @@
 						layer.open({
 							type: 2, //层类型，iframe
 							title: '新增角色',
-							content: ['/role/rolesave'],
-							area: ['300px', '200px'],
+							content: ['/crm/role/rolesave'],
+							area: ['500px', '500px'],
 							resize: false,
 							btn: '确定',
 							btn1: function (index, layero) {
-								popup(index, "/role/saveRole");
+								popup(index, "/crm/role/saveRole");
 							},
 							cancel: function(index,layero){
 								layer.close(index);
@@ -147,8 +149,10 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'del'){
 					layer.confirm('真的删除行么', function(index){
-						$.get("/role/delRByRId?rId=" + data.rId, function(obj){
-							if (obj.code == 0) {
+                        var load = layer.load();
+						$.get("/crm/role/delRByRId?rId=" + data.rId, function(obj){
+							layer.close(load);
+						    if (obj.code == 200) {
 								layer.msg(obj.msg, {time: 500}, function () {
 									tableReload();
 								});
@@ -162,12 +166,12 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑角色',
-						content: ['/role/queryRByRId?rId=' + data.rId],
-						area: ['300px', '300px'],
+						content: ['/crm/role/queryRByRId?rId=' + data.rId],
+						area: ['500px', '500px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
-							popup(index, "/role/editRByRId?rId=" + data.rId);
+							popup(index, "/crm/role/editRByRId?rId=" + data.rId);
 						},
 						cancel: function(index,layero){
 							layer.close(index);
@@ -178,7 +182,7 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '设定角色',
-						content: ['/role/rolesetting?rId=' + data.rId],
+						content: ['/crm/role/rolesetting?rId=' + data.rId],
 						area: ['700px', '500px'],
 						resize: false,
 						cancel: function(index,layero){

@@ -67,7 +67,7 @@
     $("#aTime").val(aTime);
 
     //获取所有门诊
-    $.get("/hospital/queryHospital", function (res){
+    $.get("/crm/hospital/queryHospital", function (res){
         //定义预约门诊下拉框内容
         var html = "";
         $.each(res.data, function (index, item) {
@@ -83,7 +83,7 @@
     })
 
     //获取所有预约类型
-    $.get("/atype/queryAtype", function (res){
+    $.get("/crm/atype/queryAtype", function (res){
         //定义预约类型下拉框内容
         var html = "";
         $.each(res.data, function (index, item) {

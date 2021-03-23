@@ -99,7 +99,7 @@
             ,page: true //开启分页
             ,limit: 4 //每页显示条数
             ,limits: [4] //自定义可选每页显示条数
-            ,url: '/success/getGruopByUNameSSum?unit='+unit+'&beginTime='+begin+'&endTime='+end //数据接口
+            ,url: '/crm/success/getGruopByUNameSSum?unit='+unit+'&beginTime='+begin+'&endTime='+end //数据接口
             ,title: '成交额统计' //表格名称
             ,id: 'tab' //表格id
             ,cols: [ //表头
@@ -115,7 +115,7 @@
 		var sumes = [];
 		//根据起止时间和分组获取总成交额
 		$.ajax({
-			url: "/success/getGruopByUNameSSum"
+			url: "/crm/success/getGruopByUNameSSum"
 			,data: {unit:unit, beginTime:begin, endTime:end}
 			,async: false
 			,success: function (res) {

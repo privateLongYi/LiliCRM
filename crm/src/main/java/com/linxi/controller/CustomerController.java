@@ -23,7 +23,7 @@ import java.util.*;
  * @create 2020/8/2 14:19
  */
 @Controller
-@RequestMapping("customer")
+@RequestMapping("crm/customer")
 @Api(value = "客户信息控制类", tags = "客户信息控制类")
 public class CustomerController {
 
@@ -58,6 +58,7 @@ public class CustomerController {
                                    @ApiParam(name = "cName", value = "姓名", required = false) String cName,
                                    @ApiParam(name = "cTel", value = "电话", required = false) String cTel,
                                    @ApiParam(name = "clProject", value = "报名项目", required = false) String clProject,
+                                   @ApiParam(name = "clCity", value = "所在城市", required = false) String clCity,
                                    @ApiParam(name = "clEntryFee", value = "是否交报名费", required = false) String clEntryFee,
                                    @ApiParam(name = "clUId", value = "负责人编号", required = false) Integer clUId,
                                    @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
@@ -71,9 +72,9 @@ public class CustomerController {
             clTypeId = iCtypeService.queryCtypeByCtType(ctType);
             if (!ctType.equals("待到店")) {
                 //根据筛选条件查询客户
-                List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
+                List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clCity, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
                 //获取总条数
-                Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId);
+                Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, clProject, clCity, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId);
                 for (Customer customer : customeres){
                     //根据线索编号查询最近预约门诊
                     Appointment appointment = iAppointmentService.queryLastAByClId(customer.getClId());
@@ -99,7 +100,7 @@ public class CustomerController {
                 return DataResult.success(total, customeres);
             } else {
                 //根据筛选条件查询客户
-                List<Customer> customeres = iCustomerService.queryAACScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
+                List<Customer> customeres = iCustomerService.queryAACScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clCity, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
                 //赋值预约状态（预约已过，预约未过）
                 for (Customer customer : customeres) {
                     if (new Timestamp(System.currentTimeMillis()).after(customer.getaTime())) {
@@ -109,14 +110,14 @@ public class CustomerController {
                     }
                 }
                 //获取总条数
-                Integer total = iCustomerService.getAACTotalByScreen(uId, rName, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId);
+                Integer total = iCustomerService.getAACTotalByScreen(uId, rName, cName, cTel, clProject, clCity, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId);
                 return DataResult.success(total, customeres);
             }
         } else {
             //根据筛选条件查询客户
-            List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
+            List<Customer> customeres = iCustomerService.queryCScreen(uId, rName, (page - 1) * limit, limit, cName, cTel, clProject, clCity, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
             //获取总条数
-            Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId);
+            Integer total = iCustomerService.getTotalByScreen(uId, rName, cName, cTel, clProject, clCity, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId);
             for (Customer customer : customeres){
                 //根据线索编号查询最近预约门诊
                 Appointment appointment = iAppointmentService.queryLastAByClId(customer.getClId());
@@ -156,6 +157,7 @@ public class CustomerController {
                                    @ApiParam(name = "cWx", value = "微信号", required = true) String cWx,
                                    @ApiParam(name = "clProject", value = "报名项目", required = true) String clProject,
                                    @ApiParam(name = "clPlaceTime", value = "报名时间", required = true) String clPlaceTime,
+                                   @ApiParam(name = "clCity", value = "所在城市", required = true) String clCity,
                                    @ApiParam(name = "clEntryFee", value = "报名费", required = false) String clEntryFee,
                                    @ApiParam(name = "clUId", value = "用户编号", required = true) Integer clUId,
                                    @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
@@ -186,7 +188,7 @@ public class CustomerController {
             //新增客户
             iCustomerService.saveCustomer(c);
             //新增线索
-            Clue clue = new Clue(null, c.getcId(), clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
+            Clue clue = new Clue(null, c.getcId(), clProject, Timestamp.valueOf(clPlaceTime), clCity, clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
             iClueService.saveClue(clue);
             //新增操作记录
             Operating operating = new Operating(c.getcId(), uId, "新增", uName + "添加了客户" + cName);
@@ -237,6 +239,7 @@ public class CustomerController {
                                  @ApiParam(name = "cTel", value = "电话", required = true) String cTel,
                                  @ApiParam(name = "cWx", value = "微信号", required = true) String cWx,
                                  @ApiParam(name = "clProject", value = "项目", required = true) String clProject,
+                                 @ApiParam(name = "clCity", value = "所在城市", required = true) String clCity,
                                  @ApiParam(name = "clEntryFee", value = "报名费", required = false) String clEntryFee,
                                  @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
                                  @ApiParam(name = "clTypeId", value = "状态", required = true) Integer clTypeId,
@@ -247,7 +250,7 @@ public class CustomerController {
         //编辑客户
         iCustomerService.editCByCId(c);
         //创建线索
-        Clue clue = new Clue(null, cId, clProject, null, clRemark, clEntryFee, null, clSource, clMessage, clTypeId, 0);
+        Clue clue = new Clue(null, cId, clProject, null, clCity, clRemark, clEntryFee, null, clSource, clMessage, clTypeId, 0);
         //编辑线索
         iClueService.editClByCId(clue);
         //新增操作记录
@@ -374,6 +377,8 @@ public class CustomerController {
         if (successMoney == null) {
             map.put("successMoney", 0);
         } else {
+            BigDecimal b = new BigDecimal(successMoney);
+            successMoney = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             map.put("successMoney", successMoney);
         }
         //根据线索编号查询已交金额
@@ -381,11 +386,16 @@ public class CustomerController {
         if (successMoney == null) {
             map.put("payMoney", 0);
         } else {
+            BigDecimal b = new BigDecimal(payMoney);
+            payMoney = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             map.put("payMoney", payMoney);
         }
         //待交金额
         if (successMoney != null && payMoney != null) {
-            map.put("waitMoney", successMoney - payMoney);
+            Double waitMoney = successMoney - payMoney;
+            BigDecimal b = new BigDecimal(waitMoney);
+            waitMoney = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            map.put("waitMoney", waitMoney);
         } else {
             map.put("waitMoney", 0);
         }
@@ -455,11 +465,9 @@ public class CustomerController {
         String percent;
         //未成交客户数量
         Integer failTotal = iCustomerService.getTotalFCByTime(uId, rName, beginTime, endTime);
-        //成交客户数量
-        Integer successTotal = iCustomerService.getTotalSCByTime(uId, rName, beginTime, endTime);
-        if (failTotal + successTotal > 0){
+        if (failTotal + success > 0){
             DecimalFormat df = new DecimalFormat("0.00");//格式化小数
-            String num = df.format((float)successTotal/(float)(failTotal+successTotal)*100);
+            String num = df.format((float)success/(float)(failTotal+success)*100);
             percent = num + "%";
         } else {
             percent = "0%";
@@ -467,7 +475,10 @@ public class CustomerController {
         map.put("percent", percent);
         //客户成交金额
         Double successMoney = iSuccessService.queryMoneyByTime(uId, rName, beginTime, endTime, 0);
-        if (successMoney == null){
+        if (successMoney != null){
+            BigDecimal b = new BigDecimal(successMoney);
+            successMoney = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        } else {
             successMoney = 0.0;
         }
         map.put("successMoney", successMoney);
@@ -483,12 +494,19 @@ public class CustomerController {
         map.put("acup", acup);
         //客户实收金额
         Double payMoney = iSuccessService.queryMoneyByTime(uId, rName, beginTime, endTime, 1);
-        if (payMoney == null){
+        if (payMoney != null){
+            BigDecimal b = new BigDecimal(payMoney);
+            payMoney = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        } else {
             payMoney = 0.0;
         }
         map.put("payMoney", payMoney);
         //客户待收金额
         Double awaitMoney = successMoney - payMoney;
+        if (awaitMoney != 0){
+            BigDecimal b = new BigDecimal(awaitMoney);
+            awaitMoney = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        }
         map.put("awaitMoney", awaitMoney);
         return map;
     }

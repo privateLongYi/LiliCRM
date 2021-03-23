@@ -73,7 +73,7 @@
                 layer.msg('密码不能为空');
                 return false;
             }
-            $.post("login", {
+            $.post("doLogin", {
                 "username": data.username,
                 "password": data.password
             }, function (data) {

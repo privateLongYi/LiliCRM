@@ -23,6 +23,11 @@ public class UserService implements IUserService {
     private UserMapper userMapper;
 
     @Override
+    public User login(String username, String password) {
+        return userMapper.login(username, password);
+    }
+
+    @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public User findByLoginName(String username) {
         return userMapper.findByLoginName(username);

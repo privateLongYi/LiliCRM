@@ -25,7 +25,7 @@ import java.util.List;
  * @create 2020/8/31 21:08
  */
 @Controller
-@RequestMapping("appointment")
+@RequestMapping("crm/appointment")
 @Api(value = "预约客户控制类", tags = "预约客户控制类")
 public class AppointmentController {
 
@@ -129,6 +129,7 @@ public class AppointmentController {
                                    @ApiParam(name = "cWx", value = "微信号", required = true) String cWx,
                                    @ApiParam(name = "clProject", value = "报名项目", required = true) String clProject,
                                    @ApiParam(name = "clPlaceTime", value = "报名时间", required = true) String clPlaceTime,
+                                   @ApiParam(name = "clCity", value = "所在城市", required = true) String clCity,
                                    @ApiParam(name = "clEntryFee", value = "报名费", required = false) String clEntryFee,
                                    @ApiParam(name = "clUId", value = "用户编号", required = true) Integer clUId,
                                    @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
@@ -157,7 +158,7 @@ public class AppointmentController {
         //新增客户
         iCustomerService.saveCustomer(c);
         //新增线索
-        Clue clue = new Clue(null, c.getcId(), clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
+        Clue clue = new Clue(null, c.getcId(), clProject, Timestamp.valueOf(clPlaceTime), clCity, clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
         iClueService.saveClue(clue);
         //新增操作记录
         Operating operating = new Operating(c.getcId(), uId, "新增", uName + "添加了客户" + cName);

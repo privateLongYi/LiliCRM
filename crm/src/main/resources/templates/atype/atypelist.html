@@ -37,7 +37,7 @@
 			//表格重载
 			function tableReload(){
 				table.reload('tab', {
-					url: '/atype/queryAtypePage'
+					url: '/crm/atype/queryAtypePage'
 					,page: {
 						curr: 1 //重新从第 1 页开始
 					}
@@ -51,14 +51,16 @@
 				var atType = $(body).find("#atType").val();
 				//声明格式是否正确
 				var verify = true;
-				if (atType.trim() == ''){
+				if (atType == ''){
 					layer.msg("请输入预约类型");
 					verify = false;
 					return;
 				}
 				if(verify){
+                    var load = layer.load();
 					$.post(url, {atType:atType},
 						function (data) {
+					    	layer.close(load);
 							if (data.code != 200){
 								layer.msg(data.msg);
 							} else {
@@ -75,7 +77,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/atype/queryAtypePage' //数据接口
+				,url: '/crm/atype/queryAtypePage' //数据接口
 				,title: '预约类型表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -102,12 +104,12 @@
 						layer.open({
 							type: 2, //层类型，iframe
 							title: '新增预约类型',
-							content: ['/atype/atypesave'],
-							area: ['400px', '350px'],
+							content: ['/crm/atype/atypesave'],
+							area: ['500px', '500px'],
 							resize: false,
 							btn: '确定',
 							btn1: function (index, layero) {
-								popup(index, "/atype/saveAtype");
+								popup(index, "/crm/atype/saveAtype");
 							},
 							cancel: function(index,layero){
 								layer.close(index);
@@ -126,8 +128,10 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'del'){
 					layer.confirm('真的删除行么', function(index){
-						$.get("/atype/delAtypeByAtId?atId=" + data.atId, function(obj2){
-							if (obj2.code != 200) {
+                        var load = layer.load();
+						$.get("/crm/atype/delAtypeByAtId?atId=" + data.atId, function(obj2){
+							layer.close(load);
+						    if (obj2.code != 200) {
 								layer.msg(obj2.msg);
 							} else {
 								layer.msg(obj2.msg, {time: 500}, function () {
@@ -141,12 +145,12 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑预约类型',
-						content: ['/atype/queryAtypeByAtId?atId=' + data.atId],
-						area: ['400px', '350px'],
+						content: ['/crm/atype/queryAtypeByAtId?atId=' + data.atId],
+						area: ['500px', '500px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
-							popup(index, "/atype/editAtypeByAtId?atId=" + data.atId);
+							popup(index, "/crm/atype/editAtypeByAtId?atId=" + data.atId);
 						},
 						cancel: function(index,layero){
 							layer.close(index);

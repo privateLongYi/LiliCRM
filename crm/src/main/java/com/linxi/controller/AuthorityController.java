@@ -22,7 +22,7 @@ import java.util.List;
  * @create 2020/8/24 20:02
  */
 @Controller
-@RequestMapping("authority")
+@RequestMapping("crm/authority")
 @Api(value = "权限控制类", tags = "权限控制类")
 public class AuthorityController {
 

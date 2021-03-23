@@ -39,7 +39,7 @@
 			var rName = sessionStorage.getItem('rName');
 
             //获取角色为销售员的用户对象
-            $.get("/user/queryUserByRName", function (res){
+            $.get("/crm/user/queryUserByRName", function (res){
                 //定义负责人下拉框内容
                 var html = "";
                 $.each(res.data, function (index, item) {
@@ -53,7 +53,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待分配'+'&export=0' //数据接口
+				,url: '/crm/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待分配'+'&export=0' //数据接口
 				,title: '待分配客户' //表格名称
 				,id: 'tab' //表格id
                 ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
@@ -95,13 +95,18 @@
                                     param += item.clId + ",";
                                 });
                                 param = param.substring(0, param.length-1);
-								$.get("/clue/allot", {uId:uId, uName:uName, clUId:clUId, param:param}, function (data) {
-                                    if (data.code != 200){
+                                var load = layer.load();
+								$.get("/crm/clue/allot", {uId:uId, uName:uName, clUId:clUId, param:param}, function (data) {
+                                    layer.close(load);
+								    if (data.code != 200){
                                         layer.msg(data.msg);
 									} else {
                                         layer.msg(data.msg, {time: 500}, function () {
                                             table.reload('tab', {
-                                                url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待分配'+'&export=0'
+                                                url: '/crm/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待分配'+'&export=0'
+                                                ,page: {
+                                                    curr: 1 //重新从第 1 页开始
+                                                }
                                             })
                                         });
 									}

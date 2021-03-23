@@ -17,7 +17,7 @@
                 <span style="color: red;">*&nbsp;</span>姓名
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="cName"  placeholder="请输入姓名"
+                <input type="text" id="cName"  placeholder="请输入姓名" maxlength="20"
                        autocomplete="off" class="layui-input" th:value="${c.cName}">
                 <input type="hidden" id="cId" th:value="${c.cId}">
             </div>
@@ -46,18 +46,30 @@
                 <span style="color: red;">*&nbsp;</span>电话
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="cTel"  placeholder="请输入电话"
+                <input type="text" id="cTel"  placeholder="请输入电话" maxlength="11"
                        autocomplete="off" class="layui-input" th:value="${c.cTel}">
             </div>
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微信号
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="color: red;">*&nbsp;</span>城市
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="clCity" placeholder="请输入城市" maxlength="20"
+                       autocomplete="off" class="layui-input" th:value="${c.clCity}">
+            </div>
+            <label class="layui-form-label" style="width: auto;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微信号
             </label>
             <div class="layui-input-inline">
                 <input type="text" id="cWx" placeholder="请输入微信号"
                        autocomplete="off" class="layui-input" th:value="${c.cWx}">
             </div>
+        </div>
+
+        <br />
+        <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;报名项目
             </label>
             <div class="layui-input-inline layui-form">
@@ -67,12 +79,8 @@
                     <option value="其他" th:selected="${c.clProject == '其他'} ? true : false">其他</option>
                 </select>
             </div>
-        </div>
-
-        <br />
-        <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;报名费
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;报名费
             </label>
             <div class="layui-input-inline">
                 <input type="hidden" id="entryFee" th:value="${c.clEntryFee}">
@@ -83,15 +91,18 @@
                 <span id="txt" class="layui-form-mid layui-word-aux" style="float: right;"></span>
             </div>
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;来源
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;来源
             </label>
             <div class="layui-input-inline">
                 <input type="text" id="clSource" placeholder="请输入来源"
                        autocomplete="off" class="layui-input" th:value="${c.clSource}">
             </div>
+        </div>
+
+        <br />
+        <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态
             </label>
             <div class="layui-input-inline layui-form">
@@ -102,19 +113,17 @@
                 <input type="text" id="cType" readonly th:value="${c.cType}"
                        autocomplete="off" class="layui-input">
             </div>
-        </div>
-
-        <br />
-        <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;备注
             </label>
             <div class="layui-input-inline">
                 <textarea class="layui-textarea" id="clRemark"
                           autocomplete="off" th:text="${c.clRemark}"></textarea>
             </div>
             <label class="layui-form-label" style="width: auto;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;症状信息
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;症状信息
             </label>
             <div class="layui-input-inline">
                 <textarea class="layui-textarea" id="clMessage"

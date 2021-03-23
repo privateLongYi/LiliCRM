@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import java.util.Map;
  * @create 2020/9/3 20:14
  */
 @Controller
-@RequestMapping("success")
+@RequestMapping("crm/success")
 @Api(value = "成交客户控制类", tags = "成交客户控制类")
 public class SuccessController {
 
@@ -155,7 +156,7 @@ public class SuccessController {
         //改变客户状态为成交状态
         iClueService.editClTypeIdByClId(clId, clTypeId);
         //编辑报名费为已抵扣
-        if (isDeduction.equals("1")){
+        if ("1".equals(isDeduction)){
             //根据线索编号查询线索
             Clue clue = iClueService.queryClByClId(clId);
             iClueService.editClByClId(clId, clue.getClEntryFee() + "(已抵扣)");
@@ -355,16 +356,26 @@ public class SuccessController {
         Double sSum = iSuccessService.queryMoneyByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, 0);
         if (sSum == null){
             sSum = 0.0;
+        } else {
+            BigDecimal b = new BigDecimal(sSum);
+            sSum = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         }
         map.put("sSum", sSum);
         //根据筛选条件查询支付金额
         Double sPaysum = iSuccessService.queryMoneyByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime, 1);
         if (sPaysum == null){
             sPaysum = 0.0;
+        } else {
+            BigDecimal b = new BigDecimal(sPaysum);
+            sPaysum = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         }
         map.put("sPaysum", sPaysum);
         //待收金额
         Double awaitMoney = sSum - sPaysum;
+        if (awaitMoney != null){
+            BigDecimal b = new BigDecimal(awaitMoney);
+            awaitMoney = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        }
         map.put("awaitMoney", awaitMoney);
         //根据筛选条件分组查询退款总金额
         List<Success> successes = iSuccessService.queryRefundByScreen(uId, rName, cName, cTel, sHId, queryUId, beginTime, endTime);
@@ -378,6 +389,8 @@ public class SuccessController {
                 refundMoney += success.getRefund();
             }
         }
+        BigDecimal b = new BigDecimal(refundMoney);
+        refundMoney = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         map.put("refundCount", refundCount);
         map.put("refundMoney", refundMoney);
         return map;
@@ -410,6 +423,7 @@ public class SuccessController {
                                     @ApiParam(name = "cWx", value = "微信号", required = true) String cWx,
                                     @ApiParam(name = "clProject", value = "报名项目", required = true) String clProject,
                                     @ApiParam(name = "clPlaceTime", value = "报名时间", required = true) String clPlaceTime,
+                                    @ApiParam(name = "clCity", value = "所在城市", required = true) String clCity,
                                     @ApiParam(name = "clEntryFee", value = "报名费", required = false) String clEntryFee,
                                     @ApiParam(name = "clUId", value = "用户编号", required = true) Integer clUId,
                                     @ApiParam(name = "clSource", value = "来源", required = false) String clSource,
@@ -445,7 +459,7 @@ public class SuccessController {
         //新增客户
         iCustomerService.saveCustomer(c);
         //新增线索
-        Clue clue = new Clue(null, c.getcId(), clProject, Timestamp.valueOf(clPlaceTime), clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
+        Clue clue = new Clue(null, c.getcId(), clProject, Timestamp.valueOf(clPlaceTime), clCity, clRemark, clEntryFee, clUId, clSource, clMessage, clTypeId, 0);
         iClueService.saveClue(clue);
         //新增操作记录
         Operating operating = new Operating(c.getcId(), uId, "新增", uName + "添加了客户" + cName);

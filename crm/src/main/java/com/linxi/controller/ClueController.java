@@ -20,7 +20,7 @@ import java.util.List;
  * @create 2020/8/2 14:19
  */
 @Controller
-@RequestMapping("clue")
+@RequestMapping("crm/clue")
 @Api(value = "线索控制类", tags = "线索控制类")
 public class ClueController {
 
@@ -121,7 +121,7 @@ public class ClueController {
 
         //新增线索
         Clue cl = new Clue(null, clue.getClCId(), clue.getClProject(), clue.getClPlaceTime(),
-                clue.getClRemark(), clue.getClEntryFee(),
+                clue.getClCity(), clue.getClRemark(), clue.getClEntryFee(),
                 clUId, clue.getClSource(), clue.getClMessage(), clue.getClTypeId(), 0);
         iClueService.saveClue(cl);
 
@@ -203,9 +203,11 @@ public class ClueController {
         if (sAId != null){
             //根据预约编号查询成交
             List<Success> successes = iSuccessService.querySBySAId(sAId);
-            Success success = successes.get(0);
-            //根据成交编号扣除报名费
-            iSuccessService.editMoneyBySId(success.getsId(), success.getsSum() - Integer.parseInt(clEntryFee), success.getsPaysum() - Integer.parseInt(clEntryFee));
+            if (successes.size() > 0){
+                Success success = successes.get(0);
+                //根据成交编号扣除报名费
+                iSuccessService.editMoneyBySId(success.getsId(), success.getsSum() - Integer.parseInt(clEntryFee), success.getsPaysum() - Integer.parseInt(clEntryFee));
+            }
         }
         //根据线索编号编辑报名费
         iClueService.editClByClId(clId, clEntryFee + "(已退还)");

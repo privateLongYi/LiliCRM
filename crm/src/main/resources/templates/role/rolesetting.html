@@ -34,7 +34,7 @@
 		var rId = $("#rId").val();
 
 		//获取树形组件
-		$.get('/role/roleSetting?rId=' + rId, function(data){
+		$.get('/crm/role/roleSetting?rId=' + rId, function(data){
 
 			tree.render({
 				elem: '#demo'
@@ -65,9 +65,15 @@
 				//去除最后一个逗号
 				menuList = menuList.substring(0, menuList.length-1)
 				//保存到数据库
-				$.get("/authority/editRMByRId", {rId:rId, menuList:menuList}, function(obj){
-					if(obj.code == 0){
-						layer.msg(obj.msg);
+                var load = layer.load();
+				$.get("/crm/authority/editRMByRId", {rId:rId, menuList:menuList}, function(obj){
+					layer.close(load);
+				    if(obj.code == 200){
+                        layer.msg(obj.msg, {time: 500}, function () {
+                            parent.layer.closeAll();
+                        });
+					} else {
+					    layer.msg(obj.msg);
 					}
 				});
 			}

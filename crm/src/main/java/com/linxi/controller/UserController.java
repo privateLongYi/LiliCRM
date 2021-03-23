@@ -24,7 +24,7 @@ import java.util.List;
  * @create 2020/7/31 20:03
  */
 @Controller
-@RequestMapping("user")
+@RequestMapping("crm/user")
 @Api(value = "用户控制类", tags = "用户控制类")
 public class UserController {
 

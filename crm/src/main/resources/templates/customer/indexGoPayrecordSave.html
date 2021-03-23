@@ -99,12 +99,14 @@
         elem: '#payTime' //指定元素
         ,type: 'datetime' //时间格式
         ,trigger: 'click' //采用click弹出
+        ,btns: ['now', 'confirm'] //底部按钮
+        ,value: new Date() //默认时间
     });
 
     //根据客户名称查询成交客户
     function getList(cName, page){
         if(cName != ""){
-            $.post("/success/querySCByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
+            $.post("/crm/success/querySCByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
                     html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].sId+"&quot;,&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].sSum+"&quot;,&quot;"+data.data[i].sPaysum+"&quot;);'>"+data.data[i].cName+"--"+data.data[i].cTel+"</div>";
@@ -193,7 +195,7 @@
     }
 
     //根据支付类型查询编号
-    $.get("/paytype/queryPByPayType", {payType:'退款'}, function (data){
+    $.get("/crm/paytype/queryPByPayType", {payType:'退款'}, function (data){
         //赋值
         $("#payTypeId").val(data.data);
     })

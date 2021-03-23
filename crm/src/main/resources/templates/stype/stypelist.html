@@ -38,7 +38,7 @@
 			//表格重载
 			function tableReload(){
 				table.reload('tab', {
-					url: '/stype/queryStypePage'
+					url: '/crm/stype/queryStypePage'
 					,page: {
 						curr: 1 //重新从第 1 页开始
 					}
@@ -52,14 +52,16 @@
 				var stType = $(body).find("#stType").val();
 				//声明格式是否正确
 				var verify = true;
-				if (stType.trim() == ''){
+				if (stType == ''){
 					layer.msg("请输入成交类型");
 					verify = false;
 					return;
 				}
 				if(verify){
+                    var load = layer.load();
 					$.post(url, {stType:stType},
 						function (data) {
+					    	layer.close(load);
                             if (data.code != 200){
                                 layer.msg(data.msg);
                             } else {
@@ -76,7 +78,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/stype/queryStypePage' //数据接口
+				,url: '/crm/stype/queryStypePage' //数据接口
 				,title: '成交类型表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -103,12 +105,12 @@
 						layer.open({
 							type: 2, //层类型，iframe
 							title: '新增成交类型',
-							content: ['/stype/stypesave'],
+							content: ['/crm/stype/stypesave'],
 							area: ['400px', '350px'],
 							resize: false,
 							btn: '确定',
 							btn1: function (index, layero) {
-								popup(index, "/stype/saveStype");
+								popup(index, "/crm/stype/saveStype");
 							},
 							cancel: function(index,layero){
 								layer.close(index);
@@ -127,8 +129,10 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'del'){
 					layer.confirm('真的删除行么', function(index){
-						$.get("/stype/delStypeByStId?stId=" + data.stId, function(obj){
-							if (obj.code == 0) {
+                        var load = layer.load();
+						$.get("/crm/stype/delStypeByStId?stId=" + data.stId, function(obj){
+							layer.close(load);
+						    if (obj.code == 0) {
 								layer.msg(obj.msg, {time: 500}, function () {
 									tableReload();
 								});
@@ -142,12 +146,12 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑成交类型',
-						content: ['/stype/queryStypeByStId?stId=' + data.stId],
+						content: ['/crm/stype/queryStypeByStId?stId=' + data.stId],
 						area: ['400px', '350px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
-							popup(index, "/stype/editStypeByStId?stId=" + data.stId);
+							popup(index, "/crm/stype/editStypeByStId?stId=" + data.stId);
 						},
 						cancel: function(index,layero){
 							layer.close(index);

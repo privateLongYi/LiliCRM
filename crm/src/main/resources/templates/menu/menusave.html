@@ -12,7 +12,9 @@
     <br />
     <form class="layui-form" lay-filter="form">
         <div class="layui-form-item">
-            <label class="layui-form-label">菜单名称</label>
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>菜单名称
+            </label>
             <div class="layui-input-block">
                 <input type="text" id="mName" placeholder="请输入菜单名称"
                        autocomplete="off" class="layui-input">
@@ -29,7 +31,7 @@
             <label class="layui-form-label">父级菜单</label>
             <div class="layui-input-block">
                 <select id="mParentId" lay-filter="change">
-                    <option value=""></option>
+                    <option value="0"></option>
                 </select>
             </div>
         </div>
@@ -37,6 +39,15 @@
             <label class="layui-form-label">菜单类型</label>
             <div class="layui-input-block">
                 <input type="text" id="mType" class="layui-input" value="父级" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span style="color: red;">*&nbsp;</span>菜单导航文本
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="mNavgition" placeholder="请输入菜单导航文本"
+                       autocomplete="off" class="layui-input">
             </div>
         </div>
     </form>
@@ -51,7 +62,7 @@
         ,layer = layui.layer;
 
     //查询父级菜单
-    $.get("/menu/queryMParent", function(obj){
+    $.get("/crm/menu/queryMParent", function(obj){
         //定义父级菜单下拉框内容
         var html = "";
         $.each(obj.data, function (index, item) {

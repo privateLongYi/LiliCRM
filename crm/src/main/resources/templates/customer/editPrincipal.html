@@ -30,7 +30,7 @@
         ,layer = layui.layer;
 
     //获取角色为销售员的用户对象
-    $.get("/user/queryUserByRName", function (res){
+    $.get("/crm/user/queryUserByRName", function (res){
         //定义负责人下拉框内容
         var html = "";
         $.each(res.data, function (index, item) {

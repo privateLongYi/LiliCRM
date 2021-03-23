@@ -23,7 +23,7 @@ import java.util.List;
  * @create 2020/8/22 14:40
  */
 @Controller
-@RequestMapping("hospital")
+@RequestMapping("crm/hospital")
 @Api(value = "门诊控制类", tags = "门诊控制类")
 public class HospitalController {
 

@@ -54,7 +54,7 @@
 				var mName = $("#mName").val();
 				//根据筛选条件查询
 				table.reload('tab', {
-					url: '/menu/queryMByMName'
+					url: '/crm/menu/queryMByMName'
 					,where: {
 						mName: mName
 					}
@@ -72,21 +72,19 @@
 				var mUrl = $(body).find("#mUrl").val();
 				var mParentId = $(body).find("#mParentId").val();
 				var mType = $(body).find("#mType").val();
+                var mNavgition = $(body).find("#mNavgition").val();
 				//声明格式是否正确
 				var verify = true;
-				if (mName.trim() == '' || mName.trim() == ''){
-					layer.msg("菜单名称不能为空");
-					verify = false;
-					return;
-				}
-				if (mUrl.trim() == '' || mUrl.trim() == ''){
-					layer.msg("菜单路径不能为空");
+				if (mName == '' || mNavgition == ''){
+					layer.msg("请填写带星号的必填项");
 					verify = false;
 					return;
 				}
 				if(verify){
-					$.post(url, {mName:mName, mUrl:mUrl, mParentId:mParentId, mType:mType},
+                    var load = layer.load();
+					$.post(url, {mName:mName, mUrl:mUrl, mParentId:mParentId, mType:mType, mNavgition:mNavgition},
 						function (data) {
+					    	layer.close(load);
 					    	if (data.code != 200){
 					    	    layer.msg(data.msg);
 							} else {
@@ -103,7 +101,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/menu/queryMByMName' //数据接口
+				,url: '/crm/menu/queryMByMName' //数据接口
 				,title: '角色表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -117,6 +115,7 @@
 						,{field: 'mName', minWidth: 120, title: '菜单名称', align:'center'}
 						,{field: 'mUrl', minWidth: 120, title: '菜单路径', align:'center'}
 						,{field: 'mType', minWidth: 120, title: '菜单类型', align:'center'}
+                        ,{field: 'mNavigition', minWidth: 120, title: '菜单导航文本', align:'center'}
 						,{fixed: 'right', minWidth: 120, align:'center', toolbar: '#barDemo'}
 					]
 				]
@@ -132,12 +131,12 @@
 						layer.open({
 							type: 2, //层类型，iframe
 							title: '新增菜单',
-							content: ['/menu/menusave'],
-							area: ['400px', '350px'],
+							content: ['/crm/menu/menusave'],
+							area: ['500px', '500px'],
 							resize: false,
 							btn: '确定',
 							btn1: function (index, layero) {
-								popup(index, "/menu/saveMenu");
+								popup(index, "/crm/menu/saveMenu");
 							},
 							cancel: function(index,layero){
 								layer.close(index);
@@ -156,8 +155,10 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'del'){
 					layer.confirm('真的删除行么', function(index){
-						$.get("/menu/delMByMId?mId=" + data.mId, function(obj){
-							if (obj.code == 0) {
+                        var load = layer.load();
+						$.get("/crm/menu/delMByMId?mId=" + data.mId, function(obj){
+							layer.close(load);
+						    if (obj.code == 200) {
 								layer.msg(obj.msg, {time: 500}, function () {
 									tableReload();
 								});
@@ -171,12 +172,12 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑菜单',
-						content: ['/menu/queryMByMId?mId=' + data.mId],
-						area: ['400px', '350px'],
+						content: ['/crm/menu/queryMByMId?mId=' + data.mId],
+						area: ['500px', '500px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
-							popup(index, "/menu/editMByMId?mId=" + data.mId);
+							popup(index, "/crm/menu/editMByMId?mId=" + data.mId);
 						},
 						cancel: function(index,layero){
 							layer.close(index);

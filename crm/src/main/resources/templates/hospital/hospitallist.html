@@ -38,7 +38,7 @@
 			//表格重载
 			function tableReload(){
 				table.reload('tab', {
-					url: '/hospital/queryHPage'
+					url: '/crm/hospital/queryHPage'
 					,page: {
 						curr: 1 //重新从第 1 页开始
 					}
@@ -52,14 +52,16 @@
 				var hName = $(body).find("#hName").val();
 				//声明格式是否正确
 				var verify = true;
-				if (hName.trim() == ''){
+				if (hName == ''){
 					layer.msg("请输入门诊名称");
 					verify = false;
 					return;
 				}
 				if(verify){
+                    var load = layer.load();
 					$.post(url, {hName:hName},
 						function (data) {
+					    	layer.close(load);
 					    	if (data.code != 200){
 					    	    layer.msg(data.msg);
 							} else {
@@ -76,7 +78,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/hospital/queryHPage' //数据接口
+				,url: '/crm/hospital/queryHPage' //数据接口
 				,title: '门诊表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -103,12 +105,12 @@
 						layer.open({
 							type: 2, //层类型，iframe
 							title: '新增门诊',
-							content: ['/hospital/hospitalsave'],
-							area: ['400px', '350px'],
+							content: ['/crm/hospital/hospitalsave'],
+							area: ['500px', '500px'],
 							resize: false,
 							btn: '确定',
 							btn1: function (index, layero) {
-								popup(index, "/hospital/saveHospital");
+								popup(index, "/crm/hospital/saveHospital");
 							},
 							cancel: function(index,layero){
 								layer.close(index);
@@ -127,8 +129,10 @@
 					,layEvent = obj.event; //获得 lay-event 对应的值
 				if(layEvent === 'del'){
 					layer.confirm('真的删除行么', function(index){
-						$.get("/hospital/delHByHId?hId=" + data.hId, function(obj){
-							if (obj.code == 0) {
+                        var load = layer.load();
+						$.get("/crm/hospital/delHByHId?hId=" + data.hId, function(obj){
+							layer.close(load);
+						    if (obj.code == 200) {
 								layer.msg(obj.msg, {time: 500}, function () {
 									tableReload();
 								});
@@ -142,12 +146,12 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑门诊',
-						content: ['/hospital/queryHByHId?hId=' + data.hId],
-						area: ['400px', '350px'],
+						content: ['/crm/hospital/queryHByHId?hId=' + data.hId],
+						area: ['500px', '500px'],
 						resize: false,
 						btn: '确定',
 						btn1: function (index, layero) {
-							popup(index, "/hospital/editHByHId?hId=" + data.hId);
+							popup(index, "/crm/hospital/editHByHId?hId=" + data.hId);
 						},
 						cancel: function(index,layero){
 							layer.close(index);

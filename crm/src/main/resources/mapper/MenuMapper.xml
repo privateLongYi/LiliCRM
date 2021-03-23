@@ -13,6 +13,7 @@
     <result column="m_url" jdbcType="VARCHAR" property="mUrl" />
     <result column="m_parent_id" jdbcType="INTEGER" property="mParentId" />
     <result column="m_type" jdbcType="VARCHAR" property="mType" />
+    <result column="m_navgition" jdbcType="VARCHAR" property="mNavgition" />
   </resultMap>
 
   <!--根据菜单名称查询菜单-->
@@ -43,7 +44,14 @@
 
   <!--新增菜单-->
   <insert id="saveMenu">
-    INSERT INTO menu(m_name, m_url, m_parent_id, m_type) VALUES (#{mName}, #{mUrl}, #{mParentId}, #{mType})
+    <if test="mType == '父级'">
+      INSERT INTO menu(m_name, m_parent_id, m_type, m_navgition)
+      VALUES (#{mName}, #{mParentId}, #{mType}, #{mNavgition})
+    </if>
+    <if test="mType == '子级'">
+      INSERT INTO menu(m_name, m_url, m_parent_id, m_type, m_navgition)
+      VALUES (#{mName}, #{mUrl}, #{mParentId}, #{mType}, #{mNavgition})
+    </if>
   </insert>
 
   <!--根据编号删除菜单-->
@@ -59,7 +67,7 @@
   <!--根据编号编辑菜单-->
   <update id="editMByMId">
     UPDATE menu SET m_name = #{mName}, m_url = #{mUrl}, m_parent_id = #{mParentId},
-    m_type = #{mType} WHERE m_id = #{mId}
+    m_type = #{mType}, m_navgition = #{mNavgition} WHERE m_id = #{mId}
   </update>
 
   <!--查询所有菜单-->

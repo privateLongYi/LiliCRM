@@ -24,7 +24,7 @@ import java.util.List;
  * @create 2020/9/13 17:46
  */
 @Controller
-@RequestMapping("referral")
+@RequestMapping("crm/referral")
 @Api(value = "转诊记录控制类", tags = "转诊记录控制类")
 public class ReferralController {
 

@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Api(tags = "视图", description = "负责返回视图")
-@Controller
+@Controller()
+@RequestMapping("crm")
 public class ViewController {
 
     @Autowired
@@ -398,8 +400,8 @@ public class ViewController {
     public String refundMoney(@ApiParam(name = "sId", value = "成交客户编号", required = true) Integer sId,
                               @ApiParam(name = "cId", value = "客户编号", required = true) Integer cId,
                               @ApiParam(name = "cName", value = "客户姓名", required = true) String cName,
-                              @ApiParam(name = "sSum", value = "成交金额", required = true) Integer sSum,
-                              @ApiParam(name = "sPaysum", value = "支付金额", required = true) Integer sPaysum,
+                              @ApiParam(name = "sSum", value = "成交金额", required = true) Double sSum,
+                              @ApiParam(name = "sPaysum", value = "支付金额", required = true) Double sPaysum,
                               ModelMap map){
         map.addAttribute("sId", sId);
         map.addAttribute("cId", cId);

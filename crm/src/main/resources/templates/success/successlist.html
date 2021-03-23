@@ -137,7 +137,7 @@
             });
 
             //获取角色为销售员的用户对象
-            $.get("/hospital/queryHospital", function (res){
+            $.get("/crm/hospital/queryHospital", function (res){
                 //定义负责人下拉框内容
                 var html = "";
                 $.each(res.data, function (index, item) {
@@ -149,7 +149,7 @@
             })
 
             //根据筛选条件查询成交明细并赋值
-            $.get("/success/querySDetailByScreen",
+            $.get("/crm/success/querySDetailByScreen",
                 {uId: uId ,rName: rName},
                 function (data) {
                     //成交人数
@@ -174,7 +174,7 @@
             } else {
                 adminTable();
                 //获取角色为销售员的用户对象
-                $.get("/user/queryUserByRName", function (res){
+                $.get("/crm/user/queryUserByRName", function (res){
                     //定义负责人下拉框内容
                     var html = "";
                     $.each(res.data, function (index, item) {
@@ -201,7 +201,7 @@
                     endTime = sTime.split(" - ")[1];
                 }
                 //根据筛选条件查询成交明细并赋值
-                $.get("/success/querySDetailByScreen",
+                $.get("/crm/success/querySDetailByScreen",
                     {
                         uId: uId
                         ,rName: rName
@@ -229,7 +229,7 @@
                 );
 				//根据客户名称查询
 				table.reload('tab', {
-					url: '/success/querySByScreen?uId='+uId+'&rName='+rName+'&export=0'
+					url: '/crm/success/querySByScreen?uId='+uId+'&rName='+rName+'&export=0'
 					,where: {
 						cName: cName
 						,cTel: cTel
@@ -260,7 +260,7 @@
                 }
                 //根据筛选条件查询
                 $.ajax({
-                    url: '/success/querySByScreen?uId='+uId+'&rName='+
+                    url: '/crm/success/querySByScreen?uId='+uId+'&rName='+
                     rName+'&page=1&limit=10&export=1',
                     type: 'get',
 					data: {
@@ -284,7 +284,7 @@
 			function adminTable() {
                 table.render({
                     elem: '#tab'
-                    ,url: '/success/querySByScreen?uId='+uId+'&rName='+rName+'&export=0' //数据接口
+                    ,url: '/crm/success/querySByScreen?uId='+uId+'&rName='+rName+'&export=0' //数据接口
                     ,title: '成交客户' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
@@ -322,7 +322,7 @@
             function saleTable() {
                 table.render({
                     elem: '#tab'
-                    ,url: '/success/querySByScreen?uId='+uId+'&rName='+rName+'&export=0' //数据接口
+                    ,url: '/crm/success/querySByScreen?uId='+uId+'&rName='+rName+'&export=0' //数据接口
                     ,title: '成交客户' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
@@ -383,7 +383,7 @@
 							trObjChildren.find('table').attr("id", index);
 							table.render({
 								elem: "#" + index
-								,url: '/payrecord/queryPByPaySId?paySId=' + data.sId
+								,url: '/crm/payrecord/queryPByPaySId?paySId=' + data.sId
 								,cols: [
 									[
 										{field: 'payId', minWidth: 120, title: 'ID', sort: true, align:'center'}
@@ -403,8 +403,8 @@
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '编辑成交客户',
-                        content: ['/success/querySBySId?sId='+data.sId+'&cId='+data.cId],
-                        area: ['450px', '450px'],
+                        content: ['/crm/success/querySBySId?sId='+data.sId+'&cId='+data.cId],
+                        area: ['500px', '500px'],
                         resize: false,
                         btn: '确定',
                         btn1: function (index, layero) {
@@ -419,7 +419,7 @@
                             var sSum = $(body).find("#sSum").val();
                             var sRemark = $(body).find("#sRemark").val();
                             var sTime = $(body).find("#sTime").val();
-                            if (sSum != '' && sSum.trim() != '' && sTime != '') {
+                            if (sSum != '' && sTime != '') {
                                 //声明格式是否正确
                                 var verify = true;
                                 if (isNaN(sSum) || sSum <= 0 || parseFloat(sSum) < parseFloat(data.sPaysum)) {
@@ -428,13 +428,15 @@
                                     return;
                                 }
                                 if (verify) {
-                                    $.post("/success/editSBySId",
+                                    var load = layer.load();
+                                    $.post("/crm/success/editSBySId",
                                         {
                                             uId: uId, sId:sId, cId:cId, sAId: sAId, sHId: sHId,
                                             sMessage: sMessage, sSum: sSum, sTime:sTime,
 											sRemark: sRemark, uName: uName, cName: cName
                                         },
                                         function (data) {
+                                        	layer.close(load);
                                             if (data.code != 200){
                                                 layer.msg(data.msg);
                                             } else {
@@ -464,7 +466,7 @@
                         layer.open({
                             type: 2, //层类型，iframe
                             title: '收款',
-                            content: ['/payrecordsave?sId='+data.sId+'&cId='+data.cId+'&cName='+data.cName+'&wk='+wk],
+                            content: ['/crm/payrecordsave?sId='+data.sId+'&cId='+data.cId+'&cName='+data.cName+'&wk='+wk],
                             area: ['500px', '500px'],
                             resize: false,
                             btn: '确定',
@@ -479,15 +481,17 @@
                                 var payTime = $(body).find("#payTime").val();
                                 var payRemark = $(body).find("#payRemark").val();
                                 var payTypeId = $(body).find("#payTypeId").val();
-                                if (paySum != '' && paySum.trim() != '' && payTime != '') {
+                                if (paySum != '' && payTime != '') {
                                     if (!isNaN(paySum) && paySum >= 0){
                                         if (parseFloat(wk) < parseFloat(paySum)){
                                             layer.msg("支付金额不能大于尾款，尾款为"+wk);
                                         } else {
-                                            $.post("/payrecord/savePayrecord",
+                                            var load = layer.load();
+                                            $.post("/crm/payrecord/savePayrecord",
                                                 {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId,
 													paySum: paySum, payTime: payTime, payRemark:payRemark, payTypeId: payTypeId},
                                                 function (data) {
+                                                	layer.close(load);
                                                     if (data.code != 200){
                                                         layer.msg(data.msg);
                                                     } else {
@@ -519,7 +523,7 @@
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '退款',
-                        content: ['/refundMoney?sId='+data.sId+'&cId='+data.cId+
+                        content: ['/crm/refundMoney?sId='+data.sId+'&cId='+data.cId+
 							'&cName='+data.cName+'&sSum='+sSum+'&sPaysum='+sPaysum],
                         area: ['500px', '500px'],
                         resize: false,
@@ -537,8 +541,8 @@
                             var payTypeId = $(body).find("#payTypeId").val();
                             //声明格式是否正确
 							var verify = true;
-							//验证成交退款金额
-                            if (refundsSum != '' && refundsSum.trim() != '') {
+                            if (refundsSum != '' && refundsPaysum != '' && payTime != '') {
+                                //验证成交退款金额
                                 if (!isNaN(refundsSum) && refundsSum >= 0) {
                                     if (parseFloat(sSum) < parseFloat(refundsSum)) {
                                         layer.msg("成交退款金额不能大于成交金额，成交金额为" + sSum);
@@ -546,44 +550,34 @@
                                         return;
                                     }
                                 } else {
-                                    layer.msg('成交退款金额必须是大于零的数值');
+                                    layer.msg('成交退款金额必须是大于等于零的数值');
                                     verify = false;
                                     return;
 								}
-                            } else {
-                                layer.msg('成交退款金额不能为空');
-                                verify = false;
-                                return;
-                            }
-                            //验证支付退款金额
-                            if (refundsPaysum != '' && refundsPaysum.trim() != '') {
-                                if (!isNaN(refundsPaysum) && refundsPaysum >= 0) {
+                                //验证支付退款金额
+                                if (!isNaN(refundsPaysum) && refundsPaysum > 0) {
                                     if (parseFloat(sPaysum) < parseFloat(refundsPaysum)) {
                                         layer.msg("支付退款金额不能大于支付金额，支付金额为" + sPaysum);
                                         verify = false;
                                         return;
                                     }
                                 } else {
-                                    layer.msg('支付退款金额必须是大于等于零的数值');
+                                    layer.msg('支付退款金额必须是大于零的数值');
                                     verify = false;
                                     return;
-								}
+                                }
                             } else {
-                                layer.msg('支付退款金额不能为空');
+                                layer.msg('请填写带星号的必填项');
                                 verify = false;
                                 return;
                             }
-                            //判断时间是否填写
-							if (payTime == ''){
-                                layer.msg('退款时间不能为空');
-                                verify = false;
-                                return;
-							}
                             if (verify){
-                                $.get("/success/refundMoney",
+                                var load = layer.load();
+                                $.get("/crm/success/refundMoney",
                                     {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, sSum:sSum, sPaysum:sPaysum, refundsSum: refundsSum,
                                         refundsPaysum:refundsPaysum, payTime:payTime, payRemark:payRemark, payTypeId: payTypeId},
                                     function (data) {
+                                    	layer.close(load);
                                         if (data.code != 200){
                                             layer.msg(data.msg);
                                         } else {
@@ -605,9 +599,9 @@
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '新增成交客户',
-                        content: ['/successsave?cId='+data.cId+'&clId='+data.clId+'&sAId='+data.sAId+
+                        content: ['/crm/successsave?cId='+data.cId+'&clId='+data.clId+'&sAId='+data.sAId+
                         '&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+'&clEntryFee='+data.clEntryFee],
-                        area: ['500px', '450px'],
+                        area: ['500px', '500px'],
                         resize: false,
                         btn: '确定',
                         btn1: function (index, layero) {
@@ -627,7 +621,7 @@
                             var sPaysum = $(body).find("#sPaysum").val();
                             var sTime = $(body).find("#sTime").val();
                             var sRemark = $(body).find("#sRemark").val();
-                            if (sSum != '' && sSum.trim() != '' && sTime != '') {
+                            if (sSum != '' && sTime != '') {
                                 //声明格式是否正确
                                 var verify = true;
                                 //验证成交金额
@@ -642,12 +636,9 @@
                                     verify = false;
                                     return;
                                 }
-                                //判断是否抵扣报名费
-								if (isDeduction == 1 || isDeduction == '1'){
-                                    sSum = eval(sSum + "+" + data.clEntryFee);
-								}
                                 if(verify) {
-                                    $.post("/success/saveSuccess", {
+                                    var load = layer.load();
+                                    $.post("/crm/success/saveSuccess", {
                                             uId: uId,
                                             uName:uName,
                                             cName:cName,
@@ -657,12 +648,13 @@
                                             sHId: sHId,
                                             sMessage: sMessage,
                                             isDeduction: isDeduction,
-                                            sSum: sSum.trim(),
-                                            sPaysum: sPaysum.trim(),
+                                            sSum: sSum,
+                                            sPaysum: sPaysum,
                                             sTime: sTime,
                                             sRemark: sRemark
                                         },
                                         function (data) {
+                                        	layer.close(load);
                                             if (data.code != 200){
                                                 layer.msg(data.msg);
                                             } else {

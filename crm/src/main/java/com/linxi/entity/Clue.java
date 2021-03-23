@@ -13,6 +13,8 @@ public class Clue implements Serializable {
 
     private Timestamp clPlaceTime;
 
+    private String clCity;
+
     private String clRemark;
 
     private String clEntryFee;
@@ -64,6 +66,14 @@ public class Clue implements Serializable {
 
     public void setClPlaceTime(Timestamp clPlaceTime) {
         this.clPlaceTime = clPlaceTime;
+    }
+
+    public String getClCity() {
+        return clCity;
+    }
+
+    public void setClCity(String clCity) {
+        this.clCity = clCity;
     }
 
     public String getClRemark() {
@@ -133,11 +143,12 @@ public class Clue implements Serializable {
     public Clue() {
     }
 
-    public Clue(Integer clId, Integer clCId, String clProject, Timestamp clPlaceTime, String clRemark, String clEntryFee, Integer clUId, String clSource, String clMessage, Integer clTypeId, Integer clInvalid) {
+    public Clue(Integer clId, Integer clCId, String clProject, Timestamp clPlaceTime, String clCity, String clRemark, String clEntryFee, Integer clUId, String clSource, String clMessage, Integer clTypeId, Integer clInvalid) {
         this.clId = clId;
         this.clCId = clCId;
         this.clProject = clProject;
         this.clPlaceTime = clPlaceTime;
+        this.clCity = clCity;
         this.clRemark = clRemark;
         this.clEntryFee = clEntryFee;
         this.clUId = clUId;
@@ -154,6 +165,7 @@ public class Clue implements Serializable {
                 ", clCId=" + clCId +
                 ", clProject='" + clProject + '\'' +
                 ", clPlaceTime=" + clPlaceTime +
+                ", clCity=" + clCity +
                 ", clRemark='" + clRemark + '\'' +
                 ", clEntryFee=" + clEntryFee +
                 ", clUId=" + clUId +

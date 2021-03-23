@@ -8,8 +8,11 @@ import java.util.List;
 
 public interface UserMapper {
 
+    //登录
+    User login(@Param("username") String username, @Param("password") String password);
+
     //根据用户名查询用户
-    User findByLoginName(String userame);
+    User findByLoginName(String username);
 
     //查询角色为销售员的所有用户
     List<User> queryUserByRName();

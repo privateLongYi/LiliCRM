@@ -58,7 +58,7 @@
                 var cName = $("#cName").val();
                 //根据筛选条件查询
                 table.reload('tab', {
-                    url: '/arrive/queryAByCName?uId='+uId+'&rName='+rName
+                    url: '/crm/arrive/queryAByCName?uId='+uId+'&rName='+rName
                     ,where: {
                         cName: cName
                     }
@@ -71,7 +71,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/arrive/queryAByCName?uId='+uId+'&rName='+rName //数据接口
+				,url: '/crm/arrive/queryAByCName?uId='+uId+'&rName='+rName //数据接口
 				,title: '未到店客户表' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页
@@ -110,7 +110,7 @@
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '新增改约记录',
-                        content: ['/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+'&arId='+data.arId+
+                        content: ['/crm/reroutesave?cId='+data.cId+'&clId='+data.clId+'&reUId='+data.clUId+'&arId='+data.arId+
                         '&aId='+data.aId+'&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+
                         '&aTime='+data.aTime],
                         area: ['450px', '450px'],
@@ -128,10 +128,12 @@
                             var reLastTime = $(body).find("#reLastTime").val();
                             var reTime = $(body).find("#reTime").val();
                             var reCause = $(body).find("#reCause").val();
-                            if (reTime != '' && reCause != '' && reCause.trim() != '') {
-                                $.post("/reroute/saveReroute", {uId:uId, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
+                            if (reTime != '' && reCause != '') {
+                                var load = layer.load();
+                                $.post("/crm/reroute/saveReroute", {uId:uId, cId:cId, reClId:reClId, reUId:reUId, arId:arId,
                                         aId:aId, reHId:reHId, reLastTime:reLastTime, reTime:reTime, reCause:reCause},
                                     function (data) {
+                                    	layer.close(load);
                                     	if (data.code != 200){
                                     	    layer.msg(data.msg);
 										} else {
@@ -152,8 +154,10 @@
                     });
                 } else if(layEvent === 'appoint'){
 					layer.confirm('确定更改为待预约状态？', {icon: 3, title:'提示'}, function(index){
-						$.get("/clue/editClTypeIdByClId", {clId:data.clId, aId:data.aId},
+                        var load = layer.load();
+						$.get("/crm/clue/editClTypeIdByClId", {clId:data.clId, aId:data.aId},
 							function (data) {
+						    	layer.close(load);
 						    	if (data.code != 200){
 						    	    layer.msg(data.msg);
 								} else {

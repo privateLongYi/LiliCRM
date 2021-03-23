@@ -22,7 +22,7 @@ import java.util.List;
  * @create 2020/9/2 19:24
  */
 @Controller
-@RequestMapping("atype")
+@RequestMapping("crm/atype")
 @Api(value = "预约类型控制类", tags = "预约类型控制类")
 public class AtypeController {
 

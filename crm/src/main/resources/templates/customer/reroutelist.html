@@ -52,7 +52,7 @@
 				var cName = $("#cName").val();
 				//根据客户名称查询
 				table.reload('tab', {
-					url: '/reroute/queryRByCName?uId='+uId+'&rName='+rName
+					url: '/crm/reroute/queryRByCName?uId='+uId+'&rName='+rName
 					,where: {
 						cName: cName
 					}
@@ -68,7 +68,7 @@
                 var cName = $("#cName").val();
                 //根据筛选条件查询
                 $.ajax({
-                    url: '/reroute/queryRByCName?uId='+uId+'&rName='+
+                    url: '/crm/reroute/queryRByCName?uId='+uId+'&rName='+
                     rName+'&cName='+cName+'&page=1&limit=10&export=1',
                     type: 'get',
                     async: false,
@@ -83,7 +83,7 @@
 			//执行一个 table 实例
 			table.render({
 				elem: '#tab'
-				,url: '/reroute/queryRByCName?uId='+uId+'&rName='+rName //数据接口
+				,url: '/crm/reroute/queryRByCName?uId='+uId+'&rName='+rName //数据接口
 				,title: '改约记录' //表格名称
 				,id: 'tab' //表格id
 				,page: true //开启分页

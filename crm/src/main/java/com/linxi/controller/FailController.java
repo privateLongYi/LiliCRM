@@ -25,7 +25,7 @@ import java.util.List;
  * @create 2020/9/12 21:15
  */
 @Controller
-@RequestMapping("fail")
+@RequestMapping("crm/fail")
 @Api(value = "未成交客户控制类", tags = "未成交客户控制类")
 public class FailController {
 

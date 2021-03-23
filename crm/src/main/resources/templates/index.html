@@ -62,7 +62,7 @@
                     <dd><a href="javascript:editPwd();">修改密码</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a th:href="@{/logout}">退出登录</a></li>
+            <li class="layui-nav-item"><a th:href="@{/crm/logout}">退出登录</a></li>
         </ul>
     </div>
 
@@ -72,6 +72,7 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test" id="nav">
                 <li class="layui-nav-item layui-nav-itemed">
+                    <input type='hidden' name="workbench" value="首页">
                     <a href="javascript:void(0);" id="workbench" class="skip">首页</a>
                 </li>
             </ul>
@@ -80,8 +81,16 @@
 
     <!-- 内容主体区域 -->
     <div id="body" class="layui-body" style="background-color: #f5f5f5; bottom: 0px;">
+
+        <div class="layui-card layui-header" style="padding-left:10px; background-color: white; height:50px; line-height: 50px; margin-bottom: 0px; border-radius: 0px;">
+            <div id="navgition" class="layui-breadcrumb" lay-filter="breadcrumb" style="visibility: visible;">
+                <a lay-href=''>首页</a>
+            </div>
+        </div>
+
         <iframe id="frame" frameborder="0" scrolling="yes" width="100%"
                 src="workbench"></iframe>
+
     </div>
 
     <!--详情页面-->
@@ -277,17 +286,17 @@
     //设置iframe框架高度
     $(document).ready(function(){
         var height = $(window).height(); //浏览器当前窗口可视区域高度
-        if ((height-65) < 590){
-            $("#frame").height(590);
+        if ((height-115) < 540){
+            $("#frame").height(540);
         } else {
-            $("#frame").height(height - 65);
+            $("#frame").height(height - 115);
         }
     })
 
     //根据客户名称或者客户电话查询客户
     function getList(search, page){
         if(search != ""){
-            $.post("/customer/queryCByCNameOrCTel", {rName:rName, uId:uId, key:search, page:page}, function (data) {
+            $.post("/crm/customer/queryCByCNameOrCTel", {rName:rName, uId:uId, key:search, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
                     html += "<div class='list' onclick='goDetail(&quot;"+data.data[i].cId+"&quot;,&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].clUId+"&quot;);'>"+data.data[i].cName+"/"+data.data[i].cTel+"</div>";
@@ -393,14 +402,16 @@
         }
         //跟进内容
         var fContent = $("#content").val();
-        if (fContent != "" && fContent != null && fContent.trim() != "" && fContent.trim() != null){
+        if (fContent != "" && fContent != null){
             //跟进时间
             var fTime = $("#fTime").val();
             //新增跟进内容
-            $.post("/follow/saveFollow"
+            var load = layer.load();
+            $.post("/crm/follow/saveFollow"
                 ,{uId:uId, cId:cId, fClId:clId, fTypeId:fTypeId, clUId:clUId,
                     ftType:ftType, fContent:fContent, fTime: fTime}
                 ,function (data) {
+                    layer.close(load);
                     if (data.code != 200){
                         layer.msg(data.msg);
                     } else {
@@ -438,14 +449,14 @@
         var cName = $("[name=cName]")[0].innerText;
         //客户状态
         var cType = $("#cType").text();
-        if (cType == "待分配"){
-            layer.msg("该客户尚未分配，请先分配！")
+        if (cType != "待预约"){
+            layer.msg("该客户不可预约！");
         } else {
             //弹出预约页面
             layer.open({
                 type: 2, //层类型，iframe
                 title: '新增预约客户',
-                content: ['/appointmentsave?clId=' + clId + '&cName=' + cName],
+                content: ['/crm/appointmentsave?clId=' + clId + '&cName=' + cName],
                 area: ['450px', '450px'],
                 resize: false,
                 btn: '确定',
@@ -457,11 +468,13 @@
                     var aHId = $(body).find("#aHId").val();
                     var atType = $(body).find("#atType").val();
                     if (aTime != '') {
-                        $.post("/appointment/saveAppointment", {
+                        var load = layer.load();
+                        $.post("/crm/appointment/saveAppointment", {
                                 uId: uId, uName: uName, aClId: aClId, aTime: aTime,
                                 aHId: aHId, atType: atType
                             },
                             function (data) {
+                                layer.close(load);
                                 if (data.code != 200) {
                                     layer.msg(data.msg);
                                 } else {
@@ -510,7 +523,7 @@
             layer.open({
                 type: 2, //层类型，iframe
                 title: '新增成交客户',
-                content: ['/successsave?cId='+cId+'&clId='+clId+'&sAId='+sAId+
+                content: ['/crm/successsave?cId='+cId+'&clId='+clId+'&sAId='+sAId+
                 '&cName='+cName+'&hId='+hId+'&hName='+hName+'&clEntryFee='+clEntryFee],
                 area: ['500px', '450px'],
                 resize: false,
@@ -532,7 +545,7 @@
                     var sPaysum = $(body).find("#sPaysum").val();
                     var sTime = $(body).find("#sTime").val();
                     var sRemark = $(body).find("#sRemark").val();
-                    if (sSum != '' && sSum.trim() != '') {
+                    if (sSum != '' && sPaysum != '' && sTime != '') {
                         //声明格式是否正确
                         var verify = true;
                         //验证成交金额
@@ -548,7 +561,8 @@
                             return;
                         }
                         if(verify) {
-                            $.post("/success/saveSuccess", {
+                            var load = layer.load();
+                            $.post("/crm/success/saveSuccess", {
                                     uId: uId,
                                     uName:uName,
                                     cName:cName,
@@ -558,12 +572,13 @@
                                     sHId: sHId,
                                     sMessage: sMessage,
                                     isDeduction: isDeduction,
-                                    sSum: sSum.trim(),
-                                    sPaysum: sPaysum.trim(),
+                                    sSum: sSum,
+                                    sPaysum: sPaysum,
                                     sTime: sTime,
                                     sRemark: sRemark
                                 },
                                 function (data) {
+                                    layer.close(load);
                                     if (data.code != 200){
                                         layer.msg(data.msg);
                                     } else {
@@ -604,9 +619,11 @@
             layer.msg("该客户不可退报名费");
         } else {
             layer.confirm('确定退报名费吗？', {icon: 3, title:'提示'}, function(index){
-                $.get("/clue/refundClEntryFee", {uId: uId, uName: uName, cId: cId,
+                var load = layer.load();
+                $.get("/crm/clue/refundClEntryFee", {uId: uId, uName: uName, cId: cId,
                         cName: cName, clId: clId, sAId: sAId, clEntryFee: clEntryFee},
                     function (data) {
+                        layer.close(load);
                         if (data.code != 200){
                             layer.msg(data.msg);
                         } else {
@@ -682,7 +699,7 @@
         $("#clUId").val(clUId);
 
         //根据线索编号查询信息并赋值
-        $.get("/customer/detail", {clId:clId}, function (data) {
+        $.get("/crm/customer/detail", {clId:clId}, function (data) {
             //姓名
             var cNameList = $("[name=cName]");
             for(var i = 0; i < cNameList.length; i++){
@@ -749,7 +766,7 @@
         });
 
         //预约记录
-        $.get("/appointment/queryAToDetail", {clId:clId}, function (data) {
+        $.get("/crm/appointment/queryAToDetail", {clId:clId}, function (data) {
             var html = "";
             $.each(data.data, function (index, item) {
                 html += "<li class='layui-timeline-item'>" +
@@ -772,7 +789,7 @@
         });
 
         //操作记录
-        $.get("/operating/queryOpByCId", {cId:cId}, function (data) {
+        $.get("/crm/operating/queryOpByCId", {cId:cId}, function (data) {
             var html = "";
             $.each(data.data, function (index, item) {
                 html += "<li class='layui-timeline-item'>" +
@@ -793,7 +810,7 @@
         //成交记录
         table.render({
             elem: '#successTab'
-            ,url: '/success/querySByClId?clId='+clId //访问路径
+            ,url: '/crm/success/querySByClId?clId='+clId //访问路径
             ,skin : 'line'
             ,cols: [ //表头
                 [
@@ -834,7 +851,7 @@
                         trObjChildren.find('table').attr("id", index);
                         table.render({
                             elem: "#" + index
-                            ,url: '/payrecord/queryPByPaySId?paySId=' + data.sId
+                            ,url: '/crm/payrecord/queryPByPaySId?paySId=' + data.sId
                             ,cols: [
                                 [
                                     {field: 'payId', minWidth: 120, title: 'ID', sort: true, align:'center'}
@@ -854,7 +871,7 @@
                 layer.open({
                     type: 2, //层类型，iframe
                     title: '编辑成交客户',
-                    content: ['/success/querySBySId?sId='+data.sId+'&cId='+data.cId],
+                    content: ['/crm/success/querySBySId?sId='+data.sId+'&cId='+data.cId],
                     area: ['450px', '450px'],
                     resize: false,
                     btn: '确定',
@@ -870,7 +887,7 @@
                         var sSum = $(body).find("#sSum").val();
                         var sTime = $(body).find("#sTime").val();
                         var sRemark = $(body).find("#sRemark").val();
-                        if (sSum != '' && sSum.trim() != '') {
+                        if (sSum != '' && sTime != '') {
                             //声明格式是否正确
                             var verify = true;
                             if (isNaN(sSum) || sSum <= 0 || parseFloat(sSum) < parseFloat(data.sPaysum)) {
@@ -879,13 +896,15 @@
                                 return;
                             }
                             if (verify) {
-                                $.post("/success/editSBySId",
+                                var load = parent.layer.load();
+                                $.post("/crm/success/editSBySId",
                                     {
                                         uId: uId, sId:sId, cId:cId, sAId: sAId, sHId: sHId,
                                         sMessage: sMessage, sSum: sSum, sTime:sTime,
                                         sRemark: sRemark, uName: uName, cName: cName
                                     },
                                     function (data) {
+                                        parent.layer.close(load);
                                         if (data.code != 200){
                                             layer.msg(data.msg);
                                         } else {
@@ -911,11 +930,13 @@
                 } else {
                     //尾款
                     var wk = eval(data.sSum + "-" + data.sPaysum);
+                    wk = wk.toFixed(2);
+                    console.log("尾款："+wk);
                     //弹出收款页面
                     layer.open({
                         type: 2, //层类型，iframe
                         title: '收款',
-                        content: ['/payrecordsave?sId='+data.sId+'&cId='+data.cId+'&cName='+data.cName+'&wk='+wk],
+                        content: ['/crm/payrecordsave?sId='+data.sId+'&cId='+data.cId+'&cName='+data.cName+'&wk='+wk],
                         area: ['500px', '500px'],
                         resize: false,
                         btn: '确定',
@@ -930,14 +951,16 @@
                             var payRemark = $(body).find("#payRemark").val();
                             var payTypeId = $(body).find("#payTypeId").val();
                             var payTime = $(body).find("#payTime").val();
-                            if (paySum != '' && paySum.trim() != '') {
+                            if (paySum != '' && payTime != '') {
                                 if (!isNaN(paySum) && paySum >= 0){
                                     if (parseFloat(wk) < parseFloat(paySum)){
                                         layer.msg("支付金额不能大于尾款，尾款为"+wk);
                                     } else {
-                                        $.post("/payrecord/savePayrecord",
+                                        var load = parent.layer.load();
+                                        $.post("/crm/payrecord/savePayrecord",
                                             {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, paySum: paySum, payRemark:payRemark, payTypeId: payTypeId, payTime:payTime},
                                             function (data) {
+                                                parent.layer.close(load);
                                                 if (data.code != 200){
                                                     layer.msg(data.msg);
                                                 } else {
@@ -953,7 +976,7 @@
                                     layer.msg('支付金额必须是大于等于零的数值');
                                 }
                             } else {
-                                layer.msg('请填写支付金额');
+                                layer.msg('请填写带星号的必填项');
                             }
                         },
                         cancel: function (index, layero) {
@@ -969,7 +992,7 @@
                 layer.open({
                     type: 2, //层类型，iframe
                     title: '退款',
-                    content: ['/refundMoney?sId='+data.sId+'&cId='+data.cId+
+                    content: ['/crm/refundMoney?sId='+data.sId+'&cId='+data.cId+
                     '&cName='+data.cName+'&sSum='+sSum+'&sPaysum='+sPaysum],
                     area: ['500px', '500px'],
                     resize: false,
@@ -987,8 +1010,8 @@
                         var payTypeId = $(body).find("#payTypeId").val();
                         //声明格式是否正确
                         var verify = true;
-                        //验证成交退款金额
-                        if (refundsSum != '' && refundsSum.trim() != '') {
+                        if (refundsSum != '' && refundsPaysum != '' && payTime != '') {
+                            //验证成交退款金额
                             if (!isNaN(refundsSum) && refundsSum >= 0) {
                                 if (parseFloat(sSum) < parseFloat(refundsSum)) {
                                     layer.msg("成交退款金额不能大于成交金额，成交金额为" + sSum);
@@ -1000,13 +1023,7 @@
                                 verify = false;
                                 return;
                             }
-                        } else {
-                            layer.msg('成交退款金额不能为空');
-                            verify = false;
-                            return;
-                        }
-                        //验证支付退款金额
-                        if (refundsPaysum != '' && refundsPaysum.trim() != '') {
+                            //验证支付退款金额
                             if (!isNaN(refundsPaysum) && refundsPaysum >= 0) {
                                 if (parseFloat(sPaysum) < parseFloat(refundsPaysum)) {
                                     layer.msg("支付退款金额不能大于支付金额，支付金额为" + sPaysum);
@@ -1019,15 +1036,17 @@
                                 return;
                             }
                         } else {
-                            layer.msg('支付退款金额不能为空');
+                            layer.msg('请填写带星号的必填项');
                             verify = false;
                             return;
                         }
                         if (verify){
-                            $.get("/success/refundMoney",
+                            var load = parent.layer.load();
+                            $.get("/crm/success/refundMoney",
                                 {uId: uId, uName: uName, cId: cId, cName: cName, paySId: paySId, sSum:sSum, sPaysum:sPaysum, refundsSum: refundsSum,
                                     refundsPaysum:refundsPaysum, payTime:payTime, payRemark:payRemark, payTypeId: payTypeId},
                                 function (data) {
+                                    parent.layer.close(load);
                                     if (data.code != 200){
                                         layer.msg(data.msg);
                                     } else {
@@ -1049,7 +1068,7 @@
                 layer.open({
                     type: 2, //层类型，iframe
                     title: '新增成交客户',
-                    content: ['/successsave?cId='+data.cId+'&clId='+data.clId+'&sAId='+data.sAId+
+                    content: ['/crm/successsave?cId='+data.cId+'&clId='+data.clId+'&sAId='+data.sAId+
                     '&cName='+data.cName+'&hId='+data.hId+'&hName='+data.hName+'&clEntryFee='+data.clEntryFee],
                     area: ['500px', '450px'],
                     resize: false,
@@ -1071,7 +1090,7 @@
                         var sPaysum = $(body).find("#sPaysum").val();
                         var sTime = $(body).find("#sTime").val();
                         var sRemark = $(body).find("#sRemark").val();
-                        if (sSum != '' && sSum.trim() != '') {
+                        if (sSum != '' && sPaysum != '' && sTime != '') {
                             //声明格式是否正确
                             var verify = true;
                             //验证成交金额
@@ -1087,7 +1106,8 @@
                                 return;
                             }
                             if(verify) {
-                                $.post("/success/saveSuccess", {
+                                var load = parent.layer.load();
+                                $.post("/crm/success/saveSuccess", {
                                         uId: uId,
                                         uName:uName,
                                         cName:cName,
@@ -1097,12 +1117,13 @@
                                         sHId: sHId,
                                         sMessage: sMessage,
                                         isDeduction: isDeduction,
-                                        sSum: sSum.trim(),
-                                        sPaysum: sPaysum.trim(),
+                                        sSum: sSum,
+                                        sPaysum: sPaysum,
                                         sTime: sTime,
                                         sRemark: sRemark
                                     },
                                     function (data) {
+                                        parent.layer.close(load);
                                         if (data.code != 200){
                                             layer.msg(data.msg);
                                         } else {
@@ -1126,7 +1147,7 @@
         });
 
         //根据客户编号查询所拥有的跟进类型
-        $.get("/follow/queryFollowByFClId?clId="+clId, function(obj){
+        $.get("/crm/follow/queryFollowByFClId?clId="+clId, function(obj){
             var html = "";
             for(var i = 0; i < obj.data.length; i++) {
                 var year = obj.data[i].fTime.substring(0, 4);
@@ -1150,8 +1171,19 @@
     }
 
     //跳转页面
-    function skip(id) {
-        $("#frame").attr("src", id);
+    function skip(el) {
+        $("#frame").attr("src", el.id);
+        var mNavgition = $("[name="+el.id+"]")[0].value;
+        var navs = mNavgition.split("/");
+        var html = "";
+        for (var i = 0; i < navs.length; i++){
+            if (i == 0){
+                html += "<a lay-href=''>"+navs[i]+"</a>";
+            } else {
+                html += "<span lay-separator=''>/</span><a><cite>"+navs[i]+"</cite></a>";
+            }
+        }
+        $("#navgition").html(html);
     }
 
     //修改密码
@@ -1159,7 +1191,7 @@
         var ix = layer.open({
             type: 2, //层类型，iframe
             title: '修改密码',
-            content: ['/goEditPwd'],
+            content: ['/crm/goEditPwd'],
             area: ['400px', '300px'],
             resize: false,
             btn: '确定',
@@ -1170,14 +1202,16 @@
                 var newPwd = $(body).find("#newPwd").val();
                 var newPwd2 = $(body).find("#newPwd2").val();
                 //判断当前密码是否输入正确
-                $.post("/user/verifyPwd", {uId:uId, uPassword:oldPwd}, function (data) {
+                $.post("/crm/user/verifyPwd", {uId:uId, uPassword:oldPwd}, function (data) {
                     if (data){
                         if (newPwd.length >=6 && newPwd.length <=16 && newPwd2.length >=6 && newPwd2.length <=16){
                             if (newPwd == newPwd2){
-                                $.post("/user/editPwd", {uId:uId, uPassword:newPwd}, function (data) {
+                                var load = layer.load();
+                                $.post("/crm/user/editPwd", {uId:uId, uPassword:newPwd}, function (data) {
+                                    layer.close(load);
                                     layer.close(ix);
                                     layer.msg("密码已修改，请重新登录", {time: 1000}, function () {
-                                        location.href = "/loginPage";
+                                        location.href = "/crm/loginPage";
                                     });
                                 })
                             } else {
@@ -1198,7 +1232,7 @@
     }
 
     //获取菜单列表
-    $.get("/authority/queryRMByRId?rId="+uRoleId, function (obj) {
+    $.get("/crm/authority/queryRMByRId?rId="+uRoleId, function (obj) {
         //定义内容
         var html = "";
         var parent = obj.data;
@@ -1215,6 +1249,7 @@
                 for(i in child){
                     if(child[i].mParentId == parent[index].rmMId){
                         html += "<dd>" +
+                            "   <input type='hidden' name='"+child[i].mUrl+"' value='"+child[i].mNavgition+"'>" +
                             "   <a href='javascript:;' id='"+child[i].mUrl+"' class='skip'>"+child[i].mName+"</a>" +
                             "</dd>"
                     }
@@ -1231,7 +1266,7 @@
 
         //绑定跳转事件
         $(".skip").on("click", function () {
-            skip(this.id);
+            skip(this);
         })
 
     });

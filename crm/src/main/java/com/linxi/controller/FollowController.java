@@ -30,7 +30,7 @@ import java.util.Map;
  * @create 2020/9/5 15:48
  */
 @Controller
-@RequestMapping("follow")
+@RequestMapping("crm/follow")
 @Api(value = "客户跟进控制类", tags = "客户跟进控制类")
 public class FollowController {
 

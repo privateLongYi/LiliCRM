@@ -12,6 +12,9 @@ import java.util.List;
  */
 public interface IUserService {
 
+    //登录
+    User login(@Param("username") String username, @Param("password") String password);
+
     //根据用户名查询用户
     User findByLoginName(String userame);
 

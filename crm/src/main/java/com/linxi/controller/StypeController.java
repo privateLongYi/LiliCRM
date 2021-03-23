@@ -22,7 +22,7 @@ import java.util.List;
  * @create 2020/9/10 22:21
  */
 @Controller
-@RequestMapping("stype")
+@RequestMapping("crm/stype")
 @Api(value = "成交类型控制类", tags = "成交类型控制类")
 public class StypeController {
 

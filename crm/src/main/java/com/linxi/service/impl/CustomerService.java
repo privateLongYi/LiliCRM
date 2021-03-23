@@ -23,26 +23,26 @@ public class CustomerService implements ICustomerService{
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryCScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String clProject, String clEntryFee, String beginTime, String endTime, Integer clUId, String clSource, Integer clTypeId, Integer export) {
-        return customerMapper.queryCScreen(uId, rName, page, limit, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
+    public List<Customer> queryCScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String clProject, String clCity, String clEntryFee, String beginTime, String endTime, Integer clUId, String clSource, Integer clTypeId, Integer export) {
+        return customerMapper.queryCScreen(uId, rName, page, limit, cName, cTel, clProject, clCity, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getTotalByScreen(Integer uId, String rName, String cName, String cTel, String clProject, String clEntryFee, String beginTime, String endTime, Integer cUId, String clSource, Integer clTypeId) {
-        return customerMapper.getTotalByScreen(uId, rName, cName, cTel, clProject, clEntryFee, beginTime, endTime, cUId, clSource, clTypeId);
+    public Integer getTotalByScreen(Integer uId, String rName, String cName, String cTel, String clProject, String clCity, String clEntryFee, String beginTime, String endTime, Integer cUId, String clSource, Integer clTypeId) {
+        return customerMapper.getTotalByScreen(uId, rName, cName, cTel, clProject, clCity, clEntryFee, beginTime, endTime, cUId, clSource, clTypeId);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<Customer> queryAACScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String clProject, String clEntryFee, String beginTime, String endTime, Integer clUId, String clSource, Integer clTypeId, Integer export) {
-        return customerMapper.queryAACScreen(uId, rName, page, limit, cName, cTel, clProject, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
+    public List<Customer> queryAACScreen(Integer uId, String rName, Integer page, Integer limit, String cName, String cTel, String clProject, String clCity, String clEntryFee, String beginTime, String endTime, Integer clUId, String clSource, Integer clTypeId, Integer export) {
+        return customerMapper.queryAACScreen(uId, rName, page, limit, cName, cTel, clProject, clCity, clEntryFee, beginTime, endTime, clUId, clSource, clTypeId, export);
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Integer getAACTotalByScreen(Integer uId, String rName, String cName, String cTel, String clProject, String clEntryFee, String beginTime, String endTime, Integer cUId, String clSource, Integer clTypeId) {
-        return customerMapper.getAACTotalByScreen(uId, rName, cName, cTel, clProject, clEntryFee, beginTime, endTime, cUId, clSource, clTypeId);
+    public Integer getAACTotalByScreen(Integer uId, String rName, String cName, String cTel, String clProject, String clCity, String clEntryFee, String beginTime, String endTime, Integer cUId, String clSource, Integer clTypeId) {
+        return customerMapper.getAACTotalByScreen(uId, rName, cName, cTel, clProject, clCity, clEntryFee, beginTime, endTime, cUId, clSource, clTypeId);
     }
 
     @Override

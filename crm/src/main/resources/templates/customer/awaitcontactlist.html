@@ -45,9 +45,9 @@
 			<div class="layui-col-md4">
 				<label class="layui-form-label">报名费</label>
 				<div class="layui-input-inline layui-form">
-					<input type="radio" name="searchclEntryFee" value="0" title="否">
-					<input type="radio" name="searchclEntryFee" value="1" title="是">
-					<input type="radio" name="searchclEntryFee" value="2" title="全部" checked>
+					<input type="radio" name="searchClEntryFee" value="0" title="否">
+					<input type="radio" name="searchClEntryFee" value="1" title="是">
+					<input type="radio" name="searchClEntryFee" value="2" title="全部" checked>
 				</div>
 			</div>
 			<div class="layui-col-md4" id="principal">
@@ -59,11 +59,17 @@
 				</div>
 			</div>
 			<div class="layui-col-md4">
-				<label class="layui-form-label">来源</label>
+				<label class="layui-form-label">城市</label>
 				<div class="layui-inline">
-					<input class="layui-input" id="searchClSource" autocomplete="off">
+					<input class="layui-input" id="searchClCity" autocomplete="off">
 				</div>
 			</div><br><br><br>
+			<!--<div class="layui-col-md4">
+				<label class="layui-form-label">来源</label>
+				<div class="layui-inline">
+					<input class="layui-input" id="searchclSource" autocomplete="off">
+				</div>
+			</div><br><br><br>-->
 			<div class="layui-col-md8">
 				<label class="layui-form-label">报名时间</label>
 				<div class="layui-input-inline layui-form">
@@ -119,12 +125,12 @@
 
             if (rName == "销售员"){
                 saleTable();
-                $("#searchclUId").attr("disabled", "disabled");
+                $("#searchClUId").attr("disabled", "disabled");
                 form.render('select');
             } else {
                 adminTable();
                 //获取角色为销售员的用户对象
-                $.get("/user/queryUserByRName", function (res){
+                $.get("/crm/user/queryUserByRName", function (res){
                     //定义负责人下拉框内容
                     var html = "";
                     $.each(res.data, function (index, item) {
@@ -143,15 +149,15 @@
                 var cTel = $("#searchCTel").val();
                 var clProject = $("#searchClProject").val();
                 var clEntryFee;
-                if ($("[name=searchclEntryFee]")[0].checked){
-                    clEntryFee = $("[name=searchclEntryFee]")[0].value;
-                } else if ($("[name=searchclEntryFee]")[1].checked){
-                    clEntryFee = $("[name=searchclEntryFee]")[1].value;
-                } else if ($("[name=searchclEntryFee]")[2].checked){
-                    clEntryFee = $("[name=searchclEntryFee]")[2].value;
+                if ($("[name=searchClEntryFee]")[0].checked){
+                    clEntryFee = $("[name=searchClEntryFee]")[0].value;
+                } else if ($("[name=searchClEntryFee]")[1].checked){
+                    clEntryFee = $("[name=searchClEntryFee]")[1].value;
+                } else if ($("[name=searchClEntryFee]")[2].checked){
+                    clEntryFee = $("[name=searchClEntryFee]")[2].value;
                 }
                 var clUId = $("#searchClUId").val();
-                var clSource = $("#searchClSource").val();
+                var clCity = $("#searchClCity").val();
                 var searchClPlaceTime = $("#searchClPlaceTime").val();
                 var beginTime = null;
                 var endTime = null;
@@ -161,14 +167,14 @@
                 }
                 //根据筛选条件查询
                 table.reload('tab', {
-                    url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待联系'+'&export=0'
+                    url: '/crm/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待联系'+'&export=0'
                     ,where: {
                         cName: cName
                         ,cTel: cTel
                         ,clProject: clProject
                         ,clEntryFee: clEntryFee
                         ,clUId: clUId
-                        ,clSource: clSource
+                        ,clCity: clCity
                         ,beginTime: beginTime
                         ,endTime: endTime
                     }
@@ -183,27 +189,27 @@
                 //获取筛选条件
                 var cName = $("#searchCName").val();
                 var cTel = $("#searchCTel").val();
-                var clProject = $("#searchclProject").val();
+                var clProject = $("#searchClProject").val();
                 var clEntryFee;
-                if ($("[name=searchclEntryFee]")[0].checked){
-                    clEntryFee = $("[name=searchclEntryFee]")[0].value;
-                } else if ($("[name=searchclEntryFee]")[1].checked){
-                    clEntryFee = $("[name=searchclEntryFee]")[1].value;
-                } else if ($("[name=searchclEntryFee]")[2].checked){
-                    clEntryFee = $("[name=searchclEntryFee]")[2].value;
+                if ($("[name=searchClEntryFee]")[0].checked){
+                    clEntryFee = $("[name=searchClEntryFee]")[0].value;
+                } else if ($("[name=searchClEntryFee]")[1].checked){
+                    clEntryFee = $("[name=searchClEntryFee]")[1].value;
+                } else if ($("[name=searchClEntryFee]")[2].checked){
+                    clEntryFee = $("[name=searchClEntryFee]")[2].value;
                 }
-                var clUId = $("#searchclUId").val();
-                var clSource = $("#searchclSource").val();
-                var searchclPlaceTime = $("#searchclPlaceTime").val();
+                var clUId = $("#searchClUId").val();
+                var clCity = $("#searchClCity").val();
+                var searchClPlaceTime = $("#searchClPlaceTime").val();
                 var beginTime = "";
                 var endTime = "";
-                if (searchclPlaceTime != null && searchclPlaceTime != ""){
-                    beginTime = searchclPlaceTime.split(" - ")[0];
-                    endTime = searchclPlaceTime.split(" - ")[1];
+                if (searchClPlaceTime != null && searchClPlaceTime != ""){
+                    beginTime = searchClPlaceTime.split(" - ")[0];
+                    endTime = searchClPlaceTime.split(" - ")[1];
                 }
                 //根据筛选条件查询
                 $.ajax({
-                    url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待联系',
+                    url: '/crm/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待联系',
                     type: 'get',
                     data: {
                         cName: cName
@@ -211,7 +217,7 @@
                         ,clProject: clProject
                         ,clEntryFee: clEntryFee
                         ,clUId: clUId
-                        ,clSource: clSource
+                        ,clCity: clCity
                         ,beginTime: beginTime
                         ,endTime: endTime
                         ,export: 1
@@ -231,7 +237,7 @@
 			function adminTable() {
                 table.render({
                     elem: '#tab'
-                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待联系'+'&export=0' //数据接口
+                    ,url: '/crm/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待联系'+'&export=0' //数据接口
                     ,title: '待预约客户' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
@@ -246,6 +252,7 @@
                             }
                             ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
                             ,{field: 'uName', minWidth: 120, title: '负责人', align:'center'}
+                            ,{field: 'clCity', minWidth: 120, title: '城市', align:'center'}
                             ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
                             ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
                             ,{field: 'clRemark', minWidth: 120, title: '备注', align:'center'}
@@ -263,7 +270,7 @@
             function saleTable() {
                 table.render({
                     elem: '#tab'
-                    ,url: '/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待联系'+'&export=0' //数据接口
+                    ,url: '/crm/customer/queryCScreen?uId='+uId+'&rName='+rName+'&ctType=待联系'+'&export=0' //数据接口
                     ,title: '待预约客户' //表格名称
                     ,id: 'tab' //表格id
                     ,page: true //开启分页
@@ -277,6 +284,7 @@
                                 ,templet: '<div><a href="javascript:goDetail({{d.cId}}, {{d.clId}}, {{d.clUId}});" class="layui-table-link">{{d.cName}}</a></div>'
                             }
                             ,{field: 'cTel', minWidth: 120, title: '电话', align:'center'}
+                            ,{field: 'clCity', minWidth: 120, title: '城市', align:'center'}
                             ,{field: 'clProject', minWidth: 120, title: '报名项目', align:'center'}
                             ,{field: 'clPlaceTime', minWidth: 200, title: '报名时间', align:'center'}
                             ,{field: 'clRemark', minWidth: 120, title: '备注', align:'center'}
@@ -310,7 +318,7 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '编辑客户',
-						content: ['/customer/queryCByCId?cId=' + data.cId],
+						content: ['/crm/customer/queryCByCId?cId=' + data.cId],
 						area: ['1000px', '500px'],
 						resize: false,
 						btn: '确定',
@@ -318,12 +326,14 @@
 							var body = layer.getChildFrame('body', index);
 							//获取值
 							var cName = $(body).find("#cName").val();
-							var cSex = null;
-							if($(body).find("[name=cSex]")[0].checked){
-								cSex = $(body).find("[name=cSex]")[0].value;
-							}else{
-								cSex = $(body).find("[name=cSex]")[1].value;
-							}
+                            var cSex = "";
+                            if($(body).find("[name=cSex]")[0].checked){
+                                cSex = $(body).find("[name=cSex]")[0].value;
+                            } else if($(body).find("[name=cSex]")[1].checked){
+                                cSex = $(body).find("[name=cSex]")[1].value;
+                            } else if($(body).find("[name=cSex]")[2].checked){
+                                cSex = $(body).find("[name=cSex]")[2].value;
+                            }
 							var cAge = $(body).find("#cAge").val();
 							var cTel = $(body).find("#cTel").val();
                             var cWx = $(body).find("#cWx").val();
@@ -333,8 +343,9 @@
 							var clEntryFee = $(body).find("#clEntryFee").val();
 							var clUId = $(body).find("#clUId").val();
 							var clSource = $(body).find("#clSource").val();
+                            var clCity = $(body).find("#clCity").val();
 							var clTypeId = $(body).find("#clTypeId").val();
-							if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
+							if (cName != '' && cTel != '' && clCity != '') {
 								//声明格式是否正确
 								var verify = true;
                                 //验证姓名格式
@@ -366,9 +377,11 @@
                                     }
                                 }
 								if(verify){
-									$.post("/customer/editCByCId?cId="+data.cId, {uId: uId, uName: uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cWx:cWx, clProject:clProject,
-											clRemark:clRemark, clMessage:clMessage, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
+                                    var load = layer.load();
+									$.post("/crm/customer/editCByCId?cId="+data.cId, {uId: uId, uName: uName, cName:cName, cSex:cSex, cAge:cAge, cTel:cTel, cWx:cWx, clProject:clProject,
+											clRemark:clRemark, clMessage:clMessage, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clCity:clCity, clTypeId:clTypeId},
 										function (data) {
+									    	layer.close(load);
 									    	if (data.code != 200){
 									    	    layer.msg(data.msg);
 											} else {
@@ -393,7 +406,7 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '新增待预约客户',
-						content: ['/customer/queryCByCId?cId=' + data.cId + "&page=awaitappoint"],
+						content: ['/crm/customer/queryCByCId?cId=' + data.cId + "&page=awaitappoint"],
 						area: ['1000px', '500px'],
 						resize: false,
 						btn: '确定',
@@ -416,8 +429,9 @@
 							var clEntryFee = $(body).find("#clEntryFee").val();
 							var clUId = $(body).find("#clUId").val();
 							var clSource = $(body).find("#clSource").val();
+                            var clCity = $(body).find("#clCity").val();
 							var clTypeId = $(body).find("#clTypeId").val();
-							if (cName != '' && cName.trim() != '' && cTel != '' && cTel.trim() != '') {
+							if (cName != '' && cTel != '' && clCity != '') {
 								//声明格式是否正确
 								var verify = true;
                                 //验证姓名格式
@@ -449,9 +463,11 @@
                                     }
                                 }
 								if(verify){
-									$.post("/customer/editCByCId?cId=" + data.cId, {uId: uId, uName:uName, cName:cName.trim(), cSex:cSex, cAge:cAge, cTel:cTel.trim(), cWx:cWx, clProject:clProject,
-											clMessage:clMessage, clRemark:clRemark, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clTypeId:clTypeId},
+                                    var load = layer.load();
+									$.post("/crm/customer/editCByCId?cId=" + data.cId, {uId: uId, uName:uName, cName:cName, cSex:cSex, cAge:cAge, cTel:cTel, cWx:cWx, clProject:clProject,
+											clMessage:clMessage, clRemark:clRemark, clEntryFee:clEntryFee, clUId:clUId, clSource:clSource, clCity:clCity, clTypeId:clTypeId},
 										function (data) {
+									    	layer.close(load);
 									    	if (data.code != 200){
 									    	    layer.msg(data.msg);
 											} else {
@@ -476,7 +492,7 @@
 					layer.open({
 						type: 2, //层类型，iframe
 						title: '新增预约客户',
-						content: ['/appointmentsave?clId='+data.clId+'&cName='+data.cName+'&atType=初次预约'],
+						content: ['/crm/appointmentsave?clId='+data.clId+'&cName='+data.cName+'&atType=初次预约'],
 						area: ['450px', '450px'],
 						resize: false,
 						btn: '确定',
@@ -488,9 +504,11 @@
 							var aHId = $(body).find("#aHId").val();
 							var atType = $(body).find("#atType").val();
 							if (aTime != '') {
-								$.post("/appointment/saveAppointment", {uId:uId, uName:uName, aClId:aClId, aTime:aTime,
+                                var load = layer.load();
+								$.post("/crm/appointment/saveAppointment", {uId:uId, uName:uName, aClId:aClId, aTime:aTime,
 										aHId:aHId, atType:atType},
                                     function (data) {
+								    	layer.close(load);
                                         if (data.code != 200){
                                             layer.msg(data.msg);
                                         } else {

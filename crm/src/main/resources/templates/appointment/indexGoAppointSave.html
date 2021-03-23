@@ -141,9 +141,20 @@
 
     //时间控件
     laydate.render({
+        elem: '#aTime' //指定元素
+        ,type: 'datetime' //时间格式
+        ,trigger: 'click' //采用click弹出
+        ,value: new Date() //绑定时间
+        ,btns: ['now', 'confirm'] //底部按钮
+    });
+
+    //时间控件
+    laydate.render({
         elem: '#sTime' //指定元素
         ,type: 'datetime' //时间格式
         ,trigger: 'click' //采用click弹出
+        ,value: new Date() //绑定时间
+        ,btns: ['now', 'confirm'] //底部按钮
     });
 
     //从sessionStorage中获取用户编号
@@ -154,7 +165,7 @@
     //根据客户名称查询可预约客户
     function getList(cName, page) {
         if (cName != "") {
-            $.post("/customer/queryCACByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
+            $.post("/crm/customer/queryCACByUIdAndCName", {rName:rName, uId:uId, cName:cName, page:page}, function (data) {
                 var html = "";
                 for (i = 0; i < data.data.length; i++){
                     html += "<div class='list' onclick='javascript:assign(&quot;"+data.data[i].clId+"&quot;,&quot;"+data.data[i].cName+"&quot;,&quot;"+data.data[i].clEntryFee+"&quot;,&quot;"+data.data[i].atType+"&quot;);'>"+data.data[i].cName+"--"+data.data[i].cTel+"</div>";
@@ -246,15 +257,8 @@
         $("#list").attr("style", "background-color: #383d49;height: auto; display: none;");
     }
 
-    //时间控件
-    laydate.render({
-        elem: '#aTime' //指定元素
-        ,type: 'datetime' //时间格式
-        ,trigger: 'click' //采用click弹出
-    });
-
     //获取所有门诊
-    $.get("/hospital/queryHospital", function (res){
+    $.get("/crm/hospital/queryHospital", function (res){
         //定义负责人下拉框内容
         var html = "";
         $.each(res.data, function (index, item) {
@@ -302,7 +306,8 @@
         var aHId = $("#aHId").val();
         var atType = $("#atType").val();
         if (aTime != ""){
-            $.post("/appointment/saveAppointment",{
+            var load = layer.load();
+            $.post("/crm/appointment/saveAppointment",{
                     uId:uId
                     ,uName:uName
                     ,aClId:aClId
@@ -310,6 +315,7 @@
                     ,aHId:aHId
                     ,atType:atType
                 },function (data) {
+                    layer.close(load);
                     if (data.code != 200){
                         layer.msg(data.msg);
                     } else {
@@ -353,7 +359,7 @@
         var sPaysum = $("#sPaysum").val();
         var sTime = $("#sTime").val();
         var sRemark = $("#sRemark").val();
-        if (sSum != '' && sSum.trim() != '') {
+        if (sSum != '' && sPaysum != '' && sTime != '') {
             //声明格式是否正确
             var verify = true;
             //验证成交金额
@@ -369,7 +375,8 @@
                 return;
             }
             if(verify) {
-                $.post("/success/saveAAndS", {
+                var load = layer.load();
+                $.post("/crm/success/saveAAndS", {
                         uId:uId
                         ,uName:uName
                         ,aClId:aClId
@@ -379,11 +386,12 @@
                         ,sHId: sHId
                         ,sMessage: sMessage
                         ,isDeduction: isDeduction
-                        ,sSum: sSum.trim()
-                        ,sPaysum: sPaysum.trim()
+                        ,sSum: sSum
+                        ,sPaysum: sPaysum
                         ,sTime: sTime
                         ,sRemark: sRemark
                     },function (data) {
+                        layer.close(load);
                         if (data.code != 200){
                             layer.msg(data.msg);
                         } else {

@@ -22,7 +22,7 @@ import java.util.List;
  * @create 2020/9/10 22:55
  */
 @Controller
-@RequestMapping("paytype")
+@RequestMapping("crm/paytype")
 @Api(value = "支付类型控制类", tags = "支付类型控制类")
 public class PaytypeController {
 
